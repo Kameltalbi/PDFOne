@@ -1,0 +1,14 @@
+{
+  "name": "@mini-pdf-tools/shared",
+  "version": "1.0.0",
+  "description": "Mini PDF Tools - Shared types and utilities",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
