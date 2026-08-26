@@ -10,6 +10,7 @@ import Protect from './pages/Protect';
 import ToJpg from './pages/ToJpg';
 import Tools from './pages/Tools'; // Catalogue des outils PDF
 import EditPdf from './pages/EditPdf';
+import EditResult from './pages/EditResult';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/to-jpg" element={<ToJpg />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/edit-pdf" element={<EditPdf />} />
+          <Route path="/edit-pdf/result" element={<EditResult />} />
           {/* Add more routes as we implement other tools */}
         </Routes>
       </div>

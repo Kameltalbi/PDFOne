@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import './Home.css';
 import pdfOneLogo from '../assets/pdfone-logo.png';
+import heroImage from '../assets/pdf-editor-hero.jpg';
 
 const tools = [
   { name: 'Modifier PDF', description: 'Texte, images, signature et annotations.', icon: 'T', path: '/edit-pdf', tone: 'red' },
@@ -29,21 +30,7 @@ function Home() {
           </div>
 
           <div className="pro-product-visual" aria-label="Aperçu de l’éditeur PDFOne">
-            <div className="pro-window">
-              <div className="pro-window-top"><div><i /><i /><i /></div><span>facture-client.pdf</span><b>Exporter</b></div>
-              <div className="pro-window-body">
-                <div className="pro-mini-tools"><strong>T</strong><span>✎</span><span>▭</span><span>↗</span><span>▧</span></div>
-                <div className="pro-document-area">
-                  <div className="pro-document">
-                    <div className="pro-doc-head"><span className="pro-doc-mark">P1</span><div><b>FACTURE</b><small>N° PDF-2026-018</small></div></div>
-                    <div className="pro-doc-columns"><div><em>ÉMETTEUR</em><strong>PDFOne Studio</strong><span>Solutions documentaires</span></div><div><em>DESTINATAIRE</em><strong>Votre entreprise</strong><span>contact@entreprise.com</span></div></div>
-                    <div className="pro-doc-table"><b>Description</b><b>Quantité</b><b>Total</b><span>Services professionnels</span><span>1</span><strong>1 250 €</strong></div>
-                    <div className="pro-signature">PDFOne</div>
-                  </div>
-                </div>
-                <div className="pro-page-panel"><span>1 page</span><div className="pro-thumbnail"><i /><i /><i /></div></div>
-              </div>
-            </div>
+            <div className="pro-hero-photo"><img src={heroImage} alt="Professionnelle utilisant l’éditeur de documents PDFOne" /></div>
             <div className="pro-floating-card secure"><span>✓</span><div><b>Document sécurisé</b><small>Traitement protégé</small></div></div>
             <div className="pro-floating-card fast"><span>⚡</span><div><b>Prêt en quelques secondes</b><small>Aucune installation</small></div></div>
           </div>

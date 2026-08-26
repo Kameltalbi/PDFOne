@@ -1,0 +1,27 @@
+.result-page { min-height: calc(100vh - 73px); padding: 4rem 2rem 5rem; background: #f5f6f8; color: #1f2937; text-align: left; }
+.result-heading { width: min(100%, 1100px); margin: 0 auto 2.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; text-align: left; }
+.result-check { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: #dcfce7; color: #22a93a; font-size: 1.6rem; font-weight: 900; }
+.result-heading h1 { margin: 0 0 .25rem; color: #111827; font-size: 1.75rem; font-weight: 800; }
+.result-heading p { color: #6b7280; font-size: .9rem; }
+.result-layout { width: min(100%, 1100px); margin: auto; display: grid; grid-template-columns: .8fr 1.2fr; gap: 3.5rem; align-items: start; }
+.result-preview-column { min-width: 0; }
+.result-preview { width: 100%; aspect-ratio: .72; overflow: hidden; border: 1px solid #e0e4ea; background: white; box-shadow: 0 8px 28px rgba(15,23,42,.12); }
+.result-preview iframe { width: 100%; height: 100%; border: 0; background: white; }
+.result-file { margin-top: 1rem; padding: .9rem 1rem; display: flex; align-items: center; gap: .75rem; border-radius: 9px; background: white; border: 1px solid #e4e7ec; }
+.result-file > span { width: 38px; height: 42px; display: grid; place-items: center; border-radius: 6px; background: #fee2e2; color: #dc2626; font-size: .62rem; font-weight: 900; }
+.result-file strong,.result-file small { display: block; }.result-file strong { max-width: 280px; overflow: hidden; color: #334155; font-size: .8rem; text-overflow: ellipsis; white-space: nowrap; }.result-file small { margin-top: .15rem; color: #94a3b8; font-size: .65rem; }
+.result-actions-column { padding-top: .5rem; }
+.result-download { width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; gap: .75rem; border-radius: 10px; background: linear-gradient(135deg,#66c42d,#4eae1d); box-shadow: 0 10px 24px rgba(78,174,29,.2); color: white; font-size: 1.05rem; font-weight: 850; transition: .2s ease; }
+.result-download:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(78,174,29,.28); }
+.result-download span { font-size: 1.35rem; }
+.result-success-card { margin-top: 1rem; padding: 1.2rem; display: flex; gap: .8rem; border: 1px solid #bbf7d0; border-radius: 10px; background: #f0fdf4; }
+.result-success-card > span { width: 32px; height: 32px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: #22c55e; color: white; font-weight: 900; }
+.result-success-card strong { color: #166534; font-size: .85rem; }.result-success-card p { margin-top: .25rem; color: #4b7b5a; font-size: .72rem; line-height: 1.5; }
+.result-next-heading { margin: 2rem 0 .8rem; display: flex; justify-content: space-between; color: #64748b; font-size: .75rem; }.result-next-heading a { color: #334155; font-weight: 700; }
+.result-tools { display: grid; grid-template-columns: repeat(3,1fr); gap: .55rem; }
+.result-tools a { min-height: 100px; padding: .8rem .4rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .55rem; border: 1px solid #e2e6ec; border-radius: 9px; background: white; text-align: center; transition: .18s ease; }
+.result-tools a:hover { transform: translateY(-2px); border-color: #fca5a5; box-shadow: 0 8px 18px rgba(15,23,42,.08); }
+.result-tools span { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 7px; background: #fef2f2; color: #dc2626; font-weight: 850; }.result-tools strong { color: #475569; font-size: .68rem; }
+.result-all-tools { margin-top: .8rem; padding: .8rem; display: flex; justify-content: center; gap: 1rem; border-radius: 8px; color: #dc2626; font-size: .75rem; font-weight: 750; }
+@media(max-width:850px){.result-page{padding:3rem 1rem}.result-layout{grid-template-columns:1fr;gap:2rem}.result-preview-column{width:min(100%,440px);margin:auto}.result-actions-column{width:min(100%,620px);margin:auto}}
+@media(max-width:480px){.result-heading{align-items:flex-start}.result-heading h1{font-size:1.35rem}.result-tools{grid-template-columns:repeat(2,1fr)}}

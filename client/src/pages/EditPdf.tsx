@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import './EditPdf.css';
@@ -298,6 +299,7 @@ function PdfThumbnail({ pdf, pageNumber, annotations }: { pdf: PDFDocumentProxy;
 }
 
 function EditPdf() {
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -350,11 +352,8 @@ function EditPdf() {
       if (!response.ok) throw new Error('Export impossible');
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
-      link.click();
-      URL.revokeObjectURL(url);
+      const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
+      navigate('/edit-pdf/result', { state: { downloadUrl: url, filename, originalName: file.name } });
     } catch {
       setError('Impossible de générer le PDF. Vérifiez que le serveur est démarré.');
     } finally {

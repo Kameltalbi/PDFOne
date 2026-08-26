@@ -18,6 +18,9 @@
 .pro-trust-row { margin-top: 1.8rem; display: flex; gap: 1.1rem; flex-wrap: wrap; color: #64748b; font-size: .72rem; }
 .pro-trust-row span::first-letter { color: #16a34a; }
 .pro-product-visual { position: relative; padding: 2.25rem 0; }
+.pro-hero-photo { position: relative; overflow: hidden; aspect-ratio: 1.45; border: 1px solid rgba(203,213,225,.8); border-radius: 20px; background: #e5e7eb; box-shadow: 0 32px 75px rgba(30,41,59,.2),0 3px 12px rgba(30,41,59,.08); }
+.pro-hero-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,rgba(255,255,255,.12),transparent 42%); pointer-events: none; }
+.pro-hero-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 63% center; }
 .pro-window { overflow: hidden; border: 1px solid rgba(203,213,225,.8); border-radius: 17px; background: white; box-shadow: 0 32px 75px rgba(30,41,59,.18),0 3px 12px rgba(30,41,59,.08); transform: perspective(1200px) rotateY(-2deg) rotateX(1deg); }
 .pro-window-top { height: 46px; padding: 0 1rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 1px solid #e5e7eb; background: #fbfcfd; color: #64748b; font-size: .67rem; }
 .pro-window-top > div { display: flex; gap: 6px; }.pro-window-top i { width: 8px; height: 8px; border-radius: 50%; background: #f87171; }.pro-window-top i:nth-child(2){background:#fbbf24}.pro-window-top i:nth-child(3){background:#34d399}
