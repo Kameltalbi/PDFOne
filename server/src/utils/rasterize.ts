@@ -46,7 +46,7 @@ export async function rasterizePdfPages(
     disableWorker: true,
     isEvalSupported: false,
     useSystemFonts: true
-  });
+  } as never);
 
   const pdf = await loadingTask.promise;
   const canvasFactory = (pdf as unknown as { canvasFactory: PdfjsFactory }).canvasFactory;
@@ -78,7 +78,7 @@ export async function rasterizePdfPages(
     }
   } finally {
     try {
-      if (typeof pdf.destroy === 'function') await pdf.destroy();
+      await (pdf as { destroy?: () => unknown }).destroy?.();
     } catch {
       /* pdf.js versions differ on destroy() */
     }

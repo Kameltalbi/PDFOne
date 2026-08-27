@@ -71,7 +71,7 @@ export async function extractPdfRows(pdfBytes: Uint8Array, password = ''): Promi
     disableWorker: true,
     isEvalSupported: false,
     useSystemFonts: true
-  });
+  } as never);
   const pdf = await loadingTask.promise;
   const rows: string[][] = [];
   try {
@@ -90,7 +90,7 @@ export async function extractPdfRows(pdfBytes: Uint8Array, password = ''): Promi
     }
   } finally {
     try {
-      if (typeof pdf.destroy === 'function') await pdf.destroy();
+      await (pdf as { destroy?: () => unknown }).destroy?.();
     } catch {
       /* pdf.js versions differ on destroy() */
     }
