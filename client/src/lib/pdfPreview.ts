@@ -11,12 +11,21 @@ function ensureWorker() {
   workerReady = true;
 }
 
+async function closePdf(pdf: object) {
+  const doc = pdf as { destroy?: () => unknown; cleanup?: () => void };
+  if (typeof doc.destroy === 'function') {
+    await doc.destroy();
+    return;
+  }
+  doc.cleanup?.();
+}
+
 export async function getPdfPageCount(file: File): Promise<number> {
   ensureWorker();
   const data = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   const count = pdf.numPages;
-  await pdf.destroy();
+  await closePdf(pdf);
   return count;
 }
 
@@ -37,7 +46,7 @@ export async function inspectPdfFile(file: File, scale = 0.85): Promise<{ pages:
   } catch {
     return { pages: pdf.numPages, thumb: null };
   } finally {
-    await pdf.destroy();
+    await closePdf(pdf);
   }
 }
 
@@ -56,7 +65,7 @@ export async function renderPdfPage(file: File, pageNumber: number, scale = 0.45
     await page.render({ canvas, canvasContext: context, viewport }).promise;
     return canvas.toDataURL('image/jpeg', 0.72);
   } finally {
-    await pdf.destroy();
+    await closePdf(pdf);
   }
 }
 
@@ -78,7 +87,7 @@ export async function renderPdfPages(file: File, scale = 0.32): Promise<string[]
       thumbs.push(canvas.toDataURL('image/jpeg', 0.65));
     }
   } finally {
-    await pdf.destroy();
+    await closePdf(pdf);
   }
   return thumbs;
 }
