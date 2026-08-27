@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { useI18n } from '../i18n';
+import { StudioLanding } from '../components/PdfStudio';
 import './EditPdf.css';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -35,6 +37,7 @@ interface PdfPageProps {
 }
 
 function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, strokeWidth, zoom, onAdd, onRemove, onUpdate }: PdfPageProps) {
+  const { m } = useI18n();
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const [page, setPage] = useState<PDFPageProxy | null>(null);
@@ -219,10 +222,10 @@ function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, stroke
 
   return (
     <section className="edit-page-shell" id={`pdf-page-${pageNumber}`}>
-      <span className="edit-page-number">Page {pageNumber}</span>
+      <span className="edit-page-number">{m.common.page} {pageNumber}</span>
       <div className={`edit-page-canvas tool-${tool}`}>
         <canvas ref={pdfCanvasRef} />
-        {annotations.filter((item): item is ImageAnnotation => item.type === 'image').map((item) => <img key={item.id} className="placed-pdf-image" src={item.dataUrl} alt="Image ajoutée" style={{ left: `${item.x * 100}%`, top: `${item.y * 100}%`, width: `${item.width * 100}%`, height: `${item.height * 100}%` }} />)}
+        {annotations.filter((item): item is ImageAnnotation => item.type === 'image').map((item) => <img key={item.id} className="placed-pdf-image" src={item.dataUrl} alt={m.edit.addedImage} style={{ left: `${item.x * 100}%`, top: `${item.y * 100}%`, width: `${item.width * 100}%`, height: `${item.height * 100}%` }} />)}
         <canvas
           ref={overlayRef}
           className="edit-overlay"
@@ -237,6 +240,7 @@ function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, stroke
 }
 
 function PdfThumbnail({ pdf, pageNumber, annotations }: { pdf: PDFDocumentProxy; pageNumber: number; annotations: Annotation[] }) {
+  const { t, m } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -295,18 +299,19 @@ function PdfThumbnail({ pdf, pageNumber, annotations }: { pdf: PDFDocumentProxy;
     return () => { cancelled = true; renderTask?.cancel(); };
   }, [pdf, pageNumber, annotations]);
 
-  return <span className="thumbnail-sheet"><canvas ref={canvasRef} aria-label={`Aperçu de la page ${pageNumber}`} /></span>;
+  return <span className="thumbnail-sheet"><canvas ref={canvasRef} aria-label={t(m.edit.pagePreview, { page: pageNumber })} /></span>;
 }
 
 function EditPdf() {
+  const { m, t } = useI18n();
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const pickerId = useId();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [tool, setTool] = useState<Tool>('text');
-  const [text, setText] = useState('Votre texte');
+  const [text, setText] = useState(m.edit.defaultText);
   const [size, setSize] = useState(18);
   const [color, setColor] = useState('#ef4444');
   const [strokeWidth, setStrokeWidth] = useState(3);
@@ -319,11 +324,11 @@ function EditPdf() {
 
   const openPdf = async (selectedFile: File) => {
     if (selectedFile.type !== 'application/pdf') {
-      setError('Veuillez sélectionner un fichier PDF.');
+      setError(m.edit.needPdf);
       return;
     }
     if (selectedFile.size > 100 * 1024 * 1024) {
-      setError('Le fichier dépasse la limite de 100 Mo.');
+      setError(m.edit.tooLarge);
       return;
     }
     try {
@@ -336,7 +341,7 @@ function EditPdf() {
       setRedoStack([]);
       setActivePage(0);
     } catch {
-      setError('Ce PDF ne peut pas être ouvert ou il est protégé.');
+      setError(m.edit.cannotOpen);
     }
   };
 
@@ -348,14 +353,14 @@ function EditPdf() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('annotations', JSON.stringify(annotations.map(({ id: _id, ...annotation }) => annotation)));
-      const response = await fetch('/api/edit', { method: 'POST', body: formData });
-      if (!response.ok) throw new Error('Export impossible');
+      const response = await fetch('/api/edit', { method: 'POST', body: formData, headers: { 'Accept-Language': document.documentElement.lang || 'en' } });
+      if (!response.ok) throw new Error(m.edit.exportFail);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
       navigate('/edit-pdf/result', { state: { downloadUrl: url, filename, originalName: file.name } });
     } catch {
-      setError('Impossible de générer le PDF. Vérifiez que le serveur est démarré.');
+      setError(m.edit.generateFail);
     } finally {
       setIsExporting(false);
     }
@@ -363,32 +368,23 @@ function EditPdf() {
 
   if (!pdf) {
     return (
-      <main className="edit-landing">
-        <section className="edit-hero">
-          <div className="edit-kicker">ÉDITEUR PDF EN LIGNE</div>
-          <h1>Modifier PDF</h1>
-          <p>Ajoutez du texte et dessinez directement sur vos documents PDF.</p>
-          <div
-            className={`edit-drop-zone ${isDragging ? 'dragging' : ''}`}
-            onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={(event) => { event.preventDefault(); setIsDragging(false); if (event.dataTransfer.files[0]) openPdf(event.dataTransfer.files[0]); }}
-          >
-            <input ref={inputRef} type="file" accept="application/pdf,.pdf" hidden onChange={(event) => event.target.files?.[0] && openPdf(event.target.files[0])} />
-            <button className="edit-select-button" onClick={() => inputRef.current?.click()}>
-              <span>＋</span> Sélectionner le fichier
-            </button>
-            <span>ou glissez-déposez votre PDF ici</span>
-          </div>
-          {error && <div className="edit-error">{error}</div>}
-        </section>
-
-        <section className="edit-features">
-          <article><span>✏️</span><h2>Édition simple</h2><p>Placez votre texte précisément et dessinez librement sur chaque page.</p></article>
-          <article><span>✓</span><h2>Aperçu fidèle</h2><p>Visualisez immédiatement chaque modification avant de télécharger.</p></article>
-          <article><span>🔒</span><h2>Traitement sécurisé</h2><p>Le document temporaire est supprimé du serveur après son export.</p></article>
-        </section>
-      </main>
+      <StudioLanding
+        title={m.edit.title}
+        subtitle={m.edit.subtitle}
+        pickerId={pickerId}
+        isDragging={isDragging}
+        isLoading={false}
+        error={error || null}
+        features={m.edit.features}
+        onDragOver={() => setIsDragging(true)}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setIsDragging(false);
+          if (event.dataTransfer.files[0]) void openPdf(event.dataTransfer.files[0]);
+        }}
+        onFiles={(files) => { if (files[0]) void openPdf(files[0]); }}
+      />
     );
   }
 
@@ -410,12 +406,12 @@ function EditPdf() {
   });
 
   const tools: Array<{ id: Tool; icon: string; label: string }> = [
-    { id: 'pan', icon: '☝', label: 'Déplacer la vue' }, { id: 'select', icon: '↖', label: 'Sélectionner' },
-    { id: 'text', icon: 'T', label: 'Ajouter du texte' }, { id: 'draw', icon: '✎', label: 'Dessiner' },
-    { id: 'rectangle', icon: '▭', label: 'Rectangle' }, { id: 'erase', icon: '⌫', label: 'Gomme' },
-    { id: 'line', icon: '╱', label: 'Ligne' }, { id: 'arrow', icon: '↗', label: 'Flèche' },
-    { id: 'image', icon: '🖼', label: 'Ajouter une image' }, { id: 'underline', icon: 'U', label: 'Texte souligné' },
-    { id: 'strike', icon: 'S', label: 'Texte barré' }, { id: 'signature', icon: '〰', label: 'Signature manuscrite' }
+    { id: 'pan', icon: '☝', label: m.edit.pan }, { id: 'select', icon: '↖', label: m.edit.selectTool },
+    { id: 'text', icon: 'T', label: m.edit.text }, { id: 'draw', icon: '✎', label: m.edit.draw },
+    { id: 'rectangle', icon: '▭', label: m.edit.rectangle }, { id: 'erase', icon: '⌫', label: m.edit.erase },
+    { id: 'line', icon: '╱', label: m.edit.line }, { id: 'arrow', icon: '↗', label: m.edit.arrow },
+    { id: 'image', icon: '🖼', label: m.edit.image }, { id: 'underline', icon: 'U', label: m.edit.underline },
+    { id: 'strike', icon: 'S', label: m.edit.strike }, { id: 'signature', icon: '〰', label: m.edit.signature }
   ];
 
   const chooseTool = (selectedTool: Tool) => {
@@ -455,32 +451,32 @@ function EditPdf() {
 
   return (
     <main className="pdf-editor">
-      <aside className="editor-toolrail" aria-label="Outils d'édition">
+      <aside className="editor-toolrail" aria-label={m.edit.toolsAria}>
         <input ref={imageInputRef} hidden type="file" accept="image/png,image/jpeg" onChange={(event) => loadImage(event.target.files?.[0])} />
         {tools.map((item) => <button key={item.id} className={tool === item.id ? 'active' : ''} onClick={() => chooseTool(item.id)} title={item.label}>{item.icon}</button>)}
       </aside>
 
       <aside className="editor-sidebar">
-        <div className="editor-file"><strong>{file?.name}</strong><span>{pdf.numPages} page{pdf.numPages > 1 ? 's' : ''}</span></div>
+        <div className="editor-file"><strong>{file?.name}</strong><span>{pdf.numPages} {pdf.numPages > 1 ? m.common.pages : m.common.page}</span></div>
         <h2>{tools.find((item) => item.id === tool)?.label}</h2>
         {['text', 'underline', 'strike'].includes(tool) ? (
           <div className="tool-options">
-            <label>Contenu<input value={text} onChange={(event) => setText(event.target.value)} maxLength={120} /></label>
-            <label>Police<select><option>Helvetica</option></select></label>
-            <label>Taille<input type="range" min="8" max="72" value={size} onChange={(event) => setSize(Number(event.target.value))} /><span>{size} px</span></label>
+            <label>{m.edit.content}<input value={text} onChange={(event) => setText(event.target.value)} maxLength={120} /></label>
+            <label>{m.edit.font}<select><option>Helvetica</option></select></label>
+            <label>{m.edit.size}<input type="range" min="8" max="72" value={size} onChange={(event) => setSize(Number(event.target.value))} /><span>{size} px</span></label>
           </div>
         ) : !['pan', 'select', 'erase', 'image'].includes(tool) ? (
-          <div className="tool-options"><label>Épaisseur<input type="range" min="1" max="12" value={strokeWidth} onChange={(event) => setStrokeWidth(Number(event.target.value))} /><span>{strokeWidth} px</span></label></div>
+          <div className="tool-options"><label>{m.edit.thickness}<input type="range" min="1" max="12" value={strokeWidth} onChange={(event) => setStrokeWidth(Number(event.target.value))} /><span>{strokeWidth} px</span></label></div>
         ) : null}
-        {!['pan', 'select', 'erase', 'image', 'signature'].includes(tool) && <label className="color-option">Couleur<input type="color" value={color} onChange={(event) => setColor(event.target.value)} /></label>}
-        {tool === 'image' && <button className="change-image" onClick={() => imageInputRef.current?.click()}>＋ Ajouter une autre image</button>}
-        <p className="editor-help">{tool === 'erase' ? 'Cliquez sur un élément pour le supprimer.' : tool === 'image' ? `L’image est redimensionnée proportionnellement et centrée sur la page ${activePage + 1}.` : tool === 'pan' ? 'Utilisez le défilement pour parcourir le document.' : tool === 'select' ? 'Cliquez puis faites glisser un élément pour le déplacer.' : ['text','underline','strike'].includes(tool) ? 'Cliquez sur une page pour placer le texte.' : 'Maintenez et déplacez le pointeur sur la page.'}</p>
-        <button className="clear-page" disabled={!annotations.length} onClick={() => { setAnnotations([]); setRedoStack([]); }}>Tout effacer</button>
-        <button className="change-file" onClick={() => { setPdf(null); setFile(null); }}>Changer de fichier</button>
+        {!['pan', 'select', 'erase', 'image', 'signature'].includes(tool) && <label className="color-option">{m.edit.color}<input type="color" value={color} onChange={(event) => setColor(event.target.value)} /></label>}
+        {tool === 'image' && <button className="change-image" onClick={() => imageInputRef.current?.click()}>{m.edit.addAnotherImage}</button>}
+        <p className="editor-help">{tool === 'erase' ? m.edit.helpErase : tool === 'image' ? t(m.edit.helpImage, { page: activePage + 1 }) : tool === 'pan' ? m.edit.helpPan : tool === 'select' ? m.edit.helpSelect : ['text','underline','strike'].includes(tool) ? m.edit.helpText : m.edit.helpDraw}</p>
+        <button className="clear-page" disabled={!annotations.length} onClick={() => { setAnnotations([]); setRedoStack([]); }}>{m.edit.clearAll}</button>
+        <button className="change-file" onClick={() => { setPdf(null); setFile(null); }}>{m.edit.changeFile}</button>
       </aside>
 
       <section className="editor-workspace">
-        <div className="editor-history"><button onClick={undo} disabled={!annotations.length} title="Annuler">↶</button><button onClick={redo} disabled={!redoStack.length} title="Rétablir">↷</button></div>
+        <div className="editor-history"><button onClick={undo} disabled={!annotations.length} title={m.edit.undo}>↶</button><button onClick={redo} disabled={!redoStack.length} title={m.edit.redo}>↷</button></div>
         {Array.from({ length: pdf.numPages }, (_, index) => (
           <PdfPage key={index} pdf={pdf} pageNumber={index + 1} annotations={annotations.filter((item) => item.page === index)} tool={tool} text={text} size={size} color={color} strokeWidth={strokeWidth} zoom={zoom} onAdd={addAnnotation} onRemove={(id) => setAnnotations((items) => items.filter((item) => item.id !== id))} onUpdate={(updated) => setAnnotations((items) => items.map((item) => item.id === updated.id ? updated : item))} />
         ))}
@@ -488,8 +484,8 @@ function EditPdf() {
       </section>
 
       <aside className="editor-pages">
-        <button className="editor-export" onClick={exportPdf} disabled={isExporting}>{isExporting ? 'Génération…' : '⇩ Exporter'}</button>
-        <div className="page-counter">{pdf.numPages} page{pdf.numPages > 1 ? 's' : ''}</div>
+        <button className="editor-export" onClick={exportPdf} disabled={isExporting}>{isExporting ? m.edit.exporting : m.edit.export}</button>
+        <div className="page-counter">{pdf.numPages} {pdf.numPages > 1 ? m.common.pages : m.common.page}</div>
         <div className="page-thumbnails">{Array.from({ length: pdf.numPages }, (_, index) => <button key={index} className={activePage === index ? 'active' : ''} onClick={() => { setActivePage(index); document.getElementById(`pdf-page-${index + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}><PdfThumbnail pdf={pdf} pageNumber={index + 1} annotations={annotations.filter((item) => item.page === index)} /><b>{index + 1}</b></button>)}</div>
         {error && <span className="edit-error inline">{error}</span>}
       </aside>

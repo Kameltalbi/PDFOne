@@ -273,14 +273,14 @@
 
 @media (max-width: 760px) {
   .edit-features { grid-template-columns: 1fr; gap: 0; }
-  .pdf-editor { height: auto; min-height: calc(100vh - 58px); grid-template-columns: 48px minmax(0,1fr); overflow: visible; }
-  .editor-toolrail { position: sticky; top: 58px; height: calc(100vh - 58px); }
+  .pdf-editor { height: auto; min-height: calc(100svh - 58px); grid-template-columns: 48px minmax(0,1fr); overflow: visible; }
+  .editor-toolrail { position: sticky; top: 58px; height: calc(100svh - 58px); }
   .editor-sidebar { overflow: visible; border-right: 0; border-bottom: 1px solid #dbe3ee; }
   .editor-workspace { min-width: 0; padding: 2rem 0.75rem; }
   .editor-pages { grid-column: 2; flex-direction: row; overflow-x: auto; border-left: 0; border-top: 1px solid #dbe3ee; }
-  .editor-export { min-width: 150px; }
+  .editor-export { min-width: 0; width: 100%; }
   .page-thumbnails { flex-direction: row; }
   .page-thumbnails button { min-width: 85px; }
   .page-counter { display: none; }
-  .editor-zoom { right: 1rem; }
+  .editor-zoom { right: max(0.75rem, env(safe-area-inset-right)); bottom: max(0.75rem, env(safe-area-inset-bottom)); }
 }

@@ -1,5 +1,4 @@
-// PDF Tool Types
-export type PDFTool = 'merge' | 'to-jpg' | 'compress' | 'protect' | 'add-text';
+export type PDFTool = 'merge' | 'split' | 'to-jpg' | 'jpg-to-pdf' | 'compress' | 'protect' | 'add-text' | 'delete-pages' | 'reorder' | 'rotate';
 
 export interface FileUpload {
   id: string;
@@ -19,12 +18,23 @@ export interface ProcessingStatus {
 
 export interface MergeRequest {
   files: FileUpload[];
-  order: string[]; // file IDs in desired order
+  order: string[];
+}
+
+export interface SplitRequest {
+  file: FileUpload;
+  pages: number[];
+  mode: 'extract' | 'separate';
 }
 
 export interface ToJpgRequest {
   file: FileUpload;
-  quality?: number; // 1-100
+  quality?: number;
+}
+
+export interface JpgToPdfRequest {
+  files: FileUpload[];
+  order: string[];
 }
 
 export interface CompressRequest {
@@ -48,7 +58,7 @@ export interface AddTextRequest {
   color?: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;

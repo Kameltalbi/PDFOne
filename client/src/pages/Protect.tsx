@@ -1,168 +1,112 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import FileUpload from '../components/FileUpload';
-import './Protect.css';
-
-interface FileUploadType {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  file: File;
-}
+import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { postForm } from '../lib/api';
+import { useSinglePdf } from '../lib/useSinglePdf';
+import { useI18n } from '../i18n';
 
 function Protect() {
-  const [files, setFiles] = useState<FileUploadType[]>([]);
+  const { m } = useI18n();
+  const pdf = useSinglePdf({ allPages: false });
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   const handleProtect = async () => {
-    if (files.length === 0) {
-      setError('Veuillez sélectionner au moins un fichier PDF');
-      return;
-    }
-    if (!password) {
-      setError('Veuillez entrer un mot de passe');
-      return;
-    }
+    if (!pdf.file) return;
+    if (password.length < 4) { pdf.setError(m.protect.shortPassword); return; }
+    if (password !== confirmPassword) { pdf.setError(m.protect.mismatch); return; }
 
     setIsProcessing(true);
-    setError(null);
-    setProgress(0);
-
+    pdf.setError(null);
+    setProgress(20);
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file.file);
-      });
+      formData.append('file', pdf.file);
       formData.append('password', password);
-
-      setProgress(30);
-
-      const response = await fetch('/api/protect', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setProgress(70);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Échec de la protection');
-      }
-
-      const data = await response.json();
+      setProgress(55);
+      const result = await postForm('/api/protect', formData);
       setProgress(100);
-
-      if (data.success) {
-        setDownloadUrl(data.data.downloadUrl);
-      } else {
-        throw new Error(data.error || 'Échec de la protection');
-      }
-
+      pdf.setDownloadUrl(result.downloadUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la protection');
+      pdf.setError(err instanceof Error ? err.message : m.protect.fail);
       setProgress(0);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleReset = () => {
-    setFiles([]);
+  const reset = () => {
+    pdf.reset();
     setPassword('');
-    setDownloadUrl(null);
-    setError(null);
+    setConfirmPassword('');
     setProgress(0);
   };
 
+  if (pdf.downloadUrl) {
+    return (
+      <StudioResult
+        title={m.protect.doneTitle}
+        text={m.protect.doneText}
+        downloadUrl={pdf.downloadUrl}
+        downloadName="protege.pdf"
+        resetLabel={m.protect.reset}
+        onReset={reset}
+      />
+    );
+  }
+
+  if (!pdf.file) {
+    return (
+      <StudioLanding
+        title={m.protect.title}
+        subtitle={m.protect.subtitle}
+        pickerId={pdf.pickerId}
+        isDragging={pdf.isDragging}
+        isLoading={pdf.isLoading}
+        error={pdf.error}
+        features={m.protect.features}
+        onDragOver={() => pdf.setIsDragging(true)}
+        onDragLeave={() => pdf.setIsDragging(false)}
+        onDrop={pdf.onDropFiles}
+        onFiles={(files) => void pdf.loadFile(files)}
+      />
+    );
+  }
+
   return (
-    <div className="protect-page">
-      <div className="protect-container">
-        <div className="breadcrumbs">
-          <Link to="/" className="breadcrumb-link">Accueil</Link>
-          <span className="separator">›</span>
-          <span className="current">Protéger PDF</span>
+    <StudioWorkspace
+      canvas={(
+        <div className="studio-thumbs">
+          <article className="studio-thumb">
+            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
+            <b>{pdf.file.name}</b>
+          </article>
         </div>
-
-        <div className="protect-header">
-          <h1>Protéger PDF</h1>
-          <p>Sécurisez vos documents PDF avec un mot de passe</p>
-        </div>
-
-        <main className="protect-content">
-          {!downloadUrl ? (
-            <>
-              <FileUpload 
-                multiple={true}
-                onFilesChange={setFiles}
-                maxFiles={10}
-                accept=".pdf"
-              />
-
-              <div className="password-section">
-                <label htmlFor="password">Mot de passe</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Entrez un mot de passe"
-                  className="password-input"
-                />
-              </div>
-
-              {files.length > 0 && password && (
-                <div className="protect-actions">
-                  <button
-                    onClick={handleProtect}
-                    disabled={isProcessing}
-                    className="protect-button"
-                  >
-                    {isProcessing ? 'Protection en cours...' : `Protéger ${files.length} PDF${files.length > 1 ? 's' : ''}`}
-                  </button>
-                </div>
-              )}
-
-              {isProcessing && (
-                <div className="progress-container">
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill" 
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
-                  <p className="progress-text">{progress}% Complété</p>
-                </div>
-              )}
-
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="success-container">
-              <div className="success-icon">🔒</div>
-              <h2>Protection réussie !</h2>
-              <p>Vos fichiers PDF sont maintenant protégés par un mot de passe.</p>
-              <div className="download-actions">
-                <a href={downloadUrl} download="protected.pdf" className="download-button">
-                  Télécharger le PDF protégé
-                </a>
-                <button onClick={handleReset} className="reset-button">
-                  Protéger d'autres fichiers
-                </button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
+      )}
+      sidebar={(
+        <StudioSidebarFrame
+          title={m.protect.title}
+          tip={m.protect.tip}
+          error={pdf.error}
+          progress={progress}
+          isProcessing={isProcessing}
+          actionLabel={isProcessing ? m.protect.running : m.protect.action}
+          onAction={() => void handleProtect()}
+          disabled={!password || !confirmPassword}
+          onChangeFile={reset}
+        >
+          <div className="studio-field">
+            <label htmlFor="password">{m.protect.password}</label>
+            <input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder={m.protect.passwordPh} />
+          </div>
+          <div className="studio-field">
+            <label htmlFor="confirm-password">{m.protect.confirm}</label>
+            <input id="confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder={m.protect.confirmPh} />
+          </div>
+        </StudioSidebarFrame>
+      )}
+    />
   );
 }
 

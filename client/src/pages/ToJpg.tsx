@@ -1,149 +1,95 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import FileUpload from '../components/FileUpload';
-import './ToJpg.css';
-
-interface FileUploadType {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  file: File;
-}
+import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { postForm } from '../lib/api';
+import { useSinglePdf } from '../lib/useSinglePdf';
+import { useI18n } from '../i18n';
 
 function ToJpg() {
-  const [files, setFiles] = useState<FileUploadType[]>([]);
+  const { m } = useI18n();
+  const pdf = useSinglePdf({ allPages: false });
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [filename, setFilename] = useState('page.jpg');
 
   const handleConvert = async () => {
-    if (files.length === 0) {
-      setError('Veuillez sélectionner au moins un fichier PDF');
-      return;
-    }
-
+    if (!pdf.file) return;
     setIsProcessing(true);
-    setError(null);
-    setProgress(0);
-
+    pdf.setError(null);
+    setProgress(20);
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file.file);
-      });
-
-      setProgress(30);
-
-      const response = await fetch('/api/to-jpg', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setProgress(70);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Échec de la conversion');
-      }
-
-      const data = await response.json();
+      formData.append('file', pdf.file);
+      formData.append('quality', '85');
+      setProgress(55);
+      const data = await postForm('/api/to-jpg', formData);
       setProgress(100);
-
-      if (data.success) {
-        setDownloadUrl(data.data.downloadUrl);
-      } else {
-        throw new Error(data.error || 'Échec de la conversion');
-      }
-
+      setFilename(data.filename || 'page.jpg');
+      pdf.setDownloadUrl(data.downloadUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la conversion');
+      pdf.setError(err instanceof Error ? err.message : m.toJpg.fail);
       setProgress(0);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleReset = () => {
-    setFiles([]);
-    setDownloadUrl(null);
-    setError(null);
-    setProgress(0);
-  };
+  const isZip = filename.endsWith('.zip');
+
+  if (pdf.downloadUrl) {
+    return (
+      <StudioResult
+        title={m.toJpg.doneTitle}
+        text={isZip ? m.toJpg.doneZip : m.toJpg.doneSingle}
+        downloadUrl={pdf.downloadUrl}
+        downloadName={isZip ? 'pages.zip' : 'page.jpg'}
+        resetLabel={m.toJpg.reset}
+        onReset={pdf.reset}
+      />
+    );
+  }
+
+  if (!pdf.file) {
+    return (
+      <StudioLanding
+        title={m.toJpg.title}
+        subtitle={m.toJpg.subtitle}
+        pickerId={pdf.pickerId}
+        isDragging={pdf.isDragging}
+        isLoading={pdf.isLoading}
+        error={pdf.error}
+        features={m.toJpg.features}
+        onDragOver={() => pdf.setIsDragging(true)}
+        onDragLeave={() => pdf.setIsDragging(false)}
+        onDrop={pdf.onDropFiles}
+        onFiles={(files) => void pdf.loadFile(files)}
+      />
+    );
+  }
 
   return (
-    <div className="to-jpg-page">
-      <div className="to-jpg-container">
-        <div className="breadcrumbs">
-          <Link to="/" className="breadcrumb-link">Accueil</Link>
-          <span className="separator">›</span>
-          <span className="current">PDF en JPG</span>
+    <StudioWorkspace
+      canvas={(
+        <div className="studio-thumbs">
+          <article className="studio-thumb">
+            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
+            <b>{pdf.file.name}</b>
+          </article>
         </div>
-
-        <div className="to-jpg-header">
-          <h1>PDF en JPG</h1>
-          <p>Convertissez vos pages PDF en images JPG haute qualité</p>
-        </div>
-
-        <main className="to-jpg-content">
-          {!downloadUrl ? (
-            <>
-              <FileUpload 
-                multiple={true}
-                onFilesChange={setFiles}
-                maxFiles={10}
-                accept=".pdf"
-              />
-
-              {files.length > 0 && (
-                <div className="to-jpg-actions">
-                  <button
-                    onClick={handleConvert}
-                    disabled={isProcessing}
-                    className="to-jpg-button"
-                  >
-                    {isProcessing ? 'Conversion en cours...' : `Convertir ${files.length} PDF${files.length > 1 ? 's' : ''}`}
-                  </button>
-                </div>
-              )}
-
-              {isProcessing && (
-                <div className="progress-container">
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill" 
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
-                  <p className="progress-text">{progress}% Complété</p>
-                </div>
-              )}
-
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="success-container">
-              <div className="success-icon">🖼️</div>
-              <h2>Conversion réussie !</h2>
-              <p>Vos fichiers PDF ont été convertis en images JPG.</p>
-              <div className="download-actions">
-                <a href={downloadUrl} download="images.zip" className="download-button">
-                  Télécharger les images
-                </a>
-                <button onClick={handleReset} className="reset-button">
-                  Convertir d'autres fichiers
-                </button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
+      )}
+      sidebar={(
+        <StudioSidebarFrame
+          title={m.toJpg.title}
+          tip={m.toJpg.tip}
+          error={pdf.error}
+          progress={progress}
+          isProcessing={isProcessing}
+          actionLabel={isProcessing ? m.toJpg.running : m.toJpg.action}
+          onAction={() => void handleConvert()}
+          disabled={false}
+          onChangeFile={pdf.reset}
+        />
+      )}
+    />
   );
 }
 

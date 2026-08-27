@@ -9,6 +9,7 @@ coverage/
 # Production
 dist/
 build/
+client/dev-dist/
 
 # Misc
 .DS_Store
@@ -35,6 +36,7 @@ lerna-debug.log*
 temp/*
 !temp/.gitkeep
 !temp/README.md
+server/data/
 
 # OS
 Thumbs.db

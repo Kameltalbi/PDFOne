@@ -1,149 +1,124 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import FileUpload from '../components/FileUpload';
-import './Compress.css';
-
-interface FileUploadType {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  file: File;
-}
+import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { formatFileSize, postForm } from '../lib/api';
+import { useSinglePdf } from '../lib/useSinglePdf';
+import { useI18n } from '../i18n';
 
 function Compress() {
-  const [files, setFiles] = useState<FileUploadType[]>([]);
+  const { m, t } = useI18n();
+  const pdf = useSinglePdf({ allPages: false });
+  const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [result, setResult] = useState<{ downloadUrl: string; originalSize?: number; compressedSize?: number } | null>(null);
+
+  const qualities = [
+    { id: 'high' as const, title: m.compress.high, desc: m.compress.highDesc },
+    { id: 'medium' as const, title: m.compress.medium, desc: m.compress.mediumDesc },
+    { id: 'low' as const, title: m.compress.low, desc: m.compress.lowDesc }
+  ];
 
   const handleCompress = async () => {
-    if (files.length === 0) {
-      setError('Veuillez sélectionner au moins un fichier PDF');
-      return;
-    }
-
+    if (!pdf.file) return;
     setIsProcessing(true);
-    setError(null);
-    setProgress(0);
-
+    pdf.setError(null);
+    setProgress(20);
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file.file);
-      });
-
-      setProgress(30);
-
-      const response = await fetch('/api/compress', {
-        method: 'POST',
-        body: formData,
-      });
-
-      setProgress(70);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Échec de la compression');
-      }
-
-      const data = await response.json();
+      formData.append('file', pdf.file);
+      formData.append('quality', quality);
+      setProgress(60);
+      const data = await postForm('/api/compress', formData);
       setProgress(100);
-
-      if (data.success) {
-        setDownloadUrl(data.data.downloadUrl);
-      } else {
-        throw new Error(data.error || 'Échec de la compression');
-      }
-
+      setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la compression');
+      pdf.setError(err instanceof Error ? err.message : m.compress.fail);
       setProgress(0);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleReset = () => {
-    setFiles([]);
-    setDownloadUrl(null);
-    setError(null);
+  const reset = () => {
+    pdf.reset();
+    setResult(null);
     setProgress(0);
+    setQuality('medium');
   };
 
+  const savings = result?.originalSize && result.compressedSize
+    ? Math.max(0, Math.round((1 - result.compressedSize / result.originalSize) * 100))
+    : null;
+
+  if (result) {
+    return (
+      <StudioResult
+        title={m.compress.doneTitle}
+        text={
+          savings !== null && result.originalSize && result.compressedSize
+            ? t(m.compress.savings, { from: formatFileSize(result.originalSize), to: formatFileSize(result.compressedSize), percent: savings })
+            : m.compress.doneGeneric
+        }
+        downloadUrl={result.downloadUrl}
+        downloadName="compresse.pdf"
+        resetLabel={m.compress.reset}
+        onReset={reset}
+      />
+    );
+  }
+
+  if (!pdf.file) {
+    return (
+      <StudioLanding
+        title={m.compress.title}
+        subtitle={m.compress.subtitle}
+        pickerId={pdf.pickerId}
+        isDragging={pdf.isDragging}
+        isLoading={pdf.isLoading}
+        error={pdf.error}
+        features={m.compress.features}
+        onDragOver={() => pdf.setIsDragging(true)}
+        onDragLeave={() => pdf.setIsDragging(false)}
+        onDrop={pdf.onDropFiles}
+        onFiles={(files) => void pdf.loadFile(files)}
+      />
+    );
+  }
+
   return (
-    <div className="compress-page">
-      <div className="compress-container">
-        <div className="breadcrumbs">
-          <Link to="/" className="breadcrumb-link">Accueil</Link>
-          <span className="separator">›</span>
-          <span className="current">Compresser PDF</span>
+    <StudioWorkspace
+      canvas={(
+        <div className="studio-thumbs">
+          <article className="studio-thumb">
+            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
+            <b>{pdf.file.name}</b>
+          </article>
         </div>
-
-        <div className="compress-header">
-          <h1>Compresser PDF</h1>
-          <p>Réduisez la taille de vos fichiers PDF tout en conservant la qualité</p>
-        </div>
-
-        <main className="compress-content">
-          {!downloadUrl ? (
-            <>
-              <FileUpload 
-                multiple={true}
-                onFilesChange={setFiles}
-                maxFiles={10}
-                accept=".pdf"
-              />
-
-              {files.length > 0 && (
-                <div className="compress-actions">
-                  <button
-                    onClick={handleCompress}
-                    disabled={isProcessing}
-                    className="compress-button"
-                  >
-                    {isProcessing ? 'Compression en cours...' : `Compresser ${files.length} PDF${files.length > 1 ? 's' : ''}`}
-                  </button>
-                </div>
-              )}
-
-              {isProcessing && (
-                <div className="progress-container">
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill" 
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
-                  <p className="progress-text">{progress}% Complété</p>
-                </div>
-              )}
-
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="success-container">
-              <div className="success-icon">✓</div>
-              <h2>Compression réussie !</h2>
-              <p>Vos fichiers PDF ont été compressés avec succès.</p>
-              <div className="download-actions">
-                <a href={downloadUrl} download="compressed.pdf" className="download-button">
-                  Télécharger le PDF compressé
-                </a>
-                <button onClick={handleReset} className="reset-button">
-                  Compresser d'autres fichiers
-                </button>
-              </div>
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
+      )}
+      sidebar={(
+        <StudioSidebarFrame
+          title={m.compress.title}
+          tip={m.compress.tip}
+          error={pdf.error}
+          progress={progress}
+          isProcessing={isProcessing}
+          actionLabel={isProcessing ? m.compress.running : m.compress.action}
+          onAction={() => void handleCompress()}
+          disabled={false}
+          onChangeFile={reset}
+        >
+          <div className="studio-modes">
+            {qualities.map((option) => (
+              <button key={option.id} type="button" className={quality === option.id ? 'active' : ''} onClick={() => setQuality(option.id)}>
+                <b>{option.title}</b>
+                <span>{option.desc}</span>
+              </button>
+            ))}
+          </div>
+          {(quality === 'medium' || quality === 'low') && <p className="studio-count">{m.compress.lossyHint}</p>}
+        </StudioSidebarFrame>
+      )}
+    />
   );
 }
 

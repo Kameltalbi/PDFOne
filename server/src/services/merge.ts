@@ -1,42 +1,43 @@
-import { PDFDocument } from 'pdf-lib';
 import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { loadPdf, mapPdfError } from '../utils/pdf.js';
+import { writeTemp } from '../utils/temp.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const tempDir = path.join(__dirname, '../../../temp');
-
-export async function mergePDFs(filePaths: string[]): Promise<string> {
+export async function mergePDFs(
+  filePaths: string[],
+  options: { pageNumbers?: boolean } = {}
+): Promise<{ filepath: string; filename: string; downloadUrl: string }> {
   try {
-    // Create a new PDF document
     const mergedPdf = await PDFDocument.create();
 
-    // Process each PDF file
     for (const filePath of filePaths) {
-      // Read the PDF file
       const pdfBytes = await fs.readFile(filePath);
-      
-      // Load the PDF document
-      const pdf = await PDFDocument.load(pdfBytes);
-      
-      // Copy all pages from the PDF
+      const pdf = await loadPdf(pdfBytes);
       const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      
-      // Add the copied pages to the merged PDF
       copiedPages.forEach((page) => mergedPdf.addPage(page));
     }
 
-    // Save the merged PDF
+    if (options.pageNumbers) {
+      const font = await mergedPdf.embedFont(StandardFonts.Helvetica);
+      const pages = mergedPdf.getPages();
+      pages.forEach((page, index) => {
+        const { width } = page.getSize();
+        const label = `${index + 1} / ${pages.length}`;
+        const size = 10;
+        const textWidth = font.widthOfTextAtSize(label, size);
+        page.drawText(label, {
+          x: (width - textWidth) / 2,
+          y: 14,
+          size,
+          font,
+          color: rgb(0.35, 0.37, 0.42)
+        });
+      });
+    }
+
     const mergedPdfBytes = await mergedPdf.save();
-    
-    // Write to temporary file
-    const outputPath = path.join(tempDir, `merged-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.pdf`);
-    await fs.writeFile(outputPath, mergedPdfBytes);
-    
-    return outputPath;
+    return writeTemp(mergedPdfBytes, 'merged', 'pdf');
   } catch (error) {
-    console.error('Error merging PDFs:', error);
-    throw new Error('Failed to merge PDF files');
+    throw new Error(mapPdfError(error, 'Impossible de fusionner ces PDF.'));
   }
 }

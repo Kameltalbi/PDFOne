@@ -1,0 +1,311 @@
+.tool-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  text-align: left;
+}
+
+.tool-container {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-link {
+  color: #64748b;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  color: #dc2626;
+}
+
+.separator {
+  color: #cbd5e0;
+}
+
+.current {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.tool-header {
+  margin-bottom: 2rem;
+}
+
+.tool-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem;
+}
+
+.tool-header p {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.tool-actions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.tool-button,
+.download-button {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tool-button:hover:not(:disabled),
+.download-button:hover {
+  background: #b91c1c;
+}
+
+.tool-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.progress-container {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #f97316;
+  transition: width 0.3s ease;
+}
+
+.progress-text,
+.error-message,
+.tool-hint {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid #fca5a5;
+  text-align: center;
+}
+
+.success-container {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.success-icon {
+  font-size: 3.5rem;
+  color: #10b981;
+  margin-bottom: 1rem;
+}
+
+.success-container h2 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.success-container p {
+  color: #64748b;
+  margin-bottom: 2rem;
+}
+
+.download-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.reset-button {
+  background: white;
+  color: #2563eb;
+  border: 2px solid #2563eb;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tool-panel,
+.password-section {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.password-section label,
+.tool-panel label {
+  display: block;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.password-input,
+.range-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.password-input:focus,
+.range-input:focus {
+  outline: none;
+  border-color: #dc2626;
+}
+
+.password-fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.quality-options,
+.mode-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.choice-card {
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice-card.active {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.choice-card b {
+  display: block;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.choice-card span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.page-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.page-toolbar button {
+  background: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.85rem;
+}
+
+.page-card {
+  position: relative;
+  padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+}
+
+.page-card.selected {
+  border-color: #dc2626;
+}
+
+.page-card img {
+  width: 100%;
+  display: block;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.page-card small {
+  display: block;
+  margin-top: 0.4rem;
+  text-align: center;
+  color: #475569;
+  font-weight: 600;
+}
+
+.page-check {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+}
+
+.tool-hint {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .download-actions {
+    flex-direction: column;
+  }
+
+  .tool-button,
+  .download-button,
+  .reset-button {
+    width: 100%;
+  }
+}

@@ -1,113 +1,155 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
+import { useI18n } from '../i18n';
+import { useBilling } from '../lib/billing';
 import './Header.css';
 import pdfOneLogo from '../assets/pdfone-logo.png';
 
 function Header() {
+  const { m } = useI18n();
+  const { status, logout, portal } = useBilling();
+  const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  useEffect(() => {
+    setMenuOpen(false);
+    setIsDropdownOpen(false);
+  }, [location.pathname]);
 
-  // Close dropdown when clicking outside
+  useEffect(() => {
+    document.body.classList.toggle('nav-open', menuOpen);
+    if (!menuOpen) return undefined;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        setIsDropdownOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.classList.remove('nav-open');
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setIsDropdownOpen(false);
+  };
+
   const fromPDF = [
-    { name: 'PDF en Word', path: '/pdf-to-word', icon: '📝' },
-    { name: 'PDF en PPTX', path: '/pdf-to-pptx', icon: '📊' },
-    { name: 'PDF en Excel', path: '/pdf-to-excel', icon: '📈' },
-    { name: 'PDF en JPG', path: '/to-jpg', icon: '🖼️' },
-    { name: 'PDF en PNG', path: '/to-png', icon: '🖼️' }
+    { name: m.tools.pdfToWord, path: '/pdf-to-word', icon: 'W' },
+    { name: m.tools.pdfToExcel, path: '/pdf-to-excel', icon: 'X' },
+    { name: m.tools.pdfToPpt, path: '/pdf-to-ppt', icon: 'P' },
+    { name: m.tools.pdfToJpg, path: '/to-jpg', icon: '🖼️' },
+    { name: m.tools.pdfToPng, path: '/to-png', icon: 'PNG' },
+    { name: m.tools.pdfToText, path: '/pdf-to-text', icon: 'TXT' }
   ];
 
   const toPDF = [
-    { name: 'Word en PDF', path: '/word-to-pdf', icon: '📝' },
-    { name: 'PPTX en PDF', path: '/pptx-to-pdf', icon: '📊' },
-    { name: 'Excel en PDF', path: '/excel-to-pdf', icon: '📈' },
-    { name: 'JPG en PDF', path: '/jpg-to-pdf', icon: '🖼️' },
-    { name: 'PNG en PDF', path: '/png-to-pdf', icon: '🖼️' }
+    { name: m.tools.wordToPdf, path: '/word-to-pdf', icon: 'W' },
+    { name: m.tools.excelToPdf, path: '/excel-to-pdf', icon: 'X' },
+    { name: m.tools.pptToPdf, path: '/ppt-to-pdf', icon: 'P' },
+    { name: m.tools.jpgToPdf, path: '/jpg-to-pdf', icon: '🖼️' },
+    { name: m.tools.pngToPdf, path: '/png-to-pdf', icon: '🖼️' },
+    { name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>' }
   ];
 
   return (
     <header className="header">
       <div className="header-container">
-        <Link to="/" className="logo">
-          <img src={pdfOneLogo} alt="PDFOne" className="logo-image" />
+        <Link to="/" className="logo" onClick={closeMenu}>
+          <img src={pdfOneLogo} alt={m.brand} className="logo-image" />
         </Link>
-        
-        <nav className="nav">
+
+        <button
+          type="button"
+          className={`nav-toggle${menuOpen ? ' open' : ''}`}
+          aria-expanded={menuOpen}
+          aria-controls="site-nav"
+          aria-label={menuOpen ? m.common.closeMenu : m.common.menu}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span /><span /><span />
+        </button>
+
+        {menuOpen && <button type="button" className="nav-backdrop" aria-label={m.common.closeMenu} onClick={closeMenu} />}
+
+        <nav id="site-nav" className={`nav${menuOpen ? ' open' : ''}`}>
           <div className="nav-dropdown" ref={dropdownRef}>
-            <button 
-              className="nav-link dropdown-toggle"
-              onClick={toggleDropdown}
-            >
-              Convertir PDF
+            <button type="button" className="nav-link dropdown-toggle" onClick={() => setIsDropdownOpen((open) => !open)}>
+              {m.nav.convert}
               <span className="dropdown-arrow">▼</span>
             </button>
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 <div className="dropdown-section">
-                  <h4 className="dropdown-section-title">Convertir depuis un PDF</h4>
+                  <h4 className="dropdown-section-title">{m.nav.fromPdf}</h4>
                   {fromPDF.map((item) => (
-                    <Link 
-                      key={item.path} 
-                      to={item.path} 
-                      className="dropdown-item"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
+                    <Link key={item.path} to={item.path} className="dropdown-item" onClick={closeMenu}>
                       <span className="dropdown-item-icon">{item.icon}</span>
                       {item.name}
                     </Link>
                   ))}
                 </div>
                 <div className="dropdown-section">
-                  <h4 className="dropdown-section-title">Convertir en PDF</h4>
+                  <h4 className="dropdown-section-title">{m.nav.toPdf}</h4>
                   {toPDF.map((item) => (
-                    <Link 
-                      key={item.path} 
-                      to={item.path} 
-                      className="dropdown-item"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
+                    <Link key={item.path} to={item.path} className="dropdown-item" onClick={closeMenu}>
                       <span className="dropdown-item-icon">{item.icon}</span>
                       {item.name}
                     </Link>
                   ))}
-                  <Link 
-                    to="/tools" 
-                    className="dropdown-item see-all"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
+                  <Link to="/tools" className="dropdown-item see-all" onClick={closeMenu}>
                     <span className="dropdown-item-icon">📋</span>
-                    Voir tout
+                    {m.common.seeAll}
                   </Link>
                 </div>
               </div>
             )}
           </div>
-          <Link to="/tools" className="nav-link">Tous les outils</Link>
-          <Link to="/edit-pdf" className="nav-link">Modifier PDF</Link>
-          <Link to="/merge" className="nav-link">Fusionner PDF</Link>
-          <Link to="/compress" className="nav-link">Compresser</Link>
-          <Link to="/protect" className="nav-link">Protéger</Link>
+          <NavLink to="/tools" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.allTools}</NavLink>
+          <NavLink to="/merge" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.merge}</NavLink>
+          <NavLink to="/compress" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.compress}</NavLink>
+          <NavLink to="/edit-pdf" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.edit}</NavLink>
+          <div className="nav-mobile-actions">
+            {status.paid ? (
+              <>
+                {status.canManage && (
+                  <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
+                )}
+                <button type="button" className="header-button signup" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
+              </>
+            ) : (
+              <Link to="/pricing" className="header-button signup" onClick={closeMenu}>{m.common.signup}</Link>
+            )}
+          </div>
         </nav>
 
         <div className="header-actions">
-          <button className="header-button login">Connexion</button>
-          <button className="header-button signup">Inscription</button>
+          {status.paid ? (
+            <>
+              <span className="header-plan">{m.pricing.accountPro}</span>
+              {status.canManage && (
+                <button type="button" className="header-button login" onClick={() => void portal()}>{m.pricing.manage}</button>
+              )}
+              <button type="button" className="header-button signup" onClick={() => void logout()}>{m.pricing.logout}</button>
+            </>
+          ) : (
+            <Link to="/pricing" className="header-button signup">{m.common.signup}</Link>
+          )}
         </div>
       </div>
     </header>

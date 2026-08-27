@@ -5,39 +5,69 @@ import fs from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Ensure temp directory exists
 const tempDir = path.join(__dirname, '../../../temp');
 await fs.mkdir(tempDir, { recursive: true });
 
-// Configure multer storage
+const PDF_MIME = new Set(['application/pdf']);
+const IMAGE_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
+const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, tempDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.random().toString(36).substring(2, 9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
+  destination: (_req, _file, cb) => cb(null, tempDir),
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const ext = path.extname(file.originalname || '').toLowerCase() || '.bin';
+    cb(null, `${uniqueSuffix}${ext}`);
   }
 });
 
-// File filter
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  if (file.mimetype === 'application/pdf') {
-    cb(null, true);
-  } else {
-    cb(new Error('Only PDF files are allowed'));
-  }
-};
+function extensionOf(file: Express.Multer.File): string {
+  return path.extname(file.originalname || '').toLowerCase();
+}
 
-// Configure multer
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE || '104857600'), // 100MB default
-    files: parseInt(process.env.MAX_FILES || '10')
-  }
-});
+function createUploader(kind: 'pdf' | 'image') {
+  return multer({
+    storage,
+    fileFilter: (_req, file, cb) => {
+      if (kind === 'pdf') {
+        if (PDF_MIME.has(file.mimetype) || extensionOf(file) === '.pdf') {
+          cb(null, true);
+          return;
+        }
+        cb(new Error('Seuls les fichiers PDF sont acceptés.'));
+        return;
+      }
 
-export { upload };
+      if (IMAGE_MIME.has(file.mimetype) || IMAGE_EXT.has(extensionOf(file))) {
+        cb(null, true);
+        return;
+      }
+      cb(new Error('Seules les images JPG, PNG ou WebP sont acceptées.'));
+    },
+    limits: {
+      fileSize: parseInt(process.env.MAX_FILE_SIZE || '104857600', 10),
+      files: parseInt(process.env.MAX_FILES || '10', 10)
+    }
+  });
+}
+
+export const upload = createUploader('pdf');
+export const uploadImages = createUploader('image');
+
+export function uploadExtensions(extensions: string[], message: string) {
+  const allowed = new Set(extensions.map((value) => value.toLowerCase()));
+  return multer({
+    storage,
+    fileFilter: (_req, file, cb) => {
+      if (allowed.has(extensionOf(file))) {
+        cb(null, true);
+        return;
+      }
+      cb(new Error(message));
+    },
+    limits: {
+      fileSize: parseInt(process.env.MAX_FILE_SIZE || '104857600', 10),
+      files: 1
+    }
+  });
+}
