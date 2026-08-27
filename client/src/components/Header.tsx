@@ -70,7 +70,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo" onClick={closeMenu}>
-          <img src="/one2pdf-logo.png" alt={m.brand} className="logo-image" />
+          <img src="/one2pdf-logo.png?v=2" alt={m.brand} className="logo-image" />
         </Link>
 
         <button

@@ -2,8 +2,8 @@ import type { Messages } from '../types';
 import { en } from './en';
 
 export const de: Messages = {
-  htmlTitle: 'PDFOne — PDF-Werkzeuge',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — PDF-Werkzeuge',
+  brand: 'One2PDF',
   common: {
     home: 'Start',
     tools: 'Werkzeuge',
@@ -151,8 +151,8 @@ export const de: Messages = {
     trustInstall: 'Keine Installation',
     trustSize: 'Bis zu 100 MB',
     trustDelete: 'Dateien werden automatisch gelöscht',
-    previewAria: 'Vorschau des PDFOne-Editors',
-    heroAlt: 'Berufstätige verwendet PDFOne zum Zusammenführen von PDFs',
+    previewAria: 'Vorschau des One2PDF-Editors',
+    heroAlt: 'Berufstätige verwendet One2PDF zum Zusammenführen von PDFs',
     cardSecure: 'Dokument gesichert',
     cardSecureSmall: 'Geschützte Verarbeitung',
     cardFast: 'In Sekunden bereit',
@@ -180,10 +180,10 @@ export const de: Messages = {
     value4Text: 'Getreue Exporte, bereit für den Alltag.',
     ctaLabel: 'BEREIT LOSZULEGEN?',
     ctaTitle: 'Ihr nächstes PDF ist schon einfacher.',
-    ctaText: 'Entdecken Sie alle PDFOne-Werkzeuge und kommen Sie ohne Zeitverlust voran.',
+    ctaText: 'Entdecken Sie alle One2PDF-Werkzeuge und kommen Sie ohne Zeitverlust voran.',
     ctaButton: 'Werkzeuge erkunden',
     footerTagline: 'Der einfache, professionelle PDF-Werkzeugkasten.',
-    copyright: '© 2026 PDFOne. Alle Rechte vorbehalten.',
+    copyright: '© 2026 One2PDF. Alle Rechte vorbehalten.',
     filesDeleted: 'Ihre Dateien werden nach der Verarbeitung automatisch gelöscht.',
     toolEditDesc: 'Text, Bilder, Signatur und Anmerkungen.',
     toolMergeDesc: 'Mehrere PDFs in der richtigen Reihenfolge verbinden.',

@@ -53,8 +53,8 @@ function getSigningP12(): Buffer {
   cert.validity.notAfter = new Date();
   cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 3);
   const attrs = [
-    { name: 'commonName', value: 'PDFOne Document Signing' },
-    { name: 'organizationName', value: 'PDFOne' },
+    { name: 'commonName', value: 'One2PDF Document Signing' },
+    { name: 'organizationName', value: 'One2PDF' },
     { name: 'countryName', value: 'FR' }
   ];
   cert.setSubject(attrs);
@@ -187,13 +187,13 @@ export async function signPdf(
     pdflibAddPlaceholder({
       pdfPage: widgetPage,
       reason: reason || 'Digital signature',
-      contactInfo: 'PDFOne',
+      contactInfo: 'One2PDF',
       name,
-      location: 'PDFOne',
+      location: 'One2PDF',
       signingTime: signedAt,
       signatureLength: 16384,
       widgetRect,
-      appName: 'PDFOne'
+      appName: 'One2PDF'
     });
 
     const withPlaceholder = Buffer.from(await source.save({ useObjectStreams: false }));

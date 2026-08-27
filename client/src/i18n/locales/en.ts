@@ -1,8 +1,8 @@
 import type { Messages } from '../types';
 
 export const en: Messages = {
-  htmlTitle: 'PDFOne — PDF tools',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — PDF tools',
+  brand: 'One2PDF',
   common: {
     home: 'Home',
     tools: 'Tools',
@@ -149,8 +149,8 @@ export const en: Messages = {
     trustInstall: 'No installation',
     trustSize: 'Up to 100 MB',
     trustDelete: 'Files deleted automatically',
-    previewAria: 'PDFOne editor preview',
-    heroAlt: 'Professional using PDFOne to merge PDFs',
+    previewAria: 'One2PDF editor preview',
+    heroAlt: 'Professional using One2PDF to merge PDFs',
     cardSecure: 'Secure document',
     cardSecureSmall: 'Protected processing',
     cardFast: 'Ready in seconds',
@@ -178,10 +178,10 @@ export const en: Messages = {
     value4Text: 'Faithful exports, ready for everyday use.',
     ctaLabel: 'READY TO START?',
     ctaTitle: 'Your next PDF is already simpler.',
-    ctaText: 'Explore every PDFOne tool and move forward without wasting time.',
+    ctaText: 'Explore every One2PDF tool and move forward without wasting time.',
     ctaButton: 'Explore the tools',
     footerTagline: 'The simple, professional PDF toolkit.',
-    copyright: '© 2026 PDFOne. All rights reserved.',
+    copyright: '© 2026 One2PDF. All rights reserved.',
     filesDeleted: 'Your files are deleted automatically after processing.',
     toolEditDesc: 'Text, images, signature and annotations.',
     toolMergeDesc: 'Combine several PDFs in the right order.',

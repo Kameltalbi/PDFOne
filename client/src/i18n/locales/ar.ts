@@ -2,8 +2,8 @@ import type { Messages } from '../types';
 import { en } from './en';
 
 export const ar: Messages = {
-  htmlTitle: 'PDFOne — أدوات PDF',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — أدوات PDF',
+  brand: 'One2PDF',
   common: {
     home: 'الرئيسية',
     tools: 'الأدوات',
@@ -150,8 +150,8 @@ export const ar: Messages = {
     trustInstall: 'بدون تثبيت',
     trustSize: 'حتى 100 ميغابايت',
     trustDelete: 'تُحذف الملفات تلقائيًا',
-    previewAria: 'معاينة محرر PDFOne',
-    heroAlt: 'محترفة تستخدم PDFOne لدمج ملفات PDF',
+    previewAria: 'معاينة محرر One2PDF',
+    heroAlt: 'محترفة تستخدم One2PDF لدمج ملفات PDF',
     cardSecure: 'مستند آمن',
     cardSecureSmall: 'معالجة محمية',
     cardFast: 'جاهز في ثوانٍ',
@@ -179,10 +179,10 @@ export const ar: Messages = {
     value4Text: 'تصدير دقيق وجاهز لاستخدامك اليومي.',
     ctaLabel: 'هل أنت مستعد للبدء؟',
     ctaTitle: 'ملف PDF التالي أصبح أبسط.',
-    ctaText: 'اكتشف كل أدوات PDFOne وتقدّم دون إضاعة الوقت.',
+    ctaText: 'اكتشف كل أدوات One2PDF وتقدّم دون إضاعة الوقت.',
     ctaButton: 'استكشف الأدوات',
     footerTagline: 'صندوق أدوات PDF البسيط والاحترافي.',
-    copyright: '© 2026 PDFOne. جميع الحقوق محفوظة.',
+    copyright: '© 2026 One2PDF. جميع الحقوق محفوظة.',
     filesDeleted: 'تُحذف ملفاتك تلقائيًا بعد المعالجة.',
     toolEditDesc: 'نص وصور وتوقيع وتعليقات.',
     toolMergeDesc: 'اجمع عدة ملفات PDF بالترتيب المناسب.',

@@ -2,8 +2,8 @@ import type { Messages } from '../types';
 import { en } from './en';
 
 export const tr: Messages = {
-  htmlTitle: 'PDFOne — PDF araçları',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — PDF araçları',
+  brand: 'One2PDF',
   common: {
     home: 'Ana sayfa',
     tools: 'Araçlar',
@@ -150,8 +150,8 @@ export const tr: Messages = {
     trustInstall: 'Kurulum yok',
     trustSize: '100 MB’ye kadar',
     trustDelete: 'Dosyalar otomatik silinir',
-    previewAria: 'PDFOne düzenleyici önizlemesi',
-    heroAlt: 'PDFOne ile PDF birleştiren bir profesyonel',
+    previewAria: 'One2PDF düzenleyici önizlemesi',
+    heroAlt: 'One2PDF ile PDF birleştiren bir profesyonel',
     cardSecure: 'Güvenli belge',
     cardSecureSmall: 'Korumalı işleme',
     cardFast: 'Saniyeler içinde hazır',
@@ -179,10 +179,10 @@ export const tr: Messages = {
     value4Text: 'Günlük kullanımınıza hazır, sadık dışa aktarımlar.',
     ctaLabel: 'BAŞLAMAYA HAZIR MISINIZ?',
     ctaTitle: 'Bir sonraki PDF’iniz şimdiden daha kolay.',
-    ctaText: 'PDFOne’ın tüm araçlarını keşfedin ve zaman kaybetmeden ilerleyin.',
+    ctaText: 'One2PDF’ın tüm araçlarını keşfedin ve zaman kaybetmeden ilerleyin.',
     ctaButton: 'Araçları keşfedin',
     footerTagline: 'Basit ve profesyonel PDF araç kutusu.',
-    copyright: '© 2026 PDFOne. Tüm hakları saklıdır.',
+    copyright: '© 2026 One2PDF. Tüm hakları saklıdır.',
     filesDeleted: 'Dosyalarınız işlemden sonra otomatik olarak silinir.',
     toolEditDesc: 'Metin, görseller, imza ve açıklamalar.',
     toolMergeDesc: 'Birden fazla PDF’i doğru sırada birleştirin.',

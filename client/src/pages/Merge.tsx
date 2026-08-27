@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { postForm } from '../lib/api';
 import { inspectPdfFile } from '../lib/pdfPreview';
 import { useI18n } from '../i18n';
-import pdfOneLogo from '../assets/pdfone-logo.png';
 import './Merge.css';
 
 type MergeItem = {
@@ -184,7 +183,7 @@ function Merge() {
       <div className="merge-shell-bar">
         <button type="button" className="merge-shell-back" onClick={reset} aria-label={m.merge.back}>←</button>
         <Link to="/" className="merge-shell-logo">
-          <img src={pdfOneLogo} alt={m.brand} />
+          <img src="/one2pdf-logo.png?v=2" alt={m.brand} />
         </Link>
       </div>
 

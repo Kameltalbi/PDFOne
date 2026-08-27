@@ -9,7 +9,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="site-footer-top">
         <Link to="/" className="site-footer-logo">
-          <img src="/one2pdf-logo.png" alt={m.brand} />
+          <img src="/one2pdf-logo.png?v=2" alt={m.brand} />
         </Link>
         <p>{m.home.footerTagline}</p>
         <nav>

@@ -15,8 +15,8 @@ export default defineConfig({
         'pwa-maskable-512x512.png',
       ],
       manifest: {
-        name: 'PDFOne',
-        short_name: 'PDFOne',
+        name: 'One2PDF',
+        short_name: 'One2PDF',
         description: 'Outils PDF en ligne — fusionner, compresser, convertir, protéger et éditer.',
         theme_color: '#dc2626',
         background_color: '#ffffff',

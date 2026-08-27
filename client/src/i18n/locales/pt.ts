@@ -2,8 +2,8 @@ import type { Messages } from '../types';
 import { en } from './en';
 
 export const pt: Messages = {
-  htmlTitle: 'PDFOne — Ferramentas PDF',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — Ferramentas PDF',
+  brand: 'One2PDF',
   common: {
     home: 'Início',
     tools: 'Ferramentas',
@@ -150,8 +150,8 @@ export const pt: Messages = {
     trustInstall: 'Sem instalação',
     trustSize: 'Até 100 MB',
     trustDelete: 'Ficheiros eliminados automaticamente',
-    previewAria: 'Pré-visualização do editor PDFOne',
-    heroAlt: 'Profissional a utilizar o PDFOne para juntar PDF',
+    previewAria: 'Pré-visualização do editor One2PDF',
+    heroAlt: 'Profissional a utilizar o One2PDF para juntar PDF',
     cardSecure: 'Documento seguro',
     cardSecureSmall: 'Processamento protegido',
     cardFast: 'Pronto em poucos segundos',
@@ -179,10 +179,10 @@ export const pt: Messages = {
     value4Text: 'Exportações fiéis, prontas para o uso quotidiano.',
     ctaLabel: 'PRONTO A COMEÇAR?',
     ctaTitle: 'O seu próximo PDF já é mais simples.',
-    ctaText: 'Descubra todas as ferramentas PDFOne e avance sem perder tempo.',
+    ctaText: 'Descubra todas as ferramentas One2PDF e avance sem perder tempo.',
     ctaButton: 'Explorar as ferramentas',
     footerTagline: 'A caixa de ferramentas PDF simples e profissional.',
-    copyright: '© 2026 PDFOne. Todos os direitos reservados.',
+    copyright: '© 2026 One2PDF. Todos os direitos reservados.',
     filesDeleted: 'Os seus ficheiros são eliminados automaticamente após o processamento.',
     toolEditDesc: 'Texto, imagens, assinatura e anotações.',
     toolMergeDesc: 'Reúna vários PDF na ordem certa.',

@@ -21,7 +21,10 @@ function Home() {
         <div className="pro-hero-inner">
           <div className="pro-hero-copy">
             <span className="pro-eyebrow"><i /> {m.home.eyebrow}</span>
-            <h1>{m.home.title}<br /><span>{m.home.titleAccent}</span></h1>
+            <h1>
+              <span className="pro-hero-title-main">{m.home.title}</span>
+              <span className="pro-hero-title-accent">{m.home.titleAccent}</span>
+            </h1>
             <p>{m.home.subtitle}</p>
             <div className="pro-hero-actions">
               <Link to="/edit-pdf" className="pro-btn primary">{m.home.ctaEdit} <span>→</span></Link>

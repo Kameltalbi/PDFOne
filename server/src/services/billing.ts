@@ -12,9 +12,9 @@ const PLAN_AMOUNTS: Record<PaidPlan, number> = {
 };
 
 const PLAN_NAMES: Record<PaidPlan, Record<string, string>> = {
-  week: { fr: 'PDFOne — Pass 7 jours', en: 'PDFOne — 7-day pass' },
-  year: { fr: 'PDFOne — Illimité annuel', en: 'PDFOne — Annual unlimited' },
-  life: { fr: 'PDFOne — Pass à vie', en: 'PDFOne — Lifetime pass' }
+  week: { fr: 'One2PDF — Pass 7 jours', en: 'One2PDF — 7-day pass' },
+  year: { fr: 'One2PDF — Illimité annuel', en: 'One2PDF — Annual unlimited' },
+  life: { fr: 'One2PDF — Pass à vie', en: 'One2PDF — Lifetime pass' }
 };
 
 export function isPaidPlan(value: unknown): value is PaidPlan {

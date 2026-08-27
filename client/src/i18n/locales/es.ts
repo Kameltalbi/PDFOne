@@ -2,8 +2,8 @@ import type { Messages } from '../types';
 import { en } from './en';
 
 export const es: Messages = {
-  htmlTitle: 'PDFOne — Herramientas PDF',
-  brand: 'PDFOne',
+  htmlTitle: 'One2PDF — Herramientas PDF',
+  brand: 'One2PDF',
   common: {
     home: 'Inicio',
     tools: 'Herramientas',
@@ -150,8 +150,8 @@ export const es: Messages = {
     trustInstall: 'Sin instalación',
     trustSize: 'Hasta 100 MB',
     trustDelete: 'Archivos eliminados automáticamente',
-    previewAria: 'Vista previa del editor PDFOne',
-    heroAlt: 'Profesional usando PDFOne para combinar PDF',
+    previewAria: 'Vista previa del editor One2PDF',
+    heroAlt: 'Profesional usando One2PDF para combinar PDF',
     cardSecure: 'Documento seguro',
     cardSecureSmall: 'Procesamiento protegido',
     cardFast: 'Listo en unos segundos',
@@ -179,10 +179,10 @@ export const es: Messages = {
     value4Text: 'Exportaciones fieles, listas para su uso cotidiano.',
     ctaLabel: '¿LISTO PARA EMPEZAR?',
     ctaTitle: 'Su próximo PDF ya es más sencillo.',
-    ctaText: 'Descubra todas las herramientas PDFOne y avance sin perder tiempo.',
+    ctaText: 'Descubra todas las herramientas One2PDF y avance sin perder tiempo.',
     ctaButton: 'Explorar las herramientas',
     footerTagline: 'La caja de herramientas PDF simple y profesional.',
-    copyright: '© 2026 PDFOne. Todos los derechos reservados.',
+    copyright: '© 2026 One2PDF. Todos los derechos reservados.',
     filesDeleted: 'Sus archivos se eliminan automáticamente después del procesamiento.',
     toolEditDesc: 'Texto, imágenes, firma y anotaciones.',
     toolMergeDesc: 'Reúna varios PDF en el orden correcto.',
