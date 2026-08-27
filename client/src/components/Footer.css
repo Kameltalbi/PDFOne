@@ -20,8 +20,10 @@
 
 .site-footer-logo img {
   display: block;
-  width: 145px;
-  height: auto;
+  width: auto;
+  height: 40px;
+  max-width: min(220px, 80vw);
+  object-fit: contain;
 }
 
 .site-footer-top p {

@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useI18n } from '../i18n';
 import { useBilling } from '../lib/billing';
 import './Header.css';
-import pdfOneLogo from '../assets/pdfone-logo.png';
 
 function Header() {
   const { m } = useI18n();
@@ -71,7 +70,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo" onClick={closeMenu}>
-          <img src={pdfOneLogo} alt={m.brand} className="logo-image" />
+          <img src="/one2pdf-logo.png" alt={m.brand} className="logo-image" />
         </Link>
 
         <button

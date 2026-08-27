@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
-import pdfOneLogo from '../assets/pdfone-logo.png';
 import './Footer.css';
 
 function Footer() {
@@ -10,7 +9,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="site-footer-top">
         <Link to="/" className="site-footer-logo">
-          <img src={pdfOneLogo} alt={m.brand} />
+          <img src="/one2pdf-logo.png" alt={m.brand} />
         </Link>
         <p>{m.home.footerTagline}</p>
         <nav>

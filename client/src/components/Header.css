@@ -28,11 +28,10 @@
 
 .logo-image {
   display: block;
-  width: min(168px, 42vw);
-  height: auto;
-  max-height: 63px;
+  width: auto;
+  height: 42px;
+  max-width: min(240px, 58vw);
   object-fit: contain;
-  border-radius: 8px;
 }
 
 .nav {
@@ -352,7 +351,7 @@
 
 @media (max-width: 480px) {
   .logo-image {
-    max-height: 42px;
+    height: 32px;
   }
 }
 
