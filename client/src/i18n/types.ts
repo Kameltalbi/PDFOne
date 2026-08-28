@@ -110,6 +110,16 @@ export type Messages = {
     successTitle: string;
     successText: string;
     successCta: string;
+    successManage: string;
+    successVerifying: string;
+    successSeoTitle: string;
+    successSeoDescription: string;
+    successBenefits: string[];
+    successPeriodWeek: string;
+    successPeriodMonth: string;
+    successPeriodYear: string;
+    successUnverified: string;
+    successFailTitle: string;
     activeAccess: string;
     manage: string;
     logout: string;

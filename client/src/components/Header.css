@@ -195,6 +195,19 @@
   background: #b91c1c;
 }
 
+.header-button.logout {
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.84rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.header-button.logout:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
 .header-plan {
   display: inline-flex;
   align-items: center;

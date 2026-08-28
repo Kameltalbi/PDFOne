@@ -129,7 +129,7 @@ function Header() {
                 {status.canManage && (
                   <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
                 )}
-                <button type="button" className="header-button signup" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
+                <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
               </>
             ) : (
               <Link to="/pricing" className="header-button signup" onClick={closeMenu}>{m.common.signup}</Link>
@@ -144,7 +144,7 @@ function Header() {
               {status.canManage && (
                 <button type="button" className="header-button login" onClick={() => void portal()}>{m.pricing.manage}</button>
               )}
-              <button type="button" className="header-button signup" onClick={() => void logout()}>{m.pricing.logout}</button>
+              <button type="button" className="header-button logout" onClick={() => void logout()}>{m.pricing.logout}</button>
             </>
           ) : (
             <Link to="/pricing" className="header-button signup">{m.common.signup}</Link>
