@@ -28,7 +28,11 @@ export const en: Messages = {
     imagesOnly: 'Only JPG, PNG or WebP images are allowed.',
     maxFiles: 'Maximum {count} files.',
     quotaReached: 'The free plan is limited to 3 documents per day. Upgrade to continue.',
-    adLabel: 'Advertisement'
+    adLabel: 'Advertisement',
+    doneShort: 'Done!',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    deleteResult: 'Delete'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
@@ -43,64 +47,108 @@ export const en: Messages = {
     protect: 'Protect'
   },
   pricing: {
-    title: 'Unlock the full potential of {brand}',
-    subtitle: 'Work faster, without limits, at the best price.',
-    popular: 'Most popular',
-    freeName: 'Free plan',
+    eyebrow: 'Simple pricing · No surprises',
+    seoTitle: 'One2PDF pricing: free, 7-day pass, Pro',
+    seoDescription: 'Free plan, $1.99 7-day pass with no auto-renewal, Pro monthly $3.99 or yearly $39.90. Secure checkout with Stripe.',
+    title: 'Choose how you work: free, 7 days, or Pro.',
+    subtitle: 'No hidden commitment. The 7-day pass stops on its own. Pro can be canceled anytime. Payments are secured by Stripe.',
+    popular: 'Smartest pick',
+    discover: 'To try it out',
+    urgent: 'Need it now',
+    flexible: 'Flexible',
+    bestValue: 'Best value',
+    freeName: 'Free',
     freePrice: '$0',
-    freePeriod: 'Always free',
+    freePeriod: '/ month',
+    freePitch: 'Try every core tool — no credit card.',
+    freeNote: 'Large files, an ad-free experience, and batch processing are on paid plans.',
     freeIncludes: [
-      'Access to all core tools',
+      'All core tools',
       '3 documents per day',
-      'Files up to 50 MB',
-      'Non-intrusive targeted ads',
-      'Standard speed'
+      'Files up to 20 MB',
+      'Light, non-blocking ads',
+      'Files processed, then deleted automatically'
     ],
     freeCta: 'Continue for free',
+    freeMicro: 'No card required.',
+    weekName: '7-day pass',
+    weekTag: 'One payment, no subscription',
+    weekPrice: '$1.99',
+    weekPeriod: 'once',
+    weekPitch: 'A file due today? Full Pro for 7 days, then it stops — no follow-up charge.',
+    weekIncludes: [
+      'One payment: $1.99, billed once',
+      'Never auto-renews',
+      'No ads for 7 days',
+      'No file size limit for 7 days',
+      'Full Pro access for the duration of the pass'
+    ],
+    weekCta: 'Unlock 7 days — $1.99',
+    weekMicro: 'It stops on its own. Nothing to cancel.',
     monthName: 'Pro monthly',
-    monthTag: 'Freelancers and mobile professionals',
-    monthPrice: '$5.99',
+    monthTag: 'Freelancers and variable volume',
+    monthPrice: '$3.99',
     monthPeriod: '/ month',
+    monthPitch: 'The flexible plan for independents: you stay in control, month after month.',
     monthIncludes: [
-      'No file size limit',
       'No ads',
+      'No file size limit',
       'Batch processing',
-      'Highest server priority'
+      'Cancel in one click, anytime'
     ],
-    monthCta: 'Go Pro',
+    monthCta: 'Choose Pro monthly',
+    monthMicro: 'No lock-in. Cancel whenever you want.',
     yearName: 'Pro annual',
-    yearPrice: '$49.00',
+    yearPrice: '$39.90',
     yearPeriod: '/ year',
-    yearEquiv: 'about $4.08 / month — roughly 32% off',
+    yearEquiv: 'that’s $3.32 / month — 2 months free vs monthly',
+    yearPitch: 'You come back every week? This is the lowest price for the exact same Pro access.',
     yearIncludes: [
-      'Everything in Pro',
-      'Save about 32% vs monthly',
-      'Priority email support'
+      'Everything in Pro: no ads, unlimited files, batch processing',
+      'Pay for 10 months, get 12',
+      'One payment a year — no monthly surprise',
+      'Cancel anytime: you keep Pro until the paid period ends'
     ],
-    yearBadge: 'Most popular',
-    yearCta: 'Choose annual',
-    businessName: 'Business / Team',
-    businessTag: 'Up to 5 users',
-    businessPrice: '$19.99',
-    businessPeriod: '/ month',
-    businessNote: 'Small businesses and firms',
-    businessIncludes: [
-      'Centralized license management',
-      'Group billing',
-      'Stronger privacy and traceability'
+    yearBadge: 'Best value',
+    yearCta: 'Save with annual',
+    yearMicro: 'Best monthly rate. Same Pro power.',
+    trust: '100% secure payment via Stripe (cards, Apple Pay, Google Pay). One2PDF never stores your card number.',
+    faqTitle: 'Pricing FAQ',
+    faq: [
+      {
+        question: 'Does the 7-day pass renew automatically?',
+        answer: 'No. It is a one-time $1.99 payment. After 7 days, Pro access stops on its own. No further charge, nothing to cancel. If you still need it, buy another pass or switch to Pro.'
+      },
+      {
+        question: 'Are my payments secure?',
+        answer: 'Yes. All payments go through Stripe, the same processor used by thousands of companies worldwide. One2PDF never sees or stores your card number. You can pay by card, Apple Pay, or Google Pay.'
+      },
+      {
+        question: 'Can I stop Pro whenever I want?',
+        answer: 'Yes. Monthly ($3.99) and annual ($39.90) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to the Free plan: 3 documents per day, files up to 20 MB, light ads.'
+      }
     ],
-    businessCta: 'Choose Business',
-    trust: '100% secure payment via Stripe / Apple Pay / Google Pay. Easy one-click cancellation for the annual plan.',
     paying: 'Redirecting to checkout…',
     payFail: 'Unable to start checkout.',
     canceled: 'Payment canceled. You can try again whenever you want.',
     successTitle: 'Payment confirmed',
-    successText: 'Your Pro access is active. You can use all tools without the daily limit.',
+    successText: 'Your access is active. You can use the tools without Free plan limits.',
     successCta: 'Open the tools',
     activeAccess: 'Pro access is already active on this device.',
     manage: 'Manage subscription',
     logout: 'Log out',
     accountPro: 'Pro'
+  },
+  upgrade: {
+    kicker: 'File too large',
+    title: 'This file exceeds the free limit',
+    text: '“{name}” is {size}. The free plan accepts up to {limit} — the file was not uploaded. Unlock unlimited file size:',
+    limit: '20 MB',
+    dismiss: 'Close and choose a smaller file',
+    batchKicker: 'Batch processing',
+    batchTitle: 'Batch is a Pro feature',
+    batchText: 'You selected {count} files at once. On the free plan, add one file at a time — nothing was uploaded. A 7-day pass or Pro unlocks batch processing.',
+    batchDismiss: 'Close and add files one by one'
   },
   tools: {
     edit: 'Edit PDF',
@@ -155,7 +203,7 @@ export const en: Messages = {
     ctaEdit: 'Edit a PDF',
     ctaTools: 'Browse all tools',
     trustInstall: 'No installation',
-    trustSize: '50 MB on free',
+    trustSize: '20 MB on free',
     trustDelete: 'Files deleted automatically',
     previewAria: 'One2PDF editor preview',
     heroAlt: 'Professional using One2PDF to merge PDFs',
@@ -787,7 +835,7 @@ export const en: Messages = {
     browse: 'browse',
     hintPdf: 'PDF files',
     hintImages: 'JPG, PNG or WebP',
-    hintMax: '50 MB on free · up to {count} files',
+    hintMax: '20 MB on free · up to {count} files',
     listTitle: '{count} file(s) — drag to reorder',
     up: 'Move up',
     down: 'Move down',
@@ -806,7 +854,7 @@ export const en: Messages = {
     feat3Title: 'Secure processing',
     feat3Text: 'The temporary document is deleted from the server after export.',
     needPdf: 'Please select a PDF file.',
-    tooLarge: 'The file exceeds the 50 MB free-plan limit.',
+    tooLarge: 'The file exceeds the 20 MB free-plan limit.',
     cannotOpen: 'This PDF cannot be opened or is protected.',
     exportFail: 'Export failed',
     generateFail: 'Unable to generate the PDF. Check that the server is running.',
@@ -883,6 +931,6 @@ export const en: Messages = {
     contactTitle: 'Contact',
     contactIntro: 'Questions, incidents or Pro support requests? Write to us. We reply in English and French.',
     contactEmail: 'support@one2pdf.com',
-    contactPriority: 'Annual Pro and Business subscribers get priority email support.'
+    contactPriority: 'Annual Pro subscribers get priority email support.'
   }
 };

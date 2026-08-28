@@ -29,7 +29,11 @@ export const tr: Messages = {
     imagesOnly: 'Yalnızca JPG, PNG veya WebP görselleri kabul edilir.',
     maxFiles: 'En fazla {count} dosya.',
     quotaReached: 'Ücretsiz plan günde 3 belge ile sınırlıdır. Devam etmek için Pro’ya geçin.',
-    adLabel: 'Reklam'
+    adLabel: 'Reklam',
+    doneShort: 'Done!',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    deleteResult: 'Delete'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
@@ -43,66 +47,8 @@ export const tr: Messages = {
     compress: 'Sıkıştır',
     protect: 'Koru'
   },
-  pricing: {
-    title: '{brand} potansiyelinin tamamını açın',
-    subtitle: 'Daha hızlı çalışın, sınır olmadan ve en iyi fiyatla.',
-    popular: 'En popüler',
-    freeName: 'Ücretsiz sürüm',
-    freePrice: '0 $',
-    freePeriod: 'Her zaman ücretsiz',
-    freeIncludes: [
-      'Tüm temel araçlara erişim',
-      'Günde 3 belge',
-      '50 MB’ye kadar dosyalar',
-      'Göze çarpmayan reklamlar',
-      'Doğrudan ve güvenli işleme'
-    ],
-    freeCta: 'Ücretsiz devam edin',
-    monthName: 'Pro aylık',
-    monthTag: 'Serbest çalışanlar ve gezgin profesyoneller',
-    monthPrice: '5,99 $',
-    monthPeriod: '/ ay',
-    monthIncludes: [
-      'Dosya boyutu sınırı yok',
-      'Reklamsız',
-      'Toplu işleme',
-      'En yüksek sunucu önceliği'
-    ],
-    monthCta: 'Pro’ya geç',
-    yearName: 'Pro yıllık',
-    yearPrice: '49,00 $',
-    yearPeriod: '/ yıl',
-    yearEquiv: 'yaklaşık 4,08 $ / ay — %32 civarı tasarruf',
-    yearIncludes: [
-      'Tüm Pro özellikleri',
-      'Aylığa göre yaklaşık %32 tasarruf',
-      'Öncelikli e-posta desteği'
-    ],
-    yearBadge: 'En popüler',
-    yearCta: 'Yıllığı seç',
-    businessName: 'Business / Ekip',
-    businessTag: 'En fazla 5 kullanıcı',
-    businessPrice: '19,99 $',
-    businessPeriod: '/ ay',
-    businessNote: 'KOBİ’ler ve ofisler',
-    businessIncludes: [
-      'Merkezi lisans yönetimi',
-      'Toplu faturalama',
-      'Güçlendirilmiş gizlilik ve izlenebilirlik'
-    ],
-    businessCta: 'Business’ı seç',
-    trust: 'Ödeme Stripe / Apple Pay / Google Pay ile %100 güvenlidir. Yıllık aboneliği tek tıkla iptal edebilirsiniz.',
-    paying: 'Ödemeye yönlendiriliyor…',
-    payFail: 'Ödeme başlatılamıyor.',
-    canceled: 'Ödeme iptal edildi. İstediğiniz zaman yeniden deneyebilirsiniz.',
-    successTitle: 'Ödeme onaylandı',
-    successText: 'Pro erişiminiz aktif. Tüm araçları günlük sınır olmadan kullanabilirsiniz.',
-    successCta: 'Araçları aç',
-    activeAccess: 'Pro erişimi bu cihazda zaten aktif.',
-    manage: 'Aboneliği yönet',
-    logout: 'Çıkış',
-    accountPro: 'Pro'
-  },
+  pricing: { ...en.pricing },
+  upgrade: en.upgrade,
   tools: {
     edit: 'PDF düzenle',
     merge: 'PDF birleştir',
@@ -156,7 +102,7 @@ export const tr: Messages = {
     ctaEdit: 'PDF düzenle',
     ctaTools: 'Tüm araçları keşfedin',
     trustInstall: 'Kurulum yok',
-    trustSize: 'Ücretsizde 50 MB',
+    trustSize: 'Ücretsizde 20 MB',
     trustDelete: 'Dosyalar otomatik silinir',
     previewAria: 'One2PDF düzenleyici önizlemesi',
     heroAlt: 'One2PDF ile PDF birleştiren bir profesyonel',

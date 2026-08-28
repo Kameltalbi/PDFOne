@@ -29,7 +29,11 @@ export const ar: Messages = {
     imagesOnly: 'يُسمح بصور JPG أو PNG أو WebP فقط.',
     maxFiles: 'الحد الأقصى {count} ملفات.',
     quotaReached: 'الخطة المجانية محدودة بـ 3 مستندات في اليوم. قم بالترقية للمتابعة.',
-    adLabel: 'إعلان'
+    adLabel: 'إعلان',
+    doneShort: 'Done!',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    deleteResult: 'Delete'
   },
   units: { byte: 'بايت', kb: 'ك.ب', mb: 'م.ب', gb: 'ج.ب' },
   nav: {
@@ -43,66 +47,8 @@ export const ar: Messages = {
     compress: 'ضغط',
     protect: 'حماية'
   },
-  pricing: {
-    title: 'أطلق كامل إمكانات {brand}',
-    subtitle: 'اعمل أسرع، بلا حدود وبأفضل سعر.',
-    popular: 'الأكثر رواجًا',
-    freeName: 'الإصدار المجاني',
-    freePrice: '0 $',
-    freePeriod: 'مجاني دائمًا',
-    freeIncludes: [
-      'الوصول إلى جميع الأدوات الأساسية',
-      '3 مستندات يوميًا',
-      'ملفات حتى 50 ميغابايت',
-      'إعلانات غير مزعجة',
-      'معالجة مباشرة وآمنة'
-    ],
-    freeCta: 'المتابعة مجانًا',
-    monthName: 'برو شهري',
-    monthTag: 'المستقلون والمهنيون المتنقلون',
-    monthPrice: '5,99 $',
-    monthPeriod: '/ شهر',
-    monthIncludes: [
-      'ملفات بلا حد للحجم',
-      'بدون إعلانات',
-      'معالجة بالدفعات',
-      'أولوية قصوى على الخادم'
-    ],
-    monthCta: 'الانتقال إلى برو',
-    yearName: 'برو سنوي',
-    yearPrice: '49,00 $',
-    yearPeriod: '/ سنة',
-    yearEquiv: 'حوالي 4,08 $ / شهر — توفير نحو 32٪',
-    yearIncludes: [
-      'كل مزايا برو',
-      'توفير حوالي 32٪ مقابل الشهري',
-      'دعم بريد إلكتروني ذو أولوية'
-    ],
-    yearBadge: 'الأكثر شعبية',
-    yearCta: 'اختيار السنوي',
-    businessName: 'بيزنس / فريق',
-    businessTag: 'حتى 5 مستخدمين',
-    businessPrice: '19,99 $',
-    businessPeriod: '/ شهر',
-    businessNote: 'الشركات الصغيرة والمكاتب',
-    businessIncludes: [
-      'إدارة مركزية للتراخيص',
-      'فوترة مجمّعة',
-      'خصوصية وتتبع معززان'
-    ],
-    businessCta: 'اختيار بيزنس',
-    trust: 'دفع آمن بنسبة 100٪ عبر Stripe / Apple Pay / Google Pay. إلغاء سهل بنقرة واحدة للاشتراك السنوي.',
-    paying: 'جارٍ التحويل إلى الدفع…',
-    payFail: 'تعذر بدء الدفع.',
-    canceled: 'تم إلغاء الدفع. يمكنك المحاولة مرة أخرى متى شئت.',
-    successTitle: 'تم تأكيد الدفع',
-    successText: 'وصول Pro نشط. يمكنك استخدام كل الأدوات دون حد يومي.',
-    successCta: 'فتح الأدوات',
-    activeAccess: 'وصول Pro نشط بالفعل على هذا الجهاز.',
-    manage: 'إدارة الاشتراك',
-    logout: 'تسجيل الخروج',
-    accountPro: 'Pro'
-  },
+  pricing: { ...en.pricing },
+  upgrade: en.upgrade,
   tools: {
     edit: 'تعديل PDF',
     merge: 'دمج PDF',
@@ -156,7 +102,7 @@ export const ar: Messages = {
     ctaEdit: 'تعديل PDF',
     ctaTools: 'اكتشف كل الأدوات',
     trustInstall: 'بدون تثبيت',
-    trustSize: 'المجاني حتى 50 ميغابايت',
+    trustSize: 'المجاني حتى 20 ميغابايت',
     trustDelete: 'تُحذف الملفات تلقائيًا',
     previewAria: 'معاينة محرر One2PDF',
     heroAlt: 'محترفة تستخدم One2PDF لدمج ملفات PDF',

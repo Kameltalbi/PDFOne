@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { useOfficeFile } from '../lib/useOfficeFile';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -135,6 +135,19 @@ function OfficeConvert({ job }: { job: OfficeJob }) {
         downloadLabel={downloadLabel}
         resetLabel={m.convert.reset}
         onReset={reset}
+        previewSrc={fileState.thumbs[0]}
+        sourceName={fileState.file?.name}
+      />
+    );
+  }
+
+  if (isProcessing) {
+    return (
+      <StudioProcessing
+        label={m.convert.running}
+        progress={progress}
+        onCancel={reset}
+        badge={spec.download === 'word' ? 'W' : spec.download === 'excel' ? 'X' : spec.download === 'ppt' ? 'P' : 'PDF'}
       />
     );
   }

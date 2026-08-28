@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { getRuntimeLocale } from '../i18n/runtime';
 import { dictionaries } from '../i18n/dictionaries';
 
-export type PaidPlan = 'month' | 'year' | 'business';
+export type CheckoutPlan = 'week' | 'month' | 'year';
+export type PaidPlan = CheckoutPlan | 'business' | 'life';
 
 export type BillingState =
   | { paid: false }
@@ -12,7 +13,7 @@ type BillingContextValue = {
   status: BillingState;
   loading: boolean;
   refresh: () => Promise<void>;
-  checkout: (plan: PaidPlan) => Promise<void>;
+  checkout: (plan: CheckoutPlan) => Promise<void>;
   confirm: (sessionId: string) => Promise<BillingState>;
   portal: () => Promise<void>;
   logout: () => Promise<void>;
@@ -57,7 +58,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     void refresh();
   }, [refresh]);
 
-  const checkout = useCallback(async (plan: PaidPlan) => {
+  const checkout = useCallback(async (plan: CheckoutPlan) => {
     const data = await billingRequest('/api/billing/checkout', {
       method: 'POST',
       body: JSON.stringify({ plan })

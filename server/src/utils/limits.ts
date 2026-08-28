@@ -1,4 +1,4 @@
-export const FREE_MAX_FILE_BYTES = 50 * 1024 * 1024;
+export const FREE_MAX_FILE_BYTES = 20 * 1024 * 1024;
 export const PAID_MAX_FILE_BYTES = 1024 * 1024 * 1024;
 
 export function maxFileBytes(paid: boolean): number {

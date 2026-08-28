@@ -2,12 +2,14 @@ import { useCallback, useId, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
+import { useUpgrade } from './upgrade';
 import { inspectPdfFile, renderPdfPages } from './pdfPreview';
 
 export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolean } = {}) {
   const allPages = options.allPages !== false;
   const { m, t } = useI18n();
   const { status } = useBilling();
+  const { allowFile } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const pickerId = useId();
@@ -26,6 +28,7 @@ export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolea
       setError(m.merge.pdfOnly);
       return;
     }
+    if (!allowFile(incoming)) return;
     if (incoming.size > maxBytes) {
       setError(t(m.common.fileTooLarge, { name: incoming.name, size: sizeLabel }));
       return;
@@ -52,7 +55,7 @@ export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolea
     } finally {
       setIsLoading(false);
     }
-  }, [allPages, m, maxBytes, sizeLabel, t]);
+  }, [allPages, allowFile, m, maxBytes, sizeLabel, t]);
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();

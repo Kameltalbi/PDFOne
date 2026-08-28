@@ -1,4 +1,4 @@
-export const FREE_MAX_FILE_BYTES = 50 * 1024 * 1024;
+export const FREE_MAX_FILE_BYTES = 20 * 1024 * 1024;
 export const PAID_MAX_FILE_BYTES = 1024 * 1024 * 1024;
 
 export function maxFileBytes(paid: boolean): number {
@@ -6,5 +6,9 @@ export function maxFileBytes(paid: boolean): number {
 }
 
 export function maxFileLabel(paid: boolean): string {
-  return paid ? '1 GB' : '50 MB';
+  return paid ? '1 GB' : '20 MB';
+}
+
+export function isFreeOversized(size: number, paid: boolean): boolean {
+  return !paid && size > FREE_MAX_FILE_BYTES;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -62,8 +62,14 @@ function Rotate() {
         downloadName="pdf-pivote.pdf"
         resetLabel={m.rotatePdf.reset}
         onReset={pdf.reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.rotatePdf.rotating} progress={progress} onCancel={pdf.reset} />;
   }
 
   if (!pdf.file) {

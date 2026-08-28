@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -74,8 +74,14 @@ function PageNumbers() {
         downloadName="pages-numerotees.pdf"
         resetLabel={m.numberPages.reset}
         onReset={pdf.reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.numberPages.running} progress={progress} onCancel={pdf.reset} />;
   }
 
   if (!pdf.file) {

@@ -38,12 +38,15 @@ import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import { BillingProvider } from './lib/billing';
+import { UpgradeProvider } from './lib/upgrade';
+import { UpgradeModal } from './components/UpgradeModal';
 import './App.css';
 
 function App() {
   return (
     <Router>
       <BillingProvider>
+      <UpgradeProvider>
       <div className="app">
         <Header />
         <div className="app-body">
@@ -91,6 +94,8 @@ function App() {
         </div>
         <Footer />
       </div>
+      <UpgradeModal />
+      </UpgradeProvider>
       </BillingProvider>
     </Router>
   );

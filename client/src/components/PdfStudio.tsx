@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
+import { useBilling } from '../lib/billing';
 import { AdBanner } from './AdBanner';
 import { RelatedTools } from './RelatedTools';
 import './Studio.css';
@@ -114,6 +115,48 @@ export function StudioLanding({
   );
 }
 
+export function StudioProcessing({
+  label,
+  progress,
+  onCancel,
+  badge = 'PDF'
+}: {
+  label: string;
+  progress: number;
+  onCancel: () => void;
+  badge?: string;
+}) {
+  const { m } = useI18n();
+  const clamped = Math.max(0, Math.min(100, Math.round(progress)));
+  const radius = 54;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (clamped / 100) * circumference;
+
+  return (
+    <div className="studio-processing">
+      <div className="studio-processing-ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle className="studio-processing-track" cx="60" cy="60" r={radius} />
+          <circle
+            className="studio-processing-value"
+            cx="60"
+            cy="60"
+            r={radius}
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+          />
+        </svg>
+        <span className={`studio-processing-doc${badge.length > 1 ? ' is-long' : ''}`} aria-hidden="true">{badge}</span>
+      </div>
+      <p>
+        {label}
+        <strong>{clamped} %</strong>
+        <button type="button" className="studio-processing-cancel" onClick={onCancel} aria-label={m.common.closeMenu}>×</button>
+      </p>
+    </div>
+  );
+}
+
 export function StudioResult({
   title,
   text,
@@ -121,7 +164,9 @@ export function StudioResult({
   downloadName,
   downloadLabel,
   resetLabel,
-  onReset
+  onReset,
+  previewSrc,
+  sourceName
 }: {
   title: string;
   text: string;
@@ -130,18 +175,90 @@ export function StudioResult({
   downloadLabel?: string;
   resetLabel: string;
   onReset: () => void;
+  previewSrc?: string | null;
+  sourceName?: string;
 }) {
   const { m } = useI18n();
+  const { status } = useBilling();
+  const paid = status.paid;
+  const [copied, setCopied] = useState(false);
+  const ext = (downloadName.split('.').pop() || 'FILE').toUpperCase();
+  const displayName = sourceName || downloadName;
+
+  const copyLink = async () => {
+    const absolute = new URL(downloadUrl, window.location.origin).href;
+    try {
+      await navigator.clipboard.writeText(absolute);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
-    <div className="studio-landing">
-      <div className="studio-result">
-        <div className="studio-result-icon">✓</div>
-        <h1>{title}</h1>
-        <p>{text}</p>
-        <a className="studio-download" href={downloadUrl} download={downloadName}>{downloadLabel ?? m.common.downloadPdf}</a>
-        <button className="studio-reset" onClick={onReset} type="button">{resetLabel}</button>
-        <AdBanner />
+    <div className="studio-done" aria-label={title}>
+      <div className="studio-done-grid">
+        <div className="studio-done-preview">
+          <div className="studio-done-sheet">
+            {/\.pdf$/i.test(downloadName) ? (
+              <iframe src={`${downloadUrl}#toolbar=0&navpanes=0&scrollbar=0`} title={displayName} />
+            ) : previewSrc ? (
+              <img src={previewSrc} alt={displayName} />
+            ) : (
+              <span className="studio-done-badge">{ext}</span>
+            )}
+            <a className="studio-done-dl" href={downloadUrl} download={downloadName} aria-label={downloadLabel ?? m.common.download}>⇩</a>
+          </div>
+          <div className="studio-done-file">
+            <span>{ext}</span>
+            <div>
+              <strong>{displayName}</strong>
+              <small>{downloadName}</small>
+            </div>
+          </div>
+        </div>
+
+        <div className="studio-done-actions">
+          <h1 className="studio-done-kicker">
+            <span className="studio-done-check">✓</span>
+            {m.common.doneShort}
+          </h1>
+          <p className="studio-done-text">{text}</p>
+
+          <div className="studio-done-row">
+            <a className="studio-done-download" href={downloadUrl} download={downloadName}>
+              <span aria-hidden="true">⇩</span>
+              {downloadLabel ?? m.common.download}
+            </a>
+            <button type="button" className="studio-done-icon" onClick={() => void copyLink()} title={copied ? m.common.linkCopied : m.common.copyLink}>
+              {copied ? '✓' : '🔗'}
+            </button>
+            <button type="button" className="studio-done-icon" onClick={onReset} title={m.common.deleteResult}>
+              🗑
+            </button>
+          </div>
+
+          {!paid && (
+            <Link className="studio-done-pro" to="/pricing">
+              <div>
+                <strong>One2PDF Pro</strong>
+                <ul>
+                  {m.pricing.monthIncludes.slice(0, 3).map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <span>{m.pricing.monthCta}</span>
+            </Link>
+          )}
+
+          <button type="button" className="studio-done-restart" onClick={onReset}>
+            ↻ {resetLabel}
+          </button>
+        </div>
       </div>
+      <RelatedTools />
     </div>
   );
 }

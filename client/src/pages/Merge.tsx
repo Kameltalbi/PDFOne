@@ -4,9 +4,11 @@ import { postForm } from '../lib/api';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { inspectPdfFile } from '../lib/pdfPreview';
+import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
+import { StudioProcessing, StudioResult } from '../components/PdfStudio';
 import './Merge.css';
 
 type MergeItem = {
@@ -37,6 +39,7 @@ function Merge() {
   const { m, t, locale } = useI18n();
   usePageSeo(m.merge.seoTitle, m.merge.seoDescription);
   const { status } = useBilling();
+  const { allowFiles } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const pickerId = useId();
@@ -66,11 +69,14 @@ function Merge() {
       return;
     }
 
+    const accepted = allowFiles(incoming);
+    if (accepted.length === 0) return;
+
     setIsLoading(true);
     setError(null);
     const prepared: MergeItem[] = [];
     try {
-      for (const file of incoming) {
+      for (const file of accepted) {
         if (file.size > maxBytes) {
           setError(t(m.common.fileTooLarge, { name: file.name, size: sizeLabel }));
           continue;
@@ -86,7 +92,7 @@ function Merge() {
     } finally {
       setIsLoading(false);
     }
-  }, [m, maxBytes, sizeLabel, t]);
+  }, [allowFiles, m, maxBytes, sizeLabel, t]);
 
   const moveItem = (from: number, to: number) => {
     setItems((current) => {
@@ -139,16 +145,21 @@ function Merge() {
 
   if (downloadUrl) {
     return (
-      <div className="merge-landing">
-        <div className="merge-result">
-          <div className="merge-result-icon">✓</div>
-          <h1>{m.merge.mergedTitle}</h1>
-          <p>{m.merge.mergedText}</p>
-          <a className="merge-download" href={downloadUrl} download="fusion.pdf">{m.common.downloadPdf}</a>
-          <button className="merge-reset" onClick={reset} type="button">{m.merge.mergeMore}</button>
-        </div>
-      </div>
+      <StudioResult
+        title={m.merge.mergedTitle}
+        text={m.merge.mergedText}
+        downloadUrl={downloadUrl}
+        downloadName="fusion.pdf"
+        resetLabel={m.merge.mergeMore}
+        onReset={reset}
+        previewSrc={items[0]?.thumb}
+        sourceName={items[0]?.name}
+      />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.merge.merging} progress={progress} onCancel={reset} />;
   }
 
   if (items.length === 0) {

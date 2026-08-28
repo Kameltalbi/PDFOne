@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -59,8 +59,14 @@ function DeletePages() {
         downloadName="pages-supprimees.pdf"
         resetLabel={m.deletePages.reset}
         onReset={pdf.reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.deletePages.deleting} progress={progress} onCancel={pdf.reset} />;
   }
 
   if (!pdf.file) {

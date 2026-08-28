@@ -35,7 +35,9 @@ const RELATED: Record<string, string[]> = {
 
 const ALIAS: Record<string, string> = {
   '/pdf-to-pptx': '/pdf-to-ppt',
-  '/pptx-to-pdf': '/ppt-to-pdf'
+  '/pptx-to-pdf': '/ppt-to-pdf',
+  '/png-to-pdf': '/jpg-to-pdf',
+  '/edit-pdf/result': '/edit-pdf'
 };
 
 export function RelatedTools() {

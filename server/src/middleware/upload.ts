@@ -49,7 +49,7 @@ export async function rejectOversizedFreeUploads(req: Request, res: Response, ne
     success: false,
     error: paid
       ? 'Le fichier dépasse la limite technique de 1 Go.'
-      : 'Le plan gratuit est limité à 50 Mo. Passez Pro pour les fichiers plus volumineux.'
+      : 'Le plan gratuit est limité à 20 Mo. Passez Pro pour les fichiers plus volumineux.'
   });
 }
 

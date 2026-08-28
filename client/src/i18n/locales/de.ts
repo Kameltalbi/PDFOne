@@ -29,7 +29,11 @@ export const de: Messages = {
     imagesOnly: 'Nur JPG-, PNG- oder WebP-Bilder werden akzeptiert.',
     maxFiles: 'Maximal {count} Dateien.',
     quotaReached: 'Der Gratisplan ist auf 3 Dokumente pro Tag begrenzt. Upgraden Sie, um fortzufahren.',
-    adLabel: 'Anzeige'
+    adLabel: 'Anzeige',
+    doneShort: 'Done!',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    deleteResult: 'Delete'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
@@ -43,66 +47,8 @@ export const de: Messages = {
     compress: 'Komprimieren',
     protect: 'Schützen'
   },
-  pricing: {
-    title: 'Entfalten Sie das volle Potenzial von {brand}',
-    subtitle: 'Arbeiten Sie schneller, ohne Limits und zum besten Preis.',
-    popular: 'Am beliebtesten',
-    freeName: 'Kostenlose Version',
-    freePrice: '0 $',
-    freePeriod: 'Immer kostenlos',
-    freeIncludes: [
-      'Zugriff auf alle Basis-Werkzeuge',
-      '3 Dokumente pro Tag',
-      'Dateien bis 50 MB',
-      'Dezente Werbung',
-      'Direkte und sichere Verarbeitung'
-    ],
-    freeCta: 'Kostenlos fortfahren',
-    monthName: 'Pro monatlich',
-    monthTag: 'Freelancer und mobile Profis',
-    monthPrice: '5,99 $',
-    monthPeriod: '/ Monat',
-    monthIncludes: [
-      'Dateien ohne Größenlimit',
-      'Keine Werbung',
-      'Stapelverarbeitung',
-      'Höchste Serverpriorität'
-    ],
-    monthCta: 'Pro wählen',
-    yearName: 'Pro jährlich',
-    yearPrice: '49,00 $',
-    yearPeriod: '/ Jahr',
-    yearEquiv: 'ca. 4,08 $ / Monat — rund 32 % Ersparnis',
-    yearIncludes: [
-      'Alle Pro-Funktionen',
-      'Etwa 32 % günstiger als monatlich',
-      'Priorisierter E-Mail-Support'
-    ],
-    yearBadge: 'Am beliebtesten',
-    yearCta: 'Jahresabo wählen',
-    businessName: 'Business / Team',
-    businessTag: 'Bis zu 5 Nutzer',
-    businessPrice: '19,99 $',
-    businessPeriod: '/ Monat',
-    businessNote: 'KMU und Kanzleien',
-    businessIncludes: [
-      'Zentrale Lizenzverwaltung',
-      'Sammelabrechnung',
-      'Verstärkter Datenschutz und Nachverfolgbarkeit'
-    ],
-    businessCta: 'Business wählen',
-    trust: '100 % sichere Zahlung über Stripe / Apple Pay / Google Pay. Das Jahresabo können Sie mit einem Klick kündigen.',
-    paying: 'Weiterleitung zur Zahlung…',
-    payFail: 'Zahlung kann nicht gestartet werden.',
-    canceled: 'Zahlung abgebrochen. Sie können es jederzeit erneut versuchen.',
-    successTitle: 'Zahlung bestätigt',
-    successText: 'Ihr Pro-Zugang ist aktiv. Sie können alle Tools ohne Tageslimit nutzen.',
-    successCta: 'Tools öffnen',
-    activeAccess: 'Der Pro-Zugang ist auf diesem Gerät bereits aktiv.',
-    manage: 'Abo verwalten',
-    logout: 'Abmelden',
-    accountPro: 'Pro'
-  },
+  pricing: { ...en.pricing },
+  upgrade: en.upgrade,
   tools: {
     edit: 'PDF bearbeiten',
     merge: 'PDF zusammenführen',
@@ -157,7 +103,7 @@ export const de: Messages = {
     ctaEdit: 'PDF bearbeiten',
     ctaTools: 'Alle Werkzeuge entdecken',
     trustInstall: 'Keine Installation',
-    trustSize: '50 MB im Gratisplan',
+    trustSize: '20 MB im Gratisplan',
     trustDelete: 'Dateien werden automatisch gelöscht',
     previewAria: 'Vorschau des One2PDF-Editors',
     heroAlt: 'Berufstätige verwendet One2PDF zum Zusammenführen von PDFs',

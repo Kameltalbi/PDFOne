@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useImageFiles } from '../lib/useImageFiles';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -54,8 +54,14 @@ function JpgToPdf() {
         downloadName="images.pdf"
         resetLabel={m.jpgToPdf.reset}
         onReset={images.reset}
+        previewSrc={images.items[0]?.thumb}
+        sourceName={images.items[0]?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.jpgToPdf.running} progress={progress} onCancel={images.reset} />;
   }
 
   if (images.items.length === 0) {

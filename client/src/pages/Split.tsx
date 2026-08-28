@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { parsePageRanges } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
@@ -76,8 +76,14 @@ function Split() {
         downloadName={mode === 'extract' ? 'extrait.pdf' : 'pages.zip'}
         resetLabel={m.split.reset}
         onReset={pdf.reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.split.splitting} progress={progress} onCancel={pdf.reset} />;
   }
 
   if (!pdf.file) {

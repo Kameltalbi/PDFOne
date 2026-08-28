@@ -2,6 +2,7 @@ import { useCallback, useId, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
+import { useUpgrade } from './upgrade';
 import { inspectPdfFile } from './pdfPreview';
 
 function extensionOf(name: string) {
@@ -14,6 +15,7 @@ export function useOfficeFile(extensions: string[], options: { previewPdf?: bool
   const allowedKey = extensions.join(',').toLowerCase();
   const { m, t } = useI18n();
   const { status } = useBilling();
+  const { allowFile } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const pickerId = useId();
@@ -33,6 +35,7 @@ export function useOfficeFile(extensions: string[], options: { previewPdf?: bool
       setError(m.convert.invalidFile);
       return;
     }
+    if (!allowFile(incoming)) return;
     if (incoming.size > maxBytes) {
       setError(t(m.common.fileTooLarge, { name: incoming.name, size: sizeLabel }));
       return;
@@ -57,7 +60,7 @@ export function useOfficeFile(extensions: string[], options: { previewPdf?: bool
     } finally {
       setIsLoading(false);
     }
-  }, [allowedKey, m, maxBytes, previewPdf, sizeLabel, t]);
+  }, [allowedKey, allowFile, m, maxBytes, previewPdf, sizeLabel, t]);
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();

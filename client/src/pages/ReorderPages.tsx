@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { useI18n } from '../i18n';
@@ -56,8 +56,14 @@ function ReorderPages() {
         downloadName="pages-reordonnees.pdf"
         resetLabel={m.reorderPages.reset}
         onReset={pdf.reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.reorderPages.reordering} progress={progress} onCancel={pdf.reset} />;
   }
 
   if (!pdf.file) {

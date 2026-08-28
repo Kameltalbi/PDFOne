@@ -29,7 +29,11 @@ export const pt: Messages = {
     imagesOnly: 'Apenas imagens JPG, PNG ou WebP são aceites.',
     maxFiles: 'Máximo de {count} ficheiros.',
     quotaReached: 'O plano gratuito está limitado a 3 documentos por dia. Passe a Pro para continuar.',
-    adLabel: 'Publicidade'
+    adLabel: 'Publicidade',
+    doneShort: 'Done!',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    deleteResult: 'Delete'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
@@ -43,66 +47,8 @@ export const pt: Messages = {
     compress: 'Comprimir',
     protect: 'Proteger'
   },
-  pricing: {
-    title: 'Desbloqueie todo o potencial do {brand}',
-    subtitle: 'Trabalhe mais depressa, sem limites e ao melhor preço.',
-    popular: 'O mais popular',
-    freeName: 'Versão gratuita',
-    freePrice: '0 $',
-    freePeriod: 'Sempre gratuito',
-    freeIncludes: [
-      'Acesso a todas as ferramentas de base',
-      '3 documentos por dia',
-      'Ficheiros até 50 MB',
-      'Publicidade discreta',
-      'Processamento direto e seguro'
-    ],
-    freeCta: 'Continuar gratuitamente',
-    monthName: 'Pro mensal',
-    monthTag: 'Freelancers e profissionais em movimento',
-    monthPrice: '5,99 $',
-    monthPeriod: '/ mês',
-    monthIncludes: [
-      'Ficheiros sem limite de tamanho',
-      'Sem publicidade',
-      'Processamento em lote',
-      'Prioridade máxima no servidor'
-    ],
-    monthCta: 'Passar a Pro',
-    yearName: 'Pro anual',
-    yearPrice: '49,00 $',
-    yearPeriod: '/ ano',
-    yearEquiv: 'cerca de 4,08 $ / mês — cerca de 32 % de poupança',
-    yearIncludes: [
-      'Todas as funcionalidades Pro',
-      'Poupança de ~32 % vs o mensal',
-      'Suporte por e-mail prioritário'
-    ],
-    yearBadge: 'O mais popular',
-    yearCta: 'Escolher o anual',
-    businessName: 'Business / Equipa',
-    businessTag: 'Até 5 utilizadores',
-    businessPrice: '19,99 $',
-    businessPeriod: '/ mês',
-    businessNote: 'PME e gabinetes',
-    businessIncludes: [
-      'Gestão centralizada de licenças',
-      'Faturação agrupada',
-      'Confidencialidade e rastreabilidade reforçadas'
-    ],
-    businessCta: 'Escolher Business',
-    trust: 'Pagamento 100 % seguro via Stripe / Apple Pay / Google Pay. Cancelamento fácil com um clique para a subscrição anual.',
-    paying: 'A redirecionar para o pagamento…',
-    payFail: 'Não é possível iniciar o pagamento.',
-    canceled: 'Pagamento cancelado. Pode tentar novamente quando quiser.',
-    successTitle: 'Pagamento confirmado',
-    successText: 'O seu acesso Pro está ativo. Pode usar todas as ferramentas sem limite diário.',
-    successCta: 'Abrir as ferramentas',
-    activeAccess: 'O acesso Pro já está ativo neste dispositivo.',
-    manage: 'Gerir a subscrição',
-    logout: 'Terminar sessão',
-    accountPro: 'Pro'
-  },
+  pricing: { ...en.pricing },
+  upgrade: en.upgrade,
   tools: {
     edit: 'Editar PDF',
     merge: 'Juntar PDF',
@@ -156,7 +102,7 @@ export const pt: Messages = {
     ctaEdit: 'Editar um PDF',
     ctaTools: 'Descobrir todas as ferramentas',
     trustInstall: 'Sem instalação',
-    trustSize: '50 MB no plano gratuito',
+    trustSize: '20 MB no plano gratuito',
     trustDelete: 'Ficheiros eliminados automaticamente',
     previewAria: 'Pré-visualização do editor One2PDF',
     heroAlt: 'Profissional a utilizar o One2PDF para juntar PDF',

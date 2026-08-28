@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useBilling, type PaidPlan } from '../lib/billing';
+import { useBilling, type CheckoutPlan } from '../lib/billing';
 import { useI18n } from '../i18n';
+import { usePageSeo } from '../lib/usePageSeo';
 import './Pricing.css';
 
 function PlanList({ items }: { items: string[] }) {
@@ -15,15 +16,16 @@ function PlanList({ items }: { items: string[] }) {
 }
 
 function Pricing() {
-  const { m, t } = useI18n();
+  const { m } = useI18n();
+  usePageSeo(m.pricing.seoTitle, m.pricing.seoDescription);
   const { checkout, status } = useBilling();
   const [params] = useSearchParams();
-  const [paying, setPaying] = useState<PaidPlan | null>(null);
+  const [paying, setPaying] = useState<CheckoutPlan | null>(null);
   const [error, setError] = useState<string | null>(
     params.get('canceled') === '1' ? m.pricing.canceled : null
   );
 
-  const pay = async (plan: PaidPlan) => {
+  const pay = async (plan: CheckoutPlan) => {
     setError(null);
     setPaying(plan);
     try {
@@ -37,8 +39,8 @@ function Pricing() {
   return (
     <main className="pricing-page">
       <section className="pricing-panel">
-        <p className="pricing-eyebrow">{m.common.pricing}</p>
-        <h1>{t(m.pricing.title, { brand: m.brand })}</h1>
+        <p className="pricing-eyebrow">{m.pricing.eyebrow}</p>
+        <h1>{m.pricing.title}</h1>
         <p className="pricing-lead">{m.pricing.subtitle}</p>
         {error && <p className="pricing-alert" role="alert">{error}</p>}
         {status.paid && (
@@ -49,26 +51,47 @@ function Pricing() {
 
         <div className="pricing-grid">
           <article className="pricing-card">
+            <p className="pricing-tag">{m.pricing.discover}</p>
             <h2>{m.pricing.freeName}</h2>
             <div className="pricing-price">
               <strong>{m.pricing.freePrice}</strong>
-              <span>{m.pricing.freePeriod}</span>
+              <em>{m.pricing.freePeriod}</em>
             </div>
+            <p className="pricing-pitch">{m.pricing.freePitch}</p>
             <PlanList items={m.pricing.freeIncludes} />
+            <p className="pricing-note">{m.pricing.freeNote}</p>
             <Link className="pricing-cta ghost" to="/tools">{m.pricing.freeCta}</Link>
+            <p className="pricing-micro">{m.pricing.freeMicro}</p>
           </article>
 
           <article className="pricing-card">
-            <p className="pricing-tag">{m.pricing.monthTag}</p>
+            <p className="pricing-tag">{m.pricing.urgent}</p>
+            <h2>{m.pricing.weekName}</h2>
+            <div className="pricing-price">
+              <strong>{m.pricing.weekPrice}</strong>
+              <em>{m.pricing.weekPeriod}</em>
+            </div>
+            <p className="pricing-pitch">{m.pricing.weekPitch}</p>
+            <PlanList items={m.pricing.weekIncludes} />
+            <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('week')}>
+              {paying === 'week' ? m.pricing.paying : m.pricing.weekCta}
+            </button>
+            <p className="pricing-micro">{m.pricing.weekMicro}</p>
+          </article>
+
+          <article className="pricing-card">
+            <p className="pricing-tag">{m.pricing.flexible}</p>
             <h2>{m.pricing.monthName}</h2>
             <div className="pricing-price">
               <strong>{m.pricing.monthPrice}</strong>
               <em>{m.pricing.monthPeriod}</em>
             </div>
+            <p className="pricing-pitch">{m.pricing.monthPitch}</p>
             <PlanList items={m.pricing.monthIncludes} />
             <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('month')}>
               {paying === 'month' ? m.pricing.paying : m.pricing.monthCta}
             </button>
+            <p className="pricing-micro">{m.pricing.monthMicro}</p>
           </article>
 
           <article className="pricing-card featured">
@@ -80,28 +103,26 @@ function Pricing() {
               <em>{m.pricing.yearPeriod}</em>
               <span>{m.pricing.yearEquiv}</span>
             </div>
+            <p className="pricing-pitch">{m.pricing.yearPitch}</p>
             <PlanList items={m.pricing.yearIncludes} />
             <button className="pricing-cta solid" type="button" disabled={Boolean(paying)} onClick={() => void pay('year')}>
               {paying === 'year' ? m.pricing.paying : m.pricing.yearCta}
             </button>
-          </article>
-
-          <article className="pricing-card">
-            <p className="pricing-tag">{m.pricing.businessTag}</p>
-            <h2>{m.pricing.businessName}</h2>
-            <div className="pricing-price">
-              <strong>{m.pricing.businessPrice}</strong>
-              <em>{m.pricing.businessPeriod}</em>
-              <span>{m.pricing.businessNote}</span>
-            </div>
-            <PlanList items={m.pricing.businessIncludes} />
-            <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('business')}>
-              {paying === 'business' ? m.pricing.paying : m.pricing.businessCta}
-            </button>
+            <p className="pricing-micro">{m.pricing.yearMicro}</p>
           </article>
         </div>
 
         <p className="pricing-trust">{m.pricing.trust}</p>
+
+        <section className="pricing-faq" aria-labelledby="pricing-faq-title">
+          <h2 id="pricing-faq-title">{m.pricing.faqTitle}</h2>
+          {m.pricing.faq.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </section>
       </section>
     </main>
   );

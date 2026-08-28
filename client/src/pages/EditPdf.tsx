@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { useI18n } from '../i18n';
-import { StudioLanding } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing } from '../components/PdfStudio';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
+import { useUpgrade } from '../lib/upgrade';
 import { installMapPolyfill } from '../lib/mapPolyfill';
 import './EditPdf.css';
 
@@ -312,6 +313,7 @@ function EditPdf() {
   const { m, t } = useI18n();
   usePageSeo(m.edit.seoTitle, m.edit.seoDescription);
   const { status } = useBilling();
+  const { allowFile } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const navigate = useNavigate();
@@ -327,6 +329,8 @@ function EditPdf() {
   const [strokeWidth, setStrokeWidth] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+  const exportAborted = useRef(false);
   const [error, setError] = useState('');
   const [redoStack, setRedoStack] = useState<Annotation[]>([]);
   const [zoom, setZoom] = useState(1);
@@ -337,6 +341,7 @@ function EditPdf() {
       setError(m.edit.needPdf);
       return;
     }
+    if (!allowFile(selectedFile)) return;
     if (selectedFile.size > maxBytes) {
       setError(t(m.common.fileTooLarge, { name: selectedFile.name, size: sizeLabel }));
       return;
@@ -357,22 +362,31 @@ function EditPdf() {
 
   const exportPdf = async () => {
     if (!file) return;
+    exportAborted.current = false;
     setIsExporting(true);
+    setExportProgress(25);
     setError('');
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('annotations', JSON.stringify(annotations.map(({ id: _id, ...annotation }) => annotation)));
+      setExportProgress(55);
       const response = await fetch('/api/edit', { method: 'POST', body: formData, headers: { 'Accept-Language': document.documentElement.lang || 'en' } });
       if (!response.ok) throw new Error(m.edit.exportFail);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
+      setExportProgress(100);
+      if (exportAborted.current) {
+        URL.revokeObjectURL(url);
+        return;
+      }
       navigate('/edit-pdf/result', { state: { downloadUrl: url, filename, originalName: file.name } });
     } catch {
-      setError(m.edit.generateFail);
+      if (!exportAborted.current) setError(m.edit.generateFail);
     } finally {
       setIsExporting(false);
+      setExportProgress(0);
     }
   };
 
@@ -395,6 +409,20 @@ function EditPdf() {
           if (event.dataTransfer.files[0]) void openPdf(event.dataTransfer.files[0]);
         }}
         onFiles={(files) => { if (files[0]) void openPdf(files[0]); }}
+      />
+    );
+  }
+
+  if (isExporting) {
+    return (
+      <StudioProcessing
+        label={m.edit.exporting}
+        progress={exportProgress}
+        onCancel={() => {
+          exportAborted.current = true;
+          setIsExporting(false);
+          setExportProgress(0);
+        }}
       />
     );
   }

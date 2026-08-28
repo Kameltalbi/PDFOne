@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
@@ -54,8 +54,14 @@ function Protect() {
         downloadName="protege.pdf"
         resetLabel={m.protect.reset}
         onReset={reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.protect.running} progress={progress} onCancel={reset} />;
   }
 
   if (!pdf.file) {

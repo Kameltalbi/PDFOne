@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { faqPageJsonLd, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
@@ -71,6 +71,18 @@ function Compress() {
         downloadName="compresse.pdf"
         resetLabel={m.compress.reset}
         onReset={reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
+      />
+    );
+  }
+
+  if (isProcessing) {
+    return (
+      <StudioProcessing
+        label={m.compress.running}
+        progress={progress}
+        onCancel={reset}
       />
     );
   }

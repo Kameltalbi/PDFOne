@@ -2,6 +2,7 @@ import { useCallback, useId, useState } from 'react';
 import { useI18n } from '../i18n';
 import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
+import { useUpgrade } from './upgrade';
 
 export type ImageItem = {
   id: string;
@@ -19,6 +20,7 @@ function uid() {
 export function useImageFiles() {
   const { m, t } = useI18n();
   const { status } = useBilling();
+  const { allowFiles } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const pickerId = useId();
@@ -35,8 +37,11 @@ export function useImageFiles() {
       return;
     }
 
+    const accepted = allowFiles(incoming);
+    if (accepted.length === 0) return;
+
     const prepared: ImageItem[] = [];
-    for (const file of incoming) {
+    for (const file of accepted) {
       if (file.size > maxBytes) {
         setError(t(m.common.fileTooLarge, { name: file.name, size: sizeLabel }));
         continue;
@@ -44,7 +49,7 @@ export function useImageFiles() {
       prepared.push({ id: uid(), file, name: file.name, thumb: URL.createObjectURL(file) });
     }
     setItems((current) => [...current, ...prepared].slice(0, 20));
-  }, [m, maxBytes, sizeLabel, t]);
+  }, [allowFiles, m, maxBytes, sizeLabel, t]);
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();

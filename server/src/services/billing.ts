@@ -6,29 +6,23 @@ export const ACCESS_COOKIE = 'pdfone_access';
 export const QUOTA_COOKIE = 'pdfone_quota';
 
 const PLAN_AMOUNTS: Record<PaidPlan, number> = {
-  month: 599,
-  year: 4900,
-  business: 1999
-};
-
-const PLAN_INTERVAL: Record<PaidPlan, 'month' | 'year'> = {
-  month: 'month',
-  year: 'year',
-  business: 'month'
+  week: 199,
+  month: 399,
+  year: 3990
 };
 
 const PLAN_NAMES: Record<PaidPlan, Record<string, string>> = {
+  week: { fr: 'One2PDF — Pass Semaine (7 jours)', en: 'One2PDF — 7-day pass' },
   month: { fr: 'One2PDF — Pro mensuel', en: 'One2PDF — Pro monthly' },
-  year: { fr: 'One2PDF — Pro annuel', en: 'One2PDF — Pro annual' },
-  business: { fr: 'One2PDF — Business (5 utilisateurs)', en: 'One2PDF — Business (5 users)' }
+  year: { fr: 'One2PDF — Pro annuel', en: 'One2PDF — Pro annual' }
 };
 
 export function isPaidPlan(value: unknown): value is PaidPlan {
-  return value === 'month' || value === 'year' || value === 'business';
+  return value === 'week' || value === 'month' || value === 'year';
 }
 
 export function isStoredPlan(value: unknown): value is StoredPlan {
-  return isPaidPlan(value) || value === 'week' || value === 'life';
+  return isPaidPlan(value) || value === 'business' || value === 'life';
 }
 
 export function isSubscriptionPlan(plan: StoredPlan): boolean {
@@ -75,28 +69,46 @@ export async function createCheckoutSession(plan: PaidPlan, localeHeader?: strin
   const lang = (localeHeader || 'fr').split(/[-_,]/)[0].toLowerCase();
   const name = PLAN_NAMES[plan][lang] || PLAN_NAMES[plan].en;
   const origin = appUrl();
-  const interval = PLAN_INTERVAL[plan];
-
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
+  const common = {
     success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?canceled=1`,
     locale: stripeLocale(localeHeader),
     allow_promotion_codes: true,
-    metadata: { plan },
-    subscription_data: { metadata: { plan } },
-    line_items: [
-      {
-        quantity: 1,
-        price_data: {
-          currency: 'usd',
-          unit_amount: PLAN_AMOUNTS[plan],
-          product_data: { name },
-          recurring: { interval }
+    metadata: { plan }
+  } as const;
+
+  const session = plan === 'week'
+    ? await stripe.checkout.sessions.create({
+      ...common,
+      mode: 'payment',
+      customer_creation: 'always',
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'usd',
+            unit_amount: PLAN_AMOUNTS.week,
+            product_data: { name }
+          }
         }
-      }
-    ]
-  });
+      ]
+    })
+    : await stripe.checkout.sessions.create({
+      ...common,
+      mode: 'subscription',
+      subscription_data: { metadata: { plan } },
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'usd',
+            unit_amount: PLAN_AMOUNTS[plan],
+            product_data: { name },
+            recurring: { interval: plan === 'year' ? 'year' : 'month' }
+          }
+        }
+      ]
+    });
 
   if (!session.url) {
     throw new Error('Impossible de créer la session de paiement.');

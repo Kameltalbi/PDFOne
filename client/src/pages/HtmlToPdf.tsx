@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { useOfficeFile } from '../lib/useOfficeFile';
 import { useI18n } from '../i18n';
@@ -59,8 +59,13 @@ export default function HtmlToPdf() {
         downloadName="document.pdf"
         resetLabel={m.htmlPdf.reset}
         onReset={reset}
+        sourceName={fileState.file?.name}
       />
     );
+  }
+
+  if (isProcessing) {
+    return <StudioProcessing label={m.htmlPdf.running} progress={progress} onCancel={reset} />;
   }
 
   if (!fileState.file) {

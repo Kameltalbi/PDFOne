@@ -28,7 +28,11 @@ export const fr: Messages = {
     imagesOnly: 'Seules les images JPG, PNG ou WebP sont acceptées.',
     maxFiles: 'Maximum {count} fichiers.',
     quotaReached: 'Le plan gratuit est limité à 3 documents par jour. Passez Pro pour continuer.',
-    adLabel: 'Publicité'
+    adLabel: 'Publicité',
+    doneShort: 'Fini !',
+    copyLink: 'Copier le lien',
+    linkCopied: 'Lien copié',
+    deleteResult: 'Supprimer'
   },
   units: { byte: 'o', kb: 'Ko', mb: 'Mo', gb: 'Go' },
   nav: {
@@ -43,64 +47,108 @@ export const fr: Messages = {
     protect: 'Protéger'
   },
   pricing: {
-    title: 'Débloquez tout le potentiel de {brand}',
-    subtitle: 'Travaillez plus vite, sans limites et au meilleur prix.',
-    popular: 'Le plus populaire',
-    freeName: 'Version gratuite',
+    eyebrow: 'Tarifs simples · Sans surprise',
+    seoTitle: 'Tarifs One2PDF : gratuit, Pass 7 jours, Pro',
+    seoDescription: 'Plan gratuit, Pass Semaine à 1,99 $ sans renouvellement, Pro mensuel 3,99 $ ou annuel 39,90 $. Paiement sécurisé par Stripe.',
+    title: 'Choisissez comment travailler : gratuit, 7 jours, ou Pro.',
+    subtitle: 'Pas d’engagement caché. Le Pass Semaine s’arrête tout seul au bout de 7 jours. Pro se résilie quand vous voulez. Paiement sécurisé par Stripe.',
+    popular: 'Le plus intelligent',
+    discover: 'Pour découvrir',
+    urgent: 'Besoin urgent',
+    flexible: 'Flexible',
+    bestValue: 'Meilleur choix',
+    freeName: 'Gratuit',
     freePrice: '0 $',
-    freePeriod: 'Toujours gratuit',
+    freePeriod: '/ mois',
+    freePitch: 'Testez tous les outils de base, sans carte bancaire.',
+    freeNote: 'Les gros fichiers, le hors-pub et le traitement par lots sont réservés aux offres payantes.',
     freeIncludes: [
-      'Accès à tous les outils de base',
+      'Tous les outils de base',
       '3 documents par jour',
-      'Fichiers jusqu’à 50 Mo',
-      'Publicités ciblées non intrusives',
-      'Vitesse standard'
+      'Fichiers jusqu’à 20 Mo',
+      'Publicités légères, non bloquantes',
+      'Fichiers traités puis supprimés automatiquement'
     ],
     freeCta: 'Continuer gratuitement',
+    freeMicro: 'Aucune carte requise.',
+    weekName: 'Pass Semaine',
+    weekTag: 'Paiement unique, sans engagement',
+    weekPrice: '1,99 $',
+    weekPeriod: 'une fois',
+    weekPitch: 'Un dossier à rendre maintenant ? 7 jours Pro, puis c’est fini — sans prélèvement.',
+    weekIncludes: [
+      'Paiement unique : 1,99 $, une seule fois',
+      'Aucun renouvellement automatique',
+      'Zéro publicité pendant 7 jours',
+      'Fichiers sans limite de taille pendant 7 jours',
+      'Accès Pro complet le temps du pass'
+    ],
+    weekCta: 'Débloquer 7 jours — 1,99 $',
+    weekMicro: 'Ça s’arrête tout seul. Rien à résilier.',
     monthName: 'Pro mensuel',
-    monthTag: 'Freelances et professionnels nomades',
-    monthPrice: '5,99 $',
+    monthTag: 'Indépendants et volume variable',
+    monthPrice: '3,99 $',
     monthPeriod: '/ mois',
+    monthPitch: 'L’abonnement des indépendants : vous gardez la main, mois après mois.',
     monthIncludes: [
-      'Fichiers sans limite de taille',
       'Zéro publicité',
+      'Fichiers sans limite de taille',
       'Traitement par lots',
-      'Priorité serveur maximale'
+      'Annulation en un clic, à tout moment'
     ],
-    monthCta: 'Passer Pro',
+    monthCta: 'Choisir Pro mensuel',
+    monthMicro: 'Sans engagement. Résiliable quand vous voulez.',
     yearName: 'Pro annuel',
-    yearPrice: '49,00 $',
+    yearPrice: '39,90 $',
     yearPeriod: '/ an',
-    yearEquiv: 'soit ~4,08 $ / mois — environ 32 % d’économie',
+    yearEquiv: 'soit 3,32 $ / mois — 2 mois offerts vs le mensuel',
+    yearPitch: 'Vous y revenez chaque semaine ? C’est l’offre qui coûte le moins, pour exactement les mêmes droits Pro.',
     yearIncludes: [
-      'Toutes les fonctionnalités Pro',
-      'Économie d’environ 32 % vs le mensuel',
-      'Support prioritaire par e-mail'
+      'Tout Pro : zéro pub, fichiers illimités, traitement par lots',
+      'Vous payez 10 mois, vous en avez 12',
+      'Un seul paiement dans l’année, zéro surprise mensuelle',
+      'Résiliation possible : vous gardez Pro jusqu’à la fin de la période payée'
     ],
-    yearBadge: 'Le plus populaire',
-    yearCta: 'Choisir l’annuel',
-    businessName: 'Business / Équipe',
-    businessTag: 'Jusqu’à 5 utilisateurs',
-    businessPrice: '19,99 $',
-    businessPeriod: '/ mois',
-    businessNote: 'Petites entreprises, cabinets',
-    businessIncludes: [
-      'Gestion centralisée des licences',
-      'Facturation groupée',
-      'Confidentialité et traçabilité renforcées'
+    yearBadge: 'Meilleur choix',
+    yearCta: 'Économiser avec l’annuel',
+    yearMicro: 'Meilleur prix au mois. Même puissance que Pro.',
+    trust: 'Paiement 100 % sécurisé via Stripe (cartes, Apple Pay, Google Pay). One2PDF ne stocke pas votre numéro de carte.',
+    faqTitle: 'Questions fréquentes sur les tarifs',
+    faq: [
+      {
+        question: 'Le Pass Semaine se renouvelle-t-il tout seul ?',
+        answer: 'Non. C’est un paiement unique de 1,99 $. Au bout de 7 jours, l’accès Pro s’arrête automatiquement. Aucun prélèvement suivant, rien à résilier. Si vous en avez encore besoin, vous pouvez racheter un pass ou passer sur Pro.'
+      },
+      {
+        question: 'Mes paiements sont-ils sécurisés ?',
+        answer: 'Oui. Tous les paiements passent par Stripe, le même prestataire que des milliers d’entreprises dans le monde. One2PDF ne voit jamais, et ne conserve jamais, votre numéro de carte. Vous pouvez payer par carte, Apple Pay ou Google Pay.'
+      },
+      {
+        question: 'Puis-je arrêter Pro quand je veux ?',
+        answer: 'Oui. Le mensuel (3,99 $) et l’annuel (39,90 $) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au plan Gratuit : 3 documents par jour, fichiers jusqu’à 20 Mo, publicités légères.'
+      }
     ],
-    businessCta: 'Choisir Business',
-    trust: 'Paiement 100 % sécurisé via Stripe / Apple Pay / Google Pay. Annulation facile en un clic pour l’abonnement annuel.',
     paying: 'Redirection vers le paiement…',
     payFail: 'Impossible de lancer le paiement.',
     canceled: 'Paiement annulé. Vous pouvez réessayer quand vous voulez.',
     successTitle: 'Paiement confirmé',
-    successText: 'Votre accès Pro est actif. Vous pouvez utiliser tous les outils sans limite quotidienne.',
+    successText: 'Votre accès est actif. Vous pouvez utiliser les outils sans les limites du plan gratuit.',
     successCta: 'Ouvrir les outils',
     activeAccess: 'Votre accès Pro est déjà actif sur cet appareil.',
     manage: 'Gérer l’abonnement',
     logout: 'Déconnexion',
     accountPro: 'Pro'
+  },
+  upgrade: {
+    kicker: 'Fichier trop volumineux',
+    title: 'Ce fichier dépasse la limite gratuite',
+    text: '« {name} » pèse {size}. Le plan gratuit accepte jusqu’à {limit} — le fichier n’a pas été envoyé. Débloquez des fichiers sans limite :',
+    limit: '20 Mo',
+    dismiss: 'Fermer et choisir un fichier plus léger',
+    batchKicker: 'Traitement par lots',
+    batchTitle: 'Le lot est réservé à Pro',
+    batchText: 'Vous avez sélectionné {count} fichiers d’un coup. Sur le plan gratuit, un seul fichier à la fois — rien n’a été envoyé. Le Pass Semaine et Pro débloquent le traitement par lots.',
+    batchDismiss: 'Fermer et ajouter les fichiers un par un'
   },
   tools: {
     edit: 'Modifier PDF',
@@ -155,7 +203,7 @@ export const fr: Messages = {
     ctaEdit: 'Modifier un PDF',
     ctaTools: 'Découvrir tous les outils',
     trustInstall: 'Sans installation',
-    trustSize: '50 Mo en gratuit',
+    trustSize: '20 Mo en gratuit',
     trustDelete: 'Fichiers supprimés automatiquement',
     previewAria: 'Aperçu de l’éditeur One2PDF',
     heroAlt: 'Professionnelle utilisant One2PDF pour fusionner des PDF',
@@ -787,7 +835,7 @@ export const fr: Messages = {
     browse: 'parcourir',
     hintPdf: 'Fichiers PDF',
     hintImages: 'JPG, PNG ou WebP',
-    hintMax: '50 Mo en gratuit · jusqu’à {count} fichiers',
+    hintMax: '20 Mo en gratuit · jusqu’à {count} fichiers',
     listTitle: '{count} fichier(s) — glissez pour réordonner',
     up: 'Monter',
     down: 'Descendre',
@@ -806,7 +854,7 @@ export const fr: Messages = {
     feat3Title: 'Traitement sécurisé',
     feat3Text: 'Le document temporaire est supprimé du serveur après son export.',
     needPdf: 'Veuillez sélectionner un fichier PDF.',
-    tooLarge: 'Le fichier dépasse la limite de 50 Mo du plan gratuit.',
+    tooLarge: 'Le fichier dépasse la limite de 20 Mo du plan gratuit.',
     cannotOpen: 'Ce PDF ne peut pas être ouvert ou il est protégé.',
     exportFail: 'Export impossible',
     generateFail: 'Impossible de générer le PDF. Vérifiez que le serveur est démarré.',
@@ -883,6 +931,6 @@ export const fr: Messages = {
     contactTitle: 'Contact',
     contactIntro: 'Une question, un incident ou une demande de support Pro ? Écrivez-nous. Nous répondons en français et en anglais.',
     contactEmail: 'support@one2pdf.com',
-    contactPriority: 'Les abonnés Pro annuel et Business bénéficient d’un support e-mail prioritaire.'
+    contactPriority: 'Les abonnés Pro annuel bénéficient d’un support e-mail prioritaire.'
   }
 };

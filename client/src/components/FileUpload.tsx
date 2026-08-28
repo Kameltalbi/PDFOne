@@ -3,6 +3,7 @@ import { renderPdfPage } from '../lib/pdfPreview';
 import { formatFileSize } from '../lib/api';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
+import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
 import './FileUpload.css';
 
@@ -74,6 +75,7 @@ function FileUpload({
 }: FileUploadProps) {
   const { m, t } = useI18n();
   const { status } = useBilling();
+  const { allowFiles } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
   const inputId = useId();
@@ -86,16 +88,22 @@ function FileUpload({
     const incoming = Array.from(fileList);
     if (incoming.length === 0) return;
 
+    const imagesOnly = accept.includes('image') && !accept.includes('pdf');
+    const typed = incoming.filter((file) => (imagesOnly ? isImage(file) : isPdf(file)));
+    if (typed.length === 0) {
+      setError(imagesOnly ? m.common.imagesOnly : m.common.pdfOnly);
+      return;
+    }
+
+    const accepted = allowFiles(typed);
+    if (accepted.length === 0) return;
+
     setError(null);
     const next: FileUploadType[] = [];
-    for (const file of incoming) {
-      const validationError = (() => {
-        if (file.size > maxBytes) return t(m.common.fileTooLarge, { name: file.name, size: sizeLabel });
-        const imagesOnly = accept.includes('image') && !accept.includes('pdf');
-        if (imagesOnly && !isImage(file)) return m.common.imagesOnly;
-        if (!imagesOnly && !isPdf(file)) return m.common.pdfOnly;
-        return null;
-      })();
+    for (const file of accepted) {
+      const validationError = file.size > maxBytes
+        ? t(m.common.fileTooLarge, { name: file.name, size: sizeLabel })
+        : null;
       if (validationError) {
         setError(validationError);
         continue;
@@ -119,7 +127,7 @@ function FileUpload({
       onFilesChange?.(limited);
       return limited;
     });
-  }, [accept, maxBytes, maxFiles, multiple, onFilesChange, m, sizeLabel, t]);
+  }, [accept, allowFiles, maxBytes, maxFiles, multiple, onFilesChange, m, sizeLabel, t]);
 
   const handleDropZone = useCallback((event: React.DragEvent) => {
     event.preventDefault();

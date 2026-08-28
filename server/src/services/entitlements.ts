@@ -2,8 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export type PaidPlan = 'month' | 'year' | 'business';
-export type StoredPlan = PaidPlan | 'week' | 'life';
+export type PaidPlan = 'week' | 'month' | 'year';
+export type StoredPlan = PaidPlan | 'business' | 'life';
 
 export type Entitlement = {
   email: string;

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import type { FeatureCopy, PageSeoCopy } from '../i18n/types';
@@ -92,6 +92,18 @@ export function PdfAction({
         downloadLabel={downloadLabel}
         resetLabel={copy.reset}
         onReset={reset}
+        previewSrc={pdf.thumbs[0]}
+        sourceName={pdf.file?.name}
+      />
+    );
+  }
+
+  if (isProcessing) {
+    return (
+      <StudioProcessing
+        label={copy.running}
+        progress={progress}
+        onCancel={reset}
       />
     );
   }
