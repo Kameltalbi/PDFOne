@@ -20,6 +20,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = isRtl(locale) ? 'rtl' : 'ltr';
+    if (document.documentElement.dataset.pageSeo === '1') return;
     document.title = m.htmlTitle;
   }, [locale, m.htmlTitle]);
 

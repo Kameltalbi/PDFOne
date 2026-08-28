@@ -1,5 +1,6 @@
 import type { Messages } from '../types';
 import { en } from './en';
+import { seoEn } from '../seoCopy';
 
 export const ar: Messages = {
   htmlTitle: 'One2PDF — أدوات PDF',
@@ -13,6 +14,7 @@ export const ar: Messages = {
     signup: 'إنشاء حساب',
     privacy: 'الخصوصية',
     contact: 'اتصل بنا',
+    blog: 'المدونة',
     seeAll: 'عرض الكل',
     pricing: 'الأسعار',
     menu: 'فتح القائمة',
@@ -25,7 +27,8 @@ export const ar: Messages = {
     pdfOnly: 'يُسمح بملفات PDF فقط.',
     imagesOnly: 'يُسمح بصور JPG أو PNG أو WebP فقط.',
     maxFiles: 'الحد الأقصى {count} ملفات.',
-    quotaReached: 'الخطة المجانية محدودة بـ 3 مستندات في اليوم. قم بالترقية للمتابعة.'
+    quotaReached: 'الخطة المجانية محدودة بـ 3 مستندات في اليوم. قم بالترقية للمتابعة.',
+    adLabel: 'إعلان'
   },
   units: { byte: 'بايت', kb: 'ك.ب', mb: 'م.ب', gb: 'ج.ب' },
   nav: {
@@ -54,35 +57,39 @@ export const ar: Messages = {
       'معالجة مباشرة وآمنة'
     ],
     freeCta: 'المتابعة مجانًا',
-    weekName: 'باقة أسبوعية',
-    weekTag: 'لحاجة عاجلة',
-    weekPrice: '1,99 $',
-    weekNote: 'دفعة واحدة، دون اشتراك',
-    weekIncludes: [
-      '7 أيام من الوصول الكامل وغير المحدود',
-      'بدون إعلانات وملفات غير محدودة'
+    monthName: 'برو شهري',
+    monthTag: 'المستقلون والمهنيون المتنقلون',
+    monthPrice: '5,99 $',
+    monthPeriod: '/ شهر',
+    monthIncludes: [
+      'ملفات بلا حد للحجم',
+      'بدون إعلانات',
+      'معالجة بالدفعات',
+      'أولوية قصوى على الخادم'
     ],
-    weekCta: 'اختيار باقة 7 أيام',
-    yearName: 'اشتراك سنوي',
-    yearPrice: '10,00 $',
+    monthCta: 'الانتقال إلى برو',
+    yearName: 'برو سنوي',
+    yearPrice: '49,00 $',
     yearPeriod: '/ سنة',
-    yearEquiv: 'أي ما يعادل 0,83 $ شهريًا، تُفوتر سنويًا',
+    yearEquiv: 'حوالي 4,08 $ / شهر — توفير نحو 32٪',
     yearIncludes: [
-      'وصول غير محدود طوال السنة',
-      'بدون إعلانات وملفات بلا حد للحجم',
-      'تحديثات ذات أولوية'
+      'كل مزايا برو',
+      'توفير حوالي 32٪ مقابل الشهري',
+      'دعم بريد إلكتروني ذو أولوية'
     ],
-    yearBadge: 'الخيار الأكثر توفيرًا',
-    yearCta: 'تفعيل غير المحدود بـ 10 $/سنة',
-    lifeName: 'باقة مدى الحياة',
-    lifeTag: 'لكي لا تفكر في الأمر مجددًا',
-    lifePrice: '29,99 $',
-    lifeNote: 'دفعة واحدة مدى الحياة، دون أي تجديد',
-    lifeIncludes: [
-      'وصول غير محدود دائم',
-      'جميع الميزات المستقبلية مشمولة'
+    yearBadge: 'الأكثر شعبية',
+    yearCta: 'اختيار السنوي',
+    businessName: 'بيزنس / فريق',
+    businessTag: 'حتى 5 مستخدمين',
+    businessPrice: '19,99 $',
+    businessPeriod: '/ شهر',
+    businessNote: 'الشركات الصغيرة والمكاتب',
+    businessIncludes: [
+      'إدارة مركزية للتراخيص',
+      'فوترة مجمّعة',
+      'خصوصية وتتبع معززان'
     ],
-    lifeCta: 'الحصول على الوصول مدى الحياة',
+    businessCta: 'اختيار بيزنس',
     trust: 'دفع آمن بنسبة 100٪ عبر Stripe / Apple Pay / Google Pay. إلغاء سهل بنقرة واحدة للاشتراك السنوي.',
     paying: 'جارٍ التحويل إلى الدفع…',
     payFail: 'تعذر بدء الدفع.',
@@ -148,7 +155,7 @@ export const ar: Messages = {
     ctaEdit: 'تعديل PDF',
     ctaTools: 'اكتشف كل الأدوات',
     trustInstall: 'بدون تثبيت',
-    trustSize: 'حتى 100 ميغابايت',
+    trustSize: 'المجاني حتى 50 ميغابايت',
     trustDelete: 'تُحذف الملفات تلقائيًا',
     previewAria: 'معاينة محرر One2PDF',
     heroAlt: 'محترفة تستخدم One2PDF لدمج ملفات PDF',
@@ -222,7 +229,13 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'بدون تثبيت', text: 'استورد ملفاتك، أعد ترتيبها، ثم نزّل المستند النهائي.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'تكتمل المعالجة في ثوانٍ، جاهزة للمشاركة.' },
       { icon: '✧', tone: 'teal', title: 'واجهة مرئية', text: 'اسحب ملفات PDF وأفلتها، شاهد المصغرات وادمج بنقرة.' }
-    ]
+    ],
+    seoTitle: en.merge.seoTitle,
+    seoDescription: en.merge.seoDescription,
+    seoH2: en.merge.seoH2,
+    seoP1: en.merge.seoP1,
+    seoP2: en.merge.seoP2,
+    seoP3: en.merge.seoP3
   },
   split: {
     title: 'تقسيم PDF',
@@ -258,7 +271,13 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'نطاقات دفعة واحدة', text: 'اكتب 1-3، 5، 8 لتحديد عدة صفحات مرة واحدة.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'يستغرق التقسيم ثوانٍ، والمستند جاهز للتنزيل.' },
       { icon: '✧', tone: 'teal', title: 'معالجة آمنة', text: 'يُحذف مستندك تلقائيًا بعد التنزيل.' }
-    ]
+    ],
+    seoTitle: en.split.seoTitle,
+    seoDescription: en.split.seoDescription,
+    seoH2: en.split.seoH2,
+    seoP1: en.split.seoP1,
+    seoP2: en.split.seoP2,
+    seoP3: en.split.seoP3
   },
   deletePages: {
     title: 'حذف صفحات',
@@ -279,7 +298,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'بدون تثبيت', text: 'استورد، حدد، نزّل — من المتصفح.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF أخف، جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُعالَج الأصل مؤقتًا ثم يُحذف.' }
-    ]
+    ],
+    ...seoEn.deletePages
   },
   reorderPages: {
     title: 'إعادة ترتيب الصفحات',
@@ -303,8 +323,13 @@ export const ar: Messages = {
   rotatePdf: {
     title: 'تدوير PDF',
     subtitle: 'عدّل الصفحات المائلة أو المقلوبة، ثم نزّل ملف PDF المصحّح.',
-    tip: 'انقر على صفحة لتدويرها 90°. انقر مرة أخرى للمتابعة.',
-    clickToRotate: 'انقر على صفحة لتدويرها',
+    tip: 'استخدم الأزرار لتدوير الصفحة المعروضة، أو كل الصفحات، بمقدار 90°.',
+    clickToRotate: 'اختر صفحة ثم أدرها بالأزرار.',
+    rotateLeft: '90° يسار',
+    rotateRight: '90° يمين',
+    rotateAllLeft: 'الكل لليسار',
+    rotateAllRight: 'الكل لليمين',
+    pageOf: 'صفحة {page} / {count}',
     rotating: 'جارٍ التدوير…',
     action: 'تطبيق التدوير',
     doneTitle: 'تم تدوير PDF',
@@ -319,7 +344,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'بدون تثبيت', text: 'يتم كل شيء في المتصفح.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF المصحّح جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُحذف مستندك تلقائيًا بعد المعالجة.' }
-    ]
+    ],
+    ...seoEn.rotate
   },
   watermark: {
     title: 'علامة مائية لـ PDF',
@@ -349,7 +375,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'شفافية قابلة للضبط', text: 'واضحة بما يكفي لوسم المستند، وخفيفة بما يكفي لقراءته.' },
       { icon: '⏱', tone: 'purple', title: 'كل الصفحات', text: 'تُطبَّق العلامة المائية دفعة واحدة على الملف بأكمله.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
-    ]
+    ],
+    ...seoEn.watermark
   },
   signPdf: {
     title: 'توقيع رقمي',
@@ -386,7 +413,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'أي لغة', text: 'يُرسم اسم الموقّع كما هو، بما في ذلك العربية والتركية.' },
       { icon: '⏱', tone: 'purple', title: 'الأخيرة أو الكل', text: 'ضع التوقيع حيث تتوقعه العقود، في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ الأصل على الخادم.' }
-    ]
+    ],
+    ...seoEn.sign
   },
   numberPages: {
     title: 'ترقيم الصفحات',
@@ -419,7 +447,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'عدة تنسيقات', text: '1، أو 1 / 12، أو صفحة 1، أو صفحة 1 من 12 — حسب مستندك.' },
       { icon: '⏱', tone: 'purple', title: 'كل الصفحات', text: 'تُطبَّق الأرقام دفعة واحدة على الملف بأكمله.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
-    ]
+    ],
+    ...seoEn.pageNumbers
   },
   cropPdf: {
     title: 'قص PDF',
@@ -449,7 +478,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'كل الصفحات', text: 'تُطبَّق الهوامش نفسها دفعة واحدة على الملف بأكمله.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF المقصوص جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
-    ]
+    ],
+    ...seoEn.crop
   },
   compress: {
     title: 'ضغط PDF',
@@ -478,7 +508,15 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'معاينة فورية', text: 'شاهد المستند قبل بدء المعالجة.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة سريعة', text: 'يستغرق الضغط ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُحذف ملف PDF المعالَج تلقائيًا بعد الاستخدام.' }
-    ]
+    ],
+    seoTitle: en.compress.seoTitle,
+    seoDescription: en.compress.seoDescription,
+    seoH2: en.compress.seoH2,
+    seoP1: en.compress.seoP1,
+    seoP2: en.compress.seoP2,
+    seoP3: en.compress.seoP3,
+    faqTitle: en.compress.faqTitle,
+    faq: en.compress.faq
   },
   protect: {
     title: 'حماية PDF',
@@ -504,7 +542,8 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'gold', title: 'معالجة سريعة', text: 'الملف المشفّر جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'purple', title: 'للاستخدام اليومي', text: 'عقود وملفات ووثائق هوية: أبقها خاصة.' },
       { icon: '⇄', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ الأصل على الخادم.' }
-    ]
+    ],
+    ...seoEn.protect
   },
   toJpg: {
     title: 'PDF إلى JPG',
@@ -525,7 +564,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'جودة مقروءة', text: 'تبقى الصور واضحة للقراءة والإرسال.' },
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'يستغرق التحويل ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُعالَج ملف PDF المصدر ثم يُحذف.' }
-    ]
+    ],
+    ...seoEn.toJpg
   },
   jpgToPdf: {
     title: 'JPG / PNG إلى PDF',
@@ -545,7 +585,8 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'عدة ملفات', text: 'أضف حتى 20 صورة، ثم نزّل ملف PDF واحدًا.' },
       { icon: '⏱', tone: 'purple', title: 'إنشاء سريع', text: 'المستند جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا تبقى الصور المُرسلة على الخادم.' }
-    ]
+    ],
+    ...seoEn.jpgToPdf
   },
   toPng: { ...en.toPng, title: 'PDF إلى PNG', action: 'تحويل إلى PNG' },
   toText: { ...en.toText, title: 'PDF إلى نص', action: 'استخراج النص' },
@@ -592,7 +633,13 @@ export const ar: Messages = {
       { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'يجري التحويل عبر LibreOffice دون تثبيت Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word وExcel وPowerPoint', text: 'DOC وDOCX وXLS وXLSX وPPT وPPTX وتنسيقات OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'تخطيط متغيّر', text: 'ملفات PDF الممسوحة والجداول المعقدة تُحوَّل بدقة أقل.' }
-    ]
+    ],
+    wordToPdfSeo: en.convert.wordToPdfSeo,
+    pdfToWordSeo: en.convert.pdfToWordSeo,
+    excelToPdfSeo: en.convert.excelToPdfSeo,
+    pptToPdfSeo: en.convert.pptToPdfSeo,
+    pdfToExcelSeo: en.convert.pdfToExcelSeo,
+    pdfToPptSeo: en.convert.pdfToPptSeo
   },
   upload: {
     drop: 'اسحب ملفاتك هنا أو',
@@ -672,6 +719,9 @@ export const ar: Messages = {
       { icon: '◆', tone: 'gold', title: 'بدون تثبيت', text: 'افتح ملف PDF في المتصفح وابدأ العمل فورًا.' },
       { icon: '⏱', tone: 'purple', title: 'تصدير سريع', text: 'نزّل الملف المعدَّل في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'معالجة آمنة', text: 'يُحذف المستند المؤقت بعد التصدير.' }
-    ]
-  }
+    ],
+    ...seoEn.edit
+  },
+  blogPage: en.blogPage,
+  legal: en.legal
 };

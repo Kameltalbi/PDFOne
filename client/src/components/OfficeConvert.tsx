@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { useOfficeFile } from '../lib/useOfficeFile';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 export type OfficeJob =
@@ -79,6 +80,18 @@ function OfficeConvert({ job }: { job: OfficeJob }) {
     'ppt-to-pdf': { title: m.convert.pptToPdfTitle, subtitle: m.convert.pptToPdfDesc, done: m.convert.pptToPdfDone }
   }[job];
 
+  const pageSeo = {
+    'pdf-to-word': m.convert.pdfToWordSeo,
+    'word-to-pdf': m.convert.wordToPdfSeo,
+    'excel-to-pdf': m.convert.excelToPdfSeo,
+    'ppt-to-pdf': m.convert.pptToPdfSeo,
+    'pdf-to-excel': m.convert.pdfToExcelSeo,
+    'pdf-to-ppt': m.convert.pdfToPptSeo
+  }[job];
+
+  usePageSeo(pageSeo?.seoTitle, pageSeo?.seoDescription);
+  const landingSeo = pageSeo ? landingSeoFrom(pageSeo) : undefined;
+
   const downloadLabel = spec.download === 'word'
     ? m.convert.downloadWord
     : spec.download === 'excel'
@@ -136,6 +149,7 @@ function OfficeConvert({ job }: { job: OfficeJob }) {
         isLoading={fileState.isLoading}
         error={fileState.error}
         features={m.convert.features}
+        seo={landingSeo}
         accept={spec.accept}
         onDragOver={() => fileState.setIsDragging(true)}
         onDragLeave={() => fileState.setIsDragging(false)}
@@ -146,14 +160,22 @@ function OfficeConvert({ job }: { job: OfficeJob }) {
   }
 
   const ext = fileState.file.name.split('.').pop()?.toUpperCase() || 'FILE';
+  const isPdf = spec.previewPdf;
 
   return (
     <StudioWorkspace
-      canvas={(
+      canvas={isPdf ? (
+        <StudioDocumentCanvas
+          thumbs={fileState.thumbs}
+          isLoading={fileState.isLoading}
+          zoom={fileState.zoom}
+          setZoom={fileState.setZoom}
+          fileName={fileState.file.name}
+          pageCount={fileState.pageCount}
+        />
+      ) : (
         <article className="studio-office-file">
-          {fileState.thumbs[0]
-            ? <img src={fileState.thumbs[0]} alt="" />
-            : <span className="studio-office-ext">{ext}</span>}
+          <span className="studio-office-ext">{ext}</span>
           <b>{fileState.file.name}</b>
           <span>{formatFileSize(fileState.file.size)}</span>
         </article>

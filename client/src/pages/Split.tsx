@@ -3,10 +3,12 @@ import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, Studi
 import { postForm } from '../lib/api';
 import { parsePageRanges } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function Split() {
   const { m, t } = useI18n();
+  usePageSeo(m.split.seoTitle, m.split.seoDescription);
   const pdf = useSinglePdf();
   const [selected, setSelected] = useState<number[]>([]);
   const [range, setRange] = useState('');
@@ -88,6 +90,10 @@ function Split() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.split.features}
+        seo={{
+          h2: m.split.seoH2,
+          paragraphs: [m.split.seoP1, m.split.seoP2, m.split.seoP3]
+        }}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}

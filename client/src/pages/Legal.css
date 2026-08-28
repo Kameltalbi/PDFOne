@@ -1,0 +1,46 @@
+.legal-page {
+  min-height: calc(100svh - 80px);
+  padding: 3.5rem 1.25rem 5rem;
+  background: #f7f8fb;
+}
+
+.legal-panel {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 2.4rem 2rem 2.2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: white;
+  color: #374151;
+  line-height: 1.65;
+}
+
+.legal-eyebrow {
+  color: #dc2626;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.legal-panel h1 {
+  margin: 0.5rem 0 0.35rem;
+  color: #111827;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+}
+
+.legal-meta {
+  margin: 0 0 1.4rem;
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.legal-panel p {
+  margin: 0 0 1rem;
+}
+
+.legal-mail {
+  color: #dc2626;
+  font-weight: 700;
+  text-decoration: underline;
+}

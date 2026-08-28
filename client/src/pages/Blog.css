@@ -1,0 +1,142 @@
+.blog-page {
+  min-height: calc(100svh - 80px);
+  padding: 3.5rem 1.25rem 5rem;
+  background: #f7f8fb;
+}
+
+.blog-wrap {
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+.blog-page h1 {
+  margin: 0.45rem 0 0.7rem;
+  color: #111827;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.blog-lead {
+  margin: 0 0 2rem;
+  color: #6b7280;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.blog-list {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.blog-card {
+  display: block;
+  padding: 1.45rem 1.5rem 1.35rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: white;
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-card:hover {
+  border-color: #fdba74;
+}
+
+.blog-card time,
+.blog-article time {
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+
+.blog-card h2 {
+  margin: 0.4rem 0 0.55rem;
+  color: #111827;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.blog-card p {
+  margin: 0 0 0.85rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.blog-card span {
+  color: #ed5e44;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.blog-article {
+  padding: 2.2rem 2rem 2.4rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: white;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.blog-back {
+  display: inline-block;
+  margin-bottom: 1.1rem;
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.blog-back:hover {
+  color: #ed5e44;
+}
+
+.blog-article h2 {
+  margin: 1.7rem 0 0.7rem;
+  color: #111827;
+  font-size: 1.25rem;
+}
+
+.blog-article p {
+  margin: 0 0 0.95rem;
+}
+
+.blog-article h3 {
+  margin: 1.15rem 0 0.4rem;
+  color: #111827;
+  font-size: 1.02rem;
+}
+
+.blog-article ol {
+  margin: 0.4rem 0 1.1rem;
+  padding-inline-start: 1.25rem;
+}
+
+.blog-article li {
+  margin: 0 0 0.55rem;
+}
+
+.blog-article a {
+  color: #ed5e44;
+  font-weight: 700;
+}
+
+.blog-cta {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  padding: 0.85rem 1.2rem;
+  border-radius: 8px;
+  background: #ed5e44;
+  color: white;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.blog-cta:hover {
+  color: white;
+  filter: brightness(1.05);
+}
+
+@media (max-width: 640px) {
+  .blog-article {
+    padding: 1.4rem 1.1rem 1.6rem;
+  }
+}

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 type SignPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
@@ -16,12 +17,14 @@ const POSITIONS: { id: SignPosition; dot: string; label: 'topLeft' | 'topCenter'
 ];
 
 function Sign() {
-  const { m, t, locale } = useI18n();
+  const { m, locale } = useI18n();
+  usePageSeo(m.signPdf.seoTitle, m.signPdf.seoDescription);
   const pdf = useSinglePdf();
   const [name, setName] = useState('');
   const [reason, setReason] = useState('');
   const [position, setPosition] = useState<SignPosition>('bottom-right');
   const [scope, setScope] = useState<'last' | 'all'>('last');
+  const [activePage, setActivePage] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -86,6 +89,7 @@ function Sign() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.signPdf.features}
+        seo={landingSeoFrom(m.signPdf)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -95,37 +99,30 @@ function Sign() {
   }
 
   const previewName = name.trim() || m.signPdf.namePh;
-  const lastPage = pdf.thumbs.length;
+  const lastPage = Math.max(pdf.thumbs.length, 1);
+  const showStamp = scope === 'all' || activePage === lastPage - 1;
 
   return (
     <StudioWorkspace
       canvas={(
-        <>
-          <StudioZoom setZoom={pdf.setZoom} />
-          <div className="studio-thumbs" style={{ ['--thumb-scale' as string]: String(pdf.zoom) }}>
-            {pdf.thumbs.map((src, index) => {
-              const page = index + 1;
-              const showStamp = scope === 'all' || page === lastPage;
-              return (
-                <article key={page} className="studio-thumb">
-                  <span className="studio-order">{page}</span>
-                  <div className="studio-thumb-sheet">
-                    <img src={src} alt={t(m.split.pageAlt, { page })} />
-                    {showStamp && (
-                      <div className={`sign-preview ${position}`}>
-                        <b>{m.signPdf.stampSigned}</b>
-                        <strong>{previewName}</strong>
-                        <small>{m.signPdf.stampDate} : {stampDate}</small>
-                        {reason.trim() && <small>{m.signPdf.stampReason} : {reason.trim()}</small>}
-                      </div>
-                    )}
-                  </div>
-                  <small>{t(m.split.pageAlt, { page })}</small>
-                </article>
-              );
-            })}
-          </div>
-        </>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+          activePage={activePage}
+          onActivePageChange={setActivePage}
+          overlay={showStamp ? (
+            <div className={`sign-preview ${position}`}>
+              <b>{m.signPdf.stampSigned}</b>
+              <strong>{previewName}</strong>
+              <small>{m.signPdf.stampDate} : {stampDate}</small>
+              {reason.trim() && <small>{m.signPdf.stampReason} : {reason.trim()}</small>}
+            </div>
+          ) : undefined}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

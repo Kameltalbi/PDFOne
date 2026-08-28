@@ -59,15 +59,15 @@ function Pricing() {
           </article>
 
           <article className="pricing-card">
-            <p className="pricing-tag">{m.pricing.weekTag}</p>
-            <h2>{m.pricing.weekName}</h2>
+            <p className="pricing-tag">{m.pricing.monthTag}</p>
+            <h2>{m.pricing.monthName}</h2>
             <div className="pricing-price">
-              <strong>{m.pricing.weekPrice}</strong>
-              <span>{m.pricing.weekNote}</span>
+              <strong>{m.pricing.monthPrice}</strong>
+              <em>{m.pricing.monthPeriod}</em>
             </div>
-            <PlanList items={m.pricing.weekIncludes} />
-            <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('week')}>
-              {paying === 'week' ? m.pricing.paying : m.pricing.weekCta}
+            <PlanList items={m.pricing.monthIncludes} />
+            <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('month')}>
+              {paying === 'month' ? m.pricing.paying : m.pricing.monthCta}
             </button>
           </article>
 
@@ -87,15 +87,16 @@ function Pricing() {
           </article>
 
           <article className="pricing-card">
-            <p className="pricing-tag">{m.pricing.lifeTag}</p>
-            <h2>{m.pricing.lifeName}</h2>
+            <p className="pricing-tag">{m.pricing.businessTag}</p>
+            <h2>{m.pricing.businessName}</h2>
             <div className="pricing-price">
-              <strong>{m.pricing.lifePrice}</strong>
-              <span>{m.pricing.lifeNote}</span>
+              <strong>{m.pricing.businessPrice}</strong>
+              <em>{m.pricing.businessPeriod}</em>
+              <span>{m.pricing.businessNote}</span>
             </div>
-            <PlanList items={m.pricing.lifeIncludes} />
-            <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('life')}>
-              {paying === 'life' ? m.pricing.paying : m.pricing.lifeCta}
+            <PlanList items={m.pricing.businessIncludes} />
+            <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('business')}>
+              {paying === 'business' ? m.pricing.paying : m.pricing.businessCta}
             </button>
           </article>
         </div>

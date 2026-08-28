@@ -3,6 +3,15 @@ export type Locale = (typeof LOCALES)[number];
 
 export type FeatureCopy = { icon: string; tone: string; title: string; text: string };
 
+export type PageSeoCopy = {
+  seoTitle: string;
+  seoDescription: string;
+  seoH2: string;
+  seoP1: string;
+  seoP2: string;
+  seoP3: string;
+};
+
 export type Messages = {
   htmlTitle: string;
   brand: string;
@@ -15,6 +24,7 @@ export type Messages = {
     signup: string;
     privacy: string;
     contact: string;
+    blog: string;
     seeAll: string;
     pricing: string;
     menu: string;
@@ -28,6 +38,7 @@ export type Messages = {
     imagesOnly: string;
     maxFiles: string;
     quotaReached: string;
+    adLabel: string;
   };
   units: { byte: string; kb: string; mb: string; gb: string };
   nav: {
@@ -50,12 +61,12 @@ export type Messages = {
     freePeriod: string;
     freeIncludes: string[];
     freeCta: string;
-    weekName: string;
-    weekTag: string;
-    weekPrice: string;
-    weekNote: string;
-    weekIncludes: string[];
-    weekCta: string;
+    monthName: string;
+    monthTag: string;
+    monthPrice: string;
+    monthPeriod: string;
+    monthIncludes: string[];
+    monthCta: string;
     yearName: string;
     yearPrice: string;
     yearPeriod: string;
@@ -63,12 +74,13 @@ export type Messages = {
     yearIncludes: string[];
     yearBadge: string;
     yearCta: string;
-    lifeName: string;
-    lifeTag: string;
-    lifePrice: string;
-    lifeNote: string;
-    lifeIncludes: string[];
-    lifeCta: string;
+    businessName: string;
+    businessTag: string;
+    businessPrice: string;
+    businessPeriod: string;
+    businessNote: string;
+    businessIncludes: string[];
+    businessCta: string;
     trust: string;
     paying: string;
     payFail: string;
@@ -202,6 +214,12 @@ export type Messages = {
     merging: string;
     mergeCount: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   split: {
     title: string;
@@ -231,6 +249,12 @@ export type Messages = {
     pageAlt: string;
     tip: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   deletePages: {
     title: string;
@@ -245,6 +269,12 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   reorderPages: {
     title: string;
@@ -263,6 +293,11 @@ export type Messages = {
     subtitle: string;
     tip: string;
     clickToRotate: string;
+    rotateLeft: string;
+    rotateRight: string;
+    rotateAllLeft: string;
+    rotateAllRight: string;
+    pageOf: string;
     rotating: string;
     action: string;
     doneTitle: string;
@@ -271,6 +306,12 @@ export type Messages = {
     fail: string;
     rotated: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   watermark: {
     title: string;
@@ -294,6 +335,12 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   signPdf: {
     title: string;
@@ -324,6 +371,12 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   numberPages: {
     title: string;
@@ -350,6 +403,12 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   cropPdf: {
     title: string;
@@ -373,6 +432,12 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   compress: {
     title: string;
@@ -395,6 +460,14 @@ export type Messages = {
     reset: string;
     tip: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    faqTitle: string;
+    faq: { question: string; answer: string }[];
   };
   protect: {
     title: string;
@@ -414,6 +487,12 @@ export type Messages = {
     reset: string;
     tip: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   toJpg: {
     title: string;
@@ -428,6 +507,12 @@ export type Messages = {
     reset: string;
     tip: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   jpgToPdf: {
     title: string;
@@ -441,6 +526,12 @@ export type Messages = {
     reset: string;
     tip: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   toPng: {
     title: string;
@@ -481,6 +572,12 @@ export type Messages = {
     password: string;
     passwordPh: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   ocrPdf: {
     title: string;
@@ -493,6 +590,12 @@ export type Messages = {
     doneText: string;
     reset: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
   };
   summarizePdf: {
     title: string;
@@ -582,6 +685,12 @@ export type Messages = {
     tip: string;
     action: string;
     features: FeatureCopy[];
+    wordToPdfSeo: PageSeoCopy;
+    pdfToWordSeo: PageSeoCopy;
+    excelToPdfSeo: PageSeoCopy;
+    pptToPdfSeo: PageSeoCopy;
+    pdfToExcelSeo: PageSeoCopy;
+    pdfToPptSeo: PageSeoCopy;
   };
   upload: {
     drop: string;
@@ -655,6 +764,34 @@ export type Messages = {
     restart: string;
     allPdfTools: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+  };
+  blogPage: {
+    title: string;
+    subtitle: string;
+    readMore: string;
+    back: string;
+    seoTitle: string;
+    seoDescription: string;
+    publishedOn: string;
+  };
+  legal: {
+    privacyTitle: string;
+    privacyUpdated: string;
+    privacyIntro: string;
+    privacyData: string;
+    privacyRetention: string;
+    privacyThird: string;
+    privacyRights: string;
+    contactTitle: string;
+    contactIntro: string;
+    contactEmail: string;
+    contactPriority: string;
   };
 };
 

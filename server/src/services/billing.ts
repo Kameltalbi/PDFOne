@@ -1,24 +1,38 @@
 import Stripe from 'stripe';
-import type { PaidPlan } from './entitlements.js';
+import type { PaidPlan, StoredPlan } from './entitlements.js';
 import { cancelEntitlement, upsertEntitlement, type Entitlement } from './entitlements.js';
 
 export const ACCESS_COOKIE = 'pdfone_access';
 export const QUOTA_COOKIE = 'pdfone_quota';
 
 const PLAN_AMOUNTS: Record<PaidPlan, number> = {
-  week: 199,
-  year: 1000,
-  life: 2999
+  month: 599,
+  year: 4900,
+  business: 1999
+};
+
+const PLAN_INTERVAL: Record<PaidPlan, 'month' | 'year'> = {
+  month: 'month',
+  year: 'year',
+  business: 'month'
 };
 
 const PLAN_NAMES: Record<PaidPlan, Record<string, string>> = {
-  week: { fr: 'One2PDF — Pass 7 jours', en: 'One2PDF — 7-day pass' },
-  year: { fr: 'One2PDF — Illimité annuel', en: 'One2PDF — Annual unlimited' },
-  life: { fr: 'One2PDF — Pass à vie', en: 'One2PDF — Lifetime pass' }
+  month: { fr: 'One2PDF — Pro mensuel', en: 'One2PDF — Pro monthly' },
+  year: { fr: 'One2PDF — Pro annuel', en: 'One2PDF — Pro annual' },
+  business: { fr: 'One2PDF — Business (5 utilisateurs)', en: 'One2PDF — Business (5 users)' }
 };
 
 export function isPaidPlan(value: unknown): value is PaidPlan {
-  return value === 'week' || value === 'year' || value === 'life';
+  return value === 'month' || value === 'year' || value === 'business';
+}
+
+export function isStoredPlan(value: unknown): value is StoredPlan {
+  return isPaidPlan(value) || value === 'week' || value === 'life';
+}
+
+export function isSubscriptionPlan(plan: StoredPlan): boolean {
+  return plan === 'month' || plan === 'year' || plan === 'business';
 }
 
 export function getStripe(): Stripe {
@@ -43,7 +57,7 @@ export function stripeLocale(header: string | undefined): Stripe.Checkout.Sessio
   return 'auto';
 }
 
-export function cookieMaxAge(plan: PaidPlan, expiresAt: string | null): number {
+export function cookieMaxAge(plan: StoredPlan, expiresAt: string | null): number {
   if (plan === 'life' || !expiresAt) return 60 * 60 * 24 * 365 * 10;
   const ms = Date.parse(expiresAt) - Date.now();
   return Math.max(60, Math.floor(ms / 1000));
@@ -52,7 +66,7 @@ export function cookieMaxAge(plan: PaidPlan, expiresAt: string | null): number {
 export type AccessPayload = {
   email: string;
   customerId: string;
-  plan: PaidPlan;
+  plan: StoredPlan;
   expiresAt: string | null;
 };
 
@@ -61,17 +75,16 @@ export async function createCheckoutSession(plan: PaidPlan, localeHeader?: strin
   const lang = (localeHeader || 'fr').split(/[-_,]/)[0].toLowerCase();
   const name = PLAN_NAMES[plan][lang] || PLAN_NAMES[plan].en;
   const origin = appUrl();
-  const isYear = plan === 'year';
+  const interval = PLAN_INTERVAL[plan];
 
   const session = await stripe.checkout.sessions.create({
-    mode: isYear ? 'subscription' : 'payment',
+    mode: 'subscription',
     success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?canceled=1`,
     locale: stripeLocale(localeHeader),
-    customer_creation: isYear ? undefined : 'always',
     allow_promotion_codes: true,
     metadata: { plan },
-    subscription_data: isYear ? { metadata: { plan } } : undefined,
+    subscription_data: { metadata: { plan } },
     line_items: [
       {
         quantity: 1,
@@ -79,7 +92,7 @@ export async function createCheckoutSession(plan: PaidPlan, localeHeader?: strin
           currency: 'usd',
           unit_amount: PLAN_AMOUNTS[plan],
           product_data: { name },
-          ...(isYear ? { recurring: { interval: 'year' as const } } : {})
+          recurring: { interval }
         }
       }
     ]
@@ -96,17 +109,17 @@ function weekExpiry(from = new Date()): string {
   return new Date(from.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
 }
 
-async function expiryFromSession(stripe: Stripe, session: Stripe.Checkout.Session, plan: PaidPlan): Promise<string | null> {
+async function expiryFromSession(stripe: Stripe, session: Stripe.Checkout.Session, plan: StoredPlan): Promise<string | null> {
   if (plan === 'life') return null;
   if (plan === 'week') return weekExpiry();
   const subscriptionId = typeof session.subscription === 'string'
     ? session.subscription
     : session.subscription?.id;
-  if (!subscriptionId) return new Date(Date.now() + 366 * 24 * 60 * 60 * 1000).toISOString();
+  if (!subscriptionId) return new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const periodEnd = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end
     || subscription.items.data[0]?.current_period_end;
-  if (!periodEnd) return new Date(Date.now() + 366 * 24 * 60 * 60 * 1000).toISOString();
+  if (!periodEnd) return new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
   return new Date(periodEnd * 1000).toISOString();
 }
 
@@ -121,7 +134,7 @@ export async function entitlementFromCheckout(sessionId: string): Promise<Access
   }
 
   const plan = session.metadata?.plan;
-  if (!isPaidPlan(plan)) {
+  if (!isStoredPlan(plan)) {
     throw new Error('Offre inconnue.');
   }
 

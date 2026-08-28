@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function Watermark() {
-  const { m, t } = useI18n();
+  const { m } = useI18n();
+  usePageSeo(m.watermark.seoTitle, m.watermark.seoDescription);
   const pdf = useSinglePdf();
   const [text, setText] = useState(m.watermark.textPh);
   const [opacity, setOpacity] = useState(0.22);
@@ -68,6 +70,7 @@ function Watermark() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.watermark.features}
+        seo={landingSeoFrom(m.watermark)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -93,24 +96,15 @@ function Watermark() {
   return (
     <StudioWorkspace
       canvas={(
-        <>
-          <StudioZoom setZoom={pdf.setZoom} />
-          <div className="studio-thumbs" style={{ ['--thumb-scale' as string]: String(pdf.zoom) }}>
-            {pdf.thumbs.map((src, index) => {
-              const page = index + 1;
-              return (
-                <article key={page} className="studio-thumb">
-                  <span className="studio-order">{page}</span>
-                  <div className="studio-thumb-sheet">
-                    <img src={src} alt={t(m.split.pageAlt, { page })} />
-                    {previewMark()}
-                  </div>
-                  <small>{t(m.split.pageAlt, { page })}</small>
-                </article>
-              );
-            })}
-          </div>
-        </>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+          overlay={previewMark()}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

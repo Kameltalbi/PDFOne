@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import multer from 'multer';
 import mergeRoutes from './routes/merge.js';
 import splitRoutes from './routes/split.js';
@@ -17,11 +16,9 @@ import officeRoutes from './routes/office.js';
 import extrasRoutes from './routes/extras.js';
 import { quotaMiddleware } from './middleware/quota.js';
 import { applyStripeEvent, getStripe } from './services/billing.js';
+import { startTempCleanup, tempDir, unlinkQuiet } from './utils/temp.js';
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -47,7 +44,23 @@ app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), asyn
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/temp', express.static(path.join(__dirname, '../../temp')));
+
+app.get('/temp/:name', async (req, res) => {
+  const name = path.basename(req.params.name);
+  if (!name || name !== req.params.name) {
+    return res.status(404).json({ success: false, error: 'Fichier introuvable.' });
+  }
+  const filepath = path.join(tempDir, name);
+  res.download(filepath, name, async (error) => {
+    if (error) {
+      if (!res.headersSent) {
+        res.status(404).json({ success: false, error: 'Fichier introuvable ou déjà supprimé.' });
+      }
+      return;
+    }
+    await unlinkQuiet(filepath);
+  });
+});
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -69,7 +82,7 @@ app.use('/api', extrasRoutes);
 app.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err instanceof multer.MulterError) {
     const message = err.code === 'LIMIT_FILE_SIZE'
-      ? 'Le fichier dépasse la limite de 100 Mo.'
+      ? 'Le fichier dépasse la limite autorisée.'
       : err.code === 'LIMIT_FILE_COUNT'
         ? 'Trop de fichiers envoyés.'
         : 'Fichier rejeté.';
@@ -84,6 +97,7 @@ app.use((err: unknown, _req: express.Request, res: express.Response, next: expre
 });
 
 app.listen(PORT, () => {
+  startTempCleanup();
   console.log(`Server running on port ${PORT}`);
-  console.log(`Temp directory: ${path.join(__dirname, '../../temp')}`);
+  console.log(`Temp directory: ${tempDir}`);
 });

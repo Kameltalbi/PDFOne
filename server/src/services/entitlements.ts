@@ -2,12 +2,13 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export type PaidPlan = 'week' | 'year' | 'life';
+export type PaidPlan = 'month' | 'year' | 'business';
+export type StoredPlan = PaidPlan | 'week' | 'life';
 
 export type Entitlement = {
   email: string;
   customerId: string;
-  plan: PaidPlan;
+  plan: StoredPlan;
   status: 'active' | 'canceled';
   expiresAt: string | null;
   subscriptionId?: string;

@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
-import type { FeatureCopy } from '../i18n/types';
+import type { FeatureCopy, PageSeoCopy } from '../i18n/types';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 
 type Copy = {
   title: string;
@@ -16,7 +17,7 @@ type Copy = {
   doneText: string;
   reset: string;
   features: FeatureCopy[];
-};
+} & Partial<PageSeoCopy>;
 
 export function PdfAction({
   copy,
@@ -38,6 +39,17 @@ export function PdfAction({
   downloadLabel?: string;
 }) {
   const pdf = useSinglePdf({ allPages: false, allowLocked });
+  const pageSeo = copy.seoTitle && copy.seoDescription && copy.seoH2 && copy.seoP1 && copy.seoP2 && copy.seoP3
+    ? {
+        seoTitle: copy.seoTitle,
+        seoDescription: copy.seoDescription,
+        seoH2: copy.seoH2,
+        seoP1: copy.seoP1,
+        seoP2: copy.seoP2,
+        seoP3: copy.seoP3
+      }
+    : undefined;
+  usePageSeo(pageSeo?.seoTitle, pageSeo?.seoDescription);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resultName, setResultName] = useState(downloadName);
@@ -94,6 +106,7 @@ export function PdfAction({
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={copy.features}
+        seo={pageSeo ? landingSeoFrom(pageSeo) : undefined}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -105,12 +118,14 @@ export function PdfAction({
   return (
     <StudioWorkspace
       canvas={(
-        <div className="studio-thumbs">
-          <article className="studio-thumb">
-            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
-            <b>{pdf.file.name}</b>
-          </article>
-        </div>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

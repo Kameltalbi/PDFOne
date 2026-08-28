@@ -36,3 +36,38 @@ export async function cleanupUploads(
   const list = Array.isArray(files) ? files : [files];
   await Promise.all(list.map((file) => unlinkQuiet(file.path)));
 }
+
+export function tempTtlMs(): number {
+  return Math.max(60_000, Number(process.env.TEMP_FILE_TTL || 15 * 60 * 1000));
+}
+
+export async function purgeExpiredTemp(ttlMs = tempTtlMs()): Promise<number> {
+  const cutoff = Date.now() - ttlMs;
+  let removed = 0;
+  try {
+    const entries = await fs.readdir(tempDir, { withFileTypes: true });
+    await Promise.all(entries.map(async (entry) => {
+      if (!entry.isFile() || entry.name.startsWith('.')) return;
+      const full = path.join(tempDir, entry.name);
+      try {
+        const stat = await fs.stat(full);
+        if (stat.mtimeMs <= cutoff) {
+          await fs.unlink(full);
+          removed += 1;
+        }
+      } catch {
+        // ignore races
+      }
+    }));
+  } catch {
+    return 0;
+  }
+  return removed;
+}
+
+export function startTempCleanup(intervalMs = 5 * 60 * 1000) {
+  void purgeExpiredTemp();
+  return setInterval(() => {
+    void purgeExpiredTemp();
+  }, intervalMs);
+}

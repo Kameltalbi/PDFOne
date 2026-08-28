@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { AdBanner } from '../components/AdBanner';
 import { useI18n } from '../i18n';
 import './Home.css';
 import heroImage from '../assets/pdfone-hero.png';
@@ -44,6 +45,7 @@ function Home() {
       <section className="pro-tools-section">
         <div className="pro-section-heading"><div><span>{m.home.popularLabel}</span><h2>{m.home.popularTitle}</h2></div><Link to="/tools">{m.home.seeAllTools} <b>→</b></Link></div>
         <div className="pro-tools-grid">{tools.map((tool) => <Link key={tool.path} to={tool.path} className="pro-tool-card"><span className={`pro-tool-icon ${tool.tone}`}>{tool.icon}</span><div><h3>{tool.name}</h3><p>{tool.description}</p></div><b className="pro-tool-arrow">→</b></Link>)}</div>
+        <AdBanner />
       </section>
 
       <section className="pro-process">

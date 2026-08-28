@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 import { renderPdfPage } from '../lib/pdfPreview';
 import { formatFileSize } from '../lib/api';
+import { useBilling } from '../lib/billing';
+import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { useI18n } from '../i18n';
 import './FileUpload.css';
 
@@ -71,6 +73,9 @@ function FileUpload({
   preview = true
 }: FileUploadProps) {
   const { m, t } = useI18n();
+  const { status } = useBilling();
+  const maxBytes = maxFileBytes(status.paid);
+  const sizeLabel = maxFileLabel(status.paid);
   const inputId = useId();
   const [files, setFiles] = useState<FileUploadType[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -85,7 +90,7 @@ function FileUpload({
     const next: FileUploadType[] = [];
     for (const file of incoming) {
       const validationError = (() => {
-        if (file.size > 100 * 1024 * 1024) return t(m.common.fileTooLarge, { name: file.name, size: formatFileSize(100 * 1024 * 1024) });
+        if (file.size > maxBytes) return t(m.common.fileTooLarge, { name: file.name, size: sizeLabel });
         const imagesOnly = accept.includes('image') && !accept.includes('pdf');
         if (imagesOnly && !isImage(file)) return m.common.imagesOnly;
         if (!imagesOnly && !isPdf(file)) return m.common.pdfOnly;
@@ -114,7 +119,7 @@ function FileUpload({
       onFilesChange?.(limited);
       return limited;
     });
-  }, [accept, maxFiles, multiple, onFilesChange, m, t]);
+  }, [accept, maxBytes, maxFiles, multiple, onFilesChange, m, sizeLabel, t]);
 
   const handleDropZone = useCallback((event: React.DragEvent) => {
     event.preventDefault();

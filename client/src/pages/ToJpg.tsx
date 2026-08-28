@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function ToJpg() {
   const { m } = useI18n();
+  usePageSeo(m.toJpg.seoTitle, m.toJpg.seoDescription);
   const pdf = useSinglePdf({ allPages: false });
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -58,6 +60,7 @@ function ToJpg() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.toJpg.features}
+        seo={landingSeoFrom(m.toJpg)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -69,12 +72,14 @@ function ToJpg() {
   return (
     <StudioWorkspace
       canvas={(
-        <div className="studio-thumbs">
-          <article className="studio-thumb">
-            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
-            <b>{pdf.file.name}</b>
-          </article>
-        </div>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

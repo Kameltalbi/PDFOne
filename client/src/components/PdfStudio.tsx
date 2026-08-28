@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
+import { AdBanner } from './AdBanner';
 import './Studio.css';
 
 type LandingProps = {
@@ -16,6 +17,12 @@ type LandingProps = {
   accept?: string;
   selectLabel?: string;
   children?: ReactNode;
+  seo?: {
+    h2: string;
+    paragraphs: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
+  };
   onDragOver: () => void;
   onDragLeave: () => void;
   onDrop: (event: React.DragEvent) => void;
@@ -34,6 +41,7 @@ export function StudioLanding({
   accept = 'application/pdf,.pdf',
   selectLabel,
   children,
+  seo,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -71,6 +79,7 @@ export function StudioLanding({
       <p className="studio-or">{isLoading ? m.merge.preparing : m.merge.orDrop}</p>
       {children}
       {error && <p className="studio-error">{error}</p>}
+      <AdBanner />
       <section className="studio-features">
         {features.map((feature) => (
           <article key={feature.title}>
@@ -80,6 +89,25 @@ export function StudioLanding({
           </article>
         ))}
       </section>
+      {seo && (
+        <section className="studio-seo">
+          <h2>{seo.h2}</h2>
+          {seo.paragraphs.map((paragraph) => (
+            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+          ))}
+        </section>
+      )}
+      {seo?.faq && seo.faq.length > 0 && (
+        <section className="studio-faq" aria-labelledby="studio-faq-title">
+          <h2 id="studio-faq-title">{seo.faqTitle}</h2>
+          {seo.faq.map((item) => (
+            <article key={item.question}>
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </article>
+          ))}
+        </section>
+      )}
     </div>
   );
 }
@@ -110,6 +138,7 @@ export function StudioResult({
         <p>{text}</p>
         <a className="studio-download" href={downloadUrl} download={downloadName}>{downloadLabel ?? m.common.downloadPdf}</a>
         <button className="studio-reset" onClick={onReset} type="button">{resetLabel}</button>
+        <AdBanner />
       </div>
     </div>
   );
@@ -197,5 +226,114 @@ export function StudioZoom({ setZoom }: { setZoom: (value: number | ((current: n
       <button type="button" onClick={() => setZoom((value) => Math.max(0.7, value - 0.15))} title={m.merge.zoomOut}>−</button>
       <button type="button" onClick={() => setZoom((value) => Math.min(1.35, value + 0.15))} title={m.merge.zoomIn}>+</button>
     </div>
+  );
+}
+
+export function StudioDocumentCanvas({
+  thumbs,
+  isLoading = false,
+  zoom,
+  setZoom,
+  fileName,
+  pageCount: reportedPages,
+  rotations,
+  toolbar,
+  overlay,
+  activePage,
+  onActivePageChange
+}: {
+  thumbs: string[];
+  isLoading?: boolean;
+  zoom: number;
+  setZoom: (value: number | ((current: number) => number)) => void;
+  fileName?: string;
+  pageCount?: number;
+  rotations?: number[];
+  toolbar?: ReactNode;
+  overlay?: ReactNode;
+  activePage?: number;
+  onActivePageChange?: (index: number) => void;
+}) {
+  const { m, t } = useI18n();
+  const [internalActive, setInternalActive] = useState(0);
+  const previewCount = thumbs.length;
+  const pageCount = reportedPages || previewCount;
+
+  useEffect(() => {
+    setInternalActive((index) => (previewCount ? Math.min(index, previewCount - 1) : 0));
+  }, [previewCount]);
+
+  const setActive = (index: number) => {
+    const next = previewCount ? Math.min(Math.max(0, index), previewCount - 1) : 0;
+    setInternalActive(next);
+    onActivePageChange?.(next);
+  };
+
+  const active = activePage ?? internalActive;
+  const deg = rotations?.[active] || 0;
+  const src = thumbs[active];
+  const page = active + 1;
+  const pageLabel = pageCount > 0
+    ? `${pageCount} ${pageCount > 1 ? m.common.pages : m.common.page}`
+    : null;
+
+  return (
+    <>
+      <StudioZoom setZoom={setZoom} />
+      {isLoading && previewCount === 0 ? (
+        <p className="studio-or">{m.merge.preparing}</p>
+      ) : (
+        <>
+          <div className="studio-preview" style={{ ['--preview-scale' as string]: String(zoom) }}>
+            {toolbar}
+            {src ? (
+              <div className={`studio-preview-frame deg-${deg}`}>
+                {deg !== 0 && <span className="studio-angle">{deg}°</span>}
+                <div className="studio-preview-sheet">
+                  <img src={src} alt={t(m.split.pageAlt, { page })} style={deg ? { transform: `rotate(${deg}deg)` } : undefined} />
+                  {overlay}
+                </div>
+              </div>
+            ) : (
+              <div className="studio-thumb-fallback studio-preview-fallback">{fileName || 'PDF'}</div>
+            )}
+            {previewCount > 1 && (
+              <div className="studio-pager">
+                <button type="button" disabled={active <= 0} onClick={() => setActive(active - 1)}>‹</button>
+                <span>{t(m.rotatePdf.pageOf, { page, count: previewCount })}</span>
+                <button type="button" disabled={active >= previewCount - 1} onClick={() => setActive(active + 1)}>›</button>
+              </div>
+            )}
+            {fileName && <p className="studio-preview-name">{fileName}</p>}
+            {pageLabel && <p className="studio-preview-meta">{pageLabel}</p>}
+          </div>
+          {previewCount > 1 && (
+            <div className="studio-thumbs" style={{ ['--thumb-scale' as string]: String(zoom) }}>
+              {thumbs.map((thumb, index) => {
+                const thumbPage = index + 1;
+                const thumbDeg = rotations?.[index] || 0;
+                return (
+                  <article
+                    key={thumbPage}
+                    className={`studio-thumb clickable${index === active ? ' selected' : ''}`}
+                    onClick={() => setActive(index)}
+                  >
+                    <span className="studio-order">{thumbPage}</span>
+                    {thumbDeg !== 0 && <span className="studio-angle">{thumbDeg}°</span>}
+                    <img
+                      className={thumbDeg ? 'rotated' : undefined}
+                      src={thumb}
+                      alt={t(m.split.pageAlt, { page: thumbPage })}
+                      style={thumbDeg ? { transform: `rotate(${thumbDeg}deg)` } : undefined}
+                    />
+                    <small>{t(m.split.pageAlt, { page: thumbPage })}</small>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+    </>
   );
 }

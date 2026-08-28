@@ -1,0 +1,15 @@
+.ad-banner {
+  width: min(728px, 100%);
+  min-height: 72px;
+  margin: 2rem auto 0;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

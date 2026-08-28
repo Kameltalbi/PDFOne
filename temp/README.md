@@ -10,14 +10,13 @@ This directory is used for temporary storage of uploaded and processed PDF files
 ## File Lifecycle
 1. User uploads file → stored in temp directory
 2. File is processed → result stored in temp directory
-3. User downloads result → file remains for potential re-download
-4. TTL expires (default: 2 hours) → file automatically deleted
+3. User downloads result → file is deleted immediately after the download
+4. If the result is not downloaded, a cleanup job deletes it after `TEMP_FILE_TTL` (default 15 minutes)
 
 ## Cleanup Mechanism
-The server implements automatic cleanup using:
-- TTL-based expiration (configurable via `TEMP_FILE_TTL` env var)
-- Scheduled cleanup job runs periodically to remove expired files
-- Files are deleted securely without recovery
+- One-shot download via `GET /temp/:name` then unlink
+- TTL-based purge (`TEMP_FILE_TTL`, default 900000 ms)
+- Scheduled cleanup every 5 minutes
 
 ## Security
 - Files are not accessible directly via URL without proper authorization
@@ -27,8 +26,8 @@ The server implements automatic cleanup using:
 
 ## Configuration
 Environment variables in `server/.env`:
-- `TEMP_FILE_TTL`: Time in milliseconds before files are deleted (default: 7200000 = 2 hours)
-- `MAX_FILE_SIZE`: Maximum upload size in bytes (default: 104857600 = 100MB)
+- `TEMP_FILE_TTL`: Time in milliseconds before undownloaded files are deleted (default: 900000 = 15 minutes)
+- `MAX_FILE_SIZE`: Absolute upload cap in bytes (default: 1 GB). Free plan is limited to 50 MB in application code.
 
 ## Notes
 - Do not manually add files to this directory

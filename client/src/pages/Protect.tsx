@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function Protect() {
   const { m } = useI18n();
+  usePageSeo(m.protect.seoTitle, m.protect.seoDescription);
   const pdf = useSinglePdf({ allPages: false });
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,6 +68,7 @@ function Protect() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.protect.features}
+        seo={landingSeoFrom(m.protect)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -77,12 +80,14 @@ function Protect() {
   return (
     <StudioWorkspace
       canvas={(
-        <div className="studio-thumbs">
-          <article className="studio-thumb">
-            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
-            <b>{pdf.file.name}</b>
-          </article>
-        </div>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

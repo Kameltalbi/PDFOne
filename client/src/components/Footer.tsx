@@ -17,6 +17,7 @@ function Footer() {
           <Link to="/pricing">{m.common.pricing}</Link>
           <Link to="/edit-pdf">{m.tools.edit}</Link>
           <Link to="/privacy">{m.common.privacy}</Link>
+          <Link to="/blog">{m.common.blog}</Link>
           <Link to="/contact">{m.common.contact}</Link>
         </nav>
       </div>

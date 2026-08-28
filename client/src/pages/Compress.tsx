@@ -1,11 +1,19 @@
-import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
+import { useMemo, useState } from 'react';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
+import { faqPageJsonLd, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function Compress() {
   const { m, t } = useI18n();
+  usePageSeo(m.compress.seoTitle, m.compress.seoDescription);
+  const faqJsonLd = useMemo(
+    () => faqPageJsonLd(m.compress.faq, 'https://one2pdf.com/compress'),
+    [m.compress.faq]
+  );
+  useJsonLd('one2pdf-faq-compress', faqJsonLd);
   const pdf = useSinglePdf({ allPages: false });
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -77,6 +85,12 @@ function Compress() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.compress.features}
+        seo={{
+          h2: m.compress.seoH2,
+          paragraphs: [m.compress.seoP1, m.compress.seoP2, m.compress.seoP3],
+          faqTitle: m.compress.faqTitle,
+          faq: m.compress.faq
+        }}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -88,12 +102,14 @@ function Compress() {
   return (
     <StudioWorkspace
       canvas={(
-        <div className="studio-thumbs">
-          <article className="studio-thumb">
-            {pdf.thumbs[0] ? <img src={pdf.thumbs[0]} alt="" /> : <div className="studio-thumb-fallback">PDF</div>}
-            <b>{pdf.file.name}</b>
-          </article>
-        </div>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

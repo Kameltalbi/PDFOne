@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { postForm } from '../lib/api';
+import { useBilling } from '../lib/billing';
+import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { inspectPdfFile } from '../lib/pdfPreview';
 import { useI18n } from '../i18n';
+import { usePageSeo } from '../lib/usePageSeo';
 import './Merge.css';
 
 type MergeItem = {
@@ -31,6 +34,10 @@ function FeatureGlyph({ index }: { index: number }) {
 
 function Merge() {
   const { m, t, locale } = useI18n();
+  usePageSeo(m.merge.seoTitle, m.merge.seoDescription);
+  const { status } = useBilling();
+  const maxBytes = maxFileBytes(status.paid);
+  const sizeLabel = maxFileLabel(status.paid);
   const pickerId = useId();
   const addPickerId = useId();
   const [items, setItems] = useState<MergeItem[]>([]);
@@ -63,22 +70,22 @@ function Merge() {
     const prepared: MergeItem[] = [];
     try {
       for (const file of incoming) {
-        if (file.size > 100 * 1024 * 1024) {
-          setError(t(m.common.fileTooLarge, { name: file.name, size: '100 MB' }));
+        if (file.size > maxBytes) {
+          setError(t(m.common.fileTooLarge, { name: file.name, size: sizeLabel }));
           continue;
         }
         try {
           const info = await inspectPdfFile(file);
           prepared.push({ id: uid(), file, name: file.name, pages: info.pages, thumb: info.thumb });
         } catch {
-          setError(t(m.merge.cannotRead, { name: file.name }));
+          prepared.push({ id: uid(), file, name: file.name, pages: 0, thumb: null });
         }
       }
       setItems((current) => [...current, ...prepared].slice(0, 10));
     } finally {
       setIsLoading(false);
     }
-  }, [m, t]);
+  }, [m, maxBytes, sizeLabel, t]);
 
   const moveItem = (from: number, to: number) => {
     setItems((current) => {
@@ -173,6 +180,12 @@ function Merge() {
               <p>{feature.text}</p>
             </article>
           ))}
+        </section>
+        <section className="merge-seo">
+          <h2>{m.merge.seoH2}</h2>
+          <p>{m.merge.seoP1}</p>
+          <p>{m.merge.seoP2}</p>
+          <p>{m.merge.seoP3}</p>
         </section>
       </div>
     );

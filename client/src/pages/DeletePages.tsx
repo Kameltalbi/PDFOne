@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function DeletePages() {
   const { m, t } = useI18n();
+  usePageSeo(m.deletePages.seoTitle, m.deletePages.seoDescription);
   const pdf = useSinglePdf();
   const [selected, setSelected] = useState<number[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -71,6 +73,7 @@ function DeletePages() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.deletePages.features}
+        seo={landingSeoFrom(m.deletePages)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}

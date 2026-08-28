@@ -4,10 +4,16 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { useI18n } from '../i18n';
 import { StudioLanding } from '../components/PdfStudio';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
+import { useBilling } from '../lib/billing';
+import { maxFileBytes, maxFileLabel } from '../lib/limits';
+import { installMapPolyfill } from '../lib/mapPolyfill';
 import './EditPdf.css';
 
+installMapPolyfill();
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
+  '../lib/pdfjsWorker.ts',
   import.meta.url
 ).toString();
 
@@ -304,6 +310,10 @@ function PdfThumbnail({ pdf, pageNumber, annotations }: { pdf: PDFDocumentProxy;
 
 function EditPdf() {
   const { m, t } = useI18n();
+  usePageSeo(m.edit.seoTitle, m.edit.seoDescription);
+  const { status } = useBilling();
+  const maxBytes = maxFileBytes(status.paid);
+  const sizeLabel = maxFileLabel(status.paid);
   const navigate = useNavigate();
   const pickerId = useId();
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -327,8 +337,8 @@ function EditPdf() {
       setError(m.edit.needPdf);
       return;
     }
-    if (selectedFile.size > 100 * 1024 * 1024) {
-      setError(m.edit.tooLarge);
+    if (selectedFile.size > maxBytes) {
+      setError(t(m.common.fileTooLarge, { name: selectedFile.name, size: sizeLabel }));
       return;
     }
     try {
@@ -376,6 +386,7 @@ function EditPdf() {
         isLoading={false}
         error={error || null}
         features={m.edit.features}
+        seo={landingSeoFrom(m.edit)}
         onDragOver={() => setIsDragging(true)}
         onDragLeave={() => setIsDragging(false)}
         onDrop={(event) => {

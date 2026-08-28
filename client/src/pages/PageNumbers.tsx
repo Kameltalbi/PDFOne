@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { StudioDocumentCanvas, StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 type PageFormat = 'n' | 'n_of_n' | 'page_n' | 'page_n_of_n';
@@ -18,11 +19,13 @@ const POSITIONS: { id: PagePosition; dot: string; label: 'topLeft' | 'topCenter'
 
 function PageNumbers() {
   const { m, t, locale } = useI18n();
+  usePageSeo(m.numberPages.seoTitle, m.numberPages.seoDescription);
   const pdf = useSinglePdf();
   const [format, setFormat] = useState<PageFormat>('n_of_n');
   const [position, setPosition] = useState<PagePosition>('bottom-center');
   const [start, setStart] = useState(1);
   const [color, setColor] = useState('#4b5563');
+  const [activePage, setActivePage] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -85,6 +88,7 @@ function PageNumbers() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.numberPages.features}
+        seo={landingSeoFrom(m.numberPages)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}
@@ -96,25 +100,17 @@ function PageNumbers() {
   return (
     <StudioWorkspace
       canvas={(
-        <>
-          <StudioZoom setZoom={pdf.setZoom} />
-          <div className="studio-thumbs" style={{ ['--thumb-scale' as string]: String(pdf.zoom) }}>
-            {pdf.thumbs.map((src, index) => {
-              const page = index + 1;
-              const n = start + index;
-              return (
-                <article key={page} className="studio-thumb">
-                  <span className="studio-order">{page}</span>
-                  <div className="studio-thumb-sheet">
-                    <img src={src} alt={t(m.split.pageAlt, { page })} />
-                    <span className={`pagenum-preview ${position}`} style={{ color }}>{labelFor(n)}</span>
-                  </div>
-                  <small>{t(m.split.pageAlt, { page })}</small>
-                </article>
-              );
-            })}
-          </div>
-        </>
+        <StudioDocumentCanvas
+          thumbs={pdf.thumbs}
+          isLoading={pdf.isLoading}
+          zoom={pdf.zoom}
+          setZoom={pdf.setZoom}
+          fileName={pdf.file.name}
+          pageCount={pdf.pageCount}
+          activePage={activePage}
+          onActivePageChange={setActivePage}
+          overlay={<span className={`pagenum-preview ${position}`} style={{ color }}>{labelFor(start + activePage)}</span>}
+        />
       )}
       sidebar={(
         <StudioSidebarFrame

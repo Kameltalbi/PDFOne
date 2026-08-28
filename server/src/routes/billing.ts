@@ -7,6 +7,7 @@ import {
   createPortalUrl,
   entitlementFromCheckout,
   isPaidPlan,
+  isSubscriptionPlan,
   type AccessPayload
 } from '../services/billing.js';
 import { clearCookie, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
@@ -19,7 +20,7 @@ function publicEntitlement(access: AccessPayload) {
     plan: access.plan,
     email: access.email,
     expiresAt: access.expiresAt,
-    canManage: access.plan === 'year'
+    canManage: isSubscriptionPlan(access.plan)
   };
 }
 
@@ -90,7 +91,7 @@ router.post('/confirm', async (req, res) => {
 
 router.post('/portal', async (req, res) => {
   const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
-  if (!access || access.plan !== 'year') {
+  if (!access || !isSubscriptionPlan(access.plan)) {
     return res.status(401).json({ success: false, error: 'Aucun abonnement à gérer.' });
   }
 

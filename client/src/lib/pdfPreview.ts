@@ -1,11 +1,14 @@
+import { installMapPolyfill } from './mapPolyfill';
 import * as pdfjsLib from 'pdfjs-dist';
+
+installMapPolyfill();
 
 let workerReady = false;
 
 function ensureWorker() {
   if (workerReady) return;
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
+    './pdfjsWorker.ts',
     import.meta.url
   ).toString();
   workerReady = true;
@@ -20,9 +23,13 @@ async function closePdf(pdf: object) {
   doc.cleanup?.();
 }
 
+async function readPdfData(file: File) {
+  return new Uint8Array(await file.arrayBuffer());
+}
+
 export async function getPdfPageCount(file: File): Promise<number> {
   ensureWorker();
-  const data = await file.arrayBuffer();
+  const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   const count = pdf.numPages;
   await closePdf(pdf);
@@ -31,7 +38,7 @@ export async function getPdfPageCount(file: File): Promise<number> {
 
 export async function inspectPdfFile(file: File, scale = 0.85): Promise<{ pages: number; thumb: string | null }> {
   ensureWorker();
-  const data = await file.arrayBuffer();
+  const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   try {
     const page = await pdf.getPage(1);
@@ -52,7 +59,7 @@ export async function inspectPdfFile(file: File, scale = 0.85): Promise<{ pages:
 
 export async function renderPdfPage(file: File, pageNumber: number, scale = 0.45): Promise<string> {
   ensureWorker();
-  const data = await file.arrayBuffer();
+  const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   try {
     const page = await pdf.getPage(pageNumber);
@@ -71,7 +78,7 @@ export async function renderPdfPage(file: File, pageNumber: number, scale = 0.45
 
 export async function renderPdfPages(file: File, scale = 0.32): Promise<string[]> {
   ensureWorker();
-  const data = await file.arrayBuffer();
+  const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   const thumbs: string[] = [];
   try {

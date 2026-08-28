@@ -33,6 +33,10 @@ import PricingSuccess from './pages/PricingSuccess';
 import Tools from './pages/Tools';
 import EditPdf from './pages/EditPdf';
 import EditResult from './pages/EditResult';
+import Privacy from './pages/Privacy';
+import Contact from './pages/Contact';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import { BillingProvider } from './lib/billing';
 import './App.css';
 
@@ -79,6 +83,10 @@ function App() {
             <Route path="/tools" element={<Tools />} />
             <Route path="/edit-pdf" element={<EditPdf />} />
             <Route path="/edit-pdf/result" element={<EditResult />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes>
         </div>
         <Footer />

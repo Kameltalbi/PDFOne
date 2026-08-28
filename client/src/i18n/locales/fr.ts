@@ -1,4 +1,5 @@
 import type { Messages } from '../types';
+import { seoFr } from '../seoCopy';
 
 export const fr: Messages = {
   htmlTitle: 'One2PDF — Outils PDF',
@@ -12,6 +13,7 @@ export const fr: Messages = {
     signup: 'Inscription',
     privacy: 'Confidentialité',
     contact: 'Contact',
+    blog: 'Blog',
     seeAll: 'Voir tout',
     pricing: 'Tarifs',
     menu: 'Ouvrir le menu',
@@ -24,7 +26,8 @@ export const fr: Messages = {
     pdfOnly: 'Seuls les fichiers PDF sont acceptés.',
     imagesOnly: 'Seules les images JPG, PNG ou WebP sont acceptées.',
     maxFiles: 'Maximum {count} fichiers.',
-    quotaReached: 'Le plan gratuit est limité à 3 documents par jour. Passez Pro pour continuer.'
+    quotaReached: 'Le plan gratuit est limité à 3 documents par jour. Passez Pro pour continuer.',
+    adLabel: 'Publicité'
   },
   units: { byte: 'o', kb: 'Ko', mb: 'Mo', gb: 'Go' },
   nav: {
@@ -49,39 +52,43 @@ export const fr: Messages = {
       'Accès à tous les outils de base',
       '3 documents par jour',
       'Fichiers jusqu’à 50 Mo',
-      'Publicités discrètes',
-      'Traitement direct et sécurisé'
+      'Publicités ciblées non intrusives',
+      'Vitesse standard'
     ],
     freeCta: 'Continuer gratuitement',
-    weekName: 'Pass hebdomadaire',
-    weekTag: 'Pour un besoin urgent',
-    weekPrice: '1,99 $',
-    weekNote: 'Paiement unique, sans abonnement',
-    weekIncludes: [
-      '7 jours d’accès total et illimité',
-      'Zéro publicité & fichiers illimités'
+    monthName: 'Pro mensuel',
+    monthTag: 'Freelances et professionnels nomades',
+    monthPrice: '5,99 $',
+    monthPeriod: '/ mois',
+    monthIncludes: [
+      'Fichiers sans limite de taille',
+      'Zéro publicité',
+      'Traitement par lots',
+      'Priorité serveur maximale'
     ],
-    weekCta: 'Choisir le Pass 7 jours',
-    yearName: 'Abonnement annuel',
-    yearPrice: '10,00 $',
+    monthCta: 'Passer Pro',
+    yearName: 'Pro annuel',
+    yearPrice: '49,00 $',
     yearPeriod: '/ an',
-    yearEquiv: 'soit l’équivalent de 0,83 $ / mois, facturé annuellement',
+    yearEquiv: 'soit ~4,08 $ / mois — environ 32 % d’économie',
     yearIncludes: [
-      'Accès illimité toute l’année',
-      'Zéro publicité, fichiers sans limite de taille',
-      'Mises à jour prioritaires'
+      'Toutes les fonctionnalités Pro',
+      'Économie d’environ 32 % vs le mensuel',
+      'Support prioritaire par e-mail'
     ],
-    yearBadge: 'Le choix le plus économique',
-    yearCta: 'Activer l’Illimité à 10 $/an',
-    lifeName: 'Pass à vie',
-    lifeTag: 'Pour ne plus jamais y penser',
-    lifePrice: '29,99 $',
-    lifeNote: 'Paiement unique à vie, sans jamais repayer',
-    lifeIncludes: [
-      'Accès illimité perpétuel',
-      'Toutes les futures fonctionnalités incluses'
+    yearBadge: 'Le plus populaire',
+    yearCta: 'Choisir l’annuel',
+    businessName: 'Business / Équipe',
+    businessTag: 'Jusqu’à 5 utilisateurs',
+    businessPrice: '19,99 $',
+    businessPeriod: '/ mois',
+    businessNote: 'Petites entreprises, cabinets',
+    businessIncludes: [
+      'Gestion centralisée des licences',
+      'Facturation groupée',
+      'Confidentialité et traçabilité renforcées'
     ],
-    lifeCta: 'Obtenir l’accès à vie',
+    businessCta: 'Choisir Business',
     trust: 'Paiement 100 % sécurisé via Stripe / Apple Pay / Google Pay. Annulation facile en un clic pour l’abonnement annuel.',
     paying: 'Redirection vers le paiement…',
     payFail: 'Impossible de lancer le paiement.',
@@ -147,7 +154,7 @@ export const fr: Messages = {
     ctaEdit: 'Modifier un PDF',
     ctaTools: 'Découvrir tous les outils',
     trustInstall: 'Sans installation',
-    trustSize: 'Jusqu’à 100 Mo',
+    trustSize: '50 Mo en gratuit',
     trustDelete: 'Fichiers supprimés automatiquement',
     previewAria: 'Aperçu de l’éditeur One2PDF',
     heroAlt: 'Professionnelle utilisant One2PDF pour fusionner des PDF',
@@ -182,7 +189,7 @@ export const fr: Messages = {
     ctaButton: 'Explorer les outils',
     footerTagline: 'La boîte à outils PDF simple et professionnelle.',
     copyright: '© 2026 One2PDF. Tous droits réservés.',
-    filesDeleted: 'Vos fichiers sont supprimés automatiquement après traitement.',
+    filesDeleted: 'Fichiers supprimés dès le téléchargement (15 min max).',
     toolEditDesc: 'Texte, images, signature et annotations.',
     toolMergeDesc: 'Réunissez plusieurs PDF dans le bon ordre.',
     toolSplitDesc: 'Extrayez ou séparez les pages d’un document.',
@@ -221,7 +228,13 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Importez vos fichiers, réordonnez-les, puis téléchargez le document final.' },
       { icon: '⏱', tone: 'purple', title: 'Un résultat immédiat', text: 'Le traitement se fait en quelques secondes, prêt à être partagé.' },
       { icon: '✧', tone: 'teal', title: 'Interface visuelle', text: 'Glissez-déposez vos PDF, voyez les miniatures et fusionnez d’un clic.' }
-    ]
+    ],
+    seoTitle: 'Fusionner des PDF en un fichier | One2PDF',
+    seoDescription: 'Combinez plusieurs PDF en un seul document, dans l’ordre que vous choisissez. Fusionnez gratuitement en ligne — démarrez sur One2PDF.',
+    seoH2: 'Comment fusionner des PDF en ligne facilement et en toute sécurité',
+    seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis lancez la fusion : en quelques secondes, vous obtenez un document unique, prêt à télécharger.',
+    seoP2: 'Assembler plusieurs PDF n’a pas à être technique. L’outil conserve les pages telles quelles, sans filigrane, et peut ajouter des numéros de page si vous en avez besoin. C’est la méthode adaptée si vous cherchez comment combiner des PDF en un seul fichier pour un dossier de candidature, un envoi par e-mail ou un archivage plus simple.',
+    seoP3: 'La sécurité reste au centre du parcours : les fichiers d’origine ne sont pas conservés, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Fusionnez vos PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que plusieurs documents doivent n’en former plus qu’un.'
   },
   split: {
     title: 'Diviser PDF',
@@ -257,7 +270,13 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Plages en une fois', text: 'Saisissez 1-3, 5, 8 pour sélectionner plusieurs pages d’un coup.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'La division prend quelques secondes, prêt à télécharger.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Votre document est supprimé automatiquement après le téléchargement.' }
-    ]
+    ],
+    seoTitle: 'Diviser un PDF en ligne, extraire | One2PDF',
+    seoDescription: 'Extrayez des pages ou séparez un PDF en fichiers distincts, en quelques secondes. Divisez gratuitement en ligne — démarrez sur One2PDF.',
+    seoH2: 'Comment diviser un PDF en ligne facilement et en toute sécurité',
+    seoP1: 'Vous n’avez besoin que de quelques pages d’un dossier, d’un contrat ou d’un scan trop long ? One2PDF permet de diviser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, sélectionnez les pages à conserver — au clic ou via une plage du type 1-3, 5, 8 — puis lancez le traitement.',
+    seoP2: 'Deux modes couvrent les usages courants. Extraire rassemble les pages choisies dans un seul PDF plus court. Séparer exporte chaque page dans un fichier distinct, regroupé dans un ZIP. C’est la méthode adaptée si vous cherchez comment extraire des pages d’un PDF, découper un document trop volumineux ou envoyer seulement un chapitre.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Divisez votre PDF maintenant, récupérez uniquement ce dont vous avez besoin, et revenez sur One2PDF dès qu’un document doit être allégé ou partagé à la carte.'
   },
   deletePages: {
     title: 'Supprimer des pages',
@@ -278,7 +297,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Importez, sélectionnez, téléchargez — dans le navigateur.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'Un PDF plus léger, prêt en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original est traité temporairement puis supprimé.' }
-    ]
+    ],
+    ...seoFr.deletePages
   },
   reorderPages: {
     title: 'Réorganiser les pages',
@@ -302,8 +322,13 @@ export const fr: Messages = {
   rotatePdf: {
     title: 'Pivoter PDF',
     subtitle: 'Redressez les pages de travers ou à l’envers, puis téléchargez le PDF corrigé.',
-    tip: 'Cliquez sur une page pour la tourner de 90°. Cliquez encore pour continuer.',
-    clickToRotate: 'Cliquez sur une page pour la pivoter',
+    tip: 'Utilisez les boutons pour tourner la page affichée, ou toutes les pages, de 90°.',
+    clickToRotate: 'Choisissez une page, puis tournez-la avec les boutons.',
+    rotateLeft: '90° gauche',
+    rotateRight: '90° droite',
+    rotateAllLeft: 'Tout à gauche',
+    rotateAllRight: 'Tout à droite',
+    pageOf: 'Page {page} / {count}',
     rotating: 'Rotation…',
     action: 'Appliquer la rotation',
     doneTitle: 'PDF pivoté',
@@ -318,7 +343,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Tout se fait dans le navigateur.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'Le PDF corrigé est prêt en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Votre document est supprimé automatiquement après traitement.' }
-    ]
+    ],
+    ...seoFr.rotate
   },
   watermark: {
     title: 'Filigrane PDF',
@@ -348,7 +374,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Opacité réglable', text: 'Assez visible pour marquer le document, assez léger pour le lire.' },
       { icon: '⏱', tone: 'purple', title: 'Toutes les pages', text: 'Le filigrane est appliqué d’un coup sur tout le fichier.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.watermark
   },
   signPdf: {
     title: 'Signature numérique',
@@ -385,7 +412,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Toutes les langues', text: 'Le nom du signataire est dessiné tel quel, y compris en arabe ou en turc.' },
       { icon: '⏱', tone: 'purple', title: 'Dernière page ou toutes', text: 'Placez la signature là où les contrats l’attendent, en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.sign
   },
   numberPages: {
     title: 'Numéroter les pages',
@@ -418,7 +446,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Plusieurs formats', text: '1, 1 / 12, Page 1 ou Page 1 sur 12 — selon votre document.' },
       { icon: '⏱', tone: 'purple', title: 'Toutes les pages', text: 'Les numéros sont appliqués d’un coup sur tout le fichier.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.pageNumbers
   },
   cropPdf: {
     title: 'Rogner PDF',
@@ -448,7 +477,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Toutes les pages', text: 'Les mêmes marges s’appliquent d’un coup à tout le fichier.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'Le PDF recadré est prêt en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.crop
   },
   compress: {
     title: 'Compresser PDF',
@@ -477,6 +507,27 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Aperçu immédiat', text: 'Voyez le document avant de lancer le traitement.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat rapide', text: 'La compression prend quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF traité est supprimé automatiquement après usage.' }
+    ],
+    seoTitle: 'Compresser un PDF en ligne, plus léger | One2PDF',
+    seoDescription: 'Réduisez le poids de votre PDF en quelques secondes, sans perdre en lisibilité. Compressez gratuitement en ligne — démarrez sur One2PDF.',
+    seoH2: 'Comment compresser un PDF en ligne facilement et en toute sécurité',
+    seoP1: 'Vous devez envoyer un dossier trop lourd, le déposer sur un formulaire ou le partager sans dégrader la lisibilité ? One2PDF permet de compresser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, choisissez le niveau de compression (élevée, moyenne ou forte), puis lancez le traitement : en quelques secondes, vous obtenez un PDF plus léger, prêt à télécharger.',
+    seoP2: 'Réduire la taille d’un PDF trop volumineux n’a pas à être technique. L’outil allège les images et optimise le document tout en conservant un rendu lisible à l’écran comme à l’impression. C’est la méthode adaptée si vous cherchez comment diminuer le poids d’un PDF pour Gmail, WhatsApp ou un espace de stockage limité.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Compressez votre PDF maintenant, comparez le poids avant et après, et revenez sur One2PDF dès qu’un document dépasse une limite d’envoi.',
+    faqTitle: 'Questions fréquentes sur la compression de PDF',
+    faq: [
+      {
+        question: 'Comment compresser un PDF trop lourd pour l’envoyer par e-mail ?',
+        answer: 'Gmail et Outlook refusent souvent une pièce jointe au-delà de 25 Mo. Sur One2PDF, importez le PDF, choisissez un niveau (élevée, moyenne ou forte), puis lancez la compression. Téléchargez le fichier allégé : il reste lisible et passe en général sous la limite d’envoi, sans installer de logiciel.'
+      },
+      {
+        question: 'La compression d’un PDF réduit-elle la qualité du document ?',
+        answer: 'Le niveau élevée conserve au maximum le texte et les images. Les niveaux moyenne et forte réduisent davantage le poids des images, ce qui peut légèrement adoucir photos ou scans. Le texte reste lisible. Choisissez élevée pour un CV ou un contrat, et plus fort si le fichier doit passer sous une limite stricte.'
+      },
+      {
+        question: 'One2PDF conserve-t-il mon fichier après la compression ?',
+        answer: 'Non. Le PDF est traité le temps de l’opération. L’original est ensuite supprimé ; le résultat se télécharge une fois, puis est effacé. Les fichiers non téléchargés sont purgés automatiquement sous 15 minutes. Aucune inscription n’est exigée pour un usage ponctuel.'
+      }
     ]
   },
   protect: {
@@ -503,7 +554,8 @@ export const fr: Messages = {
       { icon: '⏱', tone: 'gold', title: 'Traitement rapide', text: 'Le fichier chiffré est prêt en quelques secondes.' },
       { icon: '✧', tone: 'purple', title: 'Usage quotidien', text: 'Contrats, dossiers, pièces d’identité : gardez-les privés.' },
       { icon: '⇄', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.protect
   },
   toJpg: {
     title: 'PDF en JPG',
@@ -524,7 +576,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Qualité lisible', text: 'Les images restent nettes pour la lecture et l’envoi.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'La conversion prend quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF source est traité puis supprimé.' }
-    ]
+    ],
+    ...seoFr.toJpg
   },
   jpgToPdf: {
     title: 'JPG / PNG en PDF',
@@ -544,7 +597,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Plusieurs fichiers', text: 'Ajoutez jusqu’à 20 images, puis téléchargez un PDF unique.' },
       { icon: '⏱', tone: 'purple', title: 'Création rapide', text: 'Le document est prêt en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Les images envoyées ne restent pas sur le serveur.' }
-    ]
+    ],
+    ...seoFr.jpgToPdf
   },
   toPng: {
     title: 'PDF en PNG',
@@ -596,7 +650,8 @@ export const fr: Messages = {
       { icon: '🔓', tone: 'orange', title: 'Ouverture libre', text: 'Le PDF résultant n’exige plus de mot de passe.' },
       { icon: '✓', tone: 'blue', title: 'Votre fichier', text: 'Utilisez uniquement un document dont vous connaissez le mot de passe.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.unlock
   },
   ocrPdf: {
     title: 'PDF OCR',
@@ -612,7 +667,8 @@ export const fr: Messages = {
       { icon: 'OCR', tone: 'gold', title: 'Pages scannées', text: 'Transformez une image de document en texte reconnu.' },
       { icon: '★', tone: 'green', title: 'Langue du navigateur', text: 'La reconnaissance suit la langue détectée (FR, EN, ES…).' },
       { icon: '✧', tone: 'purple', title: 'Puis traduire / résumer', text: 'Une fois le texte là, les autres outils deviennent utiles.' }
-    ]
+    ],
+    ...seoFr.ocr
   },
   summarizePdf: {
     title: 'Résumer un PDF',
@@ -717,14 +773,20 @@ export const fr: Messages = {
       { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'La conversion passe par LibreOffice, sans Microsoft Office installé.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX et formats OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'Mise en page variable', text: 'Les PDF scannés et les tableaux complexes se convertissent moins bien.' }
-    ]
+    ],
+    wordToPdfSeo: seoFr.wordToPdf,
+    pdfToWordSeo: seoFr.pdfToWord,
+    excelToPdfSeo: seoFr.excelToPdf,
+    pptToPdfSeo: seoFr.pptToPdf,
+    pdfToExcelSeo: seoFr.pdfToExcel,
+    pdfToPptSeo: seoFr.pdfToPpt
   },
   upload: {
     drop: 'Glissez vos fichiers ici ou',
     browse: 'parcourir',
     hintPdf: 'Fichiers PDF',
     hintImages: 'JPG, PNG ou WebP',
-    hintMax: '100 Mo max. · jusqu’à {count} fichiers',
+    hintMax: '50 Mo en gratuit · jusqu’à {count} fichiers',
     listTitle: '{count} fichier(s) — glissez pour réordonner',
     up: 'Monter',
     down: 'Descendre',
@@ -743,7 +805,7 @@ export const fr: Messages = {
     feat3Title: 'Traitement sécurisé',
     feat3Text: 'Le document temporaire est supprimé du serveur après son export.',
     needPdf: 'Veuillez sélectionner un fichier PDF.',
-    tooLarge: 'Le fichier dépasse la limite de 100 Mo.',
+    tooLarge: 'Le fichier dépasse la limite de 50 Mo du plan gratuit.',
     cannotOpen: 'Ce PDF ne peut pas être ouvert ou il est protégé.',
     exportFail: 'Export impossible',
     generateFail: 'Impossible de générer le PDF. Vérifiez que le serveur est démarré.',
@@ -786,7 +848,7 @@ export const fr: Messages = {
     previewAlt: 'Aperçu du PDF modifié',
     modifiedDoc: 'Document modifié',
     processingDone: 'Traitement terminé',
-    processingHint: 'Votre document est prêt. Le fichier temporaire sera supprimé lorsque vous quitterez cette page.',
+    processingHint: 'Votre document est prêt. Le fichier temporaire sera supprimé dès le téléchargement.',
     continue: 'Continuer avec un autre outil',
     restart: '↻ Recommencer',
     allPdfTools: 'Voir tous les outils PDF',
@@ -797,6 +859,29 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Ouvrez le PDF dans le navigateur et travaillez tout de suite.' },
       { icon: '⏱', tone: 'purple', title: 'Export rapide', text: 'Téléchargez le fichier modifié en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Le document temporaire est supprimé après l’export.' }
-    ]
+    ],
+    ...seoFr.edit
+  },
+  blogPage: {
+    title: 'Blog One2PDF',
+    subtitle: 'Conseils concrets pour envoyer, alléger et traiter vos PDF au quotidien.',
+    readMore: 'Lire l’article',
+    back: 'Tous les articles',
+    seoTitle: 'Blog PDF : conseils et guides | One2PDF',
+    seoDescription: 'Guides pour compresser, fusionner et convertir vos PDF. Astuces e-mail, Gmail et formulaires — lisez le blog One2PDF.',
+    publishedOn: 'Publié le {date}'
+  },
+  legal: {
+    privacyTitle: 'Confidentialité',
+    privacyUpdated: 'Dernière mise à jour : août 2026',
+    privacyIntro: 'One2PDF est conçu « privacy-first » : nous ne revendons pas vos documents et nous ne les conservons pas pour entraîner des modèles.',
+    privacyData: 'Lors d’un traitement, le fichier est envoyé à nos serveurs le temps de l’opération (conversion, compression, OCR, etc.). Un cookie technique mémorise le quota gratuit et, le cas échéant, votre accès Pro.',
+    privacyRetention: 'Le fichier d’origine est supprimé dès la fin du traitement. Le résultat est disponible au téléchargement unique, puis effacé. Les fichiers non téléchargés sont purgés automatiquement sous 15 minutes.',
+    privacyThird: 'Paiements : Stripe. Conversions Office : LibreOffice sur le serveur. OCR : Tesseract. Résumé / traduction : prestataire d’IA uniquement si ces outils sont utilisés.',
+    privacyRights: 'Vous pouvez demander l’accès, la rectification ou la suppression des données de facturation liées à votre e-mail Stripe. Contactez-nous à l’adresse indiquée sur la page Contact.',
+    contactTitle: 'Contact',
+    contactIntro: 'Une question, un incident ou une demande de support Pro ? Écrivez-nous. Nous répondons en français et en anglais.',
+    contactEmail: 'support@one2pdf.com',
+    contactPriority: 'Les abonnés Pro annuel et Business bénéficient d’un support e-mail prioritaire.'
   }
 };

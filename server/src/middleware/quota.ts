@@ -24,7 +24,7 @@ function quotaMessage(req: Request): string {
   return `Le plan gratuit est limité à ${FREE_DAILY_DOCS} documents par jour. Passez Pro pour continuer.`;
 }
 
-async function isPaid(req: Request, res: Response): Promise<boolean> {
+export async function isPaid(req: Request, res: Response): Promise<boolean> {
   const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
   if (!access) return false;
   const stored = await getEntitlement(access.customerId);

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { StudioLanding, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useImageFiles } from '../lib/useImageFiles';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function JpgToPdf() {
   const { m, t } = useI18n();
+  usePageSeo(m.jpgToPdf.seoTitle, m.jpgToPdf.seoDescription);
   const images = useImageFiles();
   const addPickerId = `${images.pickerId}-add`;
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -66,6 +68,7 @@ function JpgToPdf() {
         isLoading={false}
         error={images.error}
         features={m.jpgToPdf.features}
+        seo={landingSeoFrom(m.jpgToPdf)}
         multiple
         accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
         onDragOver={() => images.setIsDragging(true)}

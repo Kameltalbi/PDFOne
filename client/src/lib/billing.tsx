@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { getRuntimeLocale } from '../i18n/runtime';
 import { dictionaries } from '../i18n/dictionaries';
 
-export type PaidPlan = 'week' | 'year' | 'life';
+export type PaidPlan = 'month' | 'year' | 'business';
 
 export type BillingState =
   | { paid: false }

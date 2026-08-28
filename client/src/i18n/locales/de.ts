@@ -1,5 +1,6 @@
 import type { Messages } from '../types';
 import { en } from './en';
+import { seoEn } from '../seoCopy';
 
 export const de: Messages = {
   htmlTitle: 'One2PDF — PDF-Werkzeuge',
@@ -13,6 +14,7 @@ export const de: Messages = {
     signup: 'Registrieren',
     privacy: 'Datenschutz',
     contact: 'Kontakt',
+    blog: 'Blog',
     seeAll: 'Alle anzeigen',
     pricing: 'Preise',
     menu: 'Menü öffnen',
@@ -25,7 +27,8 @@ export const de: Messages = {
     pdfOnly: 'Nur PDF-Dateien werden akzeptiert.',
     imagesOnly: 'Nur JPG-, PNG- oder WebP-Bilder werden akzeptiert.',
     maxFiles: 'Maximal {count} Dateien.',
-    quotaReached: 'Der Gratisplan ist auf 3 Dokumente pro Tag begrenzt. Upgraden Sie, um fortzufahren.'
+    quotaReached: 'Der Gratisplan ist auf 3 Dokumente pro Tag begrenzt. Upgraden Sie, um fortzufahren.',
+    adLabel: 'Anzeige'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
@@ -54,35 +57,39 @@ export const de: Messages = {
       'Direkte und sichere Verarbeitung'
     ],
     freeCta: 'Kostenlos fortfahren',
-    weekName: 'Wochenpass',
-    weekTag: 'Für den dringenden Bedarf',
-    weekPrice: '1,99 $',
-    weekNote: 'Einmalzahlung, kein Abonnement',
-    weekIncludes: [
-      '7 Tage voller, unbegrenzter Zugriff',
-      'Keine Werbung & unbegrenzte Dateien'
+    monthName: 'Pro monatlich',
+    monthTag: 'Freelancer und mobile Profis',
+    monthPrice: '5,99 $',
+    monthPeriod: '/ Monat',
+    monthIncludes: [
+      'Dateien ohne Größenlimit',
+      'Keine Werbung',
+      'Stapelverarbeitung',
+      'Höchste Serverpriorität'
     ],
-    weekCta: '7-Tage-Pass wählen',
-    yearName: 'Jahresabo',
-    yearPrice: '10,00 $',
+    monthCta: 'Pro wählen',
+    yearName: 'Pro jährlich',
+    yearPrice: '49,00 $',
     yearPeriod: '/ Jahr',
-    yearEquiv: 'entspricht 0,83 $ / Monat, jährlich abgerechnet',
+    yearEquiv: 'ca. 4,08 $ / Monat — rund 32 % Ersparnis',
     yearIncludes: [
-      'Unbegrenzter Zugriff das ganze Jahr',
-      'Keine Werbung, Dateien ohne Größenlimit',
-      'Priorisierte Updates'
+      'Alle Pro-Funktionen',
+      'Etwa 32 % günstiger als monatlich',
+      'Priorisierter E-Mail-Support'
     ],
-    yearBadge: 'Die günstigste Wahl',
-    yearCta: 'Unbegrenzt für 10 $/Jahr aktivieren',
-    lifeName: 'Lebenslanger Pass',
-    lifeTag: 'Damit Sie nie wieder daran denken müssen',
-    lifePrice: '29,99 $',
-    lifeNote: 'Einmalzahlung fürs Leben, nie wieder zahlen',
-    lifeIncludes: [
-      'Dauerhaft unbegrenzter Zugriff',
-      'Alle zukünftigen Funktionen inklusive'
+    yearBadge: 'Am beliebtesten',
+    yearCta: 'Jahresabo wählen',
+    businessName: 'Business / Team',
+    businessTag: 'Bis zu 5 Nutzer',
+    businessPrice: '19,99 $',
+    businessPeriod: '/ Monat',
+    businessNote: 'KMU und Kanzleien',
+    businessIncludes: [
+      'Zentrale Lizenzverwaltung',
+      'Sammelabrechnung',
+      'Verstärkter Datenschutz und Nachverfolgbarkeit'
     ],
-    lifeCta: 'Lebenslangen Zugriff sichern',
+    businessCta: 'Business wählen',
     trust: '100 % sichere Zahlung über Stripe / Apple Pay / Google Pay. Das Jahresabo können Sie mit einem Klick kündigen.',
     paying: 'Weiterleitung zur Zahlung…',
     payFail: 'Zahlung kann nicht gestartet werden.',
@@ -149,7 +156,7 @@ export const de: Messages = {
     ctaEdit: 'PDF bearbeiten',
     ctaTools: 'Alle Werkzeuge entdecken',
     trustInstall: 'Keine Installation',
-    trustSize: 'Bis zu 100 MB',
+    trustSize: '50 MB im Gratisplan',
     trustDelete: 'Dateien werden automatisch gelöscht',
     previewAria: 'Vorschau des One2PDF-Editors',
     heroAlt: 'Berufstätige verwendet One2PDF zum Zusammenführen von PDFs',
@@ -223,7 +230,13 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Keine Installation', text: 'Importieren Sie Ihre Dateien, ordnen Sie sie neu und laden Sie das fertige Dokument herunter.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Die Verarbeitung dauert nur wenige Sekunden – bereit zum Teilen.' },
       { icon: '✧', tone: 'teal', title: 'Visuelle Oberfläche', text: 'Ziehen Sie Ihre PDFs per Drag-and-drop, sehen Sie Miniaturen und führen Sie mit einem Klick zusammen.' }
-    ]
+    ],
+    seoTitle: en.merge.seoTitle,
+    seoDescription: en.merge.seoDescription,
+    seoH2: en.merge.seoH2,
+    seoP1: en.merge.seoP1,
+    seoP2: en.merge.seoP2,
+    seoP3: en.merge.seoP3
   },
   split: {
     title: 'PDF teilen',
@@ -259,7 +272,13 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Bereiche auf einmal', text: 'Geben Sie 1-3, 5, 8 ein, um mehrere Seiten auf einmal auszuwählen.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Das Teilen dauert nur wenige Sekunden – bereit zum Download.' },
       { icon: '✧', tone: 'teal', title: 'Sichere Verarbeitung', text: 'Ihr Dokument wird nach dem Download automatisch gelöscht.' }
-    ]
+    ],
+    seoTitle: en.split.seoTitle,
+    seoDescription: en.split.seoDescription,
+    seoH2: en.split.seoH2,
+    seoP1: en.split.seoP1,
+    seoP2: en.split.seoP2,
+    seoP3: en.split.seoP3
   },
   deletePages: {
     title: 'Seiten löschen',
@@ -280,7 +299,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Keine Installation', text: 'Importieren, auswählen, herunterladen — im Browser.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Ein schlankeres PDF, in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original wird temporär verarbeitet und anschließend gelöscht.' }
-    ]
+    ],
+    ...seoEn.deletePages
   },
   reorderPages: {
     title: 'Seiten neu anordnen',
@@ -304,8 +324,13 @@ export const de: Messages = {
   rotatePdf: {
     title: 'PDF drehen',
     subtitle: 'Richten Sie schiefe oder auf dem Kopf stehende Seiten aus und laden Sie das korrigierte PDF herunter.',
-    tip: 'Klicken Sie auf eine Seite, um sie um 90° zu drehen. Klicken Sie erneut, um fortzufahren.',
-    clickToRotate: 'Klicken Sie auf eine Seite, um sie zu drehen',
+    tip: 'Drehen Sie die angezeigte Seite oder alle Seiten mit den Schaltflächen um 90°.',
+    clickToRotate: 'Wählen Sie eine Seite und drehen Sie sie mit den Schaltflächen.',
+    rotateLeft: '90° links',
+    rotateRight: '90° rechts',
+    rotateAllLeft: 'Alle nach links',
+    rotateAllRight: 'Alle nach rechts',
+    pageOf: 'Seite {page} / {count}',
     rotating: 'Drehen…',
     action: 'Drehung anwenden',
     doneTitle: 'PDF gedreht',
@@ -320,7 +345,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Keine Installation', text: 'Alles geschieht im Browser.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Das korrigierte PDF ist in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Ihr Dokument wird nach der Verarbeitung automatisch gelöscht.' }
-    ]
+    ],
+    ...seoEn.rotate
   },
   watermark: {
     title: 'PDF-Wasserzeichen',
@@ -350,7 +376,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Einstellbare Deckkraft', text: 'Sichtbar genug, um das Dokument zu kennzeichnen, dezent genug, um es zu lesen.' },
       { icon: '⏱', tone: 'purple', title: 'Alle Seiten', text: 'Das Wasserzeichen wird auf einmal auf die gesamte Datei angewendet.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original-PDF wird nicht auf dem Server gespeichert.' }
-    ]
+    ],
+    ...seoEn.watermark
   },
   signPdf: {
     title: 'Digitale Signatur',
@@ -387,7 +414,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Jede Sprache', text: 'Der Name wird so gezeichnet, wie er ist — auch auf Arabisch oder Türkisch.' },
       { icon: '⏱', tone: 'purple', title: 'Letzte Seite oder alle', text: 'Platzieren Sie die Signatur dort, wo Verträge sie erwarten.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original wird nicht auf dem Server gespeichert.' }
-    ]
+    ],
+    ...seoEn.sign
   },
   numberPages: {
     title: 'Seiten nummerieren',
@@ -420,7 +448,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Mehrere Formate', text: '1, 1 / 12, Seite 1 oder Seite 1 von 12 — je nach Dokument.' },
       { icon: '⏱', tone: 'purple', title: 'Alle Seiten', text: 'Die Nummern werden auf einmal auf die gesamte Datei angewendet.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original-PDF wird nicht auf dem Server gespeichert.' }
-    ]
+    ],
+    ...seoEn.pageNumbers
   },
   cropPdf: {
     title: 'PDF zuschneiden',
@@ -450,7 +479,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Alle Seiten', text: 'Dieselben Ränder gelten auf einmal für die gesamte Datei.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Das zugeschnittene PDF ist in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original-PDF wird nicht auf dem Server gespeichert.' }
-    ]
+    ],
+    ...seoEn.crop
   },
   compress: {
     title: 'PDF komprimieren',
@@ -479,7 +509,15 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Sofortige Vorschau', text: 'Sehen Sie das Dokument, bevor Sie die Verarbeitung starten.' },
       { icon: '⏱', tone: 'purple', title: 'Schnelles Ergebnis', text: 'Die Komprimierung dauert nur wenige Sekunden.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Das verarbeitete PDF wird nach der Nutzung automatisch gelöscht.' }
-    ]
+    ],
+    seoTitle: en.compress.seoTitle,
+    seoDescription: en.compress.seoDescription,
+    seoH2: en.compress.seoH2,
+    seoP1: en.compress.seoP1,
+    seoP2: en.compress.seoP2,
+    seoP3: en.compress.seoP3,
+    faqTitle: en.compress.faqTitle,
+    faq: en.compress.faq
   },
   protect: {
     title: 'PDF schützen',
@@ -505,7 +543,8 @@ export const de: Messages = {
       { icon: '⏱', tone: 'gold', title: 'Schnelle Verarbeitung', text: 'Die verschlüsselte Datei ist in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'purple', title: 'Für den Alltag', text: 'Verträge, Unterlagen, Ausweise: behalten Sie sie privat.' },
       { icon: '⇄', tone: 'teal', title: 'Temporäre Dateien', text: 'Das Original wird nicht auf dem Server gespeichert.' }
-    ]
+    ],
+    ...seoEn.protect
   },
   toJpg: {
     title: 'PDF in JPG',
@@ -526,7 +565,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Lesbare Qualität', text: 'Die Bilder bleiben scharf zum Lesen und Versenden.' },
       { icon: '⏱', tone: 'purple', title: 'Sofortiges Ergebnis', text: 'Die Konvertierung dauert nur wenige Sekunden.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Die Quell-PDF wird verarbeitet und anschließend gelöscht.' }
-    ]
+    ],
+    ...seoEn.toJpg
   },
   jpgToPdf: {
     title: 'JPG / PNG in PDF',
@@ -546,7 +586,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Mehrere Dateien', text: 'Fügen Sie bis zu 20 Bilder hinzu und laden Sie ein einziges PDF herunter.' },
       { icon: '⏱', tone: 'purple', title: 'Schnelle Erstellung', text: 'Das Dokument ist in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'teal', title: 'Temporäre Dateien', text: 'Die gesendeten Bilder bleiben nicht auf dem Server.' }
-    ]
+    ],
+    ...seoEn.jpgToPdf
   },
   toPng: { ...en.toPng, title: 'PDF in PNG' },
   toText: { ...en.toText, title: 'PDF in Text' },
@@ -593,7 +634,13 @@ export const de: Messages = {
       { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'Die Konvertierung läuft über LibreOffice, ohne Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX und OpenDocument-Formate.' },
       { icon: '✧', tone: 'purple', title: 'Variables Layout', text: 'Gescannte PDFs und komplexe Tabellen werden weniger genau konvertiert.' }
-    ]
+    ],
+    wordToPdfSeo: en.convert.wordToPdfSeo,
+    pdfToWordSeo: en.convert.pdfToWordSeo,
+    excelToPdfSeo: en.convert.excelToPdfSeo,
+    pptToPdfSeo: en.convert.pptToPdfSeo,
+    pdfToExcelSeo: en.convert.pdfToExcelSeo,
+    pdfToPptSeo: en.convert.pdfToPptSeo
   },
   upload: {
     drop: 'Dateien hierher ziehen oder',
@@ -673,6 +720,9 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Keine Installation', text: 'Öffnen Sie das PDF im Browser und arbeiten Sie sofort.' },
       { icon: '⏱', tone: 'purple', title: 'Schneller Export', text: 'Laden Sie die bearbeitete Datei in wenigen Sekunden herunter.' },
       { icon: '✧', tone: 'teal', title: 'Sichere Verarbeitung', text: 'Das temporäre Dokument wird nach dem Export gelöscht.' }
-    ]
-  }
+    ],
+    ...seoEn.edit
+  },
+  blogPage: en.blogPage,
+  legal: en.legal
 };
