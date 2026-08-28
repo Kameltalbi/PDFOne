@@ -15,6 +15,7 @@ export const tr: Messages = {
     privacy: 'Gizlilik',
     contact: 'İletişim',
     blog: 'Blog',
+    relatedTools: 'These PDF tools are often used together',
     seeAll: 'Tümünü gör',
     pricing: 'Fiyatlar',
     menu: 'Menüyü aç',

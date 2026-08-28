@@ -15,6 +15,7 @@ export const ar: Messages = {
     privacy: 'الخصوصية',
     contact: 'اتصل بنا',
     blog: 'المدونة',
+    relatedTools: 'These PDF tools are often used together',
     seeAll: 'عرض الكل',
     pricing: 'الأسعار',
     menu: 'فتح القائمة',

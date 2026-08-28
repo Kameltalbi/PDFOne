@@ -25,6 +25,7 @@ export type Messages = {
     privacy: string;
     contact: string;
     blog: string;
+    relatedTools: string;
     seeAll: string;
     pricing: string;
     menu: string;

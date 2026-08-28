@@ -14,6 +14,10 @@ function Footer() {
         <p>{m.home.footerTagline}</p>
         <nav>
           <Link to="/tools">{m.nav.allTools}</Link>
+          <Link to="/compress">{m.tools.compress}</Link>
+          <Link to="/merge">{m.tools.merge}</Link>
+          <Link to="/pdf-to-word">{m.tools.pdfToWord}</Link>
+          <Link to="/pdf-to-excel">{m.tools.pdfToExcel}</Link>
           <Link to="/pricing">{m.common.pricing}</Link>
           <Link to="/edit-pdf">{m.tools.edit}</Link>
           <Link to="/privacy">{m.common.privacy}</Link>

@@ -6,6 +6,7 @@ import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { inspectPdfFile } from '../lib/pdfPreview';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
+import { RelatedTools } from '../components/RelatedTools';
 import './Merge.css';
 
 type MergeItem = {
@@ -187,6 +188,7 @@ function Merge() {
           <p>{m.merge.seoP2}</p>
           <p>{m.merge.seoP3}</p>
         </section>
+        <RelatedTools />
       </div>
     );
   }

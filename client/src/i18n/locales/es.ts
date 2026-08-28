@@ -15,6 +15,7 @@ export const es: Messages = {
     privacy: 'Privacidad',
     contact: 'Contacto',
     blog: 'Blog',
+    relatedTools: 'These PDF tools are often used together',
     seeAll: 'Ver todo',
     pricing: 'Precios',
     menu: 'Abrir el menú',

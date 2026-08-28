@@ -15,6 +15,7 @@ export const de: Messages = {
     privacy: 'Datenschutz',
     contact: 'Kontakt',
     blog: 'Blog',
+    relatedTools: 'These PDF tools are often used together',
     seeAll: 'Alle anzeigen',
     pricing: 'Preise',
     menu: 'Menü öffnen',
