@@ -80,6 +80,9 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    worker: {
+      format: 'es',
+    },
     server: {
       proxy: {
         '/api': {

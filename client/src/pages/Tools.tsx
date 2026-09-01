@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
+import { usePageSeo } from '../lib/usePageSeo';
 import './Tools.css';
 
 type ToolDef = { id: string; name: string; path?: string; icon: string; color: string; badge?: 'new' | 'soon'; keywords?: string };
@@ -13,6 +14,7 @@ function ToolCard({ tool, badgeNew, badgeSoon }: { tool: ToolDef; badgeNew: stri
 
 function Tools() {
   const { m, locale } = useI18n();
+  usePageSeo(`${m.tools.catalogTitle} | One2PDF`, m.tools.catalogSubtitle);
   const [query, setQuery] = useState('');
 
   const popularTools: ToolDef[] = [

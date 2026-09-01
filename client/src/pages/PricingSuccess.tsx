@@ -14,7 +14,7 @@ function planCopy(plan: PaidPlan, pricing: Messages['pricing']) {
 }
 
 function PricingSuccess() {
-  const { m } = useI18n();
+  const { m, t, locale } = useI18n();
   const { confirm, portal } = useBilling();
   const [params] = useSearchParams();
   const sessionId = params.get('session_id');
@@ -61,6 +61,11 @@ function PricingSuccess() {
   };
 
   const summary = access ? planCopy(access.plan, m.pricing) : null;
+  const renews = access?.expiresAt
+    ? t(m.pricing.successRenews, {
+        date: new Date(access.expiresAt).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })
+      })
+    : null;
 
   return (
     <main className="pricing-page pricing-success-page">
@@ -74,6 +79,7 @@ function PricingSuccess() {
                 <path d="M16 24.5 21.2 30 32 18" stroke="#059669" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
+            <p className="pricing-success-status">{m.pricing.successStatus}</p>
             <h1>{m.pricing.successTitle}</h1>
             <p className="pricing-success-lead">{m.pricing.successText}</p>
 
@@ -81,9 +87,11 @@ function PricingSuccess() {
               <div className="pricing-success-plan">
                 <strong>{summary.name}</strong>
                 <span>{summary.period}</span>
+                {renews && <span>{renews}</span>}
               </div>
             )}
 
+            <h2 className="pricing-success-perks-title">{m.pricing.successBenefitsTitle}</h2>
             <ul className="pricing-success-perks">
               {m.pricing.successBenefits.map((item) => (
                 <li key={item}>{item}</li>
@@ -91,8 +99,8 @@ function PricingSuccess() {
             </ul>
 
             <div className="pricing-success-actions">
-              <Link className="pricing-cta solid" to="/account">{m.pricing.myAccount}</Link>
-              <Link className="pricing-cta ghost" to="/tools">{m.pricing.successCta}</Link>
+              <Link className="pricing-cta solid" to="/tools">{m.pricing.successCta}</Link>
+              <Link className="pricing-cta ghost" to="/account">{m.pricing.myAccount}</Link>
               {access?.canManage && (
                 <button className="pricing-cta ghost" type="button" disabled={portalBusy} onClick={() => void openPortal()}>
                   {m.pricing.successManage}

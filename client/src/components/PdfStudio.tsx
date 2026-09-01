@@ -22,6 +22,8 @@ type LandingProps = {
   seo?: {
     h2: string;
     paragraphs: string[];
+    howTitle?: string;
+    howSteps?: string[];
     faqTitle?: string;
     faq?: { question: string; answer: string }[];
   };
@@ -91,6 +93,19 @@ export function StudioLanding({
           </article>
         ))}
       </section>
+      {seo?.howSteps && seo.howSteps.length > 0 && (
+        <section className="studio-how" aria-labelledby="studio-how-title">
+          <h2 id="studio-how-title">{seo.howTitle}</h2>
+          <ol>
+            {seo.howSteps.map((step, index) => (
+              <li key={step}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
       {seo && (
         <section className="studio-seo">
           <h2>{seo.h2}</h2>
@@ -157,6 +172,14 @@ export function StudioProcessing({
   );
 }
 
+function resultFileName(sourceName: string | undefined, fallback: string) {
+  if (!sourceName) return fallback;
+  const base = sourceName.replace(/\.[^.]+$/, '').trim();
+  if (!base) return fallback;
+  const ext = fallback.includes('.') ? fallback.slice(fallback.lastIndexOf('.')) : '';
+  return `${base}${ext}`;
+}
+
 export function StudioResult({
   title,
   text,
@@ -182,8 +205,9 @@ export function StudioResult({
   const { status } = useBilling();
   const paid = status.paid;
   const [copied, setCopied] = useState(false);
-  const ext = (downloadName.split('.').pop() || 'FILE').toUpperCase();
-  const displayName = sourceName || downloadName;
+  const fileName = resultFileName(sourceName, downloadName);
+  const ext = (fileName.split('.').pop() || 'FILE').toUpperCase();
+  const showSource = Boolean(sourceName && sourceName !== fileName);
 
   const copyLink = async () => {
     const absolute = new URL(downloadUrl, window.location.origin).href;
@@ -200,21 +224,23 @@ export function StudioResult({
     <div className="studio-done" aria-label={title}>
       <div className="studio-done-grid">
         <div className="studio-done-preview">
-          <div className="studio-done-sheet">
-            {/\.pdf$/i.test(downloadName) ? (
-              <iframe src={`${downloadUrl}#toolbar=0&navpanes=0&scrollbar=0`} title={displayName} />
-            ) : previewSrc ? (
-              <img src={previewSrc} alt={displayName} />
+          <a className="studio-done-sheet" href={downloadUrl} download={fileName}>
+            {previewSrc ? (
+              <img src={previewSrc} alt={fileName} />
             ) : (
-              <span className="studio-done-badge">{ext}</span>
+              <div className="studio-done-placeholder" aria-hidden="true">
+                <span className="studio-done-fold" />
+                <b>{ext}</b>
+                <i /><i /><i />
+              </div>
             )}
-            <a className="studio-done-dl" href={downloadUrl} download={downloadName} aria-label={downloadLabel ?? m.common.download}>⇩</a>
-          </div>
+            <span className="studio-done-ext">{ext}</span>
+          </a>
           <div className="studio-done-file">
             <span>{ext}</span>
             <div>
-              <strong>{displayName}</strong>
-              <small>{downloadName}</small>
+              <strong title={fileName}>{fileName}</strong>
+              {showSource && <small title={sourceName}>{sourceName}</small>}
             </div>
           </div>
         </div>
@@ -227,7 +253,7 @@ export function StudioResult({
           <p className="studio-done-text">{text}</p>
 
           <div className="studio-done-row">
-            <a className="studio-done-download" href={downloadUrl} download={downloadName}>
+            <a className="studio-done-download" href={downloadUrl} download={fileName}>
               <span aria-hidden="true">⇩</span>
               {downloadLabel ?? m.common.download}
             </a>

@@ -67,6 +67,24 @@ function Header() {
     { name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>' }
   ];
 
+  const accountActions = status.user || status.paid ? (
+    <>
+      <Link to="/account" className="header-plan" onClick={closeMenu}>
+        {status.paid ? m.pricing.accountPro : (status.user?.name || m.pricing.myAccount)}
+        {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
+      </Link>
+      {status.paid && status.canManage && (
+        <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
+      )}
+      <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
+    </>
+  ) : (
+    <>
+      <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
+      <Link to="/pricing" className="header-button signup" onClick={closeMenu}>{m.common.getPro}</Link>
+    </>
+  );
+
   return (
     <header className="header">
       <div className="header-container">
@@ -90,7 +108,7 @@ function Header() {
         <nav id="site-nav" className={`nav${menuOpen ? ' open' : ''}`}>
           <div className="nav-dropdown" ref={dropdownRef}>
             <button type="button" className="nav-link dropdown-toggle" onClick={() => setIsDropdownOpen((open) => !open)}>
-              {m.nav.convert}
+              {m.nav.pdfTools}
               <span className="dropdown-arrow">▼</span>
             </button>
             {isDropdownOpen && (
@@ -114,34 +132,16 @@ function Header() {
                   ))}
                   <Link to="/tools" className="dropdown-item see-all" onClick={closeMenu}>
                     <span className="dropdown-item-icon">📋</span>
-                    {m.common.seeAll}
+                    {m.nav.allTools}
                   </Link>
                 </div>
               </div>
             )}
           </div>
-          <NavLink to="/tools" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.allTools}</NavLink>
-          <NavLink to="/merge" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.merge}</NavLink>
-          <NavLink to="/compress" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.compress}</NavLink>
-          <NavLink to="/edit-pdf" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.nav.edit}</NavLink>
+          <NavLink to="/pricing" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.common.pricing}</NavLink>
+          <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.common.about}</NavLink>
           <div className="nav-mobile-actions">
-            {status.user || status.paid ? (
-              <>
-                <Link to="/account" className="header-plan" onClick={closeMenu}>
-                  {status.paid ? m.pricing.accountPro : (status.user?.name || m.pricing.myAccount)}
-                  {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
-                </Link>
-                {status.paid && status.canManage && (
-                  <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
-                )}
-                <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
-                <Link to="/signup" className="header-button signup" onClick={closeMenu}>{m.common.signup}</Link>
-              </>
-            )}
+            {accountActions}
           </div>
         </nav>
 
@@ -160,7 +160,7 @@ function Header() {
           ) : (
             <>
               <Link to="/login" className="header-button login">{m.common.login}</Link>
-              <Link to="/signup" className="header-button signup">{m.common.signup}</Link>
+              <Link to="/pricing" className="header-button signup">{m.common.getPro}</Link>
             </>
           )}
         </div>

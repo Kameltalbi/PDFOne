@@ -225,7 +225,7 @@
   font-weight: 700;
 }
 .edit-page-canvas { position: relative; max-width: 100%; box-shadow: 0 5px 24px rgba(15, 23, 42, 0.18); line-height: 0; background: white; }
-.edit-page-canvas canvas { max-width: 100%; height: auto !important; }
+.edit-page-canvas canvas { max-width: 100%; }
 .edit-page-canvas > canvas:first-child { display: block; }
 .edit-overlay { position: absolute; inset: 0; width: 100% !important; height: 100% !important; touch-action: none; }
 .tool-text .edit-overlay { cursor: text; }
@@ -264,7 +264,7 @@
 .page-thumbnails button { position: relative; width: 100%; padding: .5rem; border: 2px solid transparent; background: white; cursor: pointer; }
 .page-thumbnails button.active { border-color: #22a7f0; }
 .thumbnail-sheet { width: 100%; aspect-ratio: .72; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; background: white; border: 1px solid #d8dee8; }
-.thumbnail-sheet canvas { display: block; max-width: 100%; height: auto !important; background: white; }
+.thumbnail-sheet canvas { display: block; max-width: 100%; background: white; }
 .page-thumbnails b { position: absolute; left: .25rem; bottom: .25rem; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #222; color: white; font-size: .7rem; }
 .editor-zoom { position: fixed; z-index: 4; right: 205px; bottom: 1rem; display: grid; padding: .4rem; border-radius: 9px; background: #383838; color: white; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
 .editor-zoom span { padding: .2rem; font-size: .65rem; font-weight: 700; }

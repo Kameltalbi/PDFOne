@@ -1,3 +1,14 @@
+:root {
+  --o2-red: #dc2626;
+  --o2-orange: #f97316;
+  --o2-blue: #2563eb;
+  --o2-text: #111827;
+  --o2-muted: #64748b;
+  --o2-border: #e2e8f0;
+  --o2-radius: 12px;
+  --o2-shadow: 0 14px 30px rgba(15, 23, 42, 0.09);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -19,10 +30,13 @@ body {
 
 img,
 svg,
-video,
-canvas {
+video {
   max-width: 100%;
   height: auto;
+}
+
+canvas {
+  max-width: 100%;
 }
 
 .app {

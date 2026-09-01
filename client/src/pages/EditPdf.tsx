@@ -8,15 +8,10 @@ import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { useUpgrade } from '../lib/upgrade';
-import { installMapPolyfill } from '../lib/mapPolyfill';
+import { ensurePdfWorker } from '../lib/pdfPreview';
 import './EditPdf.css';
 
-installMapPolyfill();
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  '../lib/pdfjsWorker.ts',
-  import.meta.url
-).toString();
+ensurePdfWorker();
 
 type Point = { x: number; y: number };
 type TextAnnotation = { id: string; type: 'text'; page: number; x: number; y: number; text: string; size: number; color: string; decoration?: 'underline' | 'strike' };

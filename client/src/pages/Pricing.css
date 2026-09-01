@@ -428,6 +428,27 @@
   font-weight: 800;
 }
 
+.pricing-success-status {
+  display: inline-flex;
+  margin: 0 0 0.35rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pricing-success-perks-title {
+  margin: 0 0 0.7rem;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 750;
+  text-align: left;
+}
+
 .pricing-success-actions {
   display: grid;
   gap: 0.65rem;

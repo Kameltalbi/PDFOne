@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import type { FeatureCopy, PageSeoCopy } from '../i18n/types';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 
 type Copy = {
@@ -39,6 +41,7 @@ export function PdfAction({
   downloadLabel?: string;
 }) {
   const pdf = useSinglePdf({ allPages: false, allowLocked });
+  const { pathname } = useLocation();
   const pageSeo = copy.seoTitle && copy.seoDescription && copy.seoH2 && copy.seoP1 && copy.seoP2 && copy.seoP3
     ? {
         seoTitle: copy.seoTitle,
@@ -46,10 +49,19 @@ export function PdfAction({
         seoH2: copy.seoH2,
         seoP1: copy.seoP1,
         seoP2: copy.seoP2,
-        seoP3: copy.seoP3
-      }
+        seoP3: copy.seoP3,
+        howTitle: copy.howTitle,
+        howSteps: copy.howSteps,
+        faqTitle: copy.faqTitle,
+        faq: copy.faq
+      } satisfies PageSeoCopy
     : undefined;
   usePageSeo(pageSeo?.seoTitle, pageSeo?.seoDescription);
+  const faqJsonLd = useMemo(
+    () => (pageSeo?.faq?.length ? faqPageJsonLd(pageSeo.faq, pageUrl(pathname)) : null),
+    [pageSeo?.faq, pathname]
+  );
+  useJsonLd(`one2pdf-faq-${pathname}`, faqJsonLd);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resultName, setResultName] = useState(downloadName);

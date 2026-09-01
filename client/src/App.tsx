@@ -37,6 +37,7 @@ import EditPdf from './pages/EditPdf';
 import EditResult from './pages/EditResult';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
+import About from './pages/About';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import { BillingProvider } from './lib/billing';
@@ -92,6 +93,7 @@ function AppShell() {
           <Route path="/edit-pdf" element={<EditPdf />} />
           <Route path="/edit-pdf/result" element={<EditResult />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/blog" element={<Blog />} />

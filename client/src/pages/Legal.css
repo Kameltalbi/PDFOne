@@ -44,3 +44,69 @@
   font-weight: 700;
   text-decoration: underline;
 }
+
+.privacy-panel {
+  width: min(820px, 100%);
+}
+
+.legal-section {
+  margin: 2rem 0 0;
+  padding-top: 0.35rem;
+}
+
+.legal-panel h2 {
+  margin: 0 0 0.85rem;
+  color: #111827;
+  font-size: 1.12rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.legal-panel ul {
+  margin: 0 0 1rem;
+  padding-inline-start: 1.2rem;
+}
+
+.legal-panel li {
+  margin: 0 0 0.35rem;
+}
+
+.legal-summary {
+  margin-top: 2.4rem;
+  padding: 1.25rem 1.2rem 0.4rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+}
+
+.legal-summary h2 {
+  color: #1e3a8a;
+}
+
+.legal-summary strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #1d4ed8;
+}
+
+.legal-lead {
+  margin: 0.35rem 0 1.15rem;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.about-panel {
+  width: min(760px, 100%);
+}
+
+@media (max-width: 640px) {
+  .legal-page {
+    padding: 2rem 0.85rem 3.5rem;
+  }
+
+  .legal-panel {
+    padding: 1.6rem 1.15rem 1.5rem;
+  }
+}

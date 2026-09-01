@@ -1,16 +1,14 @@
 import { installMapPolyfill } from './mapPolyfill';
 import * as pdfjsLib from 'pdfjs-dist';
+import workerSrc from './pdfjsWorker.ts?worker&url';
 
 installMapPolyfill();
 
 let workerReady = false;
 
-function ensureWorker() {
+export function ensurePdfWorker() {
   if (workerReady) return;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    './pdfjsWorker.ts',
-    import.meta.url
-  ).toString();
+  pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
   workerReady = true;
 }
 
@@ -28,7 +26,7 @@ async function readPdfData(file: File) {
 }
 
 export async function getPdfPageCount(file: File): Promise<number> {
-  ensureWorker();
+  ensurePdfWorker();
   const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   const count = pdf.numPages;
@@ -37,7 +35,7 @@ export async function getPdfPageCount(file: File): Promise<number> {
 }
 
 export async function inspectPdfFile(file: File, scale = 0.85): Promise<{ pages: number; thumb: string | null }> {
-  ensureWorker();
+  ensurePdfWorker();
   const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   try {
@@ -58,7 +56,7 @@ export async function inspectPdfFile(file: File, scale = 0.85): Promise<{ pages:
 }
 
 export async function renderPdfPage(file: File, pageNumber: number, scale = 0.45): Promise<string> {
-  ensureWorker();
+  ensurePdfWorker();
   const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   try {
@@ -77,7 +75,7 @@ export async function renderPdfPage(file: File, pageNumber: number, scale = 0.45
 }
 
 export async function renderPdfPages(file: File, scale = 0.32): Promise<string[]> {
-  ensureWorker();
+  ensurePdfWorker();
   const data = await readPdfData(file);
   const pdf = await pdfjsLib.getDocument({ data }).promise;
   const thumbs: string[] = [];

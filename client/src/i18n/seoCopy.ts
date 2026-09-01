@@ -7,7 +7,28 @@ export const seoFr = {
     seoH2: 'Comment convertir un fichier Word en PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez envoyer un CV, un contrat ou un rapport que le destinataire pourra ouvrir partout ? One2PDF permet de convertir un fichier Word en PDF en ligne gratuitement, sans installer Microsoft Word. Importez un document .doc, .docx, .odt ou .rtf, lancez la conversion, puis téléchargez un PDF prêt à partager.',
     seoP2: 'Transformer un DOCX en PDF n’a pas à passer par un logiciel lourd. L’outil conserve la mise en page, les polices et les images pour un rendu stable à l’écran comme à l’impression. C’est la méthode adaptée si vous cherchez comment convertir Word en PDF pour un e-mail, un dossier de candidature ou un dépôt administratif.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre Word en PDF maintenant, vérifiez le résultat, et revenez sur One2PDF dès qu’un document doit rester fidèle d’un appareil à l’autre.'
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre Word en PDF maintenant, vérifiez le résultat, et revenez sur One2PDF dès qu’un document doit rester fidèle d’un appareil à l’autre.',
+    howTitle: 'Comment convertir un Word en PDF',
+    howSteps: [
+      'Importez votre fichier Word (.doc, .docx, .odt ou .rtf)',
+      'Lancez la conversion dans le navigateur',
+      'Téléchargez le PDF'
+    ],
+    faqTitle: 'Questions fréquentes sur Word vers PDF',
+    faq: [
+      {
+        question: 'Faut-il installer Microsoft Word ?',
+        answer: 'Non. One2PDF convertit les fichiers .doc, .docx, .odt et .rtf dans le navigateur. Word n’est pas requis sur votre ordinateur.'
+      },
+      {
+        question: 'La conversion Word vers PDF est-elle gratuite ?',
+        answer: 'Oui. Vous pouvez convertir sans créer de compte. Le plan gratuit permet 3 documents par jour et des fichiers jusqu’à 20 Mo. Pro retire ces limites.'
+      },
+      {
+        question: 'One2PDF conserve-t-il mon fichier Word ?',
+        answer: 'Non. L’original est supprimé à la fin du traitement. Le PDF peut être téléchargé une fois, puis est effacé. Un fichier non téléchargé est purgé automatiquement sous 15 minutes.'
+      }
+    ]
   },
   pdfToWord: {
     seoTitle: 'Convertir PDF en Word, éditable | One2PDF',
@@ -15,7 +36,28 @@ export const seoFr = {
     seoH2: 'Comment convertir un PDF en Word en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez reprendre un contrat, un rapport ou un formulaire figé dans un PDF ? One2PDF permet de convertir un PDF en Word en ligne gratuitement, sans installer Microsoft Word. Importez le fichier, lancez la conversion, puis ouvrez un document DOC ou DOCX prêt à être modifié.',
     seoP2: 'Transformer un PDF en fichier Word n’a pas à passer par une ressaisie. L’outil reconstitue le texte et une mise en page exploitable pour corriger, commenter ou copier des passages. C’est la méthode adaptée si vous cherchez comment rendre un PDF éditable, extraire du texte d’un PDF ou reprendre un document pour Word.',
-    seoP3: 'La sécurité reste au centre du parcours : le PDF d’origine n’est pas conservé, le fichier Word se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre PDF en Word maintenant, vérifiez le rendu, et revenez sur One2PDF dès qu’un document doit redevenir modifiable. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
+    seoP3: 'La sécurité reste au centre du parcours : le PDF d’origine n’est pas conservé, le fichier Word se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre PDF en Word maintenant, vérifiez le rendu, et revenez sur One2PDF dès qu’un document doit redevenir modifiable. Le traitement ne prend que quelques secondes, sans logiciel à installer.',
+    howTitle: 'Comment convertir un PDF en Word',
+    howSteps: [
+      'Importez le PDF à modifier',
+      'Lancez la conversion',
+      'Téléchargez le fichier Word et ouvrez-le'
+    ],
+    faqTitle: 'Questions fréquentes sur PDF vers Word',
+    faq: [
+      {
+        question: 'Le fichier Word sera-t-il éditable ?',
+        answer: 'Oui. La conversion reconstitue le texte et une mise en page exploitable. Un scan image peut nécessiter l’OCR au préalable.'
+      },
+      {
+        question: 'Faut-il un compte pour convertir un PDF en Word ?',
+        answer: 'Non. L’usage gratuit ne demande ni nom ni e-mail. Un compte Pro est réservé aux utilisateurs payants (e-mail et mot de passe).'
+      },
+      {
+        question: 'Les fichiers sont-ils conservés après la conversion ?',
+        answer: 'Non. Le PDF d’origine est supprimé à la fin du traitement. Le Word est effacé après téléchargement, ou automatiquement sous 15 minutes s’il n’est pas téléchargé.'
+      }
+    ]
   },
   excelToPdf: {
     seoTitle: 'Convertir Excel en PDF facilement | One2PDF',
@@ -55,7 +97,28 @@ export const seoFr = {
     seoH2: 'Comment convertir des images JPG en PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous avez des photos de pièces, un scan de téléphone ou des captures à classer ? One2PDF permet de convertir des JPG en PDF en ligne gratuitement, sans installer de logiciel. Importez vos images JPG, PNG ou WebP, glissez les miniatures pour l’ordre, puis créez un document unique prêt à envoyer.',
     seoP2: 'Assembler des images dans un PDF n’a pas à passer par un traitement de texte. L’outil place chaque visuel sur une page et conserve l’ordre que vous définissez. C’est la méthode adaptée si vous cherchez comment faire un PDF à partir de photos, regrouper des scans ou envoyer plusieurs images en un seul fichier.',
-    seoP3: 'La sécurité reste au centre du parcours : les images ne sont pas conservées, le PDF se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez vos JPG en PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que des photos doivent devenir un dossier.'
+    seoP3: 'La sécurité reste au centre du parcours : les images ne sont pas conservées, le PDF se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez vos JPG en PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que des photos doivent devenir un dossier.',
+    howTitle: 'Comment convertir des JPG en PDF',
+    howSteps: [
+      'Importez vos images JPG, PNG ou WebP',
+      'Réordonnez les miniatures si besoin',
+      'Téléchargez le PDF combiné'
+    ],
+    faqTitle: 'Questions fréquentes sur JPG vers PDF',
+    faq: [
+      {
+        question: 'Puis-je réunir plusieurs images dans un seul PDF ?',
+        answer: 'Oui. Importez des fichiers JPG, PNG ou WebP, glissez les miniatures dans l’ordre voulu, puis créez un PDF unique.'
+      },
+      {
+        question: 'Faut-il installer un logiciel ?',
+        answer: 'Non. La conversion se fait dans le navigateur. Aucune application de bureau n’est requise.'
+      },
+      {
+        question: 'One2PDF conserve-t-il mes photos ?',
+        answer: 'Non. Les images sont traitées temporairement. Les originaux sont supprimés après le traitement. Le PDF est effacé après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.'
+      }
+    ]
   },
   edit: {
     seoTitle: 'Modifier un PDF en ligne, simple | One2PDF',
@@ -154,7 +217,28 @@ export const seoEn = {
     seoH2: 'How to convert a Word file to PDF online quickly and securely',
     seoP1: 'Need to send a CV, a contract, or a report that anyone can open? One2PDF lets you convert a Word file to PDF online for free, with no Microsoft Word to install. Import a .doc, .docx, .odt, or .rtf document, start the conversion, then download a PDF ready to share.',
     seoP2: 'Turning a DOCX into a PDF does not have to mean heavy software. The tool keeps layout, fonts, and images so the result stays stable on screen and in print. It is a practical way to convert Word to PDF for email, a job application, or an official upload.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the PDF is available for download, then deleted. No account is required for occasional use. Convert your Word file to PDF now, check the result, and come back to One2PDF whenever a document must look the same on every device.'
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the PDF is available for download, then deleted. No account is required for occasional use. Convert your Word file to PDF now, check the result, and come back to One2PDF whenever a document must look the same on every device.',
+    howTitle: 'How to convert Word to PDF',
+    howSteps: [
+      'Upload your Word file (.doc, .docx, .odt or .rtf)',
+      'Start the conversion in your browser',
+      'Download the PDF'
+    ],
+    faqTitle: 'Frequently asked questions about Word to PDF',
+    faq: [
+      {
+        question: 'Do I need Microsoft Word installed?',
+        answer: 'No. One2PDF converts .doc, .docx, .odt and .rtf files in the browser. You do not need Word on your computer.'
+      },
+      {
+        question: 'Is converting Word to PDF free?',
+        answer: 'Yes. You can convert without creating an account. The free plan allows 3 documents per day and files up to 20 MB. Pro removes those limits.'
+      },
+      {
+        question: 'Does One2PDF keep my Word file?',
+        answer: 'No. The original is deleted when processing ends. The PDF can be downloaded once, then erased. A file that is not downloaded is removed automatically within 15 minutes.'
+      }
+    ]
   },
   pdfToWord: {
     seoTitle: 'Convert PDF to Word, Editable | One2PDF',
@@ -162,7 +246,28 @@ export const seoEn = {
     seoH2: 'How to convert a PDF to Word online quickly and securely',
     seoP1: 'Need to revise a contract, a report, or a form locked inside a PDF? One2PDF lets you convert a PDF to Word online for free, with no Microsoft Word to install. Import the file, start the conversion, then open a DOC or DOCX ready to edit.',
     seoP2: 'Turning a PDF into a Word file does not have to mean retyping. The tool rebuilds text and a usable layout so you can correct, comment, or copy passages. It is a practical way to make a PDF editable, extract text from a PDF, or reuse a document in Word.',
-    seoP3: 'Security stays at the center of the flow: the original PDF is not kept, the Word file is available for download, then deleted. No account is required for occasional use. Convert your PDF to Word now, check the layout, and come back to One2PDF whenever a document must become editable again. The whole process takes only a few seconds, with no extra software on your computer.'
+    seoP3: 'Security stays at the center of the flow: the original PDF is not kept, the Word file is available for download, then deleted. No account is required for occasional use. Convert your PDF to Word now, check the layout, and come back to One2PDF whenever a document must become editable again. The whole process takes only a few seconds, with no extra software on your computer.',
+    howTitle: 'How to convert a PDF to Word',
+    howSteps: [
+      'Upload the PDF you want to edit',
+      'Start the conversion',
+      'Download the Word file and open it'
+    ],
+    faqTitle: 'Frequently asked questions about PDF to Word',
+    faq: [
+      {
+        question: 'Will the Word file be editable?',
+        answer: 'Yes. The conversion rebuilds text and a usable layout so you can edit in Word. Complex scans may need OCR first if the PDF is only an image.'
+      },
+      {
+        question: 'Do I need an account to convert PDF to Word?',
+        answer: 'No. Free use does not require a name or an email. A Pro account is only for paying users and uses email plus password.'
+      },
+      {
+        question: 'Are my files stored after conversion?',
+        answer: 'No. The original PDF is deleted at the end of the job. The Word result is deleted after download, or automatically within 15 minutes if you do not download it.'
+      }
+    ]
   },
   excelToPdf: {
     seoTitle: 'Convert Excel to PDF Easily | One2PDF',
@@ -202,7 +307,28 @@ export const seoEn = {
     seoH2: 'How to convert JPG images to PDF online quickly and securely',
     seoP1: 'Have photos of documents, a phone scan, or screenshots to file? One2PDF lets you convert JPGs to PDF online for free, with no software to install. Import JPG, PNG, or WebP images, drag the thumbnails to set the order, then create one document ready to send.',
     seoP2: 'Assembling images into a PDF does not have to mean a word processor. The tool places each visual on a page and keeps the order you choose. It is a practical way to make a PDF from photos, group scans, or send several images as a single file.',
-    seoP3: 'Security stays at the center of the flow: the images are not kept, the PDF is available for download, then deleted. No account is required for occasional use. Convert your JPGs to PDF now, check the page order, and come back to One2PDF whenever photos should become a pack. The whole process takes only a few seconds, with no extra software on your computer.'
+    seoP3: 'Security stays at the center of the flow: the images are not kept, the PDF is available for download, then deleted. No account is required for occasional use. Convert your JPGs to PDF now, check the page order, and come back to One2PDF whenever photos should become a pack. The whole process takes only a few seconds, with no extra software on your computer.',
+    howTitle: 'How to convert JPG images to PDF',
+    howSteps: [
+      'Upload your JPG, PNG or WebP images',
+      'Reorder the thumbnails if needed',
+      'Download the combined PDF'
+    ],
+    faqTitle: 'Frequently asked questions about JPG to PDF',
+    faq: [
+      {
+        question: 'Can I combine several images into one PDF?',
+        answer: 'Yes. Import JPG, PNG or WebP files, drag the thumbnails into the order you want, then create one PDF.'
+      },
+      {
+        question: 'Do I need to install software?',
+        answer: 'No. The conversion runs in your browser. There is no desktop app to install.'
+      },
+      {
+        question: 'Does One2PDF keep my photos?',
+        answer: 'No. Images are processed temporarily. The original files are deleted after the job. The PDF is deleted after download, or within 15 minutes if you do not download it.'
+      }
+    ]
   },
   edit: {
     seoTitle: 'Edit a PDF Online — Add Text | One2PDF',

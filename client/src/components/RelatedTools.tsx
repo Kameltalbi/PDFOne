@@ -3,7 +3,7 @@ import { useI18n } from '../i18n';
 import './Studio.css';
 
 const RELATED: Record<string, string[]> = {
-  '/compress': ['/merge', '/split', '/jpg-to-pdf', '/pdf-to-word'],
+  '/compress': ['/merge', '/split', '/pdf-to-word', '/protect'],
   '/merge': ['/split', '/compress', '/pdf-to-word', '/page-numbers'],
   '/split': ['/merge', '/delete-pages', '/compress'],
   '/pdf-to-word': ['/word-to-pdf', '/compress', '/merge', '/pdf-to-excel'],

@@ -14,7 +14,7 @@ export const en: Messages = {
     privacy: 'Privacy',
     contact: 'Contact',
     blog: 'Blog',
-    relatedTools: 'These PDF tools are often used together',
+    relatedTools: 'You may also need',
     seeAll: 'See all',
     pricing: 'Pricing',
     menu: 'Open menu',
@@ -32,11 +32,17 @@ export const en: Messages = {
     doneShort: 'Done!',
     copyLink: 'Copy link',
     linkCopied: 'Link copied',
-    deleteResult: 'Delete'
+    deleteResult: 'Delete',
+    about: 'About',
+    getPro: 'Get Pro',
+    footerTools: 'Tools',
+    footerCompany: 'One2PDF',
+    footerLegal: 'Legal'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
-    convert: 'Convert PDF',
+    convert: 'PDF Tools',
+    pdfTools: 'PDF Tools',
     fromPdf: 'Convert from PDF',
     toPdf: 'Convert to PDF',
     allTools: 'All tools',
@@ -135,17 +141,21 @@ export const en: Messages = {
     paying: 'Redirecting to checkout…',
     payFail: 'Unable to start checkout.',
     canceled: 'Payment canceled. You can try again whenever you want.',
-    successTitle: 'Welcome to One2PDF Pro',
-    successText: 'Your payment has been confirmed and your Pro plan is now active.',
-    successCta: 'Start using One2PDF',
-    successManage: 'Manage my subscription',
+    successTitle: "You're now on One2PDF Pro",
+    successText: 'Your Pro account is ready.',
+    successBenefitsTitle: 'Your Pro benefits',
+    successStatus: 'Active',
+    successRenews: 'Renews {date}',
+    successCta: 'Start using One2PDF Pro',
+    successManage: 'Manage subscription',
     successVerifying: 'Verifying payment…',
     successSeoTitle: 'Welcome to One2PDF Pro',
     successSeoDescription: 'Your One2PDF Pro payment is confirmed. Use every PDF tool without the daily limit.',
     successBenefits: [
-      'Every PDF feature unlocked',
-      'No daily usage limit',
-      'Priority processing',
+      'No ads',
+      'No 20 MB file-size limit',
+      'Process several files at once',
+      'No daily document limit',
       'Cancel or manage anytime'
     ],
     successPeriodWeek: '7 days · one-time payment',
@@ -271,13 +281,15 @@ export const en: Messages = {
     emptyText: 'Try another keyword.'
   },
   home: {
+    seoTitle: 'Online PDF Tools — Merge, Compress, Convert | One2PDF',
+    seoDescription: 'Merge, compress, convert, split and manage your PDF files in seconds. Free to use, with no account required.',
     eyebrow: 'SIMPLE, FAST AND SECURE',
-    title: 'Your PDF documents,',
-    titleAccent: 'finally easy to manage.',
-    subtitle: 'Edit, convert, merge and protect your files with a professional toolkit available right in your browser.',
+    title: 'Everything you need to work with PDFs.',
+    titleAccent: '',
+    subtitle: 'Merge, compress, convert, split and manage your PDF files in seconds.',
     ctaEdit: 'Edit a PDF',
-    ctaTools: 'Browse all tools',
-    trustInstall: 'No installation',
+    ctaTools: 'Choose a PDF tool',
+    trustInstall: 'No installation required.',
     trustSize: '20 MB on free',
     trustDelete: 'Files deleted automatically',
     previewAria: 'One2PDF editor preview',
@@ -286,40 +298,67 @@ export const en: Messages = {
     cardSecureSmall: 'Protected processing',
     cardFast: 'Ready in seconds',
     cardFastSmall: 'No installation',
-    popularLabel: 'POPULAR TOOLS',
-    popularTitle: 'Everything you need to work with PDFs',
-    seeAllTools: 'See all tools',
-    processLabel: 'A FRICTIONLESS EXPERIENCE',
-    processTitle: 'From file to result in three steps.',
-    processText: 'A clear interface designed to save you time on any device.',
-    processCta: 'Try the PDF editor',
-    step1Title: 'Choose your file',
-    step1Text: 'Import your PDF by selecting it or dragging and dropping.',
-    step2Title: 'Apply your changes',
-    step2Text: 'Use precise tools with an instant preview.',
-    step3Title: 'Download the result',
-    step3Text: 'Get a document ready to share in seconds.',
-    value1Title: 'Fast by design',
-    value1Text: 'Optimized processing that does not slow you down.',
-    value2Title: 'Respect for your data',
-    value2Text: 'Temporary files are deleted automatically.',
-    value3Title: 'Available everywhere',
-    value3Text: 'A smooth experience on desktop, tablet and mobile.',
-    value4Title: 'Professional quality',
-    value4Text: 'Faithful exports, ready for everyday use.',
-    ctaLabel: 'READY TO START?',
-    ctaTitle: 'Your next PDF is already simpler.',
-    ctaText: 'Explore every One2PDF tool and move forward without wasting time.',
-    ctaButton: 'Explore the tools',
+    popularLabel: 'POPULAR PDF TOOLS',
+    popularTitle: 'Popular PDF Tools',
+    seeAllTools: 'View all PDF tools →',
+    processLabel: 'HOW IT WORKS',
+    processTitle: 'How it works',
+    processText: 'Three steps. No software to install.',
+    processCta: 'Choose a PDF tool',
+    step1Title: 'Upload',
+    step1Text: 'Choose or drag your file.',
+    step2Title: 'Process',
+    step2Text: 'One2PDF processes your document.',
+    step3Title: 'Download',
+    step3Text: 'Download your new file.',
+    value1Title: 'Fast',
+    value1Text: 'Process your documents in seconds.',
+    value2Title: 'Secure',
+    value2Text: 'Files are processed temporarily. The original is deleted when processing ends. Files you do not download are removed within 15 minutes.',
+    value3Title: 'Simple',
+    value3Text: 'No complicated software or learning curve.',
+    value4Title: 'Affordable',
+    value4Text: 'Professional PDF tools without expensive software.',
+    ctaLabel: 'ONE2PDF PRO',
+    ctaTitle: 'Need more power?',
+    ctaText: 'Upgrade to One2PDF Pro for advanced PDF workflows.',
+    ctaButton: 'Explore One2PDF Pro',
     footerTagline: 'The simple, professional PDF toolkit.',
     copyright: '© 2026 One2PDF. All rights reserved.',
     filesDeleted: 'Files are deleted as soon as you download them (15 min max).',
+    privacyKicker: 'YOUR FILES STAY YOURS',
+    privacyTitle: 'No document is stored.',
+    privacyText: 'One2PDF does not keep your PDFs. They are processed for the job, then everything is deleted automatically. Nothing is stored, nothing is shared.',
+    privacyNeverStored: 'No files are kept',
+    privacyAutoDelete: 'Everything is erased after use',
+    privacyNoShare: 'Nothing is shared or reused',
+    privacyLearnMore: 'Privacy policy',
     toolEditDesc: 'Text, images, signature and annotations.',
     toolMergeDesc: 'Combine several PDFs in the right order.',
     toolSplitDesc: 'Extract or separate pages from a document.',
     toolCompressDesc: 'Reduce size without sacrificing quality.',
     toolJpgDesc: 'Convert each page into an image.',
-    toolProtectDesc: 'Secure your files and information.'
+    toolProtectDesc: 'Secure your files and information.',
+    toolPdfToWordDesc: 'Turn a PDF into an editable Word file.',
+    toolWordToPdfDesc: 'Turn a Word document into a PDF.',
+    toolJpgToPdfDesc: 'Combine JPG, PNG or WebP images into one PDF.',
+    trustLine: 'Fast · Secure · Easy to use',
+    proBenefits: [
+      'No ads',
+      'Files larger than 20 MB',
+      'Process several files at once',
+      'No daily document limit'
+    ]
+  },
+  about: {
+    seoTitle: 'About One2PDF | Simple PDF tools',
+    seoDescription: 'One2PDF is an international platform of simple, fast PDF tools. Operated by 9545-8907 QUEBEC INC., Quebec, Canada.',
+    title: 'About One2PDF',
+    lead: 'Simple. Fast. Secure. Affordable.',
+    p1: 'One2PDF is an international platform of online PDF tools. Merge, compress, convert, split and manage your files in the browser — without installing software and without creating an account for free use.',
+    p2: 'The product is built for everyday work: a clear interface, short processing times, and documents that are not stored after use.',
+    company: 'One2PDF is operated by 9545-8907 QUEBEC INC., Quebec, Canada.',
+    cta: 'View PDF tools'
   },
   merge: {
     title: 'Merge PDF',
@@ -358,7 +397,28 @@ export const en: Messages = {
     seoH2: 'How to merge PDFs online quickly and securely',
     seoP1: 'Need to send a contract, attachments, and a scan as a single file? One2PDF lets you merge PDF files online for free, with no software to install. Import at least two files, drag the thumbnails to set the order, then start the merge: in a few seconds you get one document, ready to download.',
     seoP2: 'Combining several PDFs does not have to be technical. The tool keeps pages as they are, with no watermark, and can add page numbers if you need them. It is a practical way to combine PDFs into one file for a job application, an email attachment, or simpler archiving.',
-    seoP3: 'Security stays at the center of the flow: the originals are not kept, the result is available for download, then deleted. No account is required for occasional use. Merge your PDFs now, check the page order before you share, and come back to One2PDF whenever several documents should become one.'
+    seoP3: 'Security stays at the center of the flow: the originals are not kept, the result is available for download, then deleted. No account is required for occasional use. Merge your PDFs now, check the page order before you share, and come back to One2PDF whenever several documents should become one.',
+    howTitle: 'How to merge PDF files',
+    howSteps: [
+      'Choose the PDF files you want to combine',
+      'Put them in the order you need',
+      'Download the merged PDF'
+    ],
+    faqTitle: 'Frequently asked questions about merging PDFs',
+    faq: [
+      {
+        question: 'How many PDFs can I merge at once?',
+        answer: 'You can add several PDFs and reorder them with the thumbnails. The free plan has a daily document limit and a 20 MB file limit. Pro unlocks batch processing and larger files.'
+      },
+      {
+        question: 'Do I need an account to merge PDFs?',
+        answer: 'No. Free use does not require a name or an email. You pick the tool, upload the files, then download the result.'
+      },
+      {
+        question: 'Are the original PDFs stored?',
+        answer: 'No. Originals are deleted when processing ends. The merged file is deleted after download, or automatically within 15 minutes if you do not download it.'
+      }
+    ]
   },
   split: {
     title: 'Split PDF',
@@ -400,7 +460,28 @@ export const en: Messages = {
     seoH2: 'How to split a PDF online quickly and securely',
     seoP1: 'Need only a few pages from a pack, a contract, or a scan that runs too long? One2PDF lets you split a PDF online for free, with no software to install. Import the file, select the pages to keep — by click or with a range such as 1-3, 5, 8 — then start the job.',
     seoP2: 'Two modes cover everyday needs. Extract gathers the chosen pages into one shorter PDF. Separate exports each page as its own file, packed in a ZIP. It is a practical way to extract pages from a PDF, cut a bulky document, or send only one chapter.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Split your PDF now, keep only what you need, and come back to One2PDF whenever a document must be trimmed or shared in parts.'
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Split your PDF now, keep only what you need, and come back to One2PDF whenever a document must be trimmed or shared in parts.',
+    howTitle: 'How to split a PDF',
+    howSteps: [
+      'Upload the PDF',
+      'Select the pages to extract or separate',
+      'Download the result'
+    ],
+    faqTitle: 'Frequently asked questions about splitting PDFs',
+    faq: [
+      {
+        question: 'Can I extract only some pages?',
+        answer: 'Yes. Use Extract to keep selected pages in one PDF, or Separate to export each page in a ZIP. You can also type a range such as 1-3, 5, 8.'
+      },
+      {
+        question: 'Is splitting a PDF free?',
+        answer: 'Yes, without creating an account. The free plan is limited to 3 documents per day and 20 MB per file.'
+      },
+      {
+        question: 'Does One2PDF keep the original after a split?',
+        answer: 'No. The original is deleted at the end of the job. The result is deleted after download, or within 15 minutes if you do not download it.'
+      }
+    ]
   },
   deletePages: {
     title: 'Delete pages',
@@ -638,6 +719,12 @@ export const en: Messages = {
     seoP1: 'Need to email a file that is too heavy, upload it to a form, or share it without ruining readability? One2PDF lets you compress a PDF online for free, with no software to install. Import the file, choose a compression level (high, medium, or strong), then start the job: in a few seconds you get a smaller PDF, ready to download.',
     seoP2: 'Reducing the size of a large PDF does not have to be technical. The tool slims down images and optimizes the document while keeping a readable result on screen and in print. It is a practical way to shrink a PDF for Gmail, WhatsApp, or limited cloud storage.',
     seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Compress your PDF now, compare the size before and after, and come back to One2PDF whenever a document hits an upload limit.',
+    howTitle: 'How to compress a PDF',
+    howSteps: [
+      'Upload the PDF that is too large',
+      'Choose a compression level',
+      'Download the smaller file'
+    ],
     faqTitle: 'Frequently asked questions about PDF compression',
     faq: [
       {
@@ -996,8 +1083,8 @@ export const en: Messages = {
     publishedOn: 'Published {date}'
   },
   legal: {
-    privacyTitle: 'Privacy',
-    privacyUpdated: 'Last updated: August 2026',
+    privacyTitle: 'Privacy policy',
+    privacyUpdated: 'Last updated: September 2026',
     privacyIntro: 'One2PDF is privacy-first: we do not sell your documents and we do not keep them to train models.',
     privacyData: 'When you run a tool, the file is sent to our servers for the duration of the job (conversion, compression, OCR, and so on). A technical cookie stores the free-plan quota and, if you subscribe, your Pro access.',
     privacyRetention: 'The original file is deleted when processing ends. The result is available for a single download, then erased. Files that are not downloaded are purged automatically within 15 minutes.',

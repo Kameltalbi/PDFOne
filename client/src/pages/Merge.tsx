@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { postForm } from '../lib/api';
 import { useBilling } from '../lib/billing';
@@ -6,6 +6,7 @@ import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { inspectPdfFile } from '../lib/pdfPreview';
 import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
 import { StudioProcessing, StudioResult } from '../components/PdfStudio';
@@ -38,6 +39,11 @@ function FeatureGlyph({ index }: { index: number }) {
 function Merge() {
   const { m, t, locale } = useI18n();
   usePageSeo(m.merge.seoTitle, m.merge.seoDescription);
+  const faqJsonLd = useMemo(
+    () => (m.merge.faq?.length ? faqPageJsonLd(m.merge.faq, pageUrl('/merge')) : null),
+    [m.merge.faq]
+  );
+  useJsonLd('one2pdf-faq-merge', faqJsonLd);
   const { status } = useBilling();
   const { allowFiles } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
@@ -193,12 +199,36 @@ function Merge() {
             </article>
           ))}
         </section>
+        {m.merge.howSteps && m.merge.howSteps.length > 0 && (
+          <section className="studio-how" aria-labelledby="merge-how-title">
+            <h2 id="merge-how-title">{m.merge.howTitle}</h2>
+            <ol>
+              {m.merge.howSteps.map((step, index) => (
+                <li key={step}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
         <section className="merge-seo">
           <h2>{m.merge.seoH2}</h2>
           <p>{m.merge.seoP1}</p>
           <p>{m.merge.seoP2}</p>
           <p>{m.merge.seoP3}</p>
         </section>
+        {m.merge.faq && m.merge.faq.length > 0 && (
+          <section className="studio-faq" aria-labelledby="merge-faq-title">
+            <h2 id="merge-faq-title">{m.merge.faqTitle}</h2>
+            {m.merge.faq.map((item) => (
+              <article key={item.question}>
+                <h3>{item.question}</h3>
+                <p>{item.answer}</p>
+              </article>
+            ))}
+          </section>
+        )}
         <RelatedTools />
       </div>
     );

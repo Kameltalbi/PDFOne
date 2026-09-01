@@ -14,7 +14,7 @@ export const fr: Messages = {
     privacy: 'Confidentialité',
     contact: 'Contact',
     blog: 'Blog',
-    relatedTools: 'Ces outils PDF vont souvent ensemble',
+    relatedTools: 'Vous pourriez aussi avoir besoin de',
     seeAll: 'Voir tout',
     pricing: 'Tarifs',
     menu: 'Ouvrir le menu',
@@ -32,11 +32,17 @@ export const fr: Messages = {
     doneShort: 'Fini !',
     copyLink: 'Copier le lien',
     linkCopied: 'Lien copié',
-    deleteResult: 'Supprimer'
+    deleteResult: 'Supprimer',
+    about: 'À propos',
+    getPro: 'Passer Pro',
+    footerTools: 'Outils',
+    footerCompany: 'One2PDF',
+    footerLegal: 'Mentions'
   },
   units: { byte: 'o', kb: 'Ko', mb: 'Mo', gb: 'Go' },
   nav: {
-    convert: 'Convertir PDF',
+    convert: 'Outils PDF',
+    pdfTools: 'Outils PDF',
     fromPdf: 'Convertir depuis un PDF',
     toPdf: 'Convertir en PDF',
     allTools: 'Tous les outils',
@@ -135,18 +141,22 @@ export const fr: Messages = {
     paying: 'Redirection vers le paiement…',
     payFail: 'Impossible de lancer le paiement.',
     canceled: 'Paiement annulé. Vous pouvez réessayer quand vous voulez.',
-    successTitle: 'Bienvenue dans One2PDF Pro',
-    successText: 'Votre paiement a été confirmé et votre abonnement Pro est maintenant actif.',
-    successCta: 'Commencer à utiliser One2PDF',
-    successManage: 'Gérer mon abonnement',
+    successTitle: 'Vous êtes sur One2PDF Pro',
+    successText: 'Votre compte Pro est prêt.',
+    successBenefitsTitle: 'Vos avantages Pro',
+    successStatus: 'Actif',
+    successRenews: 'Renouvellement le {date}',
+    successCta: 'Commencer à utiliser One2PDF Pro',
+    successManage: 'Gérer l’abonnement',
     successVerifying: 'Vérification du paiement…',
     successSeoTitle: 'Bienvenue dans One2PDF Pro',
     successSeoDescription: 'Votre paiement One2PDF Pro a été confirmé. Accédez à tous les outils PDF sans limite quotidienne.',
     successBenefits: [
-      'Toutes les fonctionnalités PDF débloquées',
-      'Utilisation sans limite quotidienne',
-      'Traitement prioritaire',
-      'Abonnement gérable à tout moment'
+      'Sans publicité',
+      'Fichiers au-delà de 20 Mo',
+      'Plusieurs fichiers à la fois',
+      'Sans limite quotidienne de documents',
+      'Annulation ou gestion à tout moment'
     ],
     successPeriodWeek: '7 jours · paiement unique',
     successPeriodMonth: 'Mensuel',
@@ -271,13 +281,15 @@ export const fr: Messages = {
     emptyText: 'Essayez un autre mot-clé.'
   },
   home: {
+    seoTitle: 'Outils PDF en ligne — Fusionner, compresser, convertir | One2PDF',
+    seoDescription: 'Fusionnez, compressez, convertissez, divisez et gérez vos fichiers PDF en quelques secondes. Gratuit, sans création de compte.',
     eyebrow: 'SIMPLE, RAPIDE ET SÉCURISÉ',
-    title: 'Vos documents PDF,',
-    titleAccent: 'enfin simples à gérer.',
-    subtitle: 'Modifiez, convertissez, fusionnez et protégez vos fichiers avec une suite d’outils professionnelle accessible directement depuis votre navigateur.',
+    title: 'Tout ce qu’il faut pour travailler avec des PDF.',
+    titleAccent: '',
+    subtitle: 'Fusionnez, compressez, convertissez, divisez et gérez vos fichiers PDF en quelques secondes.',
     ctaEdit: 'Modifier un PDF',
-    ctaTools: 'Découvrir tous les outils',
-    trustInstall: 'Sans installation',
+    ctaTools: 'Choisir un outil PDF',
+    trustInstall: 'Aucune installation requise.',
     trustSize: '20 Mo en gratuit',
     trustDelete: 'Fichiers supprimés automatiquement',
     previewAria: 'Aperçu de l’éditeur One2PDF',
@@ -286,40 +298,67 @@ export const fr: Messages = {
     cardSecureSmall: 'Traitement protégé',
     cardFast: 'Prêt en quelques secondes',
     cardFastSmall: 'Aucune installation',
-    popularLabel: 'OUTILS POPULAIRES',
-    popularTitle: 'Tout ce qu’il faut pour travailler avec vos PDF',
-    seeAllTools: 'Voir tous les outils',
-    processLabel: 'UNE EXPÉRIENCE SANS FRICTION',
-    processTitle: 'Du fichier au résultat en trois étapes.',
-    processText: 'Une interface claire pensée pour vous faire gagner du temps, quel que soit votre appareil.',
-    processCta: 'Essayer l’éditeur PDF',
-    step1Title: 'Choisissez votre fichier',
-    step1Text: 'Importez votre PDF par sélection ou glisser-déposer.',
-    step2Title: 'Appliquez vos modifications',
-    step2Text: 'Utilisez des outils précis avec un aperçu instantané.',
-    step3Title: 'Téléchargez le résultat',
-    step3Text: 'Récupérez un document prêt à partager en quelques secondes.',
-    value1Title: 'Rapide par conception',
-    value1Text: 'Des traitements optimisés pour ne pas ralentir votre journée.',
-    value2Title: 'Respect de vos données',
-    value2Text: 'Vos fichiers temporaires sont supprimés automatiquement.',
-    value3Title: 'Accessible partout',
-    value3Text: 'Une expérience fluide sur ordinateur, tablette et mobile.',
-    value4Title: 'Une qualité professionnelle',
-    value4Text: 'Des exports fidèles, prêts pour vos usages quotidiens.',
-    ctaLabel: 'PRÊT À COMMENCER ?',
-    ctaTitle: 'Votre prochain PDF est déjà plus simple.',
-    ctaText: 'Découvrez tous les outils One2PDF et avancez sans perdre de temps.',
-    ctaButton: 'Explorer les outils',
+    popularLabel: 'OUTILS PDF POPULAIRES',
+    popularTitle: 'Outils PDF populaires',
+    seeAllTools: 'Voir tous les outils PDF →',
+    processLabel: 'COMMENT ÇA MARCHE',
+    processTitle: 'Comment ça marche',
+    processText: 'Trois étapes. Aucun logiciel à installer.',
+    processCta: 'Choisir un outil PDF',
+    step1Title: 'Importer',
+    step1Text: 'Choisissez ou déposez votre fichier.',
+    step2Title: 'Traiter',
+    step2Text: 'One2PDF traite votre document.',
+    step3Title: 'Télécharger',
+    step3Text: 'Téléchargez votre nouveau fichier.',
+    value1Title: 'Rapide',
+    value1Text: 'Traitez vos documents en quelques secondes.',
+    value2Title: 'Sûr',
+    value2Text: 'Les fichiers sont traités temporairement. L’original est supprimé dès la fin du traitement. Un résultat non téléchargé est effacé sous 15 minutes.',
+    value3Title: 'Simple',
+    value3Text: 'Pas de logiciel complexe ni de courbe d’apprentissage.',
+    value4Title: 'Accessible',
+    value4Text: 'Des outils PDF professionnels, sans logiciel coûteux.',
+    ctaLabel: 'ONE2PDF PRO',
+    ctaTitle: 'Besoin de plus de puissance ?',
+    ctaText: 'Passez à One2PDF Pro pour des flux PDF plus avancés.',
+    ctaButton: 'Découvrir One2PDF Pro',
     footerTagline: 'La boîte à outils PDF simple et professionnelle.',
     copyright: '© 2026 One2PDF. Tous droits réservés.',
     filesDeleted: 'Fichiers supprimés dès le téléchargement (15 min max).',
+    privacyKicker: 'VOS FICHIERS RESTENT LES VÔTRES',
+    privacyTitle: 'Aucun document n’est enregistré.',
+    privacyText: 'One2PDF ne conserve pas vos PDF. Ils sont traités le temps de l’opération, puis tout est effacé automatiquement. Rien n’est stocké, rien n’est partagé.',
+    privacyNeverStored: 'Aucun fichier n’est conservé',
+    privacyAutoDelete: 'Tout est effacé après usage',
+    privacyNoShare: 'Rien n’est partagé ni réutilisé',
+    privacyLearnMore: 'Politique de confidentialité',
     toolEditDesc: 'Texte, images, signature et annotations.',
     toolMergeDesc: 'Réunissez plusieurs PDF dans le bon ordre.',
     toolSplitDesc: 'Extrayez ou séparez les pages d’un document.',
     toolCompressDesc: 'Réduisez le poids sans sacrifier la qualité.',
     toolJpgDesc: 'Convertissez chaque page en image.',
-    toolProtectDesc: 'Sécurisez vos fichiers et vos informations.'
+    toolProtectDesc: 'Sécurisez vos fichiers et vos informations.',
+    toolPdfToWordDesc: 'Transformez un PDF en fichier Word éditable.',
+    toolWordToPdfDesc: 'Transformez un document Word en PDF.',
+    toolJpgToPdfDesc: 'Réunissez des images JPG, PNG ou WebP dans un PDF.',
+    trustLine: 'Rapide · Sûr · Facile à utiliser',
+    proBenefits: [
+      'Sans publicité',
+      'Fichiers de plus de 20 Mo',
+      'Plusieurs fichiers à la fois',
+      'Sans limite quotidienne de documents'
+    ]
+  },
+  about: {
+    seoTitle: 'À propos de One2PDF | Outils PDF simples',
+    seoDescription: 'One2PDF est une plateforme internationale d’outils PDF simples et rapides. Exploitée par 9545-8907 QUEBEC INC., Québec, Canada.',
+    title: 'À propos de One2PDF',
+    lead: 'Simple. Rapide. Sûr. Accessible.',
+    p1: 'One2PDF est une plateforme internationale d’outils PDF en ligne. Fusionnez, compressez, convertissez, divisez et gérez vos fichiers dans le navigateur — sans installer de logiciel et sans créer de compte pour l’usage gratuit.',
+    p2: 'Le produit est pensé pour le travail du quotidien : une interface claire, des traitements courts, et des documents qui ne sont pas conservés après usage.',
+    company: 'One2PDF est exploité par 9545-8907 QUEBEC INC., Québec, Canada.',
+    cta: 'Voir les outils PDF'
   },
   merge: {
     title: 'Fusionner PDF',
@@ -358,7 +397,28 @@ export const fr: Messages = {
     seoH2: 'Comment fusionner des PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis lancez la fusion : en quelques secondes, vous obtenez un document unique, prêt à télécharger.',
     seoP2: 'Assembler plusieurs PDF n’a pas à être technique. L’outil conserve les pages telles quelles, sans filigrane, et peut ajouter des numéros de page si vous en avez besoin. C’est la méthode adaptée si vous cherchez comment combiner des PDF en un seul fichier pour un dossier de candidature, un envoi par e-mail ou un archivage plus simple.',
-    seoP3: 'La sécurité reste au centre du parcours : les fichiers d’origine ne sont pas conservés, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Fusionnez vos PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que plusieurs documents doivent n’en former plus qu’un.'
+    seoP3: 'La sécurité reste au centre du parcours : les fichiers d’origine ne sont pas conservés, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Fusionnez vos PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que plusieurs documents doivent n’en former plus qu’un.',
+    howTitle: 'Comment fusionner des PDF',
+    howSteps: [
+      'Choisissez les fichiers PDF à réunir',
+      'Placez-les dans l’ordre souhaité',
+      'Téléchargez le PDF fusionné'
+    ],
+    faqTitle: 'Questions fréquentes sur la fusion de PDF',
+    faq: [
+      {
+        question: 'Combien de PDF puis-je fusionner ?',
+        answer: 'Vous pouvez ajouter plusieurs PDF et les réordonner. Le plan gratuit a une limite quotidienne et un plafond de 20 Mo par fichier. Pro débloque le traitement de plusieurs fichiers et les fichiers plus lourds.'
+      },
+      {
+        question: 'Faut-il un compte pour fusionner des PDF ?',
+        answer: 'Non. L’usage gratuit ne demande ni nom ni e-mail. Vous choisissez l’outil, importez les fichiers, puis téléchargez le résultat.'
+      },
+      {
+        question: 'Les PDF d’origine sont-ils conservés ?',
+        answer: 'Non. Les originaux sont supprimés à la fin du traitement. Le fichier fusionné est effacé après téléchargement, ou automatiquement sous 15 minutes s’il n’est pas téléchargé.'
+      }
+    ]
   },
   split: {
     title: 'Diviser PDF',
@@ -400,7 +460,28 @@ export const fr: Messages = {
     seoH2: 'Comment diviser un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous n’avez besoin que de quelques pages d’un dossier, d’un contrat ou d’un scan trop long ? One2PDF permet de diviser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, sélectionnez les pages à conserver — au clic ou via une plage du type 1-3, 5, 8 — puis lancez le traitement.',
     seoP2: 'Deux modes couvrent les usages courants. Extraire rassemble les pages choisies dans un seul PDF plus court. Séparer exporte chaque page dans un fichier distinct, regroupé dans un ZIP. C’est la méthode adaptée si vous cherchez comment extraire des pages d’un PDF, découper un document trop volumineux ou envoyer seulement un chapitre.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Divisez votre PDF maintenant, récupérez uniquement ce dont vous avez besoin, et revenez sur One2PDF dès qu’un document doit être allégé ou partagé à la carte.'
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Divisez votre PDF maintenant, récupérez uniquement ce dont vous avez besoin, et revenez sur One2PDF dès qu’un document doit être allégé ou partagé à la carte.',
+    howTitle: 'Comment diviser un PDF',
+    howSteps: [
+      'Importez le PDF',
+      'Sélectionnez les pages à extraire ou à séparer',
+      'Téléchargez le résultat'
+    ],
+    faqTitle: 'Questions fréquentes sur la division de PDF',
+    faq: [
+      {
+        question: 'Puis-je extraire seulement certaines pages ?',
+        answer: 'Oui. Extraire garde les pages choisies dans un PDF. Séparer exporte chaque page dans un ZIP. Vous pouvez aussi saisir une plage du type 1-3, 5, 8.'
+      },
+      {
+        question: 'Diviser un PDF est-il gratuit ?',
+        answer: 'Oui, sans créer de compte. Le plan gratuit est limité à 3 documents par jour et 20 Mo par fichier.'
+      },
+      {
+        question: 'One2PDF conserve-t-il l’original après la division ?',
+        answer: 'Non. L’original est supprimé à la fin du traitement. Le résultat est effacé après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.'
+      }
+    ]
   },
   deletePages: {
     title: 'Supprimer des pages',
@@ -638,6 +719,12 @@ export const fr: Messages = {
     seoP1: 'Vous devez envoyer un dossier trop lourd, le déposer sur un formulaire ou le partager sans dégrader la lisibilité ? One2PDF permet de compresser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, choisissez le niveau de compression (élevée, moyenne ou forte), puis lancez le traitement : en quelques secondes, vous obtenez un PDF plus léger, prêt à télécharger.',
     seoP2: 'Réduire la taille d’un PDF trop volumineux n’a pas à être technique. L’outil allège les images et optimise le document tout en conservant un rendu lisible à l’écran comme à l’impression. C’est la méthode adaptée si vous cherchez comment diminuer le poids d’un PDF pour Gmail, WhatsApp ou un espace de stockage limité.',
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Compressez votre PDF maintenant, comparez le poids avant et après, et revenez sur One2PDF dès qu’un document dépasse une limite d’envoi.',
+    howTitle: 'Comment compresser un PDF',
+    howSteps: [
+      'Importez le PDF trop lourd',
+      'Choisissez un niveau de compression',
+      'Téléchargez le fichier allégé'
+    ],
     faqTitle: 'Questions fréquentes sur la compression de PDF',
     faq: [
       {
@@ -996,8 +1083,8 @@ export const fr: Messages = {
     publishedOn: 'Publié le {date}'
   },
   legal: {
-    privacyTitle: 'Confidentialité',
-    privacyUpdated: 'Dernière mise à jour : août 2026',
+    privacyTitle: 'Politique de confidentialité',
+    privacyUpdated: 'Dernière mise à jour : septembre 2026',
     privacyIntro: 'One2PDF est conçu « privacy-first » : nous ne revendons pas vos documents et nous ne les conservons pas pour entraîner des modèles.',
     privacyData: 'Lors d’un traitement, le fichier est envoyé à nos serveurs le temps de l’opération (conversion, compression, OCR, etc.). Un cookie technique mémorise le quota gratuit et, le cas échéant, votre accès Pro.',
     privacyRetention: 'Le fichier d’origine est supprimé dès la fin du traitement. Le résultat est disponible au téléchargement unique, puis effacé. Les fichiers non téléchargés sont purgés automatiquement sous 15 minutes.',

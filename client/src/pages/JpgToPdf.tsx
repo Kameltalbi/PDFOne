@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useImageFiles } from '../lib/useImageFiles';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function JpgToPdf() {
   const { m, t } = useI18n();
   usePageSeo(m.jpgToPdf.seoTitle, m.jpgToPdf.seoDescription);
+  const faqJsonLd = useMemo(
+    () => (m.jpgToPdf.faq?.length ? faqPageJsonLd(m.jpgToPdf.faq, pageUrl('/jpg-to-pdf')) : null),
+    [m.jpgToPdf.faq]
+  );
+  useJsonLd('one2pdf-faq-jpg-to-pdf', faqJsonLd);
   const images = useImageFiles();
   const addPickerId = `${images.pickerId}-add`;
   const [dragIndex, setDragIndex] = useState<number | null>(null);

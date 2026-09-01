@@ -10,6 +10,11 @@ export type PageSeoCopy = {
   seoP1: string;
   seoP2: string;
   seoP3: string;
+  howTitle?: string;
+  howSteps?: string[];
+  whyTitle?: string;
+  faqTitle?: string;
+  faq?: { question: string; answer: string }[];
 };
 
 export type Messages = {
@@ -44,10 +49,16 @@ export type Messages = {
     copyLink: string;
     linkCopied: string;
     deleteResult: string;
+    about: string;
+    getPro: string;
+    footerTools: string;
+    footerCompany: string;
+    footerLegal: string;
   };
   units: { byte: string; kb: string; mb: string; gb: string };
   nav: {
     convert: string;
+    pdfTools: string;
     fromPdf: string;
     toPdf: string;
     allTools: string;
@@ -109,6 +120,9 @@ export type Messages = {
     canceled: string;
     successTitle: string;
     successText: string;
+    successBenefitsTitle: string;
+    successStatus: string;
+    successRenews: string;
     successCta: string;
     successManage: string;
     successVerifying: string;
@@ -238,6 +252,8 @@ export type Messages = {
     emptyText: string;
   };
   home: {
+    seoTitle: string;
+    seoDescription: string;
     eyebrow: string;
     title: string;
     titleAccent: string;
@@ -281,12 +297,34 @@ export type Messages = {
     footerTagline: string;
     copyright: string;
     filesDeleted: string;
+    privacyKicker: string;
+    privacyTitle: string;
+    privacyText: string;
+    privacyNeverStored: string;
+    privacyAutoDelete: string;
+    privacyNoShare: string;
+    privacyLearnMore: string;
     toolEditDesc: string;
     toolMergeDesc: string;
     toolSplitDesc: string;
     toolCompressDesc: string;
     toolJpgDesc: string;
     toolProtectDesc: string;
+    toolPdfToWordDesc: string;
+    toolWordToPdfDesc: string;
+    toolJpgToPdfDesc: string;
+    trustLine: string;
+    proBenefits: string[];
+  };
+  about: {
+    seoTitle: string;
+    seoDescription: string;
+    title: string;
+    lead: string;
+    p1: string;
+    p2: string;
+    company: string;
+    cta: string;
   };
   merge: {
     title: string;
@@ -319,6 +357,11 @@ export type Messages = {
     seoP1: string;
     seoP2: string;
     seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    whyTitle?: string;
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   split: {
     title: string;
@@ -354,6 +397,11 @@ export type Messages = {
     seoP1: string;
     seoP2: string;
     seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    whyTitle?: string;
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   deletePages: {
     title: string;
@@ -565,6 +613,9 @@ export type Messages = {
     seoP1: string;
     seoP2: string;
     seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    whyTitle?: string;
     faqTitle: string;
     faq: { question: string; answer: string }[];
   };
@@ -631,6 +682,11 @@ export type Messages = {
     seoP1: string;
     seoP2: string;
     seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    whyTitle?: string;
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   toPng: {
     title: string;

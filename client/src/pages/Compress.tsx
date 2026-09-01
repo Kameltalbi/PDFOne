@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
-import { faqPageJsonLd, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
@@ -10,7 +10,7 @@ function Compress() {
   const { m, t } = useI18n();
   usePageSeo(m.compress.seoTitle, m.compress.seoDescription);
   const faqJsonLd = useMemo(
-    () => faqPageJsonLd(m.compress.faq, 'https://one2pdf.com/compress'),
+    () => faqPageJsonLd(m.compress.faq, pageUrl('/compress')),
     [m.compress.faq]
   );
   useJsonLd('one2pdf-faq-compress', faqJsonLd);
@@ -100,6 +100,8 @@ function Compress() {
         seo={{
           h2: m.compress.seoH2,
           paragraphs: [m.compress.seoP1, m.compress.seoP2, m.compress.seoP3],
+          howTitle: m.compress.howTitle,
+          howSteps: m.compress.howSteps,
           faqTitle: m.compress.faqTitle,
           faq: m.compress.faq
         }}
