@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { RestoreAccess } from '../components/RestoreAccess';
 import { useBilling, type CheckoutPlan } from '../lib/billing';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Pricing.css';
+import './Account.css';
 
 function PlanList({ items }: { items: string[] }) {
   return (
@@ -43,10 +45,15 @@ function Pricing() {
         <h1>{m.pricing.title}</h1>
         <p className="pricing-lead">{m.pricing.subtitle}</p>
         {error && <p className="pricing-alert" role="alert">{error}</p>}
-        {status.paid && (
+        {status.paid ? (
           <p className="pricing-alert ok">
-            {m.pricing.activeAccess}
+            {m.pricing.activeAccess} <Link to="/account">{m.pricing.myAccount}</Link>
           </p>
+        ) : (
+          <div className="pricing-restore pricing-restore-top">
+            <p className="pricing-restore-banner">{m.pricing.restoreBanner}</p>
+            <RestoreAccess compact />
+          </div>
         )}
 
         <div className="pricing-grid">
@@ -73,9 +80,13 @@ function Pricing() {
             </div>
             <p className="pricing-pitch">{m.pricing.weekPitch}</p>
             <PlanList items={m.pricing.weekIncludes} />
-            <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('week')}>
-              {paying === 'week' ? m.pricing.paying : m.pricing.weekCta}
-            </button>
+            {status.paid ? (
+              <Link className="pricing-cta dark" to="/account">{m.pricing.alreadyActive}</Link>
+            ) : (
+              <button className="pricing-cta dark" type="button" disabled={Boolean(paying)} onClick={() => void pay('week')}>
+                {paying === 'week' ? m.pricing.paying : m.pricing.weekCta}
+              </button>
+            )}
             <p className="pricing-micro">{m.pricing.weekMicro}</p>
           </article>
 
@@ -88,9 +99,13 @@ function Pricing() {
             </div>
             <p className="pricing-pitch">{m.pricing.monthPitch}</p>
             <PlanList items={m.pricing.monthIncludes} />
-            <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('month')}>
-              {paying === 'month' ? m.pricing.paying : m.pricing.monthCta}
-            </button>
+            {status.paid && (status.plan === 'month' || status.plan === 'year') ? (
+              <Link className="pricing-cta outline" to="/account">{m.pricing.alreadyActive}</Link>
+            ) : (
+              <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('month')}>
+                {paying === 'month' ? m.pricing.paying : m.pricing.monthCta}
+              </button>
+            )}
             <p className="pricing-micro">{m.pricing.monthMicro}</p>
           </article>
 
@@ -105,9 +120,13 @@ function Pricing() {
             </div>
             <p className="pricing-pitch">{m.pricing.yearPitch}</p>
             <PlanList items={m.pricing.yearIncludes} />
-            <button className="pricing-cta solid" type="button" disabled={Boolean(paying)} onClick={() => void pay('year')}>
-              {paying === 'year' ? m.pricing.paying : m.pricing.yearCta}
-            </button>
+            {status.paid && status.plan === 'year' ? (
+              <Link className="pricing-cta solid" to="/account">{m.pricing.alreadyActive}</Link>
+            ) : (
+              <button className="pricing-cta solid" type="button" disabled={Boolean(paying)} onClick={() => void pay('year')}>
+                {paying === 'year' ? m.pricing.paying : m.pricing.yearCta}
+              </button>
+            )}
             <p className="pricing-micro">{m.pricing.yearMicro}</p>
           </article>
         </div>

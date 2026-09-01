@@ -126,6 +126,10 @@ export const en: Messages = {
       {
         question: 'Can I stop Pro whenever I want?',
         answer: 'Yes. Monthly ($3.99) and annual ($39.90) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to the Free plan: 3 documents per day, files up to 20 MB, light ads.'
+      },
+      {
+        question: 'I already paid — how do I sign in?',
+        answer: 'There is no password. Open Sign in, enter the email you used at checkout, and your 7-day pass or Pro access is restored on that device. From My account you can see days left and how many documents you have processed.'
       }
     ],
     paying: 'Redirecting to checkout…',
@@ -150,9 +154,12 @@ export const en: Messages = {
     successUnverified: 'Stripe could not confirm this payment. If you just paid, wait a moment and try again.',
     successFailTitle: 'Payment not confirmed',
     activeAccess: 'Pro access is already active on this device.',
+    alreadyActive: 'Pass already active — view my account',
+    restoreBanner: 'Already paid? Do not check out again. Sign in with the email used at payment.',
     manage: 'Manage subscription',
     logout: 'Log out',
-    accountPro: 'Pro'
+    accountPro: 'Pro',
+    myAccount: 'My account'
   },
   upgrade: {
     kicker: 'File too large',
@@ -163,7 +170,37 @@ export const en: Messages = {
     batchKicker: 'Batch processing',
     batchTitle: 'Batch is a Pro feature',
     batchText: 'You selected {count} files at once. On the free plan, add one file at a time — nothing was uploaded. A 7-day pass or Pro unlocks batch processing.',
-    batchDismiss: 'Close and add files one by one'
+    batchDismiss: 'Close and add files one by one',
+    alreadyPaid: 'I already paid — sign in'
+  },
+  account: {
+    seoTitle: 'My One2PDF account',
+    seoDescription: 'See your One2PDF pass, remaining time, and documents processed.',
+    title: 'My account',
+    lead: 'Your pass is tied to the email used at checkout. No password.',
+    emailLabel: 'Email',
+    emailPlaceholder: 'Email used at payment',
+    cta: 'Restore my pass',
+    working: 'Checking…',
+    noPass: 'No active pass for this email.',
+    plan: 'Plan',
+    validUntil: 'Valid until',
+    remaining: 'Time left',
+    daysLeft: '{count} days left',
+    hoursLeft: '{count} h left',
+    unlimitedTime: 'No end date',
+    expired: 'Expired',
+    used: 'Documents processed',
+    usedToday: 'Processed today',
+    remainingDocs: 'Documents left today',
+    unlimitedDocs: 'Unlimited',
+    freeLimit: '{used} / {limit} free documents today',
+    toolsCta: 'Use the tools',
+    loginTitle: 'Sign in to your pass',
+    loginLead: 'Enter the email you used when you paid. We restore your 7-day pass or Pro on this device.',
+    loginSeoTitle: 'Sign in to One2PDF',
+    loginSeoDescription: 'Restore your 7-day pass or Pro with the email used at checkout. No password.',
+    loginHint: 'Same email as on your Stripe receipt. Nothing to remember besides that.'
   },
   tools: {
     edit: 'Edit PDF',

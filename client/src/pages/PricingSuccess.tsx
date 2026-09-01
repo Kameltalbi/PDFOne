@@ -91,10 +91,13 @@ function PricingSuccess() {
             </ul>
 
             <div className="pricing-success-actions">
-              <Link className="pricing-cta solid" to="/tools">{m.pricing.successCta}</Link>
-              <button className="pricing-cta ghost" type="button" disabled={portalBusy} onClick={() => void openPortal()}>
-                {m.pricing.successManage}
-              </button>
+              <Link className="pricing-cta solid" to="/account">{m.pricing.myAccount}</Link>
+              <Link className="pricing-cta ghost" to="/tools">{m.pricing.successCta}</Link>
+              {access.canManage && (
+                <button className="pricing-cta ghost" type="button" disabled={portalBusy} onClick={() => void openPortal()}>
+                  {m.pricing.successManage}
+                </button>
+              )}
               {portalError && <p className="pricing-success-portal-error">{portalError}</p>}
             </div>
           </>

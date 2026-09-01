@@ -49,6 +49,7 @@ export const ar: Messages = {
   },
   pricing: { ...en.pricing },
   upgrade: en.upgrade,
+  account: en.account,
   tools: {
     edit: 'تعديل PDF',
     merge: 'دمج PDF',

@@ -83,7 +83,7 @@ function createUploader(kind: 'pdf' | 'image') {
     },
     limits: {
       fileSize: absMax,
-      files: parseInt(process.env.MAX_FILES || '10', 10)
+      files: parseInt(process.env.MAX_FILES || '20', 10)
     }
   });
 

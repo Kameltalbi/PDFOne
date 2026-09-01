@@ -1,0 +1,139 @@
+.account-page .account-panel {
+  max-width: 760px;
+}
+
+.account-hint {
+  margin: 0 auto 1.4rem;
+  max-width: 440px;
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.account-alt {
+  margin: 1.4rem 0 0;
+  font-size: 0.9rem;
+}
+
+.account-alt a {
+  color: #ed5e44;
+  font-weight: 700;
+}
+
+.account-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1.6rem;
+  text-align: left;
+}
+
+.account-stats article {
+  padding: 0.95rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fafafa;
+}
+
+.account-stats span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.account-stats strong {
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 780;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.account-actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.restore-form {
+  width: min(520px, 100%);
+  margin: 0 auto 0.4rem;
+  text-align: left;
+}
+
+.restore-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.restore-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem;
+}
+
+.restore-form input {
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.restore-form .pricing-cta,
+.restore-form button[type='submit'] {
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 10px;
+  background: #ed5e44;
+  color: #fff;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.restore-form button[type='submit']:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.restore-form.compact {
+  width: 100%;
+  margin: 1.15rem auto 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.restore-kicker {
+  margin: 0 0 0.65rem;
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 750;
+  text-align: center;
+}
+
+.restore-error {
+  margin: 0.65rem 0 0;
+  color: #b91c1c;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+@media (max-width: 700px) {
+  .account-stats,
+  .restore-row {
+    grid-template-columns: 1fr;
+  }
+}

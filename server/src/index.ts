@@ -22,6 +22,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
+app.set('trust proxy', 1);
 
 app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const signature = req.headers['stripe-signature'];

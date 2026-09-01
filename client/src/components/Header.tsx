@@ -1,11 +1,12 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useI18n } from '../i18n';
+import { remainingLabel } from '../lib/account';
 import { useBilling } from '../lib/billing';
 import './Header.css';
 
 function Header() {
-  const { m } = useI18n();
+  const { m, t } = useI18n();
   const { status, logout, portal } = useBilling();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -126,13 +127,20 @@ function Header() {
           <div className="nav-mobile-actions">
             {status.paid ? (
               <>
+                <Link to="/account" className="header-plan" onClick={closeMenu}>
+                  {m.pricing.accountPro}
+                  {status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
+                </Link>
                 {status.canManage && (
                   <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
                 )}
                 <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
               </>
             ) : (
-              <Link to="/pricing" className="header-button signup" onClick={closeMenu}>{m.common.signup}</Link>
+              <>
+                <Link to="/login" className="header-button signup" onClick={closeMenu}>{m.common.login}</Link>
+                <Link to="/pricing" className="header-button login" onClick={closeMenu}>{m.common.pricing}</Link>
+              </>
             )}
           </div>
         </nav>
@@ -140,14 +148,20 @@ function Header() {
         <div className="header-actions">
           {status.paid ? (
             <>
-              <span className="header-plan">{m.pricing.accountPro}</span>
+              <Link to="/account" className="header-plan">
+                {m.pricing.accountPro}
+                {status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
+              </Link>
               {status.canManage && (
                 <button type="button" className="header-button login" onClick={() => void portal()}>{m.pricing.manage}</button>
               )}
               <button type="button" className="header-button logout" onClick={() => void logout()}>{m.pricing.logout}</button>
             </>
           ) : (
-            <Link to="/pricing" className="header-button signup">{m.common.signup}</Link>
+            <>
+              <Link to="/login" className="header-button signup">{m.common.login}</Link>
+              <Link to="/pricing" className="header-button login">{m.common.pricing}</Link>
+            </>
           )}
         </div>
       </div>

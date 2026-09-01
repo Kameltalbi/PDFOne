@@ -126,6 +126,10 @@ export const fr: Messages = {
       {
         question: 'Puis-je arrêter Pro quand je veux ?',
         answer: 'Oui. Le mensuel (3,99 $) et l’annuel (39,90 $) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au plan Gratuit : 3 documents par jour, fichiers jusqu’à 20 Mo, publicités légères.'
+      },
+      {
+        question: 'J’ai déjà payé — comment me connecter ?',
+        answer: 'Il n’y a pas de mot de passe. Ouvrez Connexion, entrez l’e-mail utilisé au paiement, et votre Pass Semaine ou Pro se réactive sur cet appareil. Dans Mon compte, vous voyez le temps restant et les documents déjà traités.'
       }
     ],
     paying: 'Redirection vers le paiement…',
@@ -150,9 +154,12 @@ export const fr: Messages = {
     successUnverified: 'La confirmation n’a pas pu être vérifiée auprès de Stripe. Si vous venez de payer, réessayez dans un instant.',
     successFailTitle: 'Paiement non confirmé',
     activeAccess: 'Votre accès Pro est déjà actif sur cet appareil.',
+    alreadyActive: 'Pass déjà actif — voir mon compte',
+    restoreBanner: 'Vous avez déjà payé ? Ne passez pas de nouveau par Stripe. Connectez-vous avec l’e-mail du paiement.',
     manage: 'Gérer l’abonnement',
     logout: 'Déconnexion',
-    accountPro: 'Pro'
+    accountPro: 'Pro',
+    myAccount: 'Mon compte'
   },
   upgrade: {
     kicker: 'Fichier trop volumineux',
@@ -163,7 +170,37 @@ export const fr: Messages = {
     batchKicker: 'Traitement par lots',
     batchTitle: 'Le lot est réservé à Pro',
     batchText: 'Vous avez sélectionné {count} fichiers d’un coup. Sur le plan gratuit, un seul fichier à la fois — rien n’a été envoyé. Le Pass Semaine et Pro débloquent le traitement par lots.',
-    batchDismiss: 'Fermer et ajouter les fichiers un par un'
+    batchDismiss: 'Fermer et ajouter les fichiers un par un',
+    alreadyPaid: 'J’ai déjà payé — me connecter'
+  },
+  account: {
+    seoTitle: 'Mon compte One2PDF',
+    seoDescription: 'Consultez votre pass One2PDF, le temps restant et les documents traités.',
+    title: 'Mon compte',
+    lead: 'Votre pass est lié à l’e-mail du paiement. Pas de mot de passe.',
+    emailLabel: 'E-mail',
+    emailPlaceholder: 'E-mail utilisé lors du paiement',
+    cta: 'Réactiver mon pass',
+    working: 'Vérification…',
+    noPass: 'Aucun pass actif pour cet e-mail.',
+    plan: 'Offre',
+    validUntil: 'Valable jusqu’au',
+    remaining: 'Temps restant',
+    daysLeft: '{count} jours restants',
+    hoursLeft: '{count} h restantes',
+    unlimitedTime: 'Sans date de fin',
+    expired: 'Expiré',
+    used: 'Documents traités',
+    usedToday: 'Traités aujourd’hui',
+    remainingDocs: 'Documents restants aujourd’hui',
+    unlimitedDocs: 'Illimité',
+    freeLimit: '{used} / {limit} documents gratuits aujourd’hui',
+    toolsCta: 'Utiliser les outils',
+    loginTitle: 'Connexion à votre pass',
+    loginLead: 'Entrez l’e-mail utilisé lors du paiement. Nous réactivons votre Pass Semaine ou Pro sur cet appareil.',
+    loginSeoTitle: 'Connexion One2PDF',
+    loginSeoDescription: 'Réactivez votre Pass Semaine ou Pro avec l’e-mail du paiement. Pas de mot de passe.',
+    loginHint: 'C’est le même e-mail que sur le reçu Stripe. Rien d’autre à retenir.'
   },
   tools: {
     edit: 'Modifier PDF',

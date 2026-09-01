@@ -49,6 +49,7 @@ export const pt: Messages = {
   },
   pricing: { ...en.pricing },
   upgrade: en.upgrade,
+  account: en.account,
   tools: {
     edit: 'Editar PDF',
     merge: 'Juntar PDF',

@@ -30,6 +30,7 @@ import Crop from './pages/Crop';
 import Sign from './pages/Sign';
 import Pricing from './pages/Pricing';
 import PricingSuccess from './pages/PricingSuccess';
+import { AccountPage, LoginPage } from './pages/Account';
 import Tools from './pages/Tools';
 import EditPdf from './pages/EditPdf';
 import EditResult from './pages/EditResult';
@@ -82,6 +83,8 @@ function App() {
             <Route path="/sign" element={<Sign />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/pricing/success" element={<PricingSuccess />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/png-to-pdf" element={<JpgToPdf />} />
             <Route path="/tools" element={<Tools />} />
             <Route path="/edit-pdf" element={<EditPdf />} />

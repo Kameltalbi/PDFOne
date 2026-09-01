@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useBilling } from './billing';
 import { FREE_MAX_FILE_BYTES } from './limits';
 
@@ -16,33 +16,39 @@ type UpgradeContextValue = {
 const UpgradeContext = createContext<UpgradeContextValue | null>(null);
 
 export function UpgradeProvider({ children }: { children: ReactNode }) {
-  const { status } = useBilling();
+  const { status, loading } = useBilling();
   const [offer, setOffer] = useState<UpgradeOffer | null>(null);
 
   const closeUpgrade = useCallback(() => setOffer(null), []);
 
+  useEffect(() => {
+    if (status.paid) setOffer(null);
+  }, [status.paid]);
+
   const allowFile = useCallback((file: File) => {
-    if (status.paid || file.size <= FREE_MAX_FILE_BYTES) return true;
+    if (loading || status.paid || file.size <= FREE_MAX_FILE_BYTES) return true;
     setOffer({ reason: 'size', name: file.name, size: file.size });
     return false;
-  }, [status.paid]);
+  }, [loading, status.paid]);
 
   const allowFiles = useCallback((files: File[]) => {
     if (files.length === 0) return files;
 
-    if (!status.paid && files.length > 1) {
+    if (loading || status.paid) return files;
+
+    if (files.length > 1) {
       setOffer({ reason: 'batch', count: files.length });
       return [];
     }
 
-    const blocked = files.find((file) => !status.paid && file.size > FREE_MAX_FILE_BYTES);
+    const blocked = files.find((file) => file.size > FREE_MAX_FILE_BYTES);
     if (blocked) {
       setOffer({ reason: 'size', name: blocked.name, size: blocked.size });
       return files.filter((file) => file.size <= FREE_MAX_FILE_BYTES);
     }
 
     return files;
-  }, [status.paid]);
+  }, [loading, status.paid]);
 
   const value = useMemo<UpgradeContextValue>(() => ({
     offer,

@@ -1,6 +1,13 @@
 import Stripe from 'stripe';
 import type { PaidPlan, StoredPlan } from './entitlements.js';
-import { cancelEntitlement, upsertEntitlement, type Entitlement } from './entitlements.js';
+import {
+  cancelEntitlement,
+  getActiveEntitlementByEmail,
+  isEntitlementActive,
+  normalizeEmail,
+  upsertEntitlement,
+  type Entitlement
+} from './entitlements.js';
 
 export const ACCESS_COOKIE = 'pdfone_access';
 export const QUOTA_COOKIE = 'pdfone_quota';
@@ -64,17 +71,19 @@ export type AccessPayload = {
   expiresAt: string | null;
 };
 
-export async function createCheckoutSession(plan: PaidPlan, localeHeader?: string) {
+export async function createCheckoutSession(plan: PaidPlan, localeHeader?: string, email?: string) {
   const stripe = getStripe();
   const lang = (localeHeader || 'fr').split(/[-_,]/)[0].toLowerCase();
   const name = PLAN_NAMES[plan][lang] || PLAN_NAMES[plan].en;
   const origin = appUrl();
+  const customerEmail = normalizeEmail(email) || undefined;
   const common = {
     success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?canceled=1`,
     locale: stripeLocale(localeHeader),
     allow_promotion_codes: true,
-    metadata: { plan }
+    metadata: { plan },
+    ...(customerEmail ? { customer_email: customerEmail } : {})
   } as const;
 
   const session = plan === 'week'
@@ -123,7 +132,10 @@ function weekExpiry(from = new Date()): string {
 
 async function expiryFromSession(stripe: Stripe, session: Stripe.Checkout.Session, plan: StoredPlan): Promise<string | null> {
   if (plan === 'life') return null;
-  if (plan === 'week') return weekExpiry();
+  if (plan === 'week') {
+    const createdMs = (session.created || Math.floor(Date.now() / 1000)) * 1000;
+    return weekExpiry(new Date(createdMs));
+  }
   const subscriptionId = typeof session.subscription === 'string'
     ? session.subscription
     : session.subscription?.id;
@@ -162,7 +174,7 @@ export async function entitlementFromCheckout(sessionId: string): Promise<Access
     : session.subscription?.id;
 
   const entry: Entitlement = {
-    email,
+    email: normalizeEmail(email) || email,
     customerId,
     plan,
     status: 'active',
@@ -170,14 +182,110 @@ export async function entitlementFromCheckout(sessionId: string): Promise<Access
     subscriptionId
   };
   await upsertEntitlement(entry);
-  return { email, customerId, plan, expiresAt };
+  return { email: entry.email, customerId, plan, expiresAt };
+}
+
+function accessFromEntitlement(entry: Entitlement): AccessPayload {
+  return {
+    email: entry.email,
+    customerId: entry.customerId,
+    plan: entry.plan,
+    expiresAt: entry.expiresAt
+  };
+}
+
+function planFromCheckout(session: Stripe.Checkout.Session): StoredPlan | null {
+  const plan = session.metadata?.plan;
+  if (isStoredPlan(plan)) return plan;
+  if (session.mode === 'subscription') return 'month';
+  if (session.mode === 'payment') return 'week';
+  return null;
+}
+
+async function entitlementFromStripeCustomer(stripe: Stripe, customer: Stripe.Customer | Stripe.DeletedCustomer): Promise<Entitlement | null> {
+  if (customer.deleted) return null;
+  const customerId = customer.id;
+  const email = normalizeEmail(customer.email) || customer.email || '';
+
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    status: 'all',
+    limit: 10
+  });
+  const liveSub = subscriptions.data.find((sub) => sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due');
+  if (liveSub) {
+    const metaPlan = liveSub.metadata?.plan;
+    const plan: StoredPlan = isStoredPlan(metaPlan)
+      ? metaPlan
+      : liveSub.items.data[0]?.price?.recurring?.interval === 'year' ? 'year' : 'month';
+    const periodEnd = (liveSub as Stripe.Subscription & { current_period_end?: number }).current_period_end
+      || liveSub.items.data[0]?.current_period_end;
+    const expiresAt = periodEnd ? new Date(periodEnd * 1000).toISOString() : new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+    const entry: Entitlement = {
+      email,
+      customerId,
+      plan,
+      status: 'active',
+      expiresAt,
+      subscriptionId: liveSub.id
+    };
+    if (isEntitlementActive(entry)) return upsertEntitlement(entry);
+  }
+
+  const sessions = await stripe.checkout.sessions.list({ customer: customerId, limit: 30 });
+  for (const session of sessions.data) {
+    if (session.status !== 'complete') continue;
+    if (session.mode === 'payment' && session.payment_status !== 'paid') continue;
+    const plan = planFromCheckout(session);
+    if (!plan) continue;
+    const expiresAt = await expiryFromSession(stripe, session, plan);
+    const subscriptionId = typeof session.subscription === 'string'
+      ? session.subscription
+      : session.subscription?.id;
+    const entry: Entitlement = {
+      email: normalizeEmail(session.customer_details?.email || session.customer_email || email) || email,
+      customerId,
+      plan,
+      status: 'active',
+      expiresAt,
+      subscriptionId
+    };
+    if (isEntitlementActive(entry)) return upsertEntitlement(entry);
+  }
+
+  return null;
+}
+
+export async function restoreEntitlementByEmail(email: string): Promise<AccessPayload | null> {
+  const needle = normalizeEmail(email);
+  if (!needle || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(needle)) {
+    throw new Error('INVALID_EMAIL');
+  }
+
+  const local = await getActiveEntitlementByEmail(needle);
+  if (local) return accessFromEntitlement(local);
+
+  let stripe: Stripe;
+  try {
+    stripe = getStripe();
+  } catch {
+    return null;
+  }
+
+  const customers = await stripe.customers.list({ email: needle, limit: 10 });
+  for (const customer of customers.data) {
+    const found = await entitlementFromStripeCustomer(stripe, customer);
+    if (found) return accessFromEntitlement(found);
+  }
+
+  return null;
 }
 
 export async function createPortalUrl(customerId: string) {
   const stripe = getStripe();
   const portal = await stripe.billingPortal.sessions.create({
     customer: customerId,
-    return_url: `${appUrl()}/pricing`
+    return_url: `${appUrl()}/account`
   });
   return portal.url;
 }

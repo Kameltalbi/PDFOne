@@ -41,14 +41,30 @@ export function readCookie(req: Request, name: string): string | null {
   return null;
 }
 
-export function setCookie(res: Response, name: string, value: string, maxAgeSec: number) {
+function cookieDomain(): string {
+  const raw = process.env.COOKIE_DOMAIN || process.env.APP_URL || '';
+  try {
+    const host = raw.startsWith('http') ? new URL(raw).hostname : raw.replace(/^\./, '');
+    if (!host || host === 'localhost' || host.endsWith('.local') || /^\d+\.\d+/.test(host)) return '';
+    const parts = host.split('.').filter(Boolean);
+    if (parts.length < 2) return '';
+    return `; Domain=.${parts.slice(-2).join('.')}`;
+  } catch {
+    return '';
+  }
+}
+
+function cookieFlags(maxAgeSec: number) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.append('Set-Cookie', `${name}=${encodeURIComponent(value)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSec}${secure}`);
+  return `Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSec}${cookieDomain()}${secure}`;
+}
+
+export function setCookie(res: Response, name: string, value: string, maxAgeSec: number) {
+  res.append('Set-Cookie', `${name}=${encodeURIComponent(value)}; ${cookieFlags(maxAgeSec)}`);
 }
 
 export function clearCookie(res: Response, name: string) {
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.append('Set-Cookie', `${name}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}`);
+  res.append('Set-Cookie', `${name}=; ${cookieFlags(0)}`);
 }
 
 export function clientIp(req: Request): string {

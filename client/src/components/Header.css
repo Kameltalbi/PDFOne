@@ -211,12 +211,20 @@
 .header-plan {
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
   background: #ecfdf5;
   color: #047857;
   font-size: 0.78rem;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.header-plan em {
+  font-style: normal;
+  font-weight: 650;
+  color: #059669;
 }
 
 .header-actions button.header-button {

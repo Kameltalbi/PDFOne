@@ -1,16 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
-import { getEntitlement, isEntitlementActive } from '../services/entitlements.js';
+import { getEntitlement, incrementUsage, isEntitlementActive, todayUtc } from '../services/entitlements.js';
 import { ACCESS_COOKIE, QUOTA_COOKIE, type AccessPayload } from '../services/billing.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
-const FREE_DAILY_DOCS = Math.max(1, Number(process.env.FREE_DAILY_DOCS || 3));
+export const FREE_DAILY_DOCS = Math.max(1, Number(process.env.FREE_DAILY_DOCS || 3));
 const ipUsage = new Map<string, { day: string; count: number }>();
 
 type QuotaPayload = { day: string; count: number };
-
-function todayUtc(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 function quotaMessage(req: Request): string {
   const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
@@ -24,22 +20,45 @@ function quotaMessage(req: Request): string {
   return `Le plan gratuit est limité à ${FREE_DAILY_DOCS} documents par jour. Passez Pro pour continuer.`;
 }
 
-export async function isPaid(req: Request, res: Response): Promise<boolean> {
+export async function getPaidAccess(req: Request, res: Response): Promise<AccessPayload | null> {
   const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
-  if (!access) return false;
+  if (!access) return null;
   const stored = await getEntitlement(access.customerId);
   if (stored) {
     if (!isEntitlementActive(stored)) {
       clearCookie(res, ACCESS_COOKIE);
-      return false;
+      return null;
     }
-    return true;
+    return {
+      email: stored.email,
+      customerId: stored.customerId,
+      plan: stored.plan,
+      expiresAt: stored.expiresAt
+    };
   }
   if (access.expiresAt && Date.parse(access.expiresAt) <= Date.now()) {
     clearCookie(res, ACCESS_COOKIE);
-    return false;
+    return null;
   }
-  return true;
+  return access;
+}
+
+export async function isPaid(req: Request, res: Response): Promise<boolean> {
+  return Boolean(await getPaidAccess(req, res));
+}
+
+export function getFreeUsage(req: Request) {
+  const day = todayUtc();
+  const cookie = verifyValue<QuotaPayload>(readCookie(req, QUOTA_COOKIE));
+  const ip = ipUsage.get(clientIp(req));
+  const cookieCount = cookie?.day === day ? cookie.count : 0;
+  const ipCount = ip?.day === day ? ip.count : 0;
+  const usedToday = Math.max(cookieCount, ipCount);
+  return {
+    usedToday,
+    dailyLimit: FREE_DAILY_DOCS,
+    remainingToday: Math.max(0, FREE_DAILY_DOCS - usedToday)
+  };
 }
 
 export async function quotaMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -47,21 +66,21 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
   if (req.path.startsWith('/billing')) return next();
 
   try {
-    if (await isPaid(req, res)) return next();
+    const access = await getPaidAccess(req, res);
+    if (access) {
+      await incrementUsage(access.customerId);
+      return next();
+    }
 
     const day = todayUtc();
-    const cookie = verifyValue<QuotaPayload>(readCookie(req, QUOTA_COOKIE));
-    const ipKey = clientIp(req);
-    const ip = ipUsage.get(ipKey);
-    const cookieCount = cookie?.day === day ? cookie.count : 0;
-    const ipCount = ip?.day === day ? ip.count : 0;
-    const count = Math.max(cookieCount, ipCount) + 1;
+    const usage = getFreeUsage(req);
+    const count = usage.usedToday + 1;
 
     if (count > FREE_DAILY_DOCS) {
       return res.status(402).json({ success: false, code: 'QUOTA', error: quotaMessage(req) });
     }
 
-    ipUsage.set(ipKey, { day, count });
+    ipUsage.set(clientIp(req), { day, count });
     setCookie(res, QUOTA_COOKIE, signValue({ day, count }), 60 * 60 * 36);
     return next();
   } catch (error) {

@@ -121,9 +121,12 @@ export type Messages = {
     successUnverified: string;
     successFailTitle: string;
     activeAccess: string;
+    alreadyActive: string;
+    restoreBanner: string;
     manage: string;
     logout: string;
     accountPro: string;
+    myAccount: string;
   };
   upgrade: {
     kicker: string;
@@ -135,6 +138,36 @@ export type Messages = {
     batchTitle: string;
     batchText: string;
     batchDismiss: string;
+    alreadyPaid: string;
+  };
+  account: {
+    seoTitle: string;
+    seoDescription: string;
+    title: string;
+    lead: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    cta: string;
+    working: string;
+    noPass: string;
+    plan: string;
+    validUntil: string;
+    remaining: string;
+    daysLeft: string;
+    hoursLeft: string;
+    unlimitedTime: string;
+    expired: string;
+    used: string;
+    usedToday: string;
+    remainingDocs: string;
+    unlimitedDocs: string;
+    freeLimit: string;
+    toolsCta: string;
+    loginTitle: string;
+    loginLead: string;
+    loginSeoTitle: string;
+    loginSeoDescription: string;
+    loginHint: string;
   };
   tools: {
     edit: string;

@@ -6,8 +6,17 @@ export type CheckoutPlan = 'week' | 'month' | 'year';
 export type PaidPlan = CheckoutPlan | 'business' | 'life';
 
 export type BillingState =
-  | { paid: false }
-  | { paid: true; plan: PaidPlan; email: string; expiresAt: string | null; canManage: boolean };
+  | { paid: false; usedToday?: number; dailyLimit?: number; remainingToday?: number }
+  | {
+    paid: true;
+    plan: PaidPlan;
+    email: string;
+    expiresAt: string | null;
+    canManage: boolean;
+    docsUsed: number;
+    usedToday: number;
+    remainingMs: number | null;
+  };
 
 type BillingContextValue = {
   status: BillingState;
@@ -15,11 +24,66 @@ type BillingContextValue = {
   refresh: () => Promise<void>;
   checkout: (plan: CheckoutPlan) => Promise<void>;
   confirm: (sessionId: string) => Promise<BillingState>;
+  login: (email: string) => Promise<BillingState>;
   portal: () => Promise<void>;
   logout: () => Promise<void>;
 };
 
 const BillingContext = createContext<BillingContextValue | null>(null);
+const EMAIL_KEY = 'one2pdf_email';
+const SKIP_RESTORE_KEY = 'one2pdf_restore_skip';
+
+export function rememberedEmail(): string {
+  try {
+    return localStorage.getItem(EMAIL_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function rememberEmail(email: string | undefined) {
+  if (!email) return;
+  try {
+    localStorage.setItem(EMAIL_KEY, email);
+    sessionStorage.removeItem(SKIP_RESTORE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function skipAutoRestore() {
+  try {
+    sessionStorage.setItem(SKIP_RESTORE_KEY, '1');
+  } catch {
+    /* ignore */
+  }
+}
+
+function shouldAutoRestore() {
+  try {
+    return sessionStorage.getItem(SKIP_RESTORE_KEY) !== '1';
+  } catch {
+    return true;
+  }
+}
+
+function forgetEmail() {
+  try {
+    localStorage.removeItem(EMAIL_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function asState(data: BillingState | undefined): BillingState {
+  if (data?.paid) return data;
+  return {
+    paid: false,
+    usedToday: data && 'usedToday' in data ? data.usedToday : 0,
+    dailyLimit: data && 'dailyLimit' in data ? data.dailyLimit : 3,
+    remainingToday: data && 'remainingToday' in data ? data.remainingToday : 3
+  };
+}
 
 async function billingRequest(path: string, init?: RequestInit) {
   const locale = getRuntimeLocale();
@@ -46,7 +110,29 @@ export function BillingProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     try {
       const data = await billingRequest('/api/billing/me');
-      setStatus(data?.paid ? data : { paid: false });
+      if (data?.paid) {
+        rememberEmail(data.email);
+        setStatus(asState(data));
+        return;
+      }
+      const email = rememberedEmail();
+      if (email && shouldAutoRestore()) {
+        try {
+          const restored = await billingRequest('/api/billing/restore', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+          });
+          if (restored?.paid) {
+            rememberEmail(restored.email);
+            setStatus(asState(restored));
+            return;
+          }
+          skipAutoRestore();
+        } catch {
+          skipAutoRestore();
+        }
+      }
+      setStatus(asState(data));
     } catch {
       setStatus({ paid: false });
     } finally {
@@ -61,7 +147,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
   const checkout = useCallback(async (plan: CheckoutPlan) => {
     const data = await billingRequest('/api/billing/checkout', {
       method: 'POST',
-      body: JSON.stringify({ plan })
+      body: JSON.stringify({ plan, email: rememberedEmail() })
     });
     if (!data?.url) throw new Error(dictionaries[getRuntimeLocale()].pricing.payFail);
     window.location.href = data.url;
@@ -72,7 +158,19 @@ export function BillingProvider({ children }: { children: ReactNode }) {
       method: 'POST',
       body: JSON.stringify({ sessionId })
     });
-    const next = data?.paid ? data : { paid: false as const };
+    const next = asState(data);
+    if (next.paid) rememberEmail(next.email);
+    setStatus(next);
+    return next;
+  }, []);
+
+  const login = useCallback(async (email: string) => {
+    const data = await billingRequest('/api/billing/restore', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+    const next = asState(data);
+    if (next.paid) rememberEmail(next.email);
     setStatus(next);
     return next;
   }, []);
@@ -83,6 +181,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    forgetEmail();
     await billingRequest('/api/billing/logout', { method: 'POST' });
     setStatus({ paid: false });
   }, []);
@@ -93,9 +192,10 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     refresh,
     checkout,
     confirm,
+    login,
     portal,
     logout
-  }), [status, loading, refresh, checkout, confirm, portal, logout]);
+  }), [status, loading, refresh, checkout, confirm, login, portal, logout]);
 
   return <BillingContext.Provider value={value}>{children}</BillingContext.Provider>;
 }

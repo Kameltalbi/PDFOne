@@ -1,5 +1,6 @@
 import express from 'express';
-import { getEntitlement, isEntitlementActive } from '../services/entitlements.js';
+import { getActiveEntitlementByEmail, getEntitlement, isEntitlementActive, usageSnapshot } from '../services/entitlements.js';
+import { getFreeUsage } from '../middleware/quota.js';
 import {
   ACCESS_COOKIE,
   cookieMaxAge,
@@ -8,32 +9,72 @@ import {
   entitlementFromCheckout,
   isPaidPlan,
   isSubscriptionPlan,
+  restoreEntitlementByEmail,
   type AccessPayload
 } from '../services/billing.js';
-import { clearCookie, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
+import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
 const router = express.Router();
+const restoreAttempts = new Map<string, { window: number; count: number }>();
 
-function publicEntitlement(access: AccessPayload) {
+function restoreMessage(req: express.Request, code: 'invalid' | 'none' | 'limit') {
+  const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
+  const copy = {
+    fr: {
+      invalid: 'Indiquez l’e-mail utilisé lors du paiement.',
+      none: 'Aucun pass actif pour cet e-mail. Vérifiez l’adresse, ou le pass a peut-être expiré.',
+      limit: 'Trop de tentatives. Réessayez dans une heure.'
+    },
+    en: {
+      invalid: 'Enter the email used at checkout.',
+      none: 'No active pass for this email. Check the address, or the pass may have expired.',
+      limit: 'Too many attempts. Try again in an hour.'
+    }
+  } as const;
+  return (copy[lang as 'fr' | 'en'] || copy.fr)[code];
+}
+
+function allowRestore(ip: string) {
+  const now = Date.now();
+  const current = restoreAttempts.get(ip);
+  if (!current || now - current.window > 60 * 60 * 1000) {
+    restoreAttempts.set(ip, { window: now, count: 1 });
+    return true;
+  }
+  if (current.count >= 8) return false;
+  current.count += 1;
+  return true;
+}
+
+async function publicStatus(access: AccessPayload) {
+  const stored = await getEntitlement(access.customerId);
+  const usage = usageSnapshot(stored);
   return {
     paid: true as const,
     plan: access.plan,
     email: access.email,
     expiresAt: access.expiresAt,
-    canManage: isSubscriptionPlan(access.plan)
+    canManage: isSubscriptionPlan(access.plan),
+    docsUsed: usage.docsUsed,
+    usedToday: usage.usedToday,
+    remainingMs: access.expiresAt ? Math.max(0, Date.parse(access.expiresAt) - Date.now()) : null
   };
+}
+
+function grantAccess(res: express.Response, access: AccessPayload) {
+  setCookie(res, ACCESS_COOKIE, signValue(access), cookieMaxAge(access.plan, access.expiresAt));
 }
 
 router.get('/me', async (req, res) => {
   const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
   if (!access) {
-    return res.json({ success: true, data: { paid: false } });
+    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
   }
 
   const stored = await getEntitlement(access.customerId);
   if (stored && !isEntitlementActive(stored)) {
     clearCookie(res, ACCESS_COOKIE);
-    return res.json({ success: true, data: { paid: false } });
+    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
   }
 
   const current = stored
@@ -42,10 +83,10 @@ router.get('/me', async (req, res) => {
 
   if (current.expiresAt && Date.parse(current.expiresAt) <= Date.now()) {
     clearCookie(res, ACCESS_COOKIE);
-    return res.json({ success: true, data: { paid: false } });
+    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
   }
 
-  return res.json({ success: true, data: publicEntitlement(current) });
+  return res.json({ success: true, data: await publicStatus(current) });
 });
 
 router.post('/checkout', async (req, res) => {
@@ -54,8 +95,29 @@ router.post('/checkout', async (req, res) => {
     return res.status(400).json({ success: false, error: 'Offre inconnue.' });
   }
 
+  const email = typeof req.body?.email === 'string' ? req.body.email : '';
+  const cookieAccess = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
+  const activeCookie = cookieAccess && (!cookieAccess.expiresAt || Date.parse(cookieAccess.expiresAt) > Date.now())
+    ? cookieAccess
+    : null;
+  const activeEmail = email ? await getActiveEntitlementByEmail(email) : null;
+  const already = activeCookie || (activeEmail
+    ? { plan: activeEmail.plan, expiresAt: activeEmail.expiresAt }
+    : null);
+
+  if (already && (plan === 'week' || (plan === 'month' && (already.plan === 'month' || already.plan === 'year')) || (plan === 'year' && already.plan === 'year'))) {
+    const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
+    return res.status(409).json({
+      success: false,
+      code: 'ALREADY_PAID',
+      error: lang === 'en'
+        ? 'You already have an active pass. Sign in with the email used at payment — do not pay again.'
+        : 'Vous avez déjà un pass actif. Connectez-vous avec l’e-mail du paiement — ne payez pas une deuxième fois.'
+    });
+  }
+
   try {
-    const url = await createCheckoutSession(plan, String(req.headers['accept-language'] || 'fr'));
+    const url = await createCheckoutSession(plan, String(req.headers['accept-language'] || 'fr'), email);
     return res.json({ success: true, data: { url } });
   } catch (error) {
     if (error instanceof Error && error.message === 'NOT_CONFIGURED') {
@@ -78,14 +140,37 @@ router.post('/confirm', async (req, res) => {
 
   try {
     const access = await entitlementFromCheckout(sessionId);
-    setCookie(res, ACCESS_COOKIE, signValue(access), cookieMaxAge(access.plan, access.expiresAt));
-    return res.json({ success: true, data: publicEntitlement(access) });
+    grantAccess(res, access);
+    return res.json({ success: true, data: await publicStatus(access) });
   } catch (error) {
     console.error('Confirm payment error:', error);
     return res.status(400).json({
       success: false,
       error: error instanceof Error ? error.message : 'Impossible de confirmer le paiement.'
     });
+  }
+});
+
+router.post('/restore', async (req, res) => {
+  const ip = clientIp(req);
+  if (!allowRestore(ip)) {
+    return res.status(429).json({ success: false, error: restoreMessage(req, 'limit') });
+  }
+
+  const email = typeof req.body?.email === 'string' ? req.body.email : '';
+  try {
+    const access = await restoreEntitlementByEmail(email);
+    if (!access) {
+      return res.status(404).json({ success: false, error: restoreMessage(req, 'none') });
+    }
+    grantAccess(res, access);
+    return res.json({ success: true, data: await publicStatus(access) });
+  } catch (error) {
+    if (error instanceof Error && error.message === 'INVALID_EMAIL') {
+      return res.status(400).json({ success: false, error: restoreMessage(req, 'invalid') });
+    }
+    console.error('Restore access error:', error);
+    return res.status(400).json({ success: false, error: restoreMessage(req, 'none') });
   }
 });
 

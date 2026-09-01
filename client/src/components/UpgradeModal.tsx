@@ -1,9 +1,11 @@
 import { useEffect, useId, useState } from 'react';
 import { formatFileSize } from '../lib/api';
 import { useBilling, type CheckoutPlan } from '../lib/billing';
+import { RestoreAccess } from './RestoreAccess';
 import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
 import './UpgradeModal.css';
+import '../pages/Account.css';
 
 export function UpgradeModal() {
   const { m, t } = useI18n();
@@ -128,6 +130,7 @@ export function UpgradeModal() {
         </div>
 
         {error && <p className="upgrade-error" role="alert">{error}</p>}
+        <RestoreAccess compact onRestored={closeUpgrade} />
         <p className="upgrade-trust">{m.pricing.trust}</p>
         <button type="button" className="upgrade-dismiss" onClick={closeUpgrade} disabled={Boolean(paying)}>
           {offer.reason === 'batch' ? m.upgrade.batchDismiss : m.upgrade.dismiss}

@@ -49,6 +49,7 @@ export const tr: Messages = {
   },
   pricing: { ...en.pricing },
   upgrade: en.upgrade,
+  account: en.account,
   tools: {
     edit: 'PDF düzenle',
     merge: 'PDF birleştir',

@@ -61,6 +61,38 @@
   color: #047857;
 }
 
+.pricing-alert.ok a {
+  color: #047857;
+  font-weight: 800;
+}
+
+.pricing-restore {
+  width: min(560px, 100%);
+  margin: 0 auto 1.8rem;
+}
+
+.pricing-restore-top {
+  margin: -0.4rem auto 1.8rem;
+  padding: 1rem 1.1rem 1.15rem;
+  border: 1px solid #d1fae5;
+  border-radius: 14px;
+  background: #f0fdf4;
+}
+
+.pricing-restore-banner {
+  margin: 0 0 0.35rem;
+  color: #047857;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pricing-restore-top .restore-form.compact {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top-color: #bbf7d0;
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
