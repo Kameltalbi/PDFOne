@@ -20,6 +20,7 @@ function Footer() {
           <Link to="/pdf-to-excel">{m.tools.pdfToExcel}</Link>
           <Link to="/pricing">{m.common.pricing}</Link>
           <Link to="/login">{m.common.login}</Link>
+          <Link to="/signup">{m.common.signup}</Link>
           <Link to="/account">{m.pricing.myAccount}</Link>
           <Link to="/edit-pdf">{m.tools.edit}</Link>
           <Link to="/privacy">{m.common.privacy}</Link>

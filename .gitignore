@@ -37,6 +37,7 @@ temp/*
 !temp/.gitkeep
 !temp/README.md
 server/data/
+data/
 
 # OS
 Thumbs.db

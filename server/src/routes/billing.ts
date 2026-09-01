@@ -1,6 +1,8 @@
 import express from 'express';
 import { getActiveEntitlementByEmail, getEntitlement, isEntitlementActive, usageSnapshot } from '../services/entitlements.js';
 import { getFreeUsage } from '../middleware/quota.js';
+import { currentSession, readUser } from './auth.js';
+import { USER_COOKIE } from '../services/users.js';
 import {
   ACCESS_COOKIE,
   cookieMaxAge,
@@ -66,27 +68,7 @@ function grantAccess(res: express.Response, access: AccessPayload) {
 }
 
 router.get('/me', async (req, res) => {
-  const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
-  if (!access) {
-    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
-  }
-
-  const stored = await getEntitlement(access.customerId);
-  if (stored && !isEntitlementActive(stored)) {
-    clearCookie(res, ACCESS_COOKIE);
-    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
-  }
-
-  const current = stored
-    ? { email: stored.email, customerId: stored.customerId, plan: stored.plan, expiresAt: stored.expiresAt }
-    : access;
-
-  if (current.expiresAt && Date.parse(current.expiresAt) <= Date.now()) {
-    clearCookie(res, ACCESS_COOKIE);
-    return res.json({ success: true, data: { paid: false, ...getFreeUsage(req) } });
-  }
-
-  return res.json({ success: true, data: await publicStatus(current) });
+  return res.json({ success: true, data: await currentSession(req, res) });
 });
 
 router.post('/checkout', async (req, res) => {
@@ -95,7 +77,9 @@ router.post('/checkout', async (req, res) => {
     return res.status(400).json({ success: false, error: 'Offre inconnue.' });
   }
 
-  const email = typeof req.body?.email === 'string' ? req.body.email : '';
+  const email = (typeof req.body?.email === 'string' && req.body.email.trim())
+    ? req.body.email
+    : (readUser(req)?.email || '');
   const cookieAccess = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
   const activeCookie = cookieAccess && (!cookieAccess.expiresAt || Date.parse(cookieAccess.expiresAt) > Date.now())
     ? cookieAccess
@@ -191,7 +175,8 @@ router.post('/portal', async (req, res) => {
 
 router.post('/logout', (_req, res) => {
   clearCookie(res, ACCESS_COOKIE);
-  return res.json({ success: true, data: { paid: false } });
+  clearCookie(res, USER_COOKIE);
+  return res.json({ success: true, data: { user: null, paid: false } });
 });
 
 export default router;

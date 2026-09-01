@@ -12,6 +12,7 @@ import imagesToPdfRoutes from './routes/imagesToPdf.js';
 import editRoutes from './routes/edit.js';
 import pagesRoutes from './routes/pages.js';
 import billingRoutes from './routes/billing.js';
+import authRoutes from './routes/auth.js';
 import officeRoutes from './routes/office.js';
 import extrasRoutes from './routes/extras.js';
 import { quotaMiddleware } from './middleware/quota.js';
@@ -77,6 +78,7 @@ app.use('/api/jpg-to-pdf', imagesToPdfRoutes);
 app.use('/api/edit', editRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/billing', billingRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/office', officeRoutes);
 app.use('/api', extrasRoutes);
 

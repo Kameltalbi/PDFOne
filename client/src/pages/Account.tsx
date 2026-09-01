@@ -1,6 +1,5 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useBilling, type PaidPlan } from '../lib/billing';
-import { RestoreAccess } from '../components/RestoreAccess';
 import { remainingLabel } from '../lib/account';
 import { useI18n } from '../i18n';
 import type { Messages } from '../i18n/types';
@@ -15,42 +14,14 @@ function planName(plan: PaidPlan, pricing: Messages['pricing']) {
   return pricing.accountPro;
 }
 
-export function LoginPage() {
-  const { m, t } = useI18n();
-  const { status, loading } = useBilling();
-  usePageSeo(m.account.loginSeoTitle, m.account.loginSeoDescription);
-
-  if (!loading && status.paid) return <Navigate to="/account" replace />;
-
-  return (
-    <main className="pricing-page account-page">
-      <section className="pricing-panel account-panel">
-        <p className="pricing-eyebrow">{m.common.login}</p>
-        <h1>{m.account.loginTitle}</h1>
-        <p className="pricing-lead">{m.account.loginLead}</p>
-        <RestoreAccess />
-        {status.paid === false && (
-          <p className="account-hint">
-            {t(m.account.freeLimit, { used: status.usedToday ?? 0, limit: status.dailyLimit ?? 3 })}
-          </p>
-        )}
-        <p className="account-hint">{m.account.loginHint}</p>
-        <p className="account-alt">
-          <Link to="/pricing">{m.common.pricing}</Link>
-        </p>
-      </section>
-    </main>
-  );
-}
-
 export function AccountPage() {
   const { m, t } = useI18n();
   const { status, loading, logout, portal } = useBilling();
   usePageSeo(m.account.seoTitle, m.account.seoDescription);
 
-  if (!loading && !status.paid) return <Navigate to="/login" replace />;
+  if (!loading && !status.user && !status.paid) return <Navigate to="/login" replace />;
 
-  if (!status.paid) {
+  if (loading || (!status.user && !status.paid)) {
     return (
       <main className="pricing-page account-page">
         <section className="pricing-panel account-panel">
@@ -61,51 +32,69 @@ export function AccountPage() {
     );
   }
 
-  const until = status.expiresAt
+  const until = status.paid && status.expiresAt
     ? new Date(status.expiresAt).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })
     : m.account.unlimitedTime;
+  const freeUsed = status.paid === false ? (status.usedToday ?? 0) : 0;
+  const freeLimit = status.paid === false ? (status.dailyLimit ?? 3) : 3;
 
   return (
     <main className="pricing-page account-page">
       <section className="pricing-panel account-panel">
-        <p className="pricing-eyebrow">{m.pricing.accountPro}</p>
+        <p className="pricing-eyebrow">{status.paid ? m.pricing.accountPro : m.pricing.freeName}</p>
         <h1>{m.account.title}</h1>
-        <p className="pricing-lead">{status.email}</p>
+        <p className="pricing-lead">{status.user?.name || status.user?.email || (status.paid ? status.email : '')}</p>
         <p className="account-hint">{m.account.lead}</p>
 
-        <div className="account-stats">
-          <article>
-            <span>{m.account.plan}</span>
-            <strong>{planName(status.plan, m.pricing)}</strong>
-          </article>
-          <article>
-            <span>{m.account.remaining}</span>
-            <strong>{remainingLabel(status.expiresAt, t, m)}</strong>
-          </article>
-          <article>
-            <span>{m.account.validUntil}</span>
-            <strong>{until}</strong>
-          </article>
-          <article>
-            <span>{m.account.used}</span>
-            <strong>{status.docsUsed}</strong>
-          </article>
-          <article>
-            <span>{m.account.usedToday}</span>
-            <strong>{status.usedToday}</strong>
-          </article>
-          <article>
-            <span>{m.account.remainingDocs}</span>
-            <strong>{m.account.unlimitedDocs}</strong>
-          </article>
-        </div>
+        {status.paid ? (
+          <div className="account-stats">
+            <article>
+              <span>{m.account.plan}</span>
+              <strong>{planName(status.plan, m.pricing)}</strong>
+            </article>
+            <article>
+              <span>{m.account.remaining}</span>
+              <strong>{remainingLabel(status.expiresAt, t, m)}</strong>
+            </article>
+            <article>
+              <span>{m.account.validUntil}</span>
+              <strong>{until}</strong>
+            </article>
+            <article>
+              <span>{m.account.used}</span>
+              <strong>{status.docsUsed}</strong>
+            </article>
+            <article>
+              <span>{m.account.usedToday}</span>
+              <strong>{status.usedToday}</strong>
+            </article>
+            <article>
+              <span>{m.account.remainingDocs}</span>
+              <strong>{m.account.unlimitedDocs}</strong>
+            </article>
+          </div>
+        ) : (
+          <div className="account-stats">
+            <article>
+              <span>{m.account.plan}</span>
+              <strong>{m.pricing.freeName}</strong>
+            </article>
+            <article>
+              <span>{m.account.remainingDocs}</span>
+              <strong>{t(m.account.freeLimit, { used: freeUsed, limit: freeLimit })}</strong>
+            </article>
+          </div>
+        )}
 
         <div className="account-actions">
           <Link className="pricing-cta solid" to="/tools">{m.account.toolsCta}</Link>
-          {status.canManage && (
+          {status.paid && status.canManage && (
             <button className="pricing-cta outline" type="button" onClick={() => void portal()}>
               {m.pricing.manage}
             </button>
+          )}
+          {!status.paid && (
+            <Link className="pricing-cta outline" to="/pricing">{m.common.pricing}</Link>
           )}
           <button className="pricing-cta ghost" type="button" onClick={() => void logout()}>
             {m.pricing.logout}

@@ -4,11 +4,13 @@ import { dictionaries } from '../i18n/dictionaries';
 
 export type CheckoutPlan = 'week' | 'month' | 'year';
 export type PaidPlan = CheckoutPlan | 'business' | 'life';
+export type UserSession = { name: string; email: string };
 
 export type BillingState =
-  | { paid: false; usedToday?: number; dailyLimit?: number; remainingToday?: number }
+  | { paid: false; user: UserSession | null; usedToday?: number; dailyLimit?: number; remainingToday?: number }
   | {
     paid: true;
+    user: UserSession | null;
     plan: PaidPlan;
     email: string;
     expiresAt: string | null;
@@ -25,6 +27,8 @@ type BillingContextValue = {
   checkout: (plan: CheckoutPlan) => Promise<void>;
   confirm: (sessionId: string) => Promise<BillingState>;
   login: (email: string) => Promise<BillingState>;
+  loginWithPassword: (email: string, password: string) => Promise<BillingState>;
+  signup: (name: string, email: string, password: string) => Promise<BillingState>;
   portal: () => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -76,9 +80,10 @@ function forgetEmail() {
 }
 
 function asState(data: BillingState | undefined): BillingState {
-  if (data?.paid) return data;
+  if (data?.paid) return { ...data, user: data.user ?? null };
   return {
     paid: false,
+    user: data && 'user' in data ? data.user : null,
     usedToday: data && 'usedToday' in data ? data.usedToday : 0,
     dailyLimit: data && 'dailyLimit' in data ? data.dailyLimit : 3,
     remainingToday: data && 'remainingToday' in data ? data.remainingToday : 3
@@ -104,14 +109,15 @@ async function billingRequest(path: string, init?: RequestInit) {
 }
 
 export function BillingProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<BillingState>({ paid: false });
+  const [status, setStatus] = useState<BillingState>({ paid: false, user: null });
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     try {
       const data = await billingRequest('/api/billing/me');
-      if (data?.paid) {
-        rememberEmail(data.email);
+      if (data?.user || data?.paid) {
+        if (data.email) rememberEmail(data.email);
+        else if (data.user?.email) rememberEmail(data.user.email);
         setStatus(asState(data));
         return;
       }
@@ -134,7 +140,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
       }
       setStatus(asState(data));
     } catch {
-      setStatus({ paid: false });
+      setStatus({ paid: false, user: null });
     } finally {
       setLoading(false);
     }
@@ -175,6 +181,28 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     return next;
   }, []);
 
+  const loginWithPassword = useCallback(async (email: string, password: string) => {
+    const data = await billingRequest('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    const next = asState(data);
+    rememberEmail(next.user?.email || (next.paid ? next.email : email));
+    setStatus(next);
+    return next;
+  }, []);
+
+  const signup = useCallback(async (name: string, email: string, password: string) => {
+    const data = await billingRequest('/api/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password })
+    });
+    const next = asState(data);
+    rememberEmail(next.user?.email || email);
+    setStatus(next);
+    return next;
+  }, []);
+
   const portal = useCallback(async () => {
     const data = await billingRequest('/api/billing/portal', { method: 'POST' });
     if (data?.url) window.location.href = data.url;
@@ -182,8 +210,8 @@ export function BillingProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     forgetEmail();
-    await billingRequest('/api/billing/logout', { method: 'POST' });
-    setStatus({ paid: false });
+    await billingRequest('/api/auth/logout', { method: 'POST' });
+    setStatus({ paid: false, user: null });
   }, []);
 
   const value = useMemo<BillingContextValue>(() => ({
@@ -193,9 +221,11 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     checkout,
     confirm,
     login,
+    loginWithPassword,
+    signup,
     portal,
     logout
-  }), [status, loading, refresh, checkout, confirm, login, portal, logout]);
+  }), [status, loading, refresh, checkout, confirm, login, loginWithPassword, signup, portal, logout]);
 
   return <BillingContext.Provider value={value}>{children}</BillingContext.Provider>;
 }
