@@ -8,15 +8,10 @@ import {
   upsertEntitlement,
   type Entitlement
 } from './entitlements.js';
+import { amountsForZone, DEFAULT_ZONE, type PricingZone } from './pricingZones.js';
 
 export const ACCESS_COOKIE = 'pdfone_access';
 export const QUOTA_COOKIE = 'pdfone_quota';
-
-const PLAN_AMOUNTS: Record<PaidPlan, number> = {
-  week: 199,
-  month: 399,
-  year: 3990
-};
 
 const PLAN_NAMES: Record<PaidPlan, Record<string, string>> = {
   week: { fr: 'One2PDF — Pass Semaine (7 jours)', en: 'One2PDF — 7-day pass' },
@@ -71,18 +66,24 @@ export type AccessPayload = {
   expiresAt: string | null;
 };
 
-export async function createCheckoutSession(plan: PaidPlan, localeHeader?: string, email?: string) {
+export async function createCheckoutSession(
+  plan: PaidPlan,
+  localeHeader?: string,
+  email?: string,
+  zone: PricingZone = DEFAULT_ZONE
+) {
   const stripe = getStripe();
   const lang = (localeHeader || 'fr').split(/[-_,]/)[0].toLowerCase();
   const name = PLAN_NAMES[plan][lang] || PLAN_NAMES[plan].en;
   const origin = appUrl();
   const customerEmail = normalizeEmail(email) || undefined;
+  const amount = amountsForZone(zone)[plan];
   const common = {
     success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?canceled=1`,
     locale: stripeLocale(localeHeader),
     allow_promotion_codes: true,
-    metadata: { plan },
+    metadata: { plan, zone },
     ...(customerEmail ? { customer_email: customerEmail } : {})
   } as const;
 
@@ -96,7 +97,7 @@ export async function createCheckoutSession(plan: PaidPlan, localeHeader?: strin
           quantity: 1,
           price_data: {
             currency: 'usd',
-            unit_amount: PLAN_AMOUNTS.week,
+            unit_amount: amount,
             product_data: { name }
           }
         }
@@ -105,13 +106,13 @@ export async function createCheckoutSession(plan: PaidPlan, localeHeader?: strin
     : await stripe.checkout.sessions.create({
       ...common,
       mode: 'subscription',
-      subscription_data: { metadata: { plan } },
+      subscription_data: { metadata: { plan, zone } },
       line_items: [
         {
           quantity: 1,
           price_data: {
             currency: 'usd',
-            unit_amount: PLAN_AMOUNTS[plan],
+            unit_amount: amount,
             product_data: { name },
             recurring: { interval: plan === 'year' ? 'year' : 'month' }
           }

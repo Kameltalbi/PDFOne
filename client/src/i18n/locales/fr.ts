@@ -55,7 +55,7 @@ export const fr: Messages = {
   pricing: {
     eyebrow: 'Tarifs simples · Sans surprise',
     seoTitle: 'Tarifs One2PDF : gratuit, Pass 7 jours, Pro',
-    seoDescription: 'Plan gratuit, Pass Semaine à 1,99 $ sans renouvellement, Pro mensuel 3,99 $ ou annuel 39,90 $. Paiement sécurisé par Stripe.',
+    seoDescription: 'Plan gratuit, Pass Semaine à {weekPrice} sans renouvellement, Pro mensuel {monthPrice} ou annuel {yearPrice}. Paiement sécurisé par Stripe.',
     title: 'Choisissez comment travailler : gratuit, 7 jours, ou Pro.',
     subtitle: 'Pas d’engagement caché. Le Pass Semaine s’arrête tout seul au bout de 7 jours. Pro se résilie quand vous voulez. Paiement sécurisé par Stripe.',
     popular: 'Le plus intelligent',
@@ -83,13 +83,14 @@ export const fr: Messages = {
     weekPeriod: 'une fois',
     weekPitch: 'Un dossier à rendre maintenant ? 7 jours Pro, puis c’est fini — sans prélèvement.',
     weekIncludes: [
-      'Paiement unique : 1,99 $, une seule fois',
+      'Paiement unique : {weekPrice}, une seule fois',
       'Aucun renouvellement automatique',
       'Zéro publicité pendant 7 jours',
       'Fichiers sans limite de taille pendant 7 jours',
-      'Accès Pro complet le temps du pass'
+      'Fusion, compression, OCR et édition : illimités pendant le pass',
+      'Résumé et traduction : jusqu’à {aiLimit} utilisations pendant le pass'
     ],
-    weekCta: 'Débloquer 7 jours — 1,99 $',
+    weekCta: 'Débloquer 7 jours — {weekPrice}',
     weekMicro: 'Ça s’arrête tout seul. Rien à résilier.',
     monthName: 'Pro mensuel',
     monthTag: 'Indépendants et volume variable',
@@ -105,13 +106,13 @@ export const fr: Messages = {
     monthCta: 'Choisir Pro mensuel',
     monthMicro: 'Sans engagement. Résiliable quand vous voulez.',
     yearName: 'Pro annuel',
-    yearPrice: '39,90 $',
+    yearPrice: '34,90 $',
     yearPeriod: '/ an',
-    yearEquiv: 'soit 3,32 $ / mois — 2 mois offerts vs le mensuel',
-    yearPitch: 'Vous y revenez chaque semaine ? C’est l’offre qui coûte le moins, pour exactement les mêmes droits Pro.',
+    yearEquiv: 'soit {monthEquiv} / mois — {monthsFree} mois offerts vs le mensuel',
+    yearPitch: 'Vous y revenez chaque semaine ? Un paiement par an, les mêmes droits Pro, zéro surprise mensuelle.',
     yearIncludes: [
       'Tout Pro : zéro pub, fichiers illimités, traitement par lots',
-      'Vous payez 10 mois, vous en avez 12',
+      'Vous payez {paidMonths} mois, vous en avez 12',
       'Un seul paiement dans l’année, zéro surprise mensuelle',
       'Résiliation possible : vous gardez Pro jusqu’à la fin de la période payée'
     ],
@@ -123,7 +124,7 @@ export const fr: Messages = {
     faq: [
       {
         question: 'Le Pass Semaine se renouvelle-t-il tout seul ?',
-        answer: 'Non. C’est un paiement unique de 1,99 $. Au bout de 7 jours, l’accès Pro s’arrête automatiquement. Aucun prélèvement suivant, rien à résilier. Si vous en avez encore besoin, vous pouvez racheter un pass ou passer sur Pro.'
+        answer: 'Non. C’est un paiement unique de {weekPrice}. Au bout de 7 jours, l’accès Pro s’arrête automatiquement. Aucun prélèvement suivant, rien à résilier. Si vous en avez encore besoin, vous pouvez racheter un pass ou passer sur Pro.'
       },
       {
         question: 'Mes paiements sont-ils sécurisés ?',
@@ -131,7 +132,7 @@ export const fr: Messages = {
       },
       {
         question: 'Puis-je arrêter Pro quand je veux ?',
-        answer: 'Oui. Le mensuel (3,99 $) et l’annuel (39,90 $) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au plan Gratuit : 3 documents par jour, fichiers jusqu’à 20 Mo, publicités légères.'
+        answer: 'Oui. Le mensuel ({monthPrice}) et l’annuel ({yearPrice}) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au plan Gratuit : 3 documents par jour, fichiers jusqu’à 20 Mo, publicités légères.'
       },
       {
         question: 'J’ai déjà payé — comment me connecter ?',

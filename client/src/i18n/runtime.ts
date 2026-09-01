@@ -1,6 +1,6 @@
 import type { Locale } from './types';
 
-let currentLocale: Locale = 'fr';
+let currentLocale: Locale = 'en';
 
 export function setRuntimeLocale(locale: Locale) {
   currentLocale = locale;

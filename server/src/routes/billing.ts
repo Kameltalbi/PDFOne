@@ -14,6 +14,7 @@ import {
   restoreEntitlementByEmail,
   type AccessPayload
 } from '../services/billing.js';
+import { amountsForZone, detectPricingZone } from '../services/pricingZones.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
 const router = express.Router();
@@ -71,6 +72,19 @@ router.get('/me', async (req, res) => {
   return res.json({ success: true, data: await currentSession(req, res) });
 });
 
+router.get('/prices', async (req, res) => {
+  const zone = await detectPricingZone(req);
+  const amounts = amountsForZone(zone);
+  return res.json({
+    success: true,
+    data: {
+      week: amounts.week,
+      month: amounts.month,
+      year: amounts.year
+    }
+  });
+});
+
 router.post('/checkout', async (req, res) => {
   const plan = req.body?.plan;
   if (!isPaidPlan(plan)) {
@@ -101,7 +115,8 @@ router.post('/checkout', async (req, res) => {
   }
 
   try {
-    const url = await createCheckoutSession(plan, String(req.headers['accept-language'] || 'fr'), email);
+    const zone = await detectPricingZone(req);
+    const url = await createCheckoutSession(plan, String(req.headers['accept-language'] || 'fr'), email, zone);
     return res.json({ success: true, data: { url } });
   } catch (error) {
     if (error instanceof Error && error.message === 'NOT_CONFIGURED') {

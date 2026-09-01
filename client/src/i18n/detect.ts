@@ -8,7 +8,7 @@ export function detectLocale(): Locale {
     }
   }
 
-  if (typeof navigator === 'undefined') return 'fr';
+  if (typeof navigator === 'undefined') return 'en';
 
   const candidates = [
     ...(navigator.languages ?? []),
@@ -20,7 +20,7 @@ export function detectLocale(): Locale {
     if (LOCALES.includes(base)) return base;
   }
 
-  return 'fr';
+  return 'en';
 }
 
 export function isRtl(locale: Locale): boolean {

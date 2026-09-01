@@ -55,7 +55,7 @@ export const en: Messages = {
   pricing: {
     eyebrow: 'Simple pricing · No surprises',
     seoTitle: 'One2PDF pricing: free, 7-day pass, Pro',
-    seoDescription: 'Free plan, $1.99 7-day pass with no auto-renewal, Pro monthly $3.99 or yearly $39.90. Secure checkout with Stripe.',
+    seoDescription: 'Free plan, {weekPrice} 7-day pass with no auto-renewal, Pro monthly {monthPrice} or yearly {yearPrice}. Secure checkout with Stripe.',
     title: 'Choose how you work: free, 7 days, or Pro.',
     subtitle: 'No hidden commitment. The 7-day pass stops on its own. Pro can be canceled anytime. Payments are secured by Stripe.',
     popular: 'Smartest pick',
@@ -81,15 +81,16 @@ export const en: Messages = {
     weekTag: 'One payment, no subscription',
     weekPrice: '$1.99',
     weekPeriod: 'once',
-    weekPitch: 'A file due today? Full Pro for 7 days, then it stops — no follow-up charge.',
+    weekPitch: 'A file due today? Pro access for 7 days, then it stops — no follow-up charge.',
     weekIncludes: [
-      'One payment: $1.99, billed once',
+      'One payment: {weekPrice}, billed once',
       'Never auto-renews',
       'No ads for 7 days',
       'No file size limit for 7 days',
-      'Full Pro access for the duration of the pass'
+      'Merge, compress, OCR, and edit: unlimited on this pass',
+      'Summarize and translate: up to {aiLimit} uses on this pass'
     ],
-    weekCta: 'Unlock 7 days — $1.99',
+    weekCta: 'Unlock 7 days — {weekPrice}',
     weekMicro: 'It stops on its own. Nothing to cancel.',
     monthName: 'Pro monthly',
     monthTag: 'Freelancers and variable volume',
@@ -105,13 +106,13 @@ export const en: Messages = {
     monthCta: 'Choose Pro monthly',
     monthMicro: 'No lock-in. Cancel whenever you want.',
     yearName: 'Pro annual',
-    yearPrice: '$39.90',
+    yearPrice: '$34.90',
     yearPeriod: '/ year',
-    yearEquiv: 'that’s $3.32 / month — 2 months free vs monthly',
-    yearPitch: 'You come back every week? This is the lowest price for the exact same Pro access.',
+    yearEquiv: 'that’s {monthEquiv} / month — {monthsFree} months free vs monthly',
+    yearPitch: 'You come back every week? A yearly payment, the same Pro access, and no monthly surprise.',
     yearIncludes: [
       'Everything in Pro: no ads, unlimited files, batch processing',
-      'Pay for 10 months, get 12',
+      'Pay for {paidMonths} months, get 12',
       'One payment a year — no monthly surprise',
       'Cancel anytime: you keep Pro until the paid period ends'
     ],
@@ -123,7 +124,7 @@ export const en: Messages = {
     faq: [
       {
         question: 'Does the 7-day pass renew automatically?',
-        answer: 'No. It is a one-time $1.99 payment. After 7 days, Pro access stops on its own. No further charge, nothing to cancel. If you still need it, buy another pass or switch to Pro.'
+        answer: 'No. It is a one-time {weekPrice} payment. After 7 days, Pro access stops on its own. No further charge, nothing to cancel. If you still need it, buy another pass or switch to Pro.'
       },
       {
         question: 'Are my payments secure?',
@@ -131,7 +132,7 @@ export const en: Messages = {
       },
       {
         question: 'Can I stop Pro whenever I want?',
-        answer: 'Yes. Monthly ($3.99) and annual ($39.90) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to the Free plan: 3 documents per day, files up to 20 MB, light ads.'
+        answer: 'Yes. Monthly ({monthPrice}) and annual ({yearPrice}) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to the Free plan: 3 documents per day, files up to 20 MB, light ads.'
       },
       {
         question: 'I already paid — how do I sign in?',

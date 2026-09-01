@@ -9,6 +9,8 @@ import { unlockPdf } from '../services/unlock.js';
 import { ocrPdf } from '../services/ocr.js';
 import { summarizePdf, translatePdf } from '../services/nlp.js';
 import { convertOfficeFile } from '../services/office.js';
+import { consumeWeekAi, WEEK_AI_LIMIT } from '../services/entitlements.js';
+import { getPaidAccess } from '../middleware/quota.js';
 import { cleanupUploads, unlinkQuiet } from '../utils/temp.js';
 
 const router = express.Router();
@@ -19,6 +21,30 @@ function sendError(res: express.Response, error: unknown, fallback: string) {
     success: false,
     error: error instanceof Error ? error.message : fallback
   });
+}
+
+function aiCapMessage(req: express.Request): string {
+  const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
+  const copy: Record<string, string> = {
+    en: `The 7-day pass includes up to ${WEEK_AI_LIMIT} summarize and translate uses. Merge, compress, OCR, and edit stay unlimited.`,
+    fr: `Le Pass Semaine inclut jusqu’à ${WEEK_AI_LIMIT} utilisations de résumé et de traduction. Fusion, compression, OCR et édition restent illimitées.`,
+    es: `El pase de 7 días incluye hasta ${WEEK_AI_LIMIT} usos de resumen y traducción. Combinar, comprimir, OCR y editar siguen ilimitados.`,
+    de: `Der 7-Tage-Pass umfasst bis zu ${WEEK_AI_LIMIT} Zusammenfassungs- und Übersetzungsnutzungen. Zusammenführen, Komprimieren, OCR und Bearbeiten bleiben unbegrenzt.`,
+    pt: `O passe de 7 dias inclui até ${WEEK_AI_LIMIT} usos de resumo e tradução. Unir, comprimir, OCR e editar continuam ilimitados.`,
+    tr: `7 günlük geçiş, en fazla ${WEEK_AI_LIMIT} özetleme ve çeviri kullanımı içerir. Birleştirme, sıkıştırma, OCR ve düzenleme sınırsız kalır.`,
+    ar: `يشمل تمرير الأيام السبعة حتى ${WEEK_AI_LIMIT} استخدامات للتلخيص والترجمة. الدمج والضغط والتعرف الضوئي والتحرير تبقى بلا حد.`,
+    it: `Il pass di 7 giorni include fino a ${WEEK_AI_LIMIT} utilizzi di riassunto e traduzione. Unione, compressione, OCR e modifica restano illimitati.`
+  };
+  return copy[lang] || copy.fr;
+}
+
+async function allowWeekAi(req: express.Request, res: express.Response): Promise<boolean> {
+  const access = await getPaidAccess(req, res);
+  if (!access) return true;
+  const result = await consumeWeekAi(access.customerId, access.plan);
+  if (result.ok) return true;
+  res.status(402).json({ success: false, code: 'AI_CAP', error: aiCapMessage(req) });
+  return false;
 }
 
 router.post('/to-png', upload.single('file'), async (req, res) => {
@@ -73,6 +99,7 @@ router.post('/summarize', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    if (!(await allowWeekAi(req, res))) return;
     const length = req.body.length === 'short' ? 'short' : 'medium';
     return res.json({ success: true, data: await summarizePdf(uploadedFile.path, length) });
   } catch (error) {
@@ -86,6 +113,7 @@ router.post('/translate', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    if (!(await allowWeekAi(req, res))) return;
     return res.json({
       success: true,
       data: await translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en'))

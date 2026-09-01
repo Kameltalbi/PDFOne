@@ -14,7 +14,10 @@ export type Entitlement = {
   subscriptionId?: string;
   docsUsed?: number;
   docsByDay?: Record<string, number>;
+  aiUsed?: number;
 };
+
+export const WEEK_AI_LIMIT = 10;
 
 const dataDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../data');
 const dataFile = path.join(dataDir, 'entitlements.json');
@@ -86,11 +89,13 @@ export async function upsertEntitlement(entry: Entitlement): Promise<Entitlement
   return withLock(async () => {
     const data = await readAll();
     const previous = data[entry.customerId];
+    const samePass = previous?.plan === entry.plan && previous?.expiresAt === entry.expiresAt;
     const next: Entitlement = {
       ...previous,
       ...entry,
       docsUsed: previous?.docsUsed || 0,
-      docsByDay: previous?.docsByDay || {}
+      docsByDay: previous?.docsByDay || {},
+      aiUsed: samePass ? (previous?.aiUsed || 0) : 0
     };
     data[entry.customerId] = next;
     await writeAll(data);
@@ -128,6 +133,28 @@ export async function incrementUsage(customerId: string | null | undefined): Pro
       docsByDay
     };
     await writeAll(data);
+  });
+}
+
+const memoryAi = new Map<string, number>();
+
+export async function consumeWeekAi(customerId: string, plan: StoredPlan): Promise<{ ok: boolean; used: number; limit: number }> {
+  if (plan !== 'week') return { ok: true, used: 0, limit: WEEK_AI_LIMIT };
+  return withLock(async () => {
+    const data = await readAll();
+    const entry = data[customerId];
+    if (!entry || !isEntitlementActive(entry)) {
+      const used = memoryAi.get(customerId) || 0;
+      if (used >= WEEK_AI_LIMIT) return { ok: false, used, limit: WEEK_AI_LIMIT };
+      memoryAi.set(customerId, used + 1);
+      return { ok: true, used: used + 1, limit: WEEK_AI_LIMIT };
+    }
+    if (entry.plan !== 'week') return { ok: true, used: 0, limit: WEEK_AI_LIMIT };
+    const used = entry.aiUsed || 0;
+    if (used >= WEEK_AI_LIMIT) return { ok: false, used, limit: WEEK_AI_LIMIT };
+    data[customerId] = { ...entry, aiUsed: used + 1 };
+    await writeAll(data);
+    return { ok: true, used: used + 1, limit: WEEK_AI_LIMIT };
   });
 }
 

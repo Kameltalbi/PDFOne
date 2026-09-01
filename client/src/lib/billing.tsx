@@ -6,6 +6,26 @@ export type CheckoutPlan = 'week' | 'month' | 'year';
 export type PaidPlan = CheckoutPlan | 'business' | 'life';
 export type UserSession = { name: string; email: string };
 
+export type PlanAmounts = {
+  week: number;
+  month: number;
+  year: number;
+};
+
+export const DEFAULT_AMOUNTS: PlanAmounts = {
+  week: 199,
+  month: 399,
+  year: 3490
+};
+
+function browserTimeZone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  } catch {
+    return '';
+  }
+}
+
 export type BillingState =
   | { paid: false; user: UserSession | null; usedToday?: number; dailyLimit?: number; remainingToday?: number }
   | {
@@ -23,6 +43,7 @@ export type BillingState =
 type BillingContextValue = {
   status: BillingState;
   loading: boolean;
+  prices: PlanAmounts;
   refresh: () => Promise<void>;
   checkout: (plan: CheckoutPlan) => Promise<void>;
   confirm: (sessionId: string) => Promise<BillingState>;
@@ -97,6 +118,7 @@ async function billingRequest(path: string, init?: RequestInit) {
     headers: {
       'Content-Type': 'application/json',
       'Accept-Language': locale,
+      'X-Timezone': browserTimeZone(),
       ...(init?.headers || {})
     },
     ...init
@@ -111,10 +133,17 @@ async function billingRequest(path: string, init?: RequestInit) {
 export function BillingProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<BillingState>({ paid: false, user: null });
   const [loading, setLoading] = useState(true);
+  const [prices, setPrices] = useState<PlanAmounts>(DEFAULT_AMOUNTS);
 
   const refresh = useCallback(async () => {
     try {
-      const data = await billingRequest('/api/billing/me');
+      const [data, nextPrices] = await Promise.all([
+        billingRequest('/api/billing/me'),
+        billingRequest('/api/billing/prices').catch(() => null)
+      ]);
+      if (nextPrices && typeof nextPrices.week === 'number' && typeof nextPrices.month === 'number' && typeof nextPrices.year === 'number') {
+        setPrices({ week: nextPrices.week, month: nextPrices.month, year: nextPrices.year });
+      }
       if (data?.user || data?.paid) {
         if (data.email) rememberEmail(data.email);
         else if (data.user?.email) rememberEmail(data.user.email);
@@ -217,6 +246,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
   const value = useMemo<BillingContextValue>(() => ({
     status,
     loading,
+    prices,
     refresh,
     checkout,
     confirm,
@@ -225,7 +255,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     signup,
     portal,
     logout
-  }), [status, loading, refresh, checkout, confirm, login, loginWithPassword, signup, portal, logout]);
+  }), [status, loading, prices, refresh, checkout, confirm, login, loginWithPassword, signup, portal, logout]);
 
   return <BillingContext.Provider value={value}>{children}</BillingContext.Provider>;
 }
