@@ -33,11 +33,12 @@ function Home() {
             </h1>
             <p>{m.home.subtitle}</p>
             <div className="pro-hero-actions">
-              <Link to="/tools" className="pro-btn primary">{m.home.ctaTools} <span>→</span></Link>
+              <Link to="/edit-pdf" className="pro-btn primary">{m.home.ctaEdit} <span>→</span></Link>
+              <Link to="/tools" className="pro-btn secondary">{m.home.ctaTools}</Link>
             </div>
             <div className="pro-trust-row">
-              <span>✓ {m.home.trustLine}</span>
               <span>✓ {m.home.trustInstall}</span>
+              <span>✓ {m.home.trustSize}</span>
               <span>✓ {m.home.trustDelete}</span>
             </div>
           </div>
@@ -51,7 +52,7 @@ function Home() {
       </section>
 
       <section className="pro-tools-section" id="popular-tools">
-        <div className="pro-section-heading"><div><span>{m.home.popularLabel}</span><h2>{m.home.popularTitle}</h2></div><Link to="/tools">{m.home.seeAllTools}</Link></div>
+        <div className="pro-section-heading"><div><span>{m.home.popularLabel}</span><h2>{m.home.popularTitle}</h2></div><Link to="/tools">{m.home.seeAllTools} <b>→</b></Link></div>
         <div className="pro-tools-grid">{tools.map((tool) => <Link key={tool.path + tool.name} to={tool.path} className="pro-tool-card"><span className={`pro-tool-icon ${tool.tone}`}>{tool.icon}</span><div><h3>{tool.name}</h3><p>{tool.description}</p></div><b className="pro-tool-arrow">→</b></Link>)}</div>
         <AdBanner />
       </section>
@@ -86,7 +87,7 @@ function Home() {
       </section>
 
       <section className="pro-process">
-        <div className="pro-process-copy"><span className="pro-section-label">{m.home.processLabel}</span><h2>{m.home.processTitle}</h2><p>{m.home.processText}</p><Link to="/tools" className="pro-text-link">{m.home.processCta} <span>→</span></Link></div>
+        <div className="pro-process-copy"><span className="pro-section-label">{m.home.processLabel}</span><h2>{m.home.processTitle}</h2><p>{m.home.processText}</p><Link to="/edit-pdf" className="pro-text-link">{m.home.processCta} <span>→</span></Link></div>
         <div className="pro-steps">
           <article><span>01</span><div><h3>{m.home.step1Title}</h3><p>{m.home.step1Text}</p></div></article>
           <article><span>02</span><div><h3>{m.home.step2Title}</h3><p>{m.home.step2Text}</p></div></article>
@@ -99,13 +100,8 @@ function Home() {
           <span>{m.home.ctaLabel}</span>
           <h2>{m.home.ctaTitle}</h2>
           <p>{m.home.ctaText}</p>
-          <ul className="pro-pro-benefits">
-            {m.home.proBenefits.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
         </div>
-        <Link to="/pricing" className="pro-btn light">{m.home.ctaButton} <span>→</span></Link>
+        <Link to="/tools" className="pro-btn light">{m.home.ctaButton} <span>→</span></Link>
       </section>
     </main>
   </div>;
