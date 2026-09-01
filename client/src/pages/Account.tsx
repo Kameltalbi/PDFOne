@@ -29,9 +29,9 @@ export function LoginPage() {
         <h1>{m.account.loginTitle}</h1>
         <p className="pricing-lead">{m.account.loginLead}</p>
         <RestoreAccess />
-        {!status.paid && status.dailyLimit != null && (
+        {status.paid === false && (
           <p className="account-hint">
-            {t(m.account.freeLimit, { used: status.usedToday ?? 0, limit: status.dailyLimit })}
+            {t(m.account.freeLimit, { used: status.usedToday ?? 0, limit: status.dailyLimit ?? 3 })}
           </p>
         )}
         <p className="account-hint">{m.account.loginHint}</p>
