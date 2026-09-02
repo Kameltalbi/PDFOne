@@ -29,7 +29,8 @@ export function PdfAction({
   disabled = false,
   allowLocked = false,
   downloadName,
-  downloadLabel
+  downloadLabel,
+  extraDownloadLabel
 }: {
   copy: Copy;
   endpoint: string;
@@ -39,6 +40,7 @@ export function PdfAction({
   allowLocked?: boolean;
   downloadName: string;
   downloadLabel?: string;
+  extraDownloadLabel?: string;
 }) {
   const pdf = useSinglePdf({ allPages: false, allowLocked });
   const { pathname } = useLocation();
@@ -65,6 +67,7 @@ export function PdfAction({
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resultName, setResultName] = useState(downloadName);
+  const [textDownload, setTextDownload] = useState<{ url: string; name: string } | null>(null);
 
   const run = async () => {
     if (!pdf.file) return;
@@ -80,6 +83,9 @@ export function PdfAction({
       setProgress(100);
       setResultName(result.filename || downloadName);
       pdf.setDownloadUrl(result.downloadUrl);
+      setTextDownload(result.textDownloadUrl
+        ? { url: result.textDownloadUrl, name: result.textFilename || 'traduction.txt' }
+        : null);
     } catch (error) {
       pdf.setError(error instanceof Error ? error.message : copy.fail);
       setProgress(0);
@@ -92,6 +98,7 @@ export function PdfAction({
     pdf.reset();
     setProgress(0);
     setResultName(downloadName);
+    setTextDownload(null);
   };
 
   if (pdf.downloadUrl) {
@@ -102,6 +109,9 @@ export function PdfAction({
         downloadUrl={pdf.downloadUrl}
         downloadName={resultName}
         downloadLabel={downloadLabel}
+        extraDownloadUrl={textDownload?.url}
+        extraDownloadName={textDownload?.name}
+        extraDownloadLabel={extraDownloadLabel}
         resetLabel={copy.reset}
         onReset={reset}
         previewSrc={pdf.thumbs[0]}

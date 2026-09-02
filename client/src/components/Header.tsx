@@ -64,7 +64,8 @@ function Header() {
     { name: m.tools.pptToPdf, path: '/ppt-to-pdf', icon: 'P' },
     { name: m.tools.jpgToPdf, path: '/jpg-to-pdf', icon: '🖼️' },
     { name: m.tools.pngToPdf, path: '/png-to-pdf', icon: '🖼️' },
-    { name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>' }
+    { name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>' },
+    { name: m.tools.heicToPdf, path: '/heic-to-pdf', icon: 'HEIC' }
   ];
 
   const accountActions = status.user || status.paid ? (

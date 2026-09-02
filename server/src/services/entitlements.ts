@@ -15,6 +15,8 @@ export type Entitlement = {
   docsUsed?: number;
   docsByDay?: Record<string, number>;
   aiUsed?: number;
+  source?: 'stripe' | 'admin';
+  note?: string;
 };
 
 export const WEEK_AI_LIMIT = 10;
@@ -116,6 +118,54 @@ export async function getActiveEntitlementByEmail(email: string | null | undefin
   return pickBestEntitlement(
     Object.values(data).filter((entry) => normalizeEmail(entry.email) === needle)
   );
+}
+
+export async function listEntitlementsByEmail(email: string | null | undefined): Promise<Entitlement[]> {
+  const needle = normalizeEmail(email);
+  if (!needle) return [];
+  const data = await readAll();
+  return Object.values(data)
+    .filter((entry) => normalizeEmail(entry.email) === needle)
+    .sort((a, b) => {
+      const aTime = a.expiresAt ? Date.parse(a.expiresAt) : 0;
+      const bTime = b.expiresAt ? Date.parse(b.expiresAt) : 0;
+      return bTime - aTime;
+    });
+}
+
+export function adminCustomerId(email: string): string {
+  return `admin:${normalizeEmail(email)}`;
+}
+
+export async function grantComplimentary(email: string, days: number, note?: string): Promise<Entitlement> {
+  const normalized = normalizeEmail(email);
+  const safeDays = Math.min(730, Math.max(1, Math.floor(days)));
+  const plan: StoredPlan = safeDays <= 31 ? 'month' : 'year';
+  const expiresAt = new Date(Date.now() + safeDays * 24 * 60 * 60 * 1000).toISOString();
+  return upsertEntitlement({
+    email: normalized,
+    customerId: adminCustomerId(normalized),
+    plan,
+    status: 'active',
+    expiresAt,
+    source: 'admin',
+    note: (note || '').trim().slice(0, 200) || `Offert ${safeDays} jour(s)`
+  });
+}
+
+export async function resetEntitlementUsage(customerId: string): Promise<Entitlement | null> {
+  return withLock(async () => {
+    const data = await readAll();
+    const entry = data[customerId];
+    if (!entry) return null;
+    const day = todayUtc();
+    const docsByDay = { ...(entry.docsByDay || {}) };
+    delete docsByDay[day];
+    const next: Entitlement = { ...entry, docsByDay, aiUsed: 0 };
+    data[customerId] = next;
+    await writeAll(data);
+    return next;
+  });
 }
 
 export async function incrementUsage(customerId: string | null | undefined): Promise<void> {

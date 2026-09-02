@@ -28,9 +28,15 @@ const RELATED: Record<string, string[]> = {
   '/reorder': ['/delete-pages', '/merge', '/rotate'],
   '/ocr': ['/pdf-to-word', '/pdf-to-text', '/compress'],
   '/pdf-to-text': ['/ocr', '/pdf-to-word', '/summarize'],
-  '/html-to-pdf': ['/word-to-pdf', '/compress', '/merge'],
+  '/html-to-pdf': ['/word-to-pdf', '/heic-to-pdf', '/compress', '/merge'],
   '/summarize': ['/pdf-to-text', '/translate', '/pdf-to-word'],
-  '/translate': ['/summarize', '/pdf-to-word', '/ocr']
+  '/translate': ['/summarize', '/pdf-to-word', '/ocr'],
+  '/extract-pages': ['/split', '/delete-pages', '/extract-images'],
+  '/extract-images': ['/to-jpg', '/extract-pages', '/compress'],
+  '/flatten': ['/fill-form', '/protect', '/compress'],
+  '/header-footer': ['/page-numbers', '/watermark', '/compress'],
+  '/fill-form': ['/flatten', '/sign', '/protect'],
+  '/heic-to-pdf': ['/jpg-to-pdf', '/compress', '/merge']
 };
 
 const ALIAS: Record<string, string> = {
@@ -75,7 +81,13 @@ export function RelatedTools() {
     '/pdf-to-text': m.tools.pdfToText,
     '/html-to-pdf': m.tools.htmlToPdf,
     '/summarize': m.tools.summarize,
-    '/translate': m.tools.translate
+    '/translate': m.tools.translate,
+    '/extract-pages': m.tools.extractPages,
+    '/extract-images': m.tools.extractImages,
+    '/flatten': m.tools.flatten,
+    '/header-footer': m.tools.headerFooter,
+    '/fill-form': m.tools.fillForm,
+    '/heic-to-pdf': m.tools.heicToPdf
   };
 
   return (

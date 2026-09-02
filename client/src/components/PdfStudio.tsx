@@ -186,6 +186,9 @@ export function StudioResult({
   downloadUrl,
   downloadName,
   downloadLabel,
+  extraDownloadUrl,
+  extraDownloadName,
+  extraDownloadLabel,
   resetLabel,
   onReset,
   previewSrc,
@@ -196,6 +199,9 @@ export function StudioResult({
   downloadUrl: string;
   downloadName: string;
   downloadLabel?: string;
+  extraDownloadUrl?: string;
+  extraDownloadName?: string;
+  extraDownloadLabel?: string;
   resetLabel: string;
   onReset: () => void;
   previewSrc?: string | null;
@@ -264,6 +270,16 @@ export function StudioResult({
               🗑
             </button>
           </div>
+
+          {extraDownloadUrl && extraDownloadLabel && (
+            <a
+              className="studio-done-secondary"
+              href={extraDownloadUrl}
+              download={extraDownloadName || 'traduction.txt'}
+            >
+              {extraDownloadLabel}
+            </a>
+          )}
 
           {!paid && (
             <Link className="studio-done-pro" to="/pricing">

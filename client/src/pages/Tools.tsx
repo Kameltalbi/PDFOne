@@ -49,7 +49,13 @@ function Tools() {
     { id: 'pptToPdf', name: m.tools.pptToPdf, path: '/ppt-to-pdf', icon: 'P', color: '#f05b43', badge: 'new', keywords: 'powerpoint pptx office libreoffice' },
     { id: 'pdfToText', name: m.tools.pdfToText, path: '/pdf-to-text', icon: 'TXT', color: '#2684ff', badge: 'new', keywords: 'texte txt extract' },
     { id: 'imagesToPdf', name: m.tools.imagesToPdf, path: '/jpg-to-pdf', icon: 'IMG', color: '#ef5b45' },
-    { id: 'htmlToPdf', name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>', color: '#7c5cff', badge: 'new', keywords: 'html web page' }
+    { id: 'htmlToPdf', name: m.tools.htmlToPdf, path: '/html-to-pdf', icon: '</>', color: '#7c5cff', badge: 'new', keywords: 'html web page' },
+    { id: 'extractPages', name: m.tools.extractPages, path: '/extract-pages', icon: '▤', color: '#0f766e', badge: 'new', keywords: 'extract pages extraire pages' },
+    { id: 'extractImages', name: m.tools.extractImages, path: '/extract-images', icon: '🖼', color: '#7c3aed', badge: 'new', keywords: 'extract images extraire images' },
+    { id: 'flatten', name: m.tools.flatten, path: '/flatten', icon: '▣', color: '#334155', badge: 'new', keywords: 'flatten aplatir formulaire' },
+    { id: 'headerFooter', name: m.tools.headerFooter, path: '/header-footer', icon: 'HF', color: '#0369a1', badge: 'new', keywords: 'header footer en-tête pied' },
+    { id: 'fillForm', name: m.tools.fillForm, path: '/fill-form', icon: '☑', color: '#15803d', badge: 'new', keywords: 'form formulaire fill cerfa' },
+    { id: 'heicToPdf', name: m.tools.heicToPdf, path: '/heic-to-pdf', icon: 'HEIC', color: '#c2410c', badge: 'new', keywords: 'heic heif iphone photo' }
   ];
 
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);

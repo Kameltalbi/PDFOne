@@ -16,7 +16,14 @@ async function embedImage(pdf: PDFDocument, filePath: string) {
     return pdf.embedJpg(bytes);
   }
 
-  const jpeg = await sharp(bytes).jpeg({ quality: 90 }).toBuffer();
+  let jpeg: Buffer;
+  try {
+    jpeg = await sharp(bytes).rotate().jpeg({ quality: 90 }).toBuffer();
+  } catch {
+    const convert = (await import('heic-convert')).default;
+    const converted = await convert({ buffer: bytes, format: 'JPEG', quality: 0.9 });
+    jpeg = Buffer.from(converted);
+  }
   return pdf.embedJpg(jpeg);
 }
 

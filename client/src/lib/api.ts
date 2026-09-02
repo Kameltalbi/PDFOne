@@ -6,9 +6,11 @@ export type ToolResult = {
   filename: string;
   originalSize?: number;
   compressedSize?: number;
+  textDownloadUrl?: string;
+  textFilename?: string;
 };
 
-export async function postForm(url: string, formData: FormData): Promise<ToolResult> {
+export async function postFormData<T>(url: string, formData: FormData): Promise<T> {
   const locale = getRuntimeLocale();
   const response = await fetch(url, {
     method: 'POST',
@@ -20,7 +22,11 @@ export async function postForm(url: string, formData: FormData): Promise<ToolRes
   if (!response.ok || !payload.success) {
     throw new Error(payload.error || dictionaries[locale].common.processingFailed);
   }
-  return payload.data as ToolResult;
+  return payload.data as T;
+}
+
+export async function postForm(url: string, formData: FormData): Promise<ToolResult> {
+  return postFormData<ToolResult>(url, formData);
 }
 
 export function formatFileSize(bytes: number): string {

@@ -1,6 +1,9 @@
 import express from 'express';
 import { upload } from '../middleware/upload.js';
-import { cropPages, deletePages, numberPages, reorderPages, rotatePages, watermarkPdf } from '../services/pages.js';
+import { cropPages, deletePages, headerFooterPdf, numberPages, reorderPages, rotatePages, watermarkPdf } from '../services/pages.js';
+import { fillPdfForm, flattenPdfForm, inspectPdfForm } from '../services/forms.js';
+import { extractPdfImages } from '../services/extractImages.js';
+import { splitPdf } from '../services/split.js';
 import { signPdf } from '../services/sign.js';
 import { cleanupUploads } from '../utils/temp.js';
 
@@ -102,6 +105,71 @@ router.post('/crop', upload.single('file'), async (req, res) => {
     }),
     'Impossible de rogner ce PDF.'
   );
+});
+
+router.post('/extract', upload.single('file'), async (req, res) => {
+  try {
+    const pages = parseJsonBody(req.body.pages, []);
+    return await handlePageTool(req, res, (filePath) => splitPdf(filePath, pages, 'extract'), 'Impossible d’extraire ces pages.');
+  } catch {
+    return res.status(400).json({ success: false, error: 'Sélection de pages invalide.' });
+  }
+});
+
+router.post('/extract-images', upload.single('file'), async (req, res) => {
+  return await handlePageTool(req, res, (filePath) => extractPdfImages(filePath), 'Impossible d’extraire les images de ce PDF.');
+});
+
+router.post('/flatten', upload.single('file'), async (req, res) => {
+  return await handlePageTool(req, res, (filePath) => flattenPdfForm(filePath), 'Impossible d’aplatir ce PDF.');
+});
+
+router.post('/header-footer', upload.single('file'), async (req, res) => {
+  return await handlePageTool(
+    req,
+    res,
+    (filePath) => headerFooterPdf(filePath, {
+      header: typeof req.body.header === 'string' ? req.body.header : '',
+      footer: typeof req.body.footer === 'string' ? req.body.footer : '',
+      color: typeof req.body.color === 'string' ? req.body.color : '#4b5563',
+      numbers: req.body.numbers === 'true' || req.body.numbers === true,
+      locale: typeof req.body.locale === 'string' ? req.body.locale : (req.headers['accept-language'] || 'en')
+    }),
+    'Impossible d’ajouter l’en-tête ou le pied de page.'
+  );
+});
+
+router.post('/form-inspect', upload.single('file'), async (req, res) => {
+  const uploadedFile = req.file;
+  try {
+    if (!uploadedFile) {
+      return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    }
+    const result = await inspectPdfForm(uploadedFile.path);
+    return res.json({ success: true, data: result });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Impossible de lire ce formulaire.'
+    });
+  } finally {
+    await cleanupUploads(uploadedFile);
+  }
+});
+
+router.post('/form-fill', upload.single('file'), async (req, res) => {
+  try {
+    const values = parseJsonBody(req.body.values, {});
+    const flatten = req.body.flatten === 'true' || req.body.flatten === true;
+    return await handlePageTool(
+      req,
+      res,
+      (filePath) => fillPdfForm(filePath, values, flatten),
+      'Impossible de remplir ce formulaire.'
+    );
+  } catch {
+    return res.status(400).json({ success: false, error: 'Les valeurs du formulaire sont invalides.' });
+  }
 });
 
 router.post('/sign', upload.single('file'), async (req, res) => {

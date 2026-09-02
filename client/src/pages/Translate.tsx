@@ -22,10 +22,11 @@ export default function Translate() {
       endpoint="/api/translate"
       extraForm={(form) => {
         form.append('target', target);
-        form.append('source', locale);
+        form.append('source', 'auto');
       }}
-      downloadName="traduction.txt"
+      downloadName="traduction.pdf"
       downloadLabel={m.translatePdf.download}
+      extraDownloadLabel={m.translatePdf.downloadTxt}
       extra={(
         <div className="studio-field">
           <label htmlFor="translate-target">{m.translatePdf.target}</label>

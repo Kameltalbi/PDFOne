@@ -176,6 +176,35 @@ export const seoFr = {
     seoP2: 'Passer d’une image de document à du texte n’a pas à être réservé aux experts. La qualité dépend de la netteté du scan, mais le résultat sert ensuite à extraire, traduire ou résumer. C’est la méthode adaptée si vous cherchez comment reconnaître le texte d’un PDF scanné, rendre un scan interrogeable ou éviter de tout retaper.',
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
+  translate: {
+    seoTitle: 'Traduire un PDF en conservant la mise en page | One2PDF',
+    seoDescription: 'Traduisez un PDF et récupérez un PDF, pas un TXT. La mise en page d’origine est conservée autant que possible. Gratuit — démarrez sur One2PDF.',
+    seoH2: 'Comment traduire un PDF en ligne en gardant la mise en page',
+    seoP1: 'Vous devez envoyer une facture, un contrat ou un dossier dans une autre langue, sans tout recréer ? One2PDF permet de traduire un PDF en ligne gratuitement. Importez le fichier, choisissez la langue, puis téléchargez un PDF traduit : images, logos et tableaux restent, le texte est remplacé dans ses zones.',
+    seoP2: 'Traduire un PDF n’a pas à extraire tout le texte dans un fichier .txt. L’outil analyse les blocs, les traduit, puis les replace. La mise en page n’est pas identique au pixel près — une phrase allemande est plus longue, une phrase anglaise plus courte — mais le document reste lisible comme l’original. Un scan peu textuel passe par l’OCR avant traduction.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF traduit se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Traduisez votre PDF maintenant, vérifiez quelques pages, et revenez sur One2PDF dès qu’un document doit changer de langue sans perdre sa forme. Le traitement ne prend que quelques secondes, sans logiciel à installer.',
+    howTitle: 'Comment traduire un PDF',
+    howSteps: [
+      'Importez le PDF à traduire',
+      'Choisissez la langue cible',
+      'Téléchargez le PDF traduit'
+    ],
+    faqTitle: 'Questions fréquentes sur la traduction de PDF',
+    faq: [
+      {
+        question: 'Est-ce que je récupère un PDF ou un fichier texte ?',
+        answer: 'Le résultat principal est un PDF traduit. Un fichier .txt est aussi proposé si vous n’avez besoin que du contenu.'
+      },
+      {
+        question: 'La mise en page sera-t-elle identique ?',
+        answer: 'Elle est conservée autant que possible : images, logos et zones de texte restent. Une traduction plus longue ou plus courte peut adapter la taille de police. Ce n’est pas une copie pixel-perfect.'
+      },
+      {
+        question: 'Est-ce que ça marche sur un scan ?',
+        answer: 'Oui, dans la mesure où l’OCR reconnaît le texte. Un scan flou donnera une traduction moins fiable.'
+      }
+    ]
+  },
   sign: {
     seoTitle: 'Signer un PDF en ligne, simple | One2PDF',
     seoDescription: 'Posez votre nom, la date et un cachet visible sur le PDF. Signez gratuitement en ligne — démarrez sur One2PDF.',
@@ -385,6 +414,35 @@ export const seoEn = {
     seoP1: 'Is your receipt only a photo, impossible to copy and paste? One2PDF lets you run OCR on a PDF online for free, with no software to install. Import the scan, start recognition, then download a PDF whose text can be selected, searched, or reused.',
     seoP2: 'Turning a document image into text does not have to be expert-only. Quality depends on scan sharpness, but the result can then be extracted, translated, or summarized. It is a practical way to recognize text in a scanned PDF, make a scan searchable, or avoid retyping everything.',
     seoP3: 'Security stays at the center of the flow: the original is not kept, the OCR PDF is available for download, then deleted. No account is required for occasional use. Run OCR now, check a few sentences, and come back to One2PDF whenever a scan must become real text again. The whole process takes only a few seconds, with no extra software on your computer.'
+  },
+  translate: {
+    seoTitle: 'Translate a PDF and Keep the Layout | One2PDF',
+    seoDescription: 'Translate a PDF and download a PDF, not a TXT. Original layout is kept as far as possible. Free — start now on One2PDF.',
+    seoH2: 'How to translate a PDF online while keeping the layout',
+    seoP1: 'Need to send an invoice, a contract, or a pack in another language without rebuilding it? One2PDF lets you translate a PDF online for free. Import the file, pick the language, then download a translated PDF: images, logos, and tables stay, and the text is replaced in its original zones.',
+    seoP2: 'Translating a PDF does not have to dump everything into a .txt file. The tool reads text blocks, translates them, then puts them back. Layout is not pixel-identical — German often runs longer, English shorter — but the document still reads like the original. A scan with little selectable text goes through OCR first.',
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the translated PDF is available for download, then deleted. No account is required for occasional use. Translate your PDF now, check a few pages, and come back to One2PDF whenever a document must change language without losing its shape. The whole process takes only a few seconds, with no extra software on your computer.',
+    howTitle: 'How to translate a PDF',
+    howSteps: [
+      'Import the PDF to translate',
+      'Choose the target language',
+      'Download the translated PDF'
+    ],
+    faqTitle: 'Frequently asked questions about PDF translation',
+    faq: [
+      {
+        question: 'Do I get a PDF or a text file?',
+        answer: 'The main result is a translated PDF. A .txt file is also offered if you only need the wording.'
+      },
+      {
+        question: 'Will the layout be identical?',
+        answer: 'It is kept as far as possible: images, logos, and text zones stay. A longer or shorter translation may shrink the font. It is not a pixel-perfect copy.'
+      },
+      {
+        question: 'Does it work on a scan?',
+        answer: 'Yes, as far as OCR can read the text. A blurry scan will translate less reliably.'
+      }
+    ]
   },
   sign: {
     seoTitle: 'Sign a PDF Online — Fast Stamp | One2PDF',

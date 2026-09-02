@@ -65,6 +65,10 @@ function toWinAnsi(text: string) {
   return safe || 'WATERMARK';
 }
 
+function toWinAnsiLine(text: string) {
+  return text.replace(/[^\u0020-\u007E\u00A0-\u00FF]/g, '').trim().slice(0, 80);
+}
+
 export function watermarkPdf(
   filePath: string,
   options: { text: string; opacity: number; rotation: number; color: string; mosaic: boolean }
@@ -186,6 +190,57 @@ export function numberPages(
 
     return source;
   }, 'Impossible d’ajouter les numéros de page.');
+}
+
+export function headerFooterPdf(
+  filePath: string,
+  options: { header: string; footer: string; color: string; numbers: boolean; locale: string }
+) {
+  const header = toWinAnsiLine(options.header);
+  const footer = toWinAnsiLine(options.footer);
+  const numbers = options.numbers === true;
+  if (!header && !footer && !numbers) {
+    throw new Error('Indiquez un en-tête, un pied de page, ou activez la numérotation.');
+  }
+
+  return rebuild(filePath, async (source) => {
+    const font = await source.embedFont(StandardFonts.Helvetica);
+    const color = parseHexColor(options.color);
+    const pages = source.getPages();
+    const size = 10;
+    const locale = options.locale || 'en';
+
+    pages.forEach((page, index) => {
+      const { width, height } = page.getSize();
+      if (header) {
+        const textWidth = font.widthOfTextAtSize(header, size);
+        page.drawText(header, {
+          x: (width - textWidth) / 2,
+          y: height - 18 - size,
+          size,
+          font,
+          color
+        });
+      }
+      const footerParts = [
+        footer,
+        numbers ? pageNumberLabel('n_of_n', index + 1, pages.length, locale) : ''
+      ].filter(Boolean);
+      if (footerParts.length) {
+        const label = footerParts.join('   ·   ');
+        const textWidth = font.widthOfTextAtSize(label, size);
+        page.drawText(label, {
+          x: (width - textWidth) / 2,
+          y: 18,
+          size,
+          font,
+          color
+        });
+      }
+    });
+
+    return source;
+  }, 'Impossible d’ajouter l’en-tête ou le pied de page.');
 }
 
 type CropMargins = { top: number; right: number; bottom: number; left: number };

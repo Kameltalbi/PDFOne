@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getBlogPosts } from '../content/blog';
+import { getBlogPosts, mergeBlogPosts, type BlogPost } from '../content/blog';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Legal.css';
@@ -8,7 +9,23 @@ import './Blog.css';
 function Blog() {
   const { locale, m, t } = useI18n();
   usePageSeo(m.blogPage.seoTitle, m.blogPage.seoDescription);
-  const posts = getBlogPosts(locale);
+  const [remote, setRemote] = useState<BlogPost[]>([]);
+  const posts = mergeBlogPosts(locale, remote);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/blog?lang=${locale}`)
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!cancelled && payload.success) setRemote(payload.data?.posts || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRemote([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   return (
     <main className="blog-page">

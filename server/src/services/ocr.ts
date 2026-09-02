@@ -6,6 +6,7 @@ import path from 'node:path';
 import { PDFDocument } from 'pdf-lib';
 import { mapPdfError } from '../utils/pdf.js';
 import { rasterizePdfPages } from '../utils/rasterize.js';
+import type { LayoutBlock } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 
 const execFileAsync = promisify(execFile);
@@ -53,6 +54,67 @@ async function availableLangs(bin: string): Promise<Set<string>> {
   } catch {
     return new Set(['eng']);
   }
+}
+
+function parseTsvLines(tsv: string, pageIndex: number, pageWidth: number, pageHeight: number, scale: number): LayoutBlock[] {
+  const blocks: LayoutBlock[] = [];
+  for (const line of tsv.split('\n')) {
+    const cols = line.split('\t');
+    if (cols.length < 12 || cols[0] !== '4') continue;
+    const left = Number(cols[6]);
+    const top = Number(cols[7]);
+    const width = Number(cols[8]);
+    const height = Number(cols[9]);
+    const conf = Number(cols[10]);
+    const text = cols.slice(11).join('\t').trim();
+    if (!text || conf < 35 || !Number.isFinite(left) || width < 4 || height < 4) continue;
+    const x = left / scale;
+    const h = height / scale;
+    const w = width / scale;
+    const y = pageHeight - (top + height) / scale;
+    if (x > pageWidth || y > pageHeight) continue;
+    blocks.push({
+      pageIndex,
+      x: Math.max(0, x),
+      y: Math.max(0, y),
+      w: Math.min(w, pageWidth - x),
+      h: Math.min(h, pageHeight - y),
+      fontSize: Math.max(7, h * 0.78),
+      text
+    });
+  }
+  return blocks;
+}
+
+export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<LayoutBlock[]> {
+  return withLock(async () => {
+    const bin = await resolveTesseract();
+    const langs = await availableLangs(bin);
+    const wanted = LANGS[locale] || 'eng';
+    const lang = langs.has(wanted) ? (langs.has('eng') && wanted !== 'eng' ? `${wanted}+eng` : wanted) : 'eng';
+    const bytes = await fs.readFile(filePath);
+    const pdf = await PDFDocument.load(bytes);
+    const scale = 2;
+    const images = await rasterizePdfPages(bytes, { scale, format: 'png' });
+    if (!images.length) return [];
+    const work = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-layout-'));
+    const blocks: LayoutBlock[] = [];
+    try {
+      for (const [index, image] of images.entries()) {
+        const page = pdf.getPage(index);
+        const { width, height } = page.getSize();
+        const input = path.join(work, `page-${index}.png`);
+        const base = path.join(work, `out-${index}`);
+        await fs.writeFile(input, image);
+        await execFileAsync(bin, [input, base, '-l', lang, 'tsv'], { timeout: 120000 });
+        const tsv = await fs.readFile(`${base}.tsv`, 'utf8').catch(() => '');
+        blocks.push(...parseTsvLines(tsv, index, width, height, scale));
+      }
+    } finally {
+      await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);
+    }
+    return blocks;
+  });
 }
 
 export async function ocrPdf(filePath: string, locale = 'fr') {

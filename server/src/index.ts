@@ -13,6 +13,8 @@ import editRoutes from './routes/edit.js';
 import pagesRoutes from './routes/pages.js';
 import billingRoutes from './routes/billing.js';
 import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
+import blogRoutes from './routes/blog.js';
 import officeRoutes from './routes/office.js';
 import extrasRoutes from './routes/extras.js';
 import { quotaMiddleware } from './middleware/quota.js';
@@ -44,7 +46,7 @@ app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), asyn
 });
 
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/temp/:name', async (req, res) => {
@@ -79,6 +81,8 @@ app.use('/api/edit', editRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/blog', blogRoutes);
 app.use('/api/office', officeRoutes);
 app.use('/api', extrasRoutes);
 

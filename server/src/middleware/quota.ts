@@ -63,7 +63,13 @@ export function getFreeUsage(req: Request) {
 
 export async function quotaMiddleware(req: Request, res: Response, next: NextFunction) {
   if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
-  if (req.path.startsWith('/billing') || req.path.startsWith('/auth')) return next();
+  if (
+    req.path.startsWith('/billing')
+    || req.path.startsWith('/auth')
+    || req.path.startsWith('/admin')
+    || req.path.startsWith('/blog')
+    || req.path === '/pages/form-inspect'
+  ) return next();
 
   try {
     const access = await getPaidAccess(req, res);

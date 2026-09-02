@@ -70,7 +70,7 @@ async function myMemoryTranslate(text: string, from: string, to: string): Promis
     rest = rest.slice(420);
   }
   const parts: string[] = [];
-  for (const chunk of chunks.slice(0, 25)) {
+  for (const chunk of chunks.slice(0, 40)) {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${from}|${to}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error('Le service de traduction est indisponible.');
@@ -78,6 +78,59 @@ async function myMemoryTranslate(text: string, from: string, to: string): Promis
     parts.push(payload.responseData?.translatedText || chunk);
   }
   return parts.join('');
+}
+
+const LANG_LABELS: Record<string, string> = {
+  fr: 'français',
+  en: 'English',
+  es: 'español',
+  pt: 'português',
+  de: 'Deutsch',
+  tr: 'Türkçe',
+  ar: 'العربية',
+  it: 'italiano'
+};
+
+function parseJsonStrings(raw: string, expected: number): string[] | null {
+  const start = raw.indexOf('[');
+  const end = raw.lastIndexOf(']');
+  if (start < 0 || end <= start) return null;
+  try {
+    const parsed = JSON.parse(raw.slice(start, end + 1));
+    if (!Array.isArray(parsed) || parsed.length !== expected) return null;
+    return parsed.map((value) => String(value ?? ''));
+  } catch {
+    return null;
+  }
+}
+
+export async function translateFragments(texts: string[], target: string, source = 'auto'): Promise<string[]> {
+  if (!texts.length) return [];
+  const to = target;
+  const from = source === 'auto' ? 'autodetect' : source;
+  const pairFrom = from === 'autodetect' ? 'en' : from;
+  const out: string[] = [];
+  const batchSize = 40;
+  for (let start = 0; start < texts.length; start += batchSize) {
+    const batch = texts.slice(start, start + batchSize);
+    const llm = await llmComplete(
+      `Translate each string into ${LANG_LABELS[to] || to}. Return ONLY a JSON array of strings, same length and order. Keep numbers, dates, emails and product codes unchanged. Do not comment.\n\n${JSON.stringify(batch)}`
+    );
+    const parsed = llm ? parseJsonStrings(llm, batch.length) : null;
+    if (parsed) {
+      out.push(...parsed);
+      continue;
+    }
+    for (const text of batch) {
+      out.push(await myMemoryTranslate(text.slice(0, 800), pairFrom, to));
+    }
+  }
+  return out;
+}
+
+export async function translatePdf(filePath: string, target: string, source = 'auto') {
+  const { translatePdfDocument } = await import('./translateLayout.js');
+  return translatePdfDocument(filePath, target, source);
 }
 
 export async function summarizePdf(filePath: string, length: 'short' | 'medium' = 'medium') {
@@ -92,23 +145,5 @@ export async function summarizePdf(filePath: string, length: 'short' | 'medium' 
     return writeTemp(Buffer.from(`${summary}\n`, 'utf8'), 'resume', 'txt');
   } catch (error) {
     throw new Error(mapPdfError(error, error instanceof Error ? error.message : 'Impossible de résumer ce PDF.'));
-  }
-}
-
-const LANGS = new Set(['fr', 'en', 'es', 'pt', 'de', 'tr', 'ar', 'it']);
-
-export async function translatePdf(filePath: string, target: string, source = 'auto') {
-  try {
-    const to = LANGS.has(target) ? target : 'en';
-    const from = LANGS.has(source) ? source : 'en';
-    const text = await extractPdfText(await fs.readFile(filePath));
-    if (!text) throw new Error('Aucun texte extractible. Lancez d’abord l’OCR sur un scan.');
-    const llm = await llmComplete(
-      `Traduis le texte suivant en ${to}. Conserve les sauts de ligne. Ne commente pas.\n\n${text.slice(0, 18000)}`
-    );
-    const translated = llm || await myMemoryTranslate(text.slice(0, 8000), from === 'auto' ? 'en' : from, to);
-    return writeTemp(Buffer.from(`${translated}\n`, 'utf8'), 'traduction', 'txt');
-  } catch (error) {
-    throw new Error(mapPdfError(error, error instanceof Error ? error.message : 'Impossible de traduire ce PDF.'));
   }
 }

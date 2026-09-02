@@ -88,6 +88,9 @@ export function AccountPage() {
 
         <div className="account-actions">
           <Link className="pricing-cta solid" to="/tools">{m.account.toolsCta}</Link>
+          {status.superadmin && (
+            <Link className="pricing-cta outline" to="/internal/ops">Outil interne</Link>
+          )}
           {status.paid && status.canManage && (
             <button className="pricing-cta outline" type="button" onClick={() => void portal()}>
               {m.pricing.manage}

@@ -27,10 +27,11 @@ function browserTimeZone(): string {
 }
 
 export type BillingState =
-  | { paid: false; user: UserSession | null; usedToday?: number; dailyLimit?: number; remainingToday?: number }
+  | { paid: false; user: UserSession | null; superadmin?: boolean; usedToday?: number; dailyLimit?: number; remainingToday?: number }
   | {
     paid: true;
     user: UserSession | null;
+    superadmin?: boolean;
     plan: PaidPlan;
     email: string;
     expiresAt: string | null;
@@ -101,10 +102,11 @@ function forgetEmail() {
 }
 
 function asState(data: BillingState | undefined): BillingState {
-  if (data?.paid) return { ...data, user: data.user ?? null };
+  if (data?.paid) return { ...data, user: data.user ?? null, superadmin: Boolean(data.superadmin) };
   return {
     paid: false,
     user: data && 'user' in data ? data.user : null,
+    superadmin: Boolean(data && 'superadmin' in data && data.superadmin),
     usedToday: data && 'usedToday' in data ? data.usedToday : 0,
     dailyLimit: data && 'dailyLimit' in data ? data.dailyLimit : 3,
     remainingToday: data && 'remainingToday' in data ? data.remainingToday : 3

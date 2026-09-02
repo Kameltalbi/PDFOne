@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -29,6 +29,12 @@ import Watermark from './pages/Watermark';
 import PageNumbers from './pages/PageNumbers';
 import Crop from './pages/Crop';
 import Sign from './pages/Sign';
+import ExtractPages from './pages/ExtractPages';
+import ExtractImages from './pages/ExtractImages';
+import Flatten from './pages/Flatten';
+import HeaderFooter from './pages/HeaderFooter';
+import FillForm from './pages/FillForm';
+import HeicToPdf from './pages/HeicToPdf';
 import Pricing from './pages/Pricing';
 import PricingSuccess from './pages/PricingSuccess';
 import { AccountPage } from './pages/Account';
@@ -41,20 +47,35 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import InternalOps from './pages/InternalOps';
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
 import { UpgradeModal } from './components/UpgradeModal';
 import './App.css';
 
 function AppShell() {
-  const { pathname } = useLocation();
-  const bare = pathname === '/login' || pathname === '/signup';
+  const { pathname, search } = useLocation();
+  const bare = pathname === '/login' || pathname === '/signup' || pathname.startsWith('/internal');
+  const skipFirstPageView = useRef(true);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
   }, []);
+
+  useEffect(() => {
+    if (pathname.startsWith('/internal')) return;
+    if (skipFirstPageView.current) {
+      skipFirstPageView.current = false;
+      return;
+    }
+    const pagePath = `${pathname}${search}`;
+    window.gtag?.('event', 'page_view', {
+      page_path: pagePath,
+      page_location: window.location.href
+    });
+  }, [pathname, search]);
 
   useEffect(() => {
     if (window.location.hash) return;
@@ -102,6 +123,12 @@ function AppShell() {
           <Route path="/page-numbers" element={<PageNumbers />} />
           <Route path="/crop" element={<Crop />} />
           <Route path="/sign" element={<Sign />} />
+          <Route path="/extract-pages" element={<ExtractPages />} />
+          <Route path="/extract-images" element={<ExtractImages />} />
+          <Route path="/flatten" element={<Flatten />} />
+          <Route path="/header-footer" element={<HeaderFooter />} />
+          <Route path="/fill-form" element={<FillForm />} />
+          <Route path="/heic-to-pdf" element={<HeicToPdf />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/success" element={<PricingSuccess />} />
           <Route path="/login" element={<LoginPage />} />
@@ -116,6 +143,7 @@ function AppShell() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/internal/ops" element={<InternalOps />} />
         </Routes>
       </div>
       {!bare && <Footer />}

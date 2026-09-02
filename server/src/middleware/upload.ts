@@ -13,8 +13,8 @@ const tempDir = path.join(__dirname, '../../../temp');
 await fs.mkdir(tempDir, { recursive: true });
 
 const PDF_MIME = new Set(['application/pdf']);
-const IMAGE_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
-const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const IMAGE_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif']);
+const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif']);
 const absMax = Math.max(
   PAID_MAX_FILE_BYTES,
   Number.parseInt(process.env.MAX_FILE_SIZE || '0', 10) || 0
@@ -79,7 +79,7 @@ function createUploader(kind: 'pdf' | 'image') {
         cb(null, true);
         return;
       }
-      cb(new Error('Seules les images JPG, PNG ou WebP sont acceptées.'));
+      cb(new Error('Seules les images JPG, PNG, WebP ou HEIC sont acceptées.'));
     },
     limits: {
       fileSize: absMax,

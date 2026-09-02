@@ -11,7 +11,7 @@ export type ImageItem = {
   thumb: string;
 };
 
-const IMAGE = /(\.jpe?g|\.png|\.webp)$/i;
+const IMAGE = /(\.jpe?g|\.png|\.webp|\.heic|\.heif)$/i;
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;

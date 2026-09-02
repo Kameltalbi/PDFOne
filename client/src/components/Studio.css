@@ -832,6 +832,23 @@
   filter: brightness(1.05);
 }
 
+.studio-done-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin: 0.55rem 0 0;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.studio-done-secondary:hover {
+  color: #111827;
+}
+
 .studio-done-icon {
   width: 56px;
   border: 1px solid #e5e7eb;
@@ -1091,6 +1108,21 @@
   border-radius: 6px;
   background: white;
   cursor: pointer;
+}
+
+.studio-check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  color: #374151;
+  font-size: 0.86rem;
+}
+
+.studio-check-row input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #dc2626;
 }
 
 .watermark-preview {

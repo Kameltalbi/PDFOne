@@ -1,4 +1,5 @@
 import express from 'express';
+import { isSuperAdminEmail } from '../services/admins.js';
 import { getActiveEntitlementByEmail, isEntitlementActive, usageSnapshot } from '../services/entitlements.js';
 import { getFreeUsage } from '../middleware/quota.js';
 import {
@@ -100,15 +101,18 @@ async function sessionPayload(
     ? stored
     : (access && (!access.expiresAt || Date.parse(access.expiresAt) > Date.now()) ? access : null);
 
+  const superadmin = Boolean(user && isSuperAdminEmail(user.email));
+
   if (live) {
     const usage = usageSnapshot(stored);
     return {
       user,
+      superadmin,
       paid: true as const,
       plan: live.plan,
       email: live.email,
       expiresAt: live.expiresAt,
-      canManage: isSubscriptionPlan(live.plan),
+      canManage: Boolean(stored?.subscriptionId) && isSubscriptionPlan(live.plan),
       docsUsed: usage.docsUsed,
       usedToday: usage.usedToday,
       remainingMs: live.expiresAt ? Math.max(0, Date.parse(live.expiresAt) - Date.now()) : null
@@ -117,6 +121,7 @@ async function sessionPayload(
 
   return {
     user,
+    superadmin,
     paid: false as const,
     ...getFreeUsage(req)
   };
