@@ -10,6 +10,7 @@ import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
 import { StudioProcessing, StudioResult } from '../components/PdfStudio';
+import { trackFileUpload } from '../lib/analytics';
 import './Merge.css';
 
 type MergeItem = {
@@ -95,6 +96,7 @@ function Merge() {
         }
       }
       setItems((current) => [...current, ...prepared].slice(0, 10));
+      if (prepared.length > 0) trackFileUpload(prepared[0].file);
     } finally {
       setIsLoading(false);
     }

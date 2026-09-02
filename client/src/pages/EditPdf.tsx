@@ -9,6 +9,7 @@ import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { useUpgrade } from '../lib/upgrade';
 import { ensurePdfWorker } from '../lib/pdfPreview';
+import { trackFileUpload, trackProcessingSuccess } from '../lib/analytics';
 import './EditPdf.css';
 
 ensurePdfWorker();
@@ -350,6 +351,7 @@ function EditPdf() {
       setAnnotations([]);
       setRedoStack([]);
       setActivePage(0);
+      trackFileUpload(selectedFile);
     } catch {
       setError(m.edit.cannotOpen);
     }
@@ -361,6 +363,7 @@ function EditPdf() {
     setIsExporting(true);
     setExportProgress(25);
     setError('');
+    const startedAt = Date.now();
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -376,6 +379,7 @@ function EditPdf() {
         URL.revokeObjectURL(url);
         return;
       }
+      trackProcessingSuccess(startedAt);
       navigate('/edit-pdf/result', { state: { downloadUrl: url, filename, originalName: file.name } });
     } catch {
       if (!exportAborted.current) setError(m.edit.generateFail);

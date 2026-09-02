@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useBilling, type BillingState, type PaidPlan } from '../lib/billing';
+import { trackPurchase } from '../lib/analytics';
 import { useI18n } from '../i18n';
 import type { Messages } from '../i18n/types';
 import { usePageSeo } from '../lib/usePageSeo';
@@ -36,8 +37,10 @@ function PricingSuccess() {
     void confirm(sessionId)
       .then((next) => {
         if (cancelled) return;
-        if (next.paid) setAccess(next);
-        else setError(m.pricing.successUnverified);
+        if (next.paid) {
+          setAccess(next);
+          if (next.purchase) trackPurchase(next.purchase);
+        } else setError(m.pricing.successUnverified);
       })
       .catch((err: unknown) => {
         if (cancelled) return;

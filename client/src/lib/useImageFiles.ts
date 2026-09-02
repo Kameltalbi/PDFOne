@@ -3,6 +3,7 @@ import { useI18n } from '../i18n';
 import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
+import { trackFileUpload } from './analytics';
 
 export type ImageItem = {
   id: string;
@@ -48,6 +49,7 @@ export function useImageFiles() {
       }
       prepared.push({ id: uid(), file, name: file.name, thumb: URL.createObjectURL(file) });
     }
+    if (prepared.length > 0) trackFileUpload(prepared[0].file);
     setItems((current) => [...current, ...prepared].slice(0, 20));
   }, [allowFiles, m, maxBytes, sizeLabel, t]);
 

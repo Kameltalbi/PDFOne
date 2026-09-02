@@ -1,8 +1,9 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
 import { useBilling } from '../lib/billing';
+import { trackFileDownload } from '../lib/analytics';
 import { AdBanner } from './AdBanner';
 import { RelatedTools } from './RelatedTools';
 import './Studio.css';
@@ -211,9 +212,16 @@ export function StudioResult({
   const { status } = useBilling();
   const paid = status.paid;
   const [copied, setCopied] = useState(false);
+  const trackedDownload = useRef(false);
   const fileName = resultFileName(sourceName, downloadName);
   const ext = (fileName.split('.').pop() || 'FILE').toUpperCase();
   const showSource = Boolean(sourceName && sourceName !== fileName);
+
+  const onDownload = () => {
+    if (trackedDownload.current) return;
+    trackedDownload.current = true;
+    trackFileDownload();
+  };
 
   const copyLink = async () => {
     const absolute = new URL(downloadUrl, window.location.origin).href;
@@ -230,7 +238,7 @@ export function StudioResult({
     <div className="studio-done" aria-label={title}>
       <div className="studio-done-grid">
         <div className="studio-done-preview">
-          <a className="studio-done-sheet" href={downloadUrl} download={fileName}>
+          <a className="studio-done-sheet" href={downloadUrl} download={fileName} onClick={onDownload}>
             {previewSrc ? (
               <img src={previewSrc} alt={fileName} />
             ) : (
@@ -259,7 +267,7 @@ export function StudioResult({
           <p className="studio-done-text">{text}</p>
 
           <div className="studio-done-row">
-            <a className="studio-done-download" href={downloadUrl} download={fileName}>
+            <a className="studio-done-download" href={downloadUrl} download={fileName} onClick={onDownload}>
               <span aria-hidden="true">⇩</span>
               {downloadLabel ?? m.common.download}
             </a>
@@ -276,6 +284,7 @@ export function StudioResult({
               className="studio-done-secondary"
               href={extraDownloadUrl}
               download={extraDownloadName || 'traduction.txt'}
+              onClick={onDownload}
             >
               {extraDownloadLabel}
             </a>

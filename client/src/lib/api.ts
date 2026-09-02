@@ -1,5 +1,6 @@
 import { dictionaries } from '../i18n/dictionaries';
 import { getRuntimeLocale } from '../i18n/runtime';
+import { trackProcessingSuccess } from './analytics';
 
 export type ToolResult = {
   downloadUrl: string;
@@ -26,7 +27,10 @@ export async function postFormData<T>(url: string, formData: FormData): Promise<
 }
 
 export async function postForm(url: string, formData: FormData): Promise<ToolResult> {
-  return postFormData<ToolResult>(url, formData);
+  const startedAt = Date.now();
+  const result = await postFormData<ToolResult>(url, formData);
+  trackProcessingSuccess(startedAt);
+  return result;
 }
 
 export function formatFileSize(bytes: number): string {

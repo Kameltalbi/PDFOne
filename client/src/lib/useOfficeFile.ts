@@ -4,6 +4,7 @@ import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
 import { inspectPdfFile } from './pdfPreview';
+import { trackFileUpload } from './analytics';
 
 function extensionOf(name: string) {
   const index = name.lastIndexOf('.');
@@ -47,6 +48,7 @@ export function useOfficeFile(extensions: string[], options: { previewPdf?: bool
     setThumbs([]);
     setPageCount(0);
     setFile(incoming);
+    trackFileUpload(incoming);
     try {
       if (previewPdf && extensionOf(incoming.name) === '.pdf') {
         const info = await inspectPdfFile(incoming, 1.2);

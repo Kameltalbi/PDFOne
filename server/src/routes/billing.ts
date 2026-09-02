@@ -8,7 +8,7 @@ import {
   cookieMaxAge,
   createCheckoutSession,
   createPortalUrl,
-  entitlementFromCheckout,
+  confirmPaidCheckout,
   isPaidPlan,
   isSubscriptionPlan,
   restoreEntitlementByEmail,
@@ -138,9 +138,20 @@ router.post('/confirm', async (req, res) => {
   }
 
   try {
-    const access = await entitlementFromCheckout(sessionId);
+    const { access, purchase } = await confirmPaidCheckout(sessionId);
     grantAccess(res, access);
-    return res.json({ success: true, data: await publicStatus(access) });
+    return res.json({
+      success: true,
+      data: {
+        ...await publicStatus(access),
+        purchase: {
+          transactionId: purchase.transactionId,
+          value: purchase.value,
+          currency: purchase.currency,
+          plan: purchase.plan
+        }
+      }
+    });
   } catch (error) {
     console.error('Confirm payment error:', error);
     return res.status(400).json({

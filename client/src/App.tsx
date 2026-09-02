@@ -48,6 +48,7 @@ import About from './pages/About';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import InternalOps from './pages/InternalOps';
+import { trackPageView, trackPricingView, trackToolOpen } from './lib/analytics';
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
 import { UpgradeModal } from './components/UpgradeModal';
@@ -65,16 +66,17 @@ function AppShell() {
   }, []);
 
   useEffect(() => {
+    trackToolOpen(pathname);
+    trackPricingView(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
     if (pathname.startsWith('/internal')) return;
     if (skipFirstPageView.current) {
       skipFirstPageView.current = false;
       return;
     }
-    const pagePath = `${pathname}${search}`;
-    window.gtag?.('event', 'page_view', {
-      page_path: pagePath,
-      page_location: window.location.href
-    });
+    trackPageView(pathname, search);
   }, [pathname, search]);
 
   useEffect(() => {

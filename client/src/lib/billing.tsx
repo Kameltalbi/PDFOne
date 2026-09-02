@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getRuntimeLocale } from '../i18n/runtime';
 import { dictionaries } from '../i18n/dictionaries';
+import { trackCheckoutStarted } from './analytics';
 
 export type CheckoutPlan = 'week' | 'month' | 'year';
 export type PaidPlan = CheckoutPlan | 'business' | 'life';
@@ -41,13 +42,20 @@ export type BillingState =
     remainingMs: number | null;
   };
 
+export type PurchaseReceipt = {
+  transactionId: string;
+  value: number;
+  currency: string;
+  plan: string;
+};
+
 type BillingContextValue = {
   status: BillingState;
   loading: boolean;
   prices: PlanAmounts;
   refresh: () => Promise<void>;
   checkout: (plan: CheckoutPlan) => Promise<void>;
-  confirm: (sessionId: string) => Promise<BillingState>;
+  confirm: (sessionId: string) => Promise<BillingState & { purchase?: PurchaseReceipt }>;
   login: (email: string) => Promise<BillingState>;
   loginWithPassword: (email: string, password: string) => Promise<BillingState>;
   signup: (name: string, email: string, password: string) => Promise<BillingState>;
@@ -111,6 +119,17 @@ function asState(data: BillingState | undefined): BillingState {
     dailyLimit: data && 'dailyLimit' in data ? data.dailyLimit : 3,
     remainingToday: data && 'remainingToday' in data ? data.remainingToday : 3
   };
+}
+
+function parsePurchase(raw: unknown): PurchaseReceipt | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const value = raw as Record<string, unknown>;
+  const transactionId = typeof value.transactionId === 'string' ? value.transactionId.trim() : '';
+  const amount = typeof value.value === 'number' ? value.value : Number(value.value);
+  const currency = typeof value.currency === 'string' ? value.currency : '';
+  const plan = typeof value.plan === 'string' ? value.plan : '';
+  if (!transactionId || !Number.isFinite(amount) || !currency || !plan) return undefined;
+  return { transactionId, value: amount, currency, plan };
 }
 
 async function billingRequest(path: string, init?: RequestInit) {
@@ -187,18 +206,22 @@ export function BillingProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ plan, email: rememberedEmail() })
     });
     if (!data?.url) throw new Error(dictionaries[getRuntimeLocale()].pricing.payFail);
-    window.location.href = data.url;
-  }, []);
+    const checkoutUrl = data.url as string;
+    trackCheckoutStarted(plan, prices[plan], 'USD', () => {
+      window.location.href = checkoutUrl;
+    });
+  }, [prices]);
 
   const confirm = useCallback(async (sessionId: string) => {
     const data = await billingRequest('/api/billing/confirm', {
       method: 'POST',
       body: JSON.stringify({ sessionId })
     });
+    const purchase = parsePurchase(data?.purchase);
     const next = asState(data);
     if (next.paid) rememberEmail(next.email);
     setStatus(next);
-    return next;
+    return purchase ? { ...next, purchase } : next;
   }, []);
 
   const login = useCallback(async (email: string) => {

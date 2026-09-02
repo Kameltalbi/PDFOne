@@ -4,6 +4,7 @@ import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
 import { inspectPdfFile, renderPdfPages } from './pdfPreview';
+import { trackFileUpload } from './analytics';
 
 export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolean } = {}) {
   const allPages = options.allPages !== false;
@@ -40,6 +41,7 @@ export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolea
     setThumbs([]);
     setPageCount(0);
     setFile(incoming);
+    trackFileUpload(incoming);
     try {
       if (allPages) {
         const pages = await renderPdfPages(incoming);

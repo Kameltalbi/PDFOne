@@ -148,7 +148,19 @@ async function expiryFromSession(stripe: Stripe, session: Stripe.Checkout.Sessio
   return new Date(periodEnd * 1000).toISOString();
 }
 
+export type CheckoutPurchase = {
+  transactionId: string;
+  value: number;
+  currency: string;
+  plan: StoredPlan;
+};
+
 export async function entitlementFromCheckout(sessionId: string): Promise<AccessPayload> {
+  const { access } = await confirmPaidCheckout(sessionId);
+  return access;
+}
+
+export async function confirmPaidCheckout(sessionId: string): Promise<{ access: AccessPayload; purchase: CheckoutPurchase }> {
   const stripe = getStripe();
   const session = await stripe.checkout.sessions.retrieve(sessionId);
   if (session.status !== 'complete') {
@@ -183,7 +195,17 @@ export async function entitlementFromCheckout(sessionId: string): Promise<Access
     subscriptionId
   };
   await upsertEntitlement(entry);
-  return { email: entry.email, customerId, plan, expiresAt };
+
+  const cents = typeof session.amount_total === 'number' ? session.amount_total : 0;
+  return {
+    access: { email: entry.email, customerId, plan, expiresAt },
+    purchase: {
+      transactionId: session.id,
+      value: cents / 100,
+      currency: (session.currency || 'usd').toUpperCase(),
+      plan
+    }
+  };
 }
 
 function accessFromEntitlement(entry: Entitlement): AccessPayload {
