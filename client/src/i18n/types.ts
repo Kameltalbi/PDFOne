@@ -271,6 +271,16 @@ export type Messages = {
     trustInstall: string;
     trustSize: string;
     trustDelete: string;
+    dropTitle: string;
+    dropChoose: string;
+    dropCta: string;
+    dropHint: string;
+    dropAria: string;
+    chooseActionTitle: string;
+    chooseActionChange: string;
+    shortcutSign: string;
+    shortcutPdfToWord: string;
+    shortcutAll: string;
     previewAria: string;
     heroAlt: string;
     cardSecure: string;

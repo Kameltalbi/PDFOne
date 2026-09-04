@@ -10,6 +10,7 @@ import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { useUpgrade } from '../lib/upgrade';
 import { ensurePdfWorker } from '../lib/pdfPreview';
 import { trackFileUpload, trackProcessingSuccess } from '../lib/analytics';
+import { useIncomingPdf } from '../lib/incomingPdf';
 import './EditPdf.css';
 
 ensurePdfWorker();
@@ -356,6 +357,8 @@ function EditPdf() {
       setError(m.edit.cannotOpen);
     }
   };
+
+  useIncomingPdf((incoming) => { void openPdf(incoming); });
 
   const exportPdf = async () => {
     if (!file) return;

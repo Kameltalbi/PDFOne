@@ -5,6 +5,7 @@ import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
 import { inspectPdfFile } from './pdfPreview';
 import { trackFileUpload } from './analytics';
+import { useIncomingPdf } from './incomingPdf';
 
 function extensionOf(name: string) {
   const index = name.lastIndexOf('.');
@@ -63,6 +64,8 @@ export function useOfficeFile(extensions: string[], options: { previewPdf?: bool
       setIsLoading(false);
     }
   }, [allowedKey, allowFile, m, maxBytes, previewPdf, sizeLabel, t]);
+
+  useIncomingPdf((incoming) => { void loadFile([incoming]); });
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();

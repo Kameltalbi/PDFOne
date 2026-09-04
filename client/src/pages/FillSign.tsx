@@ -23,6 +23,7 @@ import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
 import { trackFileUpload } from '../lib/analytics';
+import { useIncomingPdf } from '../lib/incomingPdf';
 import './FillSign.css';
 
 ensurePdfWorker();
@@ -587,6 +588,8 @@ function FillSign() {
       setError(m.fillSign.cannotOpen);
     }
   };
+
+  useIncomingPdf((incoming) => { void openPdf(incoming); });
 
   const placeStamp = (dataUrl: string, kind: StampMode) => {
     if (!pdf) return;

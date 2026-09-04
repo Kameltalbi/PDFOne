@@ -5,6 +5,7 @@ import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
 import { inspectPdfFile, renderPdfPages } from './pdfPreview';
 import { trackFileUpload } from './analytics';
+import { useIncomingPdf } from './incomingPdf';
 
 export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolean } = {}) {
   const allPages = options.allPages !== false;
@@ -58,6 +59,8 @@ export function useSinglePdf(options: { allPages?: boolean; allowLocked?: boolea
       setIsLoading(false);
     }
   }, [allPages, allowFile, m, maxBytes, sizeLabel, t]);
+
+  useIncomingPdf((incoming) => { void loadFile([incoming]); });
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();
