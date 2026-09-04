@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
+import { rotateImageDataUrl } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
@@ -17,6 +18,7 @@ function Rotate() {
   const [active, setActive] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [resultPreview, setResultPreview] = useState<string | null>(null);
 
   useEffect(() => {
     setAngles((current) => pdf.thumbs.map((_, index) => current[index] ?? 0));
@@ -43,6 +45,9 @@ function Rotate() {
       formData.append('rotations', JSON.stringify(angles));
       setProgress(60);
       const result = await postForm('/api/pages/rotate', formData);
+      setProgress(85);
+      const firstThumb = pdf.thumbs[0];
+      setResultPreview(firstThumb ? await rotateImageDataUrl(firstThumb, angles[0] || 0) : null);
       setProgress(100);
       pdf.setDownloadUrl(result.downloadUrl);
     } catch (err) {
@@ -61,8 +66,11 @@ function Rotate() {
         downloadUrl={pdf.downloadUrl}
         downloadName="pdf-pivote.pdf"
         resetLabel={m.rotatePdf.reset}
-        onReset={pdf.reset}
-        previewSrc={pdf.thumbs[0]}
+        onReset={() => {
+          setResultPreview(null);
+          pdf.reset();
+        }}
+        previewSrc={resultPreview || pdf.thumbs[0]}
         sourceName={pdf.file?.name}
       />
     );

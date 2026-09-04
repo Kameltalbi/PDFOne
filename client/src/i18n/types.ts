@@ -427,6 +427,7 @@ export type Messages = {
     back: string;
     backTools: string;
     tip: string;
+    placeHint: string;
     pageNumbers: string;
     merging: string;
     mergeCount: string;

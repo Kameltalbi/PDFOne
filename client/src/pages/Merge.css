@@ -306,8 +306,29 @@ body.merge-studio .header {
   padding: 0;
   border: 0;
   background: none;
-  cursor: grab;
+  cursor: pointer;
   text-align: center;
+  user-select: none;
+  touch-action: none;
+}
+
+.merge-thumb.held {
+  cursor: grabbing;
+  z-index: 2;
+}
+
+.merge-thumb.held .merge-thumb-sheet {
+  outline: 3px solid #3b82f6;
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.28);
+  transform: translateY(-4px);
+}
+
+.merge-thumb.drop-ready .merge-thumb-sheet {
+  outline: 3px dashed #16a34a;
+}
+
+.merge-canvas.holding {
+  cursor: copy;
 }
 
 .merge-thumb.dragging {
@@ -326,6 +347,8 @@ body.merge-studio .header {
   border-radius: 2px;
   background: white;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 .merge-thumb-fallback {

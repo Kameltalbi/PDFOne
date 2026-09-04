@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { postForm } from '../lib/api';
 import { useBilling } from '../lib/billing';
@@ -23,6 +23,18 @@ type MergeItem = {
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function thumbIndexAt(clientX: number, clientY: number, skipId?: string | null) {
+  const nodes = document.querySelectorAll<HTMLElement>('[data-merge-index]');
+  for (const node of nodes) {
+    if (skipId && node.dataset.mergeId === skipId) continue;
+    const rect = node.getBoundingClientRect();
+    if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+      return Number(node.dataset.mergeIndex);
+    }
+  }
+  return null;
 }
 
 function FeatureGlyph({ index }: { index: number }) {
@@ -54,7 +66,9 @@ function Merge() {
   const [items, setItems] = useState<MergeItem[]>([]);
   const [pageNumbers, setPageNumbers] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [heldId, setHeldId] = useState<string | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const pointerRef = useRef<{ itemId: string; from: number; x: number; y: number; dragging: boolean; pointerId: number } | null>(null);
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -112,6 +126,43 @@ function Merge() {
     });
   };
 
+  const heldIdRef = useRef<string | null>(null);
+
+  const clearHold = () => {
+    pointerRef.current = null;
+    heldIdRef.current = null;
+    setHeldId(null);
+    setDropIndex(null);
+  };
+
+  const placeHeldAt = (to: number) => {
+    const id = heldIdRef.current;
+    if (!id) return;
+    setItems((current) => {
+      const from = current.findIndex((item) => item.id === id);
+      if (from === to || from < 0 || to < 0 || to >= current.length) return current;
+      const next = [...current];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+    clearHold();
+  };
+
+  const pickItem = (id: string) => {
+    heldIdRef.current = id;
+    setHeldId(id);
+  };
+
+  useEffect(() => {
+    if (!heldId) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') clearHold();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [heldId]);
+
   const handleMerge = async () => {
     if (items.length < 2) {
       setError(m.merge.needTwo);
@@ -138,6 +189,7 @@ function Merge() {
   };
 
   const reset = () => {
+    clearHold();
     setItems([]);
     setDownloadUrl(null);
     setError(null);
@@ -247,13 +299,19 @@ function Merge() {
 
       <div className="merge-workspace">
         <section
-          className={`merge-canvas ${isDraggingFiles ? 'dropping' : ''}`}
-          onDragOver={(event) => { event.preventDefault(); setIsDraggingFiles(true); }}
+          className={`merge-canvas ${isDraggingFiles ? 'dropping' : ''}${heldId ? ' holding' : ''}`}
+          onDragOver={(event) => {
+            event.preventDefault();
+            if (Array.from(event.dataTransfer.types).includes('Files')) setIsDraggingFiles(true);
+          }}
           onDragLeave={() => setIsDraggingFiles(false)}
           onDrop={onDropFiles}
+          onPointerDown={(event) => {
+            if (heldId && event.target === event.currentTarget) clearHold();
+          }}
         >
           <div className="merge-canvas-tools">
-            <button type="button" className="merge-sort" onClick={() => setItems((current) => [...current].sort((a, b) => a.name.localeCompare(b.name, locale)))} title={m.merge.sort}>
+            <button type="button" className="merge-sort" onClick={() => { clearHold(); setItems((current) => [...current].sort((a, b) => a.name.localeCompare(b.name, locale))); }} title={m.merge.sort}>
               A<span>↕</span>
             </button>
             <div className="merge-zoom">
@@ -275,22 +333,66 @@ function Merge() {
             {items.map((item, index) => (
               <article
                 key={item.id}
-                className={`merge-thumb ${dragIndex === index ? 'dragging' : ''}`}
-                draggable
-                onDragStart={() => setDragIndex(index)}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  if (dragIndex !== null) moveItem(dragIndex, index);
-                  setDragIndex(null);
+                data-merge-index={index}
+                data-merge-id={item.id}
+                className={`merge-thumb${heldId === item.id ? ' held' : ''}${heldId && dropIndex === index && heldId !== item.id ? ' drop-ready' : ''}`}
+                onPointerDown={(event) => {
+                  if ((event.target as HTMLElement).closest('button')) return;
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  pointerRef.current = { itemId: item.id, from: index, x: event.clientX, y: event.clientY, dragging: false, pointerId: event.pointerId };
                 }}
-                onDragEnd={() => setDragIndex(null)}
+                onPointerMove={(event) => {
+                  const start = pointerRef.current;
+                  if (!start || start.itemId !== item.id) return;
+                  const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+                  if (!start.dragging && moved > 14) {
+                    start.dragging = true;
+                    pickItem(item.id);
+                  }
+                  if (start.dragging) {
+                    setDropIndex(thumbIndexAt(event.clientX, event.clientY, item.id));
+                  }
+                }}
+                onPointerUp={(event) => {
+                  const start = pointerRef.current;
+                  pointerRef.current = null;
+                  setDropIndex(null);
+                  if (!start || start.itemId !== item.id) return;
+                  if (start.dragging) {
+                    const target = thumbIndexAt(event.clientX, event.clientY, start.itemId);
+                    if (target !== null) {
+                      moveItem(start.from, target);
+                    }
+                    clearHold();
+                    return;
+                  }
+                  if (heldIdRef.current === item.id) {
+                    clearHold();
+                    return;
+                  }
+                  if (heldIdRef.current) {
+                    placeHeldAt(index);
+                    return;
+                  }
+                  pickItem(item.id);
+                }}
+                onPointerCancel={clearHold}
               >
                 <div className="merge-thumb-sheet">
                   <span className="merge-order">{index + 1}</span>
-                  <button type="button" className="merge-remove" onClick={() => setItems((current) => current.filter((entry) => entry.id !== item.id))} aria-label={t(m.merge.remove, { name: item.name })}>×</button>
-                  {item.thumb ? <img src={item.thumb} alt="" /> : <div className="merge-thumb-fallback">PDF</div>}
+                  <button
+                    type="button"
+                    className="merge-remove"
+                    onPointerDown={(event) => event.stopPropagation()}
+                    onClick={() => {
+                      setItems((current) => current.filter((entry) => entry.id !== item.id));
+                      if (heldIdRef.current === item.id) clearHold();
+                    }}
+                    aria-label={t(m.merge.remove, { name: item.name })}
+                  >
+                    ×
+                  </button>
+                  {item.thumb ? <img src={item.thumb} alt="" draggable={false} /> : <div className="merge-thumb-fallback">PDF</div>}
                 </div>
                 <b>{item.name}</b>
                 <small>{item.pages} {item.pages > 1 ? m.common.pages : m.common.page}</small>
@@ -315,7 +417,7 @@ function Merge() {
           <h2>{m.merge.title}</h2>
           <div className="merge-tip">
             <span className="merge-tip-i" aria-hidden="true">i</span>
-            <p>{m.merge.tip}</p>
+            <p>{heldId ? m.merge.placeHint : m.merge.tip}</p>
           </div>
           <label className="merge-option">
             <input type="checkbox" checked={pageNumbers} onChange={(event) => setPageNumbers(event.target.checked)} />

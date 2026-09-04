@@ -97,6 +97,32 @@ export async function renderPdfPages(file: File, scale = 0.32): Promise<string[]
   return thumbs;
 }
 
+export function rotateImageDataUrl(src: string, degrees: number): Promise<string> {
+  const deg = ((Math.round(Number(degrees) / 90) * 90) % 360 + 360) % 360;
+  if (!src || deg === 0) return Promise.resolve(src);
+
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      const swap = deg === 90 || deg === 270;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, swap ? image.naturalHeight : image.naturalWidth);
+      canvas.height = Math.max(1, swap ? image.naturalWidth : image.naturalHeight);
+      const context = canvas.getContext('2d');
+      if (!context) {
+        resolve(src);
+        return;
+      }
+      context.translate(canvas.width / 2, canvas.height / 2);
+      context.rotate((deg * Math.PI) / 180);
+      context.drawImage(image, -image.naturalWidth / 2, -image.naturalHeight / 2);
+      resolve(canvas.toDataURL('image/jpeg', 0.78));
+    };
+    image.onerror = () => resolve(src);
+    image.src = src;
+  });
+}
+
 export function parsePageRanges(input: string, pageCount: number): number[] {
   const pages = new Set<number>();
   const chunks = input.split(',').map((chunk) => chunk.trim()).filter(Boolean);
