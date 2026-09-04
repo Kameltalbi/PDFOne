@@ -54,6 +54,11 @@ export type Messages = {
     footerTools: string;
     footerCompany: string;
     footerLegal: string;
+    pwaTitle: string;
+    pwaText: string;
+    pwaInstall: string;
+    pwaIosText: string;
+    pwaDismiss: string;
   };
   units: { byte: string; kb: string; mb: string; gb: string };
   nav: {

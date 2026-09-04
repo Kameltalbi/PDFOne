@@ -38,7 +38,12 @@ export const tr: Messages = {
     getPro: 'Pro’ya geç',
     footerTools: 'Araçlar',
     footerCompany: 'One2PDF',
-    footerLegal: 'Yasal'
+    footerLegal: 'Yasal',
+    pwaTitle: 'One2PDF’yi yükle',
+    pwaText: 'PDF araçlarınızı tarayıcıya girmeden bir uygulama gibi açın.',
+    pwaInstall: 'Yükle',
+    pwaIosText: 'Paylaş’a, ardından « Ana Ekrana Ekle »ye dokunun.',
+    pwaDismiss: 'Şimdi değil'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

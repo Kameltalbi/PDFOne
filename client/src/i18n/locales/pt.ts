@@ -38,7 +38,12 @@ export const pt: Messages = {
     getPro: 'Obter Pro',
     footerTools: 'Ferramentas',
     footerCompany: 'One2PDF',
-    footerLegal: 'Legal'
+    footerLegal: 'Legal',
+    pwaTitle: 'Instalar o One2PDF',
+    pwaText: 'Abra as suas ferramentas PDF como uma app, sem passar pelo browser.',
+    pwaInstall: 'Instalar',
+    pwaIosText: 'Toque em Partilhar e depois em « Adicionar ao ecrã principal ».',
+    pwaDismiss: 'Agora não'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

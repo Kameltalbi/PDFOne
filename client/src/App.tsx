@@ -53,6 +53,7 @@ import { trackPageView, trackPricingView, trackToolOpen } from './lib/analytics'
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
 import { UpgradeModal } from './components/UpgradeModal';
+import PwaInstallBanner from './components/PwaInstallBanner';
 import './App.css';
 
 function AppShell() {
@@ -151,6 +152,7 @@ function AppShell() {
         </Routes>
       </div>
       {!bare && <Footer />}
+      {!bare && <PwaInstallBanner />}
     </div>
   );
 }

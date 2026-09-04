@@ -38,7 +38,12 @@ export const de: Messages = {
     getPro: 'Pro holen',
     footerTools: 'Werkzeuge',
     footerCompany: 'One2PDF',
-    footerLegal: 'Rechtliches'
+    footerLegal: 'Rechtliches',
+    pwaTitle: 'One2PDF installieren',
+    pwaText: 'Öffnen Sie Ihre PDF-Werkzeuge wie eine App, ohne den Browser.',
+    pwaInstall: 'Installieren',
+    pwaIosText: 'Tippen Sie auf Teilen, dann auf „Zum Home-Bildschirm“.',
+    pwaDismiss: 'Später'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {
