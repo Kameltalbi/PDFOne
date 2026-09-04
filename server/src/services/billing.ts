@@ -9,6 +9,7 @@ import {
   type Entitlement
 } from './entitlements.js';
 import { amountsForZone, DEFAULT_ZONE, type PricingZone } from './pricingZones.js';
+import { allowYearPromotionCodes, one2pdfYearProductId } from './productHunt.js';
 
 export const ACCESS_COOKIE = 'pdfone_access';
 export const QUOTA_COOKIE = 'pdfone_quota';
@@ -78,14 +79,15 @@ export async function createCheckoutSession(
   const origin = appUrl();
   const customerEmail = normalizeEmail(email) || undefined;
   const amount = amountsForZone(zone)[plan];
+  const allowPromo = plan === 'year' && allowYearPromotionCodes();
   const common = {
     success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?canceled=1`,
     locale: stripeLocale(localeHeader),
-    allow_promotion_codes: true,
     metadata: { plan, zone },
+    ...(allowPromo ? { allow_promotion_codes: true as const } : {}),
     ...(customerEmail ? { customer_email: customerEmail } : {})
-  } as const;
+  };
 
   const session = plan === 'week'
     ? await stripe.checkout.sessions.create({
@@ -110,12 +112,19 @@ export async function createCheckoutSession(
       line_items: [
         {
           quantity: 1,
-          price_data: {
-            currency: 'usd',
-            unit_amount: amount,
-            product_data: { name },
-            recurring: { interval: plan === 'year' ? 'year' : 'month' }
-          }
+          price_data: plan === 'year'
+            ? {
+              currency: 'usd',
+              unit_amount: amount,
+              product: one2pdfYearProductId(),
+              recurring: { interval: 'year' as const }
+            }
+            : {
+              currency: 'usd',
+              unit_amount: amount,
+              product_data: { name },
+              recurring: { interval: 'month' as const }
+            }
         }
       ]
     });
