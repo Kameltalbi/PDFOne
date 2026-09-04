@@ -19,6 +19,7 @@ function Tools() {
 
   const popularTools: ToolDef[] = [
     { id: 'edit', name: m.tools.edit, path: '/edit-pdf', icon: '📝', color: '#f59e0b', badge: 'new', keywords: 'edit text draw éditer' },
+    { id: 'fillSign', name: m.tools.fillSign, path: '/fill-sign-pdf', icon: '✍', color: '#dc2626', badge: 'new', keywords: 'fill sign remplir signer signature formulaire date checkbox' },
     { id: 'compress', name: m.tools.compress, path: '/compress', icon: '⇊', color: '#f05b43' },
     { id: 'merge', name: m.tools.merge, path: '/merge', icon: '📂', color: '#f59e0b' },
     { id: 'pdfToWord', name: m.tools.pdfToWord, path: '/pdf-to-word', icon: 'W', color: '#2684ff', badge: 'new', keywords: 'word docx office libreoffice' },

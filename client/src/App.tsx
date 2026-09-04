@@ -34,6 +34,7 @@ import ExtractImages from './pages/ExtractImages';
 import Flatten from './pages/Flatten';
 import HeaderFooter from './pages/HeaderFooter';
 import FillForm from './pages/FillForm';
+import FillSign from './pages/FillSign';
 import HeicToPdf from './pages/HeicToPdf';
 import Pricing from './pages/Pricing';
 import PricingSuccess from './pages/PricingSuccess';
@@ -130,6 +131,7 @@ function AppShell() {
           <Route path="/flatten" element={<Flatten />} />
           <Route path="/header-footer" element={<HeaderFooter />} />
           <Route path="/fill-form" element={<FillForm />} />
+          <Route path="/fill-sign-pdf" element={<FillSign />} />
           <Route path="/heic-to-pdf" element={<HeicToPdf />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/pricing/success" element={<PricingSuccess />} />

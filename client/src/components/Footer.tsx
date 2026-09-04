@@ -19,6 +19,7 @@ function Footer() {
           <nav aria-labelledby="footer-tools">
             <h2 id="footer-tools">{m.common.footerTools}</h2>
             <Link to="/merge">{m.tools.merge}</Link>
+            <Link to="/fill-sign-pdf">{m.tools.fillSign}</Link>
             <Link to="/compress">{m.tools.compress}</Link>
             <Link to="/pdf-to-word">{m.tools.pdfToWord}</Link>
             <Link to="/word-to-pdf">{m.tools.wordToPdf}</Link>

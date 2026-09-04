@@ -19,6 +19,7 @@ type LandingProps = {
   multiple?: boolean;
   accept?: string;
   selectLabel?: string;
+  dropLabel?: string;
   children?: ReactNode;
   seo?: {
     h2: string;
@@ -45,6 +46,7 @@ export function StudioLanding({
   multiple = false,
   accept = 'application/pdf,.pdf',
   selectLabel,
+  dropLabel,
   children,
   seo,
   onDragOver,
@@ -81,7 +83,7 @@ export function StudioLanding({
           event.target.value = '';
         }}
       />
-      <p className="studio-or">{isLoading ? m.merge.preparing : m.merge.orDrop}</p>
+      <p className="studio-or">{isLoading ? m.merge.preparing : (dropLabel ?? m.merge.orDrop)}</p>
       {children}
       {error && <p className="studio-error">{error}</p>}
       <AdBanner />

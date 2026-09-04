@@ -1,0 +1,415 @@
+.fs-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem 1.35rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: #334155;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+body.fs-editing .header,
+body.fs-editing .site-footer {
+  display: none;
+}
+
+.fs-app {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  background: #eef2f6;
+}
+
+.fs-top {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.55rem 0.9rem;
+  background: #fff;
+  border-bottom: 1px solid #e7eaf0;
+}
+
+.fs-logo img {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.fs-filename {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #111827;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.92rem;
+}
+
+.fs-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fs-top-actions button,
+.fs-tools button,
+.fs-text-options button,
+.fs-zoom button {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.fs-top-actions button {
+  width: 38px;
+  height: 36px;
+}
+
+.fs-top-actions button:disabled { opacity: 0.35; cursor: default; }
+
+.fs-download {
+  width: auto !important;
+  padding: 0 0.95rem;
+  border: 0 !important;
+  background: #dc2626 !important;
+  color: #fff !important;
+  font-weight: 750;
+}
+
+.fs-tools {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.45rem 0.7rem;
+  background: #fff;
+  border-bottom: 1px solid #e7eaf0;
+}
+
+.fs-tools button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  padding: 0.35rem 0.7rem;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.fs-tools button em { font-style: normal; }
+.fs-tools button.active,
+.fs-tools button:hover {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.fs-workspace {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.fs-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  overflow: auto;
+  padding: 0.85rem 0.65rem;
+  background: #fff;
+  border-right: 1px solid #e7eaf0;
+}
+
+.fs-thumbs button {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.fs-thumbs button.active { border-color: #dc2626; }
+.fs-thumbs img { display: block; width: 100%; }
+.fs-thumbs b {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.fs-stage {
+  overflow: auto;
+  padding: 1.4rem 1rem 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.fs-page { position: relative; }
+.fs-page-label {
+  position: absolute;
+  top: -1.15rem;
+  left: 0;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.fs-sheet {
+  position: relative;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  line-height: 0;
+}
+
+.fs-sheet canvas { display: block; max-width: 100%; height: auto; }
+.fs-layer {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+.fs-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.tool-text .fs-layer,
+.tool-date .fs-layer { cursor: text; }
+.tool-draw .fs-layer,
+.tool-checkbox .fs-layer,
+.tool-check .fs-layer,
+.tool-cross .fs-layer,
+.tool-circle .fs-layer { cursor: crosshair; }
+
+.fs-item {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+.fs-item.selected { border-color: #2563eb; box-shadow: 0 0 0 1px #2563eb; }
+.fs-item textarea,
+.fs-item img,
+.fs-mark {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.fs-item textarea {
+  resize: none;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.2;
+}
+.fs-item.drawing {
+  padding: 0;
+  background: transparent;
+}
+.fs-item.drawing svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.fs-mark {
+  display: grid;
+  place-items: center;
+  font-size: 80%;
+  font-weight: 800;
+  line-height: 1;
+}
+.fs-handle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  background: #2563eb;
+  cursor: nwse-resize;
+}
+
+.fs-widget {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0 4px;
+  border: 1px solid #93c5fd;
+  border-radius: 2px;
+  background: rgba(239, 246, 255, 0.72);
+  font-size: 11px;
+}
+.fs-widget-check {
+  display: grid;
+  place-items: center;
+  background: rgba(239, 246, 255, 0.35);
+}
+.fs-widget-check input { width: 70%; height: 70%; }
+
+.fs-zoom {
+  position: fixed;
+  right: 1rem;
+  bottom: 4.6rem;
+  z-index: 6;
+  display: grid;
+  padding: 0.3rem;
+  border-radius: 10px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+}
+.fs-zoom button {
+  width: 34px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+
+.fs-text-options {
+  position: fixed;
+  left: 50%;
+  bottom: 4.5rem;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #e7eaf0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  transform: translateX(-50%);
+  font-size: 0.82rem;
+}
+.fs-text-options label { display: flex; align-items: center; gap: 0.4rem; }
+.fs-check { font-weight: 650; }
+.fs-error { color: #b91c1c; font-weight: 650; }
+
+.fs-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+.fs-modal {
+  width: min(100%, 560px);
+  padding: 1.25rem 1.3rem 1.1rem;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+.fs-modal h2 { margin: 0 0 1rem; font-size: 1.2rem; }
+.fs-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.9rem; }
+.fs-tabs button {
+  flex: 1;
+  min-height: 38px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 650;
+}
+.fs-tabs button.active { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+.fs-sign-pad {
+  width: 100%;
+  height: 180px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  touch-action: none;
+  cursor: crosshair;
+}
+.fs-type-wrap input,
+.fs-import .fs-secondary {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font: inherit;
+}
+.fs-type-preview {
+  margin: 0.9rem 0 0;
+  color: #111827;
+  font-family: "Segoe Script", "Bradley Hand", "Snell Roundhand", cursive;
+  font-size: 2rem;
+  text-align: center;
+}
+.fs-import p { margin-top: 0.6rem; color: #64748b; font-size: 0.85rem; }
+.fs-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.fs-primary,
+.fs-ghost,
+.fs-secondary {
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.fs-primary { border: 0; background: #dc2626; color: #fff; }
+.fs-ghost { border: 1px solid #e2e8f0; background: #fff; color: #334155; }
+
+.fs-top-actions button:focus-visible,
+.fs-tools button:focus-visible,
+.fs-download:focus-visible,
+.fs-modal button:focus-visible,
+.fs-widget:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+@media (max-width: 820px) {
+  .fs-workspace { grid-template-columns: 1fr; }
+  .fs-thumbs {
+    flex-direction: row;
+    order: 2;
+    padding: 0.65rem;
+    border-right: 0;
+    border-top: 1px solid #e7eaf0;
+  }
+  .fs-thumbs button { min-width: 64px; }
+  .fs-tools {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    order: 3;
+    border-top: 1px solid #e7eaf0;
+    border-bottom: 0;
+  }
+  .fs-tools button em { display: none; }
+  .fs-app { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .fs-zoom { bottom: 4.8rem; right: 0.7rem; }
+  .fs-text-options { bottom: 4.8rem; width: calc(100% - 1.4rem); justify-content: center; }
+  .fs-stage { padding: 1rem 0.6rem 1.2rem; }
+  .fs-sheet { width: 100%; }
+  .fs-sheet canvas { width: 100% !important; height: auto !important; }
+  .fs-download { position: static; }
+}

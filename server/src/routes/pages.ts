@@ -4,6 +4,7 @@ import { cropPages, deletePages, headerFooterPdf, numberPages, reorderPages, rot
 import { fillPdfForm, flattenPdfForm, inspectPdfForm } from '../services/forms.js';
 import { extractPdfImages } from '../services/extractImages.js';
 import { splitPdf } from '../services/split.js';
+import { fillAndSignPdf, type FillSignAnnotation } from '../services/fillSign.js';
 import { signPdf } from '../services/sign.js';
 import { cleanupUploads } from '../utils/temp.js';
 
@@ -169,6 +170,24 @@ router.post('/form-fill', upload.single('file'), async (req, res) => {
     );
   } catch {
     return res.status(400).json({ success: false, error: 'Les valeurs du formulaire sont invalides.' });
+  }
+});
+
+router.post('/fill-sign', upload.single('file'), async (req, res) => {
+  try {
+    const annotations = parseJsonBody(req.body.annotations, []) as FillSignAnnotation[];
+    if (!Array.isArray(annotations) || annotations.length > 1000) {
+      return res.status(400).json({ success: false, error: 'Annotations invalides.' });
+    }
+    const formValues = parseJsonBody(req.body.formValues, {});
+    return await handlePageTool(
+      req,
+      res,
+      (filePath) => fillAndSignPdf(filePath, annotations, formValues),
+      'Impossible de remplir ou de signer ce PDF.'
+    );
+  } catch {
+    return res.status(400).json({ success: false, error: 'Les annotations sont invalides.' });
   }
 });
 

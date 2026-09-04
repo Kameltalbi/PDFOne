@@ -18,8 +18,8 @@ const RELATED: Record<string, string[]> = {
   '/png-to-pdf': ['/jpg-to-pdf', '/merge', '/compress'],
   '/protect': ['/unlock', '/compress', '/watermark'],
   '/unlock': ['/protect', '/compress', '/ocr'],
-  '/edit-pdf': ['/compress', '/sign', '/watermark'],
-  '/sign': ['/edit-pdf', '/watermark', '/protect'],
+  '/edit-pdf': ['/fill-sign-pdf', '/sign', '/watermark'],
+  '/sign': ['/fill-sign-pdf', '/edit-pdf', '/protect'],
   '/watermark': ['/page-numbers', '/protect', '/compress'],
   '/page-numbers': ['/merge', '/watermark', '/rotate'],
   '/rotate': ['/crop', '/delete-pages', '/compress'],
@@ -35,7 +35,8 @@ const RELATED: Record<string, string[]> = {
   '/extract-images': ['/to-jpg', '/extract-pages', '/compress'],
   '/flatten': ['/fill-form', '/protect', '/compress'],
   '/header-footer': ['/page-numbers', '/watermark', '/compress'],
-  '/fill-form': ['/flatten', '/sign', '/protect'],
+  '/fill-form': ['/fill-sign-pdf', '/flatten', '/sign'],
+  '/fill-sign-pdf': ['/fill-form', '/sign', '/edit-pdf'],
   '/heic-to-pdf': ['/jpg-to-pdf', '/compress', '/merge']
 };
 
@@ -87,6 +88,7 @@ export function RelatedTools() {
     '/flatten': m.tools.flatten,
     '/header-footer': m.tools.headerFooter,
     '/fill-form': m.tools.fillForm,
+    '/fill-sign-pdf': m.tools.fillSign,
     '/heic-to-pdf': m.tools.heicToPdf
   };
 

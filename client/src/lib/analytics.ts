@@ -36,6 +36,7 @@ export type ToolName =
   | 'flatten_pdf'
   | 'header_footer'
   | 'fill_form'
+  | 'fill_sign'
   | 'edit_pdf';
 
 export type CheckoutPlanId = 'week' | 'month' | 'year';
@@ -102,6 +103,7 @@ const TOOL_BY_PATH: Record<string, ToolName> = {
   '/flatten': 'flatten_pdf',
   '/header-footer': 'header_footer',
   '/fill-form': 'fill_form',
+  '/fill-sign-pdf': 'fill_sign',
   '/edit-pdf': 'edit_pdf',
   '/edit-pdf/result': 'edit_pdf'
 };

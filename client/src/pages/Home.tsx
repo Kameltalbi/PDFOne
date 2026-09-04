@@ -57,6 +57,58 @@ function Home() {
         <AdBanner />
       </section>
 
+      <section className="pro-plans" aria-labelledby="home-plans-title">
+        <div className="pro-plans-inner">
+          <header className="pro-plans-intro">
+            <span className="pro-section-label">{m.home.plansLabel}</span>
+            <h2 id="home-plans-title">{m.home.plansTitle}</h2>
+            <p>{m.home.plansSubtitle}</p>
+          </header>
+
+          <div className="pro-plans-grid">
+            <article className="pro-plan-card">
+              <p className="pro-plan-kicker">{m.home.plansFreeLabel}</p>
+              <h3>{m.home.plansFreeTitle}</h3>
+              <p className="pro-plan-desc">{m.home.plansFreeDesc}</p>
+              <ul>
+                {m.home.plansFreePoints.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+              <Link to="/tools" className="pro-btn secondary">{m.home.plansFreeCta}</Link>
+            </article>
+
+            <article className="pro-plan-card featured">
+              <p className="pro-plan-kicker">{m.home.plansPassLabel}</p>
+              <h3>{m.home.plansPassTitle}</h3>
+              <p className="pro-plan-desc">{m.home.plansPassDesc}</p>
+              <ul>
+                {m.home.plansPassPoints.map((item) => <li key={item}>{item}</li>)}
+                <li className="pro-plan-highlight">{m.home.plansPassHighlight}</li>
+              </ul>
+              <Link to="/pricing" className="pro-btn primary">{m.home.plansPassCta}</Link>
+            </article>
+
+            <article className="pro-plan-card">
+              <p className="pro-plan-kicker">{m.home.plansProLabel}</p>
+              <h3>{m.home.plansProTitle}</h3>
+              <p className="pro-plan-desc">{m.home.plansProDesc}</p>
+              <ul>
+                {m.home.plansProPoints.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+              <Link to="/pricing" className="pro-btn secondary">{m.home.plansProCta}</Link>
+            </article>
+          </div>
+
+          <div className="pro-plans-reassure">
+            <p className="pro-plans-reassure-title">{m.home.plansReassureTitle}</p>
+            <p>{m.home.plansReassureText}</p>
+            <ul>
+              {m.home.plansReassureItems.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+            <Link to="/pricing" className="pro-plans-see">{m.home.plansSeeAll} <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+      </section>
+
       <section className="pro-values" aria-label={m.home.value1Title}>
         <article><span>⌁</span><h3>{m.home.value1Title}</h3><p>{m.home.value1Text}</p></article>
         <article><span>◈</span><h3>{m.home.value2Title}</h3><p>{m.home.value2Text}</p></article>
