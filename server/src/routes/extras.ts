@@ -12,7 +12,6 @@ import { convertOfficeFile } from '../services/office.js';
 import { consumeWeekAi, WEEK_AI_LIMIT } from '../services/entitlements.js';
 import { getPaidAccess } from '../middleware/quota.js';
 import { cleanupUploads, unlinkQuiet } from '../utils/temp.js';
-import { requestSignal } from '../utils/jobQueue.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
 
@@ -105,7 +104,7 @@ router.post('/ocr', upload.single('file'), async (req, res) => {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr'), requestSignal(req)))
+      data: publicToolResult(req, res, await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr')))
     });
   } catch (error) {
     return sendError(res, error, 'Impossible d’effectuer l’OCR.');
