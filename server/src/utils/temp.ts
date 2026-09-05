@@ -7,6 +7,27 @@ const __dirname = path.dirname(__filename);
 
 export const tempDir = path.join(__dirname, '../../../temp');
 
+/** Paths currently retained (upload in flight or result awaiting download). */
+const retained = new Map<string, number>();
+
+export function retainTemp(filePath?: string | null): void {
+  if (!filePath) return;
+  const full = path.resolve(filePath);
+  retained.set(full, (retained.get(full) || 0) + 1);
+}
+
+export function releaseTemp(filePath?: string | null): void {
+  if (!filePath) return;
+  const full = path.resolve(filePath);
+  const count = retained.get(full) || 0;
+  if (count <= 1) retained.delete(full);
+  else retained.set(full, count - 1);
+}
+
+export function isTempRetained(filePath: string): boolean {
+  return retained.has(path.resolve(filePath));
+}
+
 export function uniqueName(prefix: string, ext: string): string {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   return `${prefix}-${id}.${ext.replace(/^\./, '')}`;
@@ -21,11 +42,13 @@ export async function writeTemp(
   const filename = uniqueName(prefix, ext);
   const filepath = path.join(tempDir, filename);
   await fs.writeFile(filepath, buffer);
+  retainTemp(filepath);
   return { filename, filepath, downloadUrl: `/temp/${filename}` };
 }
 
 export async function unlinkQuiet(filePath?: string | null): Promise<void> {
   if (!filePath) return;
+  releaseTemp(filePath);
   await fs.unlink(filePath).catch(() => undefined);
 }
 
@@ -49,6 +72,7 @@ export async function purgeExpiredTemp(ttlMs = tempTtlMs()): Promise<number> {
     await Promise.all(entries.map(async (entry) => {
       if (!entry.isFile() || entry.name.startsWith('.')) return;
       const full = path.join(tempDir, entry.name);
+      if (isTempRetained(full)) return;
       try {
         const stat = await fs.stat(full);
         if (stat.mtimeMs <= cutoff) {

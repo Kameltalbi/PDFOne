@@ -44,6 +44,7 @@ router.post('/delete', upload.single('file'), async (req, res) => {
     const pages = parseJsonBody(req.body.pages, []);
     return await handlePageTool(req, res, (filePath) => deletePages(filePath, pages), 'Impossible de supprimer ces pages.');
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'Sélection de pages invalide.' });
   }
 });
@@ -53,6 +54,7 @@ router.post('/reorder', upload.single('file'), async (req, res) => {
     const order = parseJsonBody(req.body.order, []);
     return await handlePageTool(req, res, (filePath) => reorderPages(filePath, order), 'Impossible de réorganiser ces pages.');
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'L’ordre des pages est invalide.' });
   }
 });
@@ -62,6 +64,7 @@ router.post('/rotate', upload.single('file'), async (req, res) => {
     const rotations = parseJsonBody(req.body.rotations, []);
     return await handlePageTool(req, res, (filePath) => rotatePages(filePath, rotations), 'Impossible de pivoter ce PDF.');
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'Les rotations demandées sont invalides.' });
   }
 });
@@ -113,6 +116,7 @@ router.post('/extract', upload.single('file'), async (req, res) => {
     const pages = parseJsonBody(req.body.pages, []);
     return await handlePageTool(req, res, (filePath) => splitPdf(filePath, pages, 'extract'), 'Impossible d’extraire ces pages.');
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'Sélection de pages invalide.' });
   }
 });
@@ -169,6 +173,7 @@ router.post('/form-fill', upload.single('file'), async (req, res) => {
       'Impossible de remplir ce formulaire.'
     );
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'Les valeurs du formulaire sont invalides.' });
   }
 });
@@ -177,6 +182,7 @@ router.post('/fill-sign', upload.single('file'), async (req, res) => {
   try {
     const annotations = parseJsonBody(req.body.annotations, []) as FillSignAnnotation[];
     if (!Array.isArray(annotations) || annotations.length > 1000) {
+      await cleanupUploads(req.file);
       return res.status(400).json({ success: false, error: 'Annotations invalides.' });
     }
     const formValues = parseJsonBody(req.body.formValues, {});
@@ -187,6 +193,7 @@ router.post('/fill-sign', upload.single('file'), async (req, res) => {
       'Impossible de remplir ou de signer ce PDF.'
     );
   } catch {
+    await cleanupUploads(req.file);
     return res.status(400).json({ success: false, error: 'Les annotations sont invalides.' });
   }
 });

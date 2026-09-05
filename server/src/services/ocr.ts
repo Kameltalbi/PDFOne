@@ -8,6 +8,7 @@ import { mapPdfError } from '../utils/pdf.js';
 import { rasterizePdfPages } from '../utils/rasterize.js';
 import type { LayoutBlock } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
+import { ocrQueue } from '../utils/jobQueue.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -22,12 +23,7 @@ const LANGS: Record<string, string> = {
   it: 'ita'
 };
 
-let queue = Promise.resolve();
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(fn, fn);
-  queue = run.then(() => undefined, () => undefined);
-  return run;
-}
+let cachedBinary: string | null = null;
 
 async function resolveTesseract(): Promise<string> {
   const candidates = [
@@ -87,7 +83,7 @@ function parseTsvLines(tsv: string, pageIndex: number, pageWidth: number, pageHe
 }
 
 export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<LayoutBlock[]> {
-  return withLock(async () => {
+  return ocrQueue.run(async () => {
     const bin = await resolveTesseract();
     const langs = await availableLangs(bin);
     const wanted = LANGS[locale] || 'eng';
@@ -118,7 +114,7 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<
 }
 
 export async function ocrPdf(filePath: string, locale = 'fr') {
-  return withLock(async () => {
+  return ocrQueue.run(async () => {
     try {
       const bin = await resolveTesseract();
       const langs = await availableLangs(bin);
@@ -132,33 +128,54 @@ export async function ocrPdf(filePath: string, locale = 'fr') {
       try {
         const pdf = await PDFDocument.create();
         const texts: string[] = [];
+        let pdfPageFailures = 0;
         for (const [index, image] of images.entries()) {
           const input = path.join(work, `page-${index}.png`);
           const base = path.join(work, `out-${index}`);
           await fs.writeFile(input, image);
           await execFileAsync(bin, [input, base, '-l', lang], { timeout: 120000 });
-          await execFileAsync(bin, [input, base, '-l', lang, 'pdf'], { timeout: 120000 }).catch(() => undefined);
+          try {
+            await execFileAsync(bin, [input, base, '-l', lang, 'pdf'], { timeout: 120000 });
+          } catch {
+            pdfPageFailures += 1;
+            continue;
+          }
           const pagePdf = await fs.readFile(`${base}.pdf`).catch(() => null);
           const pageTxt = await fs.readFile(`${base}.txt`, 'utf8').catch(() => '');
           if (pageTxt.trim()) texts.push(pageTxt.trim());
-          if (pagePdf) {
-            const part = await PDFDocument.load(pagePdf);
-            const copied = await pdf.copyPages(part, part.getPageIndices());
-            copied.forEach((page) => pdf.addPage(page));
+          if (!pagePdf) {
+            pdfPageFailures += 1;
+            continue;
           }
+          const part = await PDFDocument.load(pagePdf);
+          const copied = await pdf.copyPages(part, part.getPageIndices());
+          copied.forEach((page) => pdf.addPage(page));
         }
-        if (pdf.getPageCount() > 0) {
+        if (pdfPageFailures > 0 && pdf.getPageCount() > 0 && pdf.getPageCount() < images.length) {
+          throw new Error(
+            `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${images.length}). Réessayez ou utilisez un autre document.`
+          );
+        }
+        if (pdf.getPageCount() === images.length && images.length > 0) {
           return writeTemp(await pdf.save(), 'ocr', 'pdf');
         }
-        if (texts.length) {
+        if (pdf.getPageCount() === 0 && texts.length) {
           return writeTemp(Buffer.from(`${texts.join('\n\n')}\n`, 'utf8'), 'ocr', 'txt');
         }
-        throw new Error('L’OCR n’a reconnu aucun texte.');
+        if (pdf.getPageCount() === 0) {
+          throw new Error('L’OCR n’a reconnu aucun texte.');
+        }
+        throw new Error(
+          `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${images.length}). Réessayez ou utilisez un autre document.`
+        );
       } finally {
         await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);
       }
     } catch (error) {
-      if (error instanceof Error && error.message.includes('Tesseract n’est pas installé')) {
+      if (error instanceof Error && (
+        error.message.includes('Tesseract n’est pas installé')
+        || (error as Error & { code?: string }).code === 'SERVER_BUSY'
+      )) {
         throw error;
       }
       throw new Error(mapPdfError(error, error instanceof Error ? error.message : 'Impossible d’effectuer l’OCR.'));

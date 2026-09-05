@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import { loadPdf, mapPdfError } from '../utils/pdf.js';
 import { rasterizePdfPages } from '../utils/rasterize.js';
 import { writeTemp } from '../utils/temp.js';
+import { pdfQueue } from '../utils/jobQueue.js';
 
 export type CompressQuality = 'low' | 'medium' | 'high';
 
@@ -22,28 +23,34 @@ export async function compressPdf(
   originalSize: number;
   compressedSize: number;
 }> {
+  return pdfQueue.run(async () => {
   try {
     const original = await fs.readFile(filePath);
-    const preset = QUALITY_PRESETS[quality] ?? QUALITY_PRESETS.medium;
+    const preset = Object.prototype.hasOwnProperty.call(QUALITY_PRESETS, quality)
+      ? QUALITY_PRESETS[quality]
+      : QUALITY_PRESETS.medium;
     let outputBytes: Uint8Array;
 
     if (!preset) {
+      // high: keep vectors/text — rewrite with object streams only
       const source = await loadPdf(original);
       const optimized = await PDFDocument.create();
       const pages = await optimized.copyPages(source, source.getPageIndices());
       pages.forEach((page) => optimized.addPage(page));
       outputBytes = await optimized.save({ useObjectStreams: true });
     } else {
+      const source = await loadPdf(original);
       const images = await rasterizePdfPages(original, {
         scale: preset.scale,
         format: 'jpeg',
         quality: preset.jpeg
       });
       const output = await PDFDocument.create();
-      for (const image of images) {
+      for (const [index, image] of images.entries()) {
         const embedded = await output.embedJpg(image);
-        const page = output.addPage([embedded.width, embedded.height]);
-        page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
+        const { width, height } = source.getPage(index).getSize();
+        const page = output.addPage([width, height]);
+        page.drawImage(embedded, { x: 0, y: 0, width, height });
       }
       outputBytes = await output.save({ useObjectStreams: true });
     }
@@ -55,6 +62,8 @@ export async function compressPdf(
       compressedSize: outputBytes.byteLength
     };
   } catch (error) {
+    if ((error as Error & { code?: string }).code === 'SERVER_BUSY') throw error;
     throw new Error(mapPdfError(error, 'Impossible de compresser ce PDF.'));
   }
+  });
 }

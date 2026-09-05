@@ -48,7 +48,14 @@ export async function rasterizePdfPages(
     useSystemFonts: true
   } as never);
 
-  const pdf = await loadingTask.promise;
+  let pdf: Awaited<typeof loadingTask.promise> | null = null;
+  try {
+    pdf = await loadingTask.promise;
+  } catch (error) {
+    await loadingTask.destroy().catch(() => undefined);
+    throw error;
+  }
+
   const canvasFactory = (pdf as unknown as { canvasFactory: PdfjsFactory }).canvasFactory;
   const images: Buffer[] = [];
 
@@ -77,11 +84,7 @@ export async function rasterizePdfPages(
       }
     }
   } finally {
-    try {
-      await (pdf as { destroy?: () => unknown }).destroy?.();
-    } catch {
-      /* pdf.js versions differ on destroy() */
-    }
+    await loadingTask.destroy().catch(() => undefined);
   }
 
   return images;

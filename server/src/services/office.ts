@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { extractPdfRows } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 import { rowsToXlsx } from '../utils/xlsx.js';
+import { officeQueue } from '../utils/jobQueue.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -32,13 +33,6 @@ const CANDIDATES = [
 ].filter((value): value is string => Boolean(value));
 
 let cachedBinary: string | null = null;
-let queue = Promise.resolve();
-
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(fn, fn);
-  queue = run.then(() => undefined, () => undefined);
-  return run;
-}
 
 async function resolveSoffice(): Promise<string> {
   if (cachedBinary) return cachedBinary;
@@ -102,10 +96,10 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob) {
   }
 
   if (job === 'pdf-to-excel') {
-    return pdfToExcel(filePath);
+    return officeQueue.run(() => pdfToExcel(filePath));
   }
 
-  return withLock(async () => {
+  return officeQueue.run(async () => {
     const soffice = await resolveSoffice();
     const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-lo-out-'));
     const profile = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-lo-profile-'));
@@ -154,6 +148,7 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob) {
         error.message.includes('LibreOffice n’est pas installé')
         || error.message.includes('n’a pas produit')
         || error.message.includes('pris trop de temps')
+        || (error as Error & { code?: string }).code === 'SERVER_BUSY'
       )) {
         throw error;
       }

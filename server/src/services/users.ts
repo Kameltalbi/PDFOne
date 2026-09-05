@@ -41,15 +41,24 @@ function withLock<T>(fn: () => Promise<T>): Promise<T> {
 async function readAll(): Promise<Record<string, StoredUser>> {
   try {
     const raw = await fs.readFile(dataFile, 'utf8');
-    return JSON.parse(raw) as Record<string, StoredUser>;
-  } catch {
-    return {};
+    try {
+      return JSON.parse(raw) as Record<string, StoredUser>;
+    } catch {
+      throw new Error('USERS_CORRUPT');
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return {};
+    if (error instanceof Error && error.message === 'USERS_CORRUPT') throw error;
+    throw error;
   }
 }
 
 async function writeAll(data: Record<string, StoredUser>) {
   await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(dataFile, JSON.stringify(data, null, 2));
+  const payload = JSON.stringify(data, null, 2);
+  const tmp = `${dataFile}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmp, payload, 'utf8');
+  await fs.rename(tmp, dataFile);
 }
 
 export function publicUser(user: StoredUser): PublicUser {

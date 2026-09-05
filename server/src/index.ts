@@ -20,6 +20,8 @@ import extrasRoutes from './routes/extras.js';
 import { quotaMiddleware } from './middleware/quota.js';
 import { applyStripeEvent, getStripe } from './services/billing.js';
 import { startTempCleanup, tempDir, unlinkQuiet } from './utils/temp.js';
+import { allQueueStats } from './utils/jobQueue.js';
+import { absoluteMaxFileBytes, FREE_MAX_FILE_BYTES } from './utils/limits.js';
 
 dotenv.config();
 
@@ -67,7 +69,15 @@ app.get('/temp/:name', async (req, res) => {
 });
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    queues: allQueueStats(),
+    limits: {
+      freeMaxFileBytes: FREE_MAX_FILE_BYTES,
+      absoluteMaxFileBytes: absoluteMaxFileBytes()
+    }
+  });
 });
 
 app.use('/api', quotaMiddleware);
@@ -94,6 +104,10 @@ app.use((err: unknown, _req: express.Request, res: express.Response, next: expre
         ? 'Trop de fichiers envoyés.'
         : 'Fichier rejeté.';
     return res.status(400).json({ success: false, error: message });
+  }
+
+  if (err instanceof Error && (err as Error & { code?: string }).code === 'SERVER_BUSY') {
+    return res.status(503).json({ success: false, code: 'SERVER_BUSY', error: err.message });
   }
 
   if (err instanceof Error && /seuls les fichiers|seules les images/i.test(err.message)) {

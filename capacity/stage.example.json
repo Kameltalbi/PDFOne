@@ -1,0 +1,23 @@
+{
+  "baseUrl": "https://REPLACE-WITH-ONE2PDF-HOST",
+  "approval": false,
+  "case": "health",
+  "fixture": "pdf-1mb.pdf",
+  "vus": 1,
+  "seconds": 60,
+  "thinkSeconds": 2,
+  "timeoutSeconds": 65,
+  "p95Ms": 500,
+  "monitorFile": "capacity/results/monitor.jsonl",
+  "resultDir": "capacity/results/baseline-health",
+  "cookieFile": null,
+  "limits": {
+    "minDiskFreeBytes": 5368709120,
+    "maxSwapGrowthBytes": 67108864,
+    "maxTempGrowthBytes": 1073741824,
+    "maxTempGrowthFiles": 1000,
+    "maxLoProcesses": 2,
+    "maxOcrProcesses": 1,
+    "maxChildAgeSeconds": 240
+  }
+}

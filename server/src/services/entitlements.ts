@@ -35,15 +35,24 @@ function withLock<T>(fn: () => Promise<T>): Promise<T> {
 async function readAll(): Promise<Record<string, Entitlement>> {
   try {
     const raw = await fs.readFile(dataFile, 'utf8');
-    return JSON.parse(raw) as Record<string, Entitlement>;
-  } catch {
-    return {};
+    try {
+      return JSON.parse(raw) as Record<string, Entitlement>;
+    } catch {
+      throw new Error('ENTITLEMENTS_CORRUPT');
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return {};
+    if (error instanceof Error && error.message === 'ENTITLEMENTS_CORRUPT') throw error;
+    throw error;
   }
 }
 
 async function writeAll(data: Record<string, Entitlement>) {
   await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(dataFile, JSON.stringify(data, null, 2));
+  const payload = JSON.stringify(data, null, 2);
+  const tmp = `${dataFile}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmp, payload, 'utf8');
+  await fs.rename(tmp, dataFile);
 }
 
 export function normalizeEmail(value: string | null | undefined): string {
