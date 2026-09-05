@@ -20,6 +20,13 @@ function quotaMessage(req: Request): string {
   return `Le plan gratuit est limité à ${FREE_DAILY_DOCS} documents par jour. Passez Pro pour continuer.`;
 }
 
+function pruneIpUsage(day: string) {
+  if (ipUsage.size < 200) return;
+  for (const [key, value] of ipUsage) {
+    if (value.day !== day) ipUsage.delete(key);
+  }
+}
+
 export async function getPaidAccess(req: Request, res: Response): Promise<AccessPayload | null> {
   const access = verifyValue<AccessPayload>(readCookie(req, ACCESS_COOKIE));
   if (!access) return null;
@@ -49,6 +56,7 @@ export async function isPaid(req: Request, res: Response): Promise<boolean> {
 
 export function getFreeUsage(req: Request) {
   const day = todayUtc();
+  pruneIpUsage(day);
   const cookie = verifyValue<QuotaPayload>(readCookie(req, QUOTA_COOKIE));
   const ip = ipUsage.get(clientIp(req));
   const cookieCount = cookie?.day === day ? cookie.count : 0;
@@ -61,6 +69,26 @@ export function getFreeUsage(req: Request) {
   };
 }
 
+function commitFreeUsage(req: Request, res: Response, count: number, day: string) {
+  ipUsage.set(clientIp(req), { day, count });
+  setCookie(res, QUOTA_COOKIE, signValue({ day, count }), 60 * 60 * 36);
+}
+
+function releaseFreeUsage(req: Request, res: Response, previous: number, day: string) {
+  const restored = Math.max(0, previous);
+  if (restored === 0) {
+    ipUsage.delete(clientIp(req));
+    clearCookie(res, QUOTA_COOKIE);
+    return;
+  }
+  commitFreeUsage(req, res, restored, day);
+}
+
+/**
+ * Commercial daily quota only.
+ * Successful responses (2xx/3xx) keep the reserved unit; failures release it.
+ * Burst protection lives in rateLimitMiddleware; job admission in jobQueue.
+ */
 export async function quotaMiddleware(req: Request, res: Response, next: NextFunction) {
   if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
   if (
@@ -74,20 +102,41 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
   try {
     const access = await getPaidAccess(req, res);
     if (access) {
-      await incrementUsage(access.customerId);
+      let committed = false;
+      const commit = () => {
+        if (committed) return;
+        if (res.statusCode >= 200 && res.statusCode < 400) {
+          committed = true;
+          void incrementUsage(access.customerId);
+        }
+      };
+      res.on('finish', commit);
+      res.on('close', commit);
       return next();
     }
 
     const day = todayUtc();
     const usage = getFreeUsage(req);
-    const count = usage.usedToday + 1;
-
-    if (count > FREE_DAILY_DOCS) {
+    if (usage.usedToday >= FREE_DAILY_DOCS) {
       return res.status(402).json({ success: false, code: 'QUOTA', error: quotaMessage(req) });
     }
 
-    ipUsage.set(clientIp(req), { day, count });
-    setCookie(res, QUOTA_COOKIE, signValue({ day, count }), 60 * 60 * 36);
+    const reserved = usage.usedToday + 1;
+    // Reserve in memory only; cookie is written on success so failures don't stick client-side.
+    ipUsage.set(clientIp(req), { day, count: reserved });
+
+    let settled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      if (res.statusCode >= 200 && res.statusCode < 400) {
+        commitFreeUsage(req, res, reserved, day);
+      } else {
+        releaseFreeUsage(req, res, usage.usedToday, day);
+      }
+    };
+    res.on('finish', settle);
+    res.on('close', settle);
     return next();
   } catch (error) {
     console.error('Quota error:', error);

@@ -18,6 +18,7 @@ import blogRoutes from './routes/blog.js';
 import officeRoutes from './routes/office.js';
 import extrasRoutes from './routes/extras.js';
 import { quotaMiddleware } from './middleware/quota.js';
+import { rateLimitMiddleware } from './middleware/rateLimit.js';
 import { applyStripeEvent, getStripe } from './services/billing.js';
 import { startTempCleanup, tempDir, unlinkQuiet } from './utils/temp.js';
 import { allQueueStats } from './utils/jobQueue.js';
@@ -80,6 +81,7 @@ app.get('/health', (_req, res) => {
   });
 });
 
+app.use('/api', rateLimitMiddleware);
 app.use('/api', quotaMiddleware);
 app.use('/api/merge', mergeRoutes);
 app.use('/api/split', splitRoutes);

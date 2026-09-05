@@ -1,130 +1,63 @@
-# Mini PDF Tools
+# One2PDF
 
-A web-based PDF processing application allowing users to manipulate PDF files without account registration or installation.
+Web-based PDF tools (merge, compress, convert, OCR, Office conversions, etc.).
 
-## MVP Features
-
-The MVP includes 5 core PDF tools:
-
-1. **Merge PDF** - Combine multiple PDFs into a single file with reordering
-2. **PDF to JPG** - Convert each PDF page to an image
-3. **Compress PDF** - Reduce file size while maintaining quality
-4. **Protect PDF** - Encrypt PDF with password protection
-5. **Add Text** - Insert free text onto PDF pages
-
-## Project Structure
+## Structure
 
 ```
-mini-pdf-tools/
-├── client/          # React + Vite frontend application
-├── server/          # Express + TypeScript backend API
-├── shared/          # Shared types and utilities
-├── temp/            # Temporary file storage (auto-cleanup)
-└── package.json     # Root package.json with workspace scripts
+client/     React + Vite frontend
+server/     Express + TypeScript API
+shared/     Shared TypeScript types
+temp/       Temporary uploads/results (auto-cleanup)
+capacity/   Local capacity audit scripts and reports
 ```
 
-## Tech Stack
+## Tech stack
 
-### Frontend
-- React 19 with TypeScript
-- Vite for build tooling
-- React Router for navigation
-- Axios for API communication
+- **Frontend**: React 19, TypeScript, Vite, React Router, Axios
+- **Backend**: Node.js, Express, TypeScript, Multer, pdf-lib, Sharp, pdf.js
+- **Office conversion**: LibreOffice on the server (`soffice`) — not Redis/BullMQ
+- **OCR**: Tesseract on the server
+- **Heavy PDF work**: in-process admission queues + `worker_threads` for compress / PDF→image
+- **Billing**: Stripe
 
-### Backend
-- Node.js + Express
-- TypeScript
-- Multer for file uploads
-- pdf-lib for PDF manipulation
-- Sharp for image conversion
-- BullMQ for job queuing
-- Redis for queue management
+Redis/BullMQ are **not** used by the current application code. Admission is in-memory (`PDF_CONCURRENCY`, `OFFICE_CONCURRENCY`, `OCR_CONCURRENCY`).
 
-## Getting Started
+## Setup
 
-### Prerequisites
-- Node.js >= 18.0.0
-- npm >= 9.0.0
-- Redis (for job queue)
+1. `npm install`
+2. `cp server/.env.example server/.env` and edit secrets / limits
+3. Optional: install LibreOffice and Tesseract for Office/OCR tools
+4. `npm run dev` — client on http://localhost:5173, API on http://localhost:3002
 
-### Installation
+## Limits (defaults)
 
-1. Clone the repository and navigate to the project:
-```bash
-cd mini-pdf-tools
-```
+| Limit | Default | Env |
+|---|---|---|
+| Free upload | 20 MB / file | — |
+| Paid / absolute upload ceiling | 1 GB (or `MAX_FILE_SIZE` if lower) | `MAX_FILE_SIZE` |
+| Free daily docs | 3 | `FREE_DAILY_DOCS` |
+| Request rate limit | 30 / minute / IP | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_MS` |
+| PDF jobs | 2 active, 20 waiting | `PDF_CONCURRENCY`, `PDF_MAX_WAITING` |
+| Office / OCR jobs | 1 active, 10 waiting each | `OFFICE_*`, `OCR_*` |
+| Heavy workers | 1 | `HEAVY_WORKERS` |
+| Temp file TTL | 15 minutes | `TEMP_FILE_TTL` |
 
-2. Install dependencies:
-```bash
-npm install
-```
+Quota (commercial), rate limit (burst), and job queues (resource admission) are separate mechanisms.
 
-3. Set up environment variables:
-```bash
-cp server/.env.example server/.env
-# Edit server/.env with your configuration
-```
+Failed tool requests do not consume the free daily quota (reserved unit is released on 4xx/5xx).
 
-4. Start Redis (required for BullMQ):
-```bash
-redis-server
-```
+## Health
 
-### Development
+`GET /health` returns process liveness plus queue stats and upload limits.
 
-Run both client and server in development mode:
-```bash
-npm run dev
-```
+## Build
 
-Or run individually:
-```bash
-npm run dev:client  # Frontend on http://localhost:5173
-npm run dev:server  # Backend on http://localhost:3002
-```
-
-### Build
-
-Build for production:
 ```bash
 npm run build
+npm run clean   # build artifacts + temp/*
 ```
 
-## API Endpoints
+## Privacy
 
-- `POST /api/merge` - Merge multiple PDFs
-- `POST /api/to-jpg` - Convert PDF to JPG images
-- `POST /api/compress` - Compress PDF file
-- `POST /api/protect` - Add password protection
-- `POST /api/add-text` - Add text to PDF
-
-## Security & Privacy
-
-- No account registration required
-- Files automatically deleted after 2 hours
-- HTTPS encryption in transit
-- No data reuse or storage beyond processing
-- GDPR compliant
-
-## Development Roadmap
-
-### Week 1 - Foundations
-- ✅ Project setup
-- ⏳ Upload functionality
-- ⏳ Merge PDF tool
-
-### Week 2 - Tools
-- ⏳ PDF to JPG conversion
-- ⏳ PDF compression
-- ⏳ Password protection
-- ⏳ Add text functionality
-
-### Week 3 - Polish
-- ⏳ Homepage with tool listing
-- ⏳ File cleanup automation
-- ⏳ Usage limits
-- ⏳ Deployment
-
-## License
-
-Proprietary - All rights reserved
+Uploads are processed on the server, then deleted after download or TTL. See the in-app privacy policy for details.

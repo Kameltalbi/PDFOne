@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { PDFDocument } from 'pdf-lib';
 import { mapPdfError } from '../utils/pdf.js';
-import { rasterizePdfPages } from '../utils/rasterize.js';
+import { forEachRasterPage } from '../utils/rasterize.js';
 import type { LayoutBlock } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 import { ocrQueue } from '../utils/jobQueue.js';
@@ -91,12 +91,10 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<
     const bytes = await fs.readFile(filePath);
     const pdf = await PDFDocument.load(bytes);
     const scale = 2;
-    const images = await rasterizePdfPages(bytes, { scale, format: 'png' });
-    if (!images.length) return [];
     const work = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-layout-'));
     const blocks: LayoutBlock[] = [];
     try {
-      for (const [index, image] of images.entries()) {
+      await forEachRasterPage(bytes, { scale, format: 'png' }, async ({ index, image }) => {
         const page = pdf.getPage(index);
         const { width, height } = page.getSize();
         const input = path.join(work, `page-${index}.png`);
@@ -105,7 +103,8 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<
         await execFileAsync(bin, [input, base, '-l', lang, 'tsv'], { timeout: 120000 });
         const tsv = await fs.readFile(`${base}.tsv`, 'utf8').catch(() => '');
         blocks.push(...parseTsvLines(tsv, index, width, height, scale));
-      }
+        await fs.unlink(input).catch(() => undefined);
+      });
     } finally {
       await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);
     }
@@ -121,15 +120,14 @@ export async function ocrPdf(filePath: string, locale = 'fr') {
       const wanted = LANGS[locale] || 'eng';
       const lang = langs.has(wanted) ? (langs.has('eng') && wanted !== 'eng' ? `${wanted}+eng` : wanted) : 'eng';
       const bytes = await fs.readFile(filePath);
-      const images = await rasterizePdfPages(bytes, { scale: 2, format: 'png' });
-      if (!images.length) throw new Error('Aucune page à reconnaître.');
-
       const work = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-'));
       try {
         const pdf = await PDFDocument.create();
         const texts: string[] = [];
         let pdfPageFailures = 0;
-        for (const [index, image] of images.entries()) {
+        let totalPages = 0;
+
+        totalPages = await forEachRasterPage(bytes, { scale: 2, format: 'png' }, async ({ index, image }) => {
           const input = path.join(work, `page-${index}.png`);
           const base = path.join(work, `out-${index}`);
           await fs.writeFile(input, image);
@@ -138,25 +136,30 @@ export async function ocrPdf(filePath: string, locale = 'fr') {
             await execFileAsync(bin, [input, base, '-l', lang, 'pdf'], { timeout: 120000 });
           } catch {
             pdfPageFailures += 1;
-            continue;
+            await fs.unlink(input).catch(() => undefined);
+            return;
           }
           const pagePdf = await fs.readFile(`${base}.pdf`).catch(() => null);
           const pageTxt = await fs.readFile(`${base}.txt`, 'utf8').catch(() => '');
           if (pageTxt.trim()) texts.push(pageTxt.trim());
           if (!pagePdf) {
             pdfPageFailures += 1;
-            continue;
+            await fs.unlink(input).catch(() => undefined);
+            return;
           }
           const part = await PDFDocument.load(pagePdf);
           const copied = await pdf.copyPages(part, part.getPageIndices());
           copied.forEach((page) => pdf.addPage(page));
-        }
-        if (pdfPageFailures > 0 && pdf.getPageCount() > 0 && pdf.getPageCount() < images.length) {
+          await fs.unlink(input).catch(() => undefined);
+        });
+
+        if (!totalPages) throw new Error('Aucune page à reconnaître.');
+        if (pdfPageFailures > 0 && pdf.getPageCount() > 0 && pdf.getPageCount() < totalPages) {
           throw new Error(
-            `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${images.length}). Réessayez ou utilisez un autre document.`
+            `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${totalPages}). Réessayez ou utilisez un autre document.`
           );
         }
-        if (pdf.getPageCount() === images.length && images.length > 0) {
+        if (pdf.getPageCount() === totalPages && totalPages > 0) {
           return writeTemp(await pdf.save(), 'ocr', 'pdf');
         }
         if (pdf.getPageCount() === 0 && texts.length) {
@@ -166,7 +169,7 @@ export async function ocrPdf(filePath: string, locale = 'fr') {
           throw new Error('L’OCR n’a reconnu aucun texte.');
         }
         throw new Error(
-          `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${images.length}). Réessayez ou utilisez un autre document.`
+          `L’OCR n’a pas pu produire toutes les pages (${pdf.getPageCount()}/${totalPages}). Réessayez ou utilisez un autre document.`
         );
       } finally {
         await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);

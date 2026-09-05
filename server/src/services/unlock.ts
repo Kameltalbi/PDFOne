@@ -5,20 +5,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { mapPdfError } from '../utils/pdf.js';
-import { rasterizePdfPages } from '../utils/rasterize.js';
+import { forEachRasterPage } from '../utils/rasterize.js';
 import { writeTemp } from '../utils/temp.js';
 
 const execFileAsync = promisify(execFile);
-
-async function imagesToUnlockedPdf(images: Buffer[]) {
-  const pdf = await PDFDocument.create();
-  for (const bytes of images) {
-    const image = await pdf.embedJpg(bytes);
-    const page = pdf.addPage([image.width, image.height]);
-    page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
-  }
-  return Buffer.from(await pdf.save());
-}
 
 async function copyWithoutEncryption(src: PDFDocument) {
   const out = await PDFDocument.create();
@@ -50,9 +40,20 @@ export async function unlockPdf(filePath: string, password: string) {
     return writeTemp(unlocked, 'unlocked', 'pdf');
   } catch {
     try {
-      const images = await rasterizePdfPages(bytes, { scale: 1.6, format: 'jpeg', quality: 88, password });
-      if (!images.length) throw new Error('empty');
-      return writeTemp(await imagesToUnlockedPdf(images), 'unlocked', 'pdf');
+      const pdf = await PDFDocument.create();
+      let pages = 0;
+      await forEachRasterPage(
+        bytes,
+        { scale: 1.6, format: 'jpeg', quality: 88, password },
+        async ({ image }) => {
+          const embedded = await pdf.embedJpg(image);
+          const page = pdf.addPage([embedded.width, embedded.height]);
+          page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
+          pages += 1;
+        }
+      );
+      if (!pages) throw new Error('empty');
+      return writeTemp(await pdf.save(), 'unlocked', 'pdf');
     } catch (error) {
       throw new Error(mapPdfError(error, 'Mot de passe incorrect, ou PDF impossible à déverrouiller.'));
     }
