@@ -143,8 +143,8 @@ const fr: PrivacyPolicy = {
     {
       title: '8. Conversion de documents Office',
       blocks: [
-        { type: 'p', text: 'Certaines conversions de documents Office sont réalisées à l’aide de LibreOffice installé sur l’infrastructure utilisée par One2PDF.' },
-        { type: 'p', text: 'Lorsque ce traitement est effectué sur notre infrastructure, votre document n’est pas transmis à LibreOffice en tant que service externe.' },
+        { type: 'p', text: 'Certaines conversions de documents Office sont réalisées par un moteur de conversion installé sur l’infrastructure utilisée par One2PDF.' },
+        { type: 'p', text: 'Lorsque ce traitement est effectué sur notre infrastructure, votre document n’est pas transmis à un service de conversion externe.' },
         { type: 'p', text: 'Les documents concernés suivent les mêmes règles de suppression automatique que les autres fichiers traités par One2PDF.' }
       ]
     },
@@ -178,7 +178,7 @@ const fr: PrivacyPolicy = {
           'certaines fonctionnalités spécifiques faisant appel à un service externe.'
         ] },
         { type: 'p', text: 'Nous limitons les informations mises à disposition de ces prestataires à ce qui est nécessaire pour fournir le service concerné.' },
-        { type: 'p', text: 'LibreOffice et Tesseract, lorsqu’ils fonctionnent directement sur notre infrastructure, sont des composants logiciels du service et non des services externes auxquels vos documents sont envoyés.' }
+        { type: 'p', text: 'Le moteur de conversion Office et le moteur OCR, lorsqu’ils fonctionnent directement sur notre infrastructure, sont des composants logiciels du service et non des services externes auxquels vos documents sont envoyés.' }
       ]
     },
     {
@@ -403,8 +403,8 @@ const en: PrivacyPolicy = {
     {
       title: '8. Office document conversion',
       blocks: [
-        { type: 'p', text: 'Some Office document conversions are performed using LibreOffice installed on the infrastructure used by One2PDF.' },
-        { type: 'p', text: 'When this processing is done on our infrastructure, your document is not sent to LibreOffice as an external service.' },
+        { type: 'p', text: 'Some Office document conversions are performed by a conversion engine installed on the infrastructure used by One2PDF.' },
+        { type: 'p', text: 'When this processing is done on our infrastructure, your document is not sent to an external conversion service.' },
         { type: 'p', text: 'Those documents follow the same automatic deletion rules as other files processed by One2PDF.' }
       ]
     },
@@ -438,7 +438,7 @@ const en: PrivacyPolicy = {
           'certain specific features that rely on an external service.'
         ] },
         { type: 'p', text: 'We limit the information made available to these providers to what is needed to deliver the relevant service.' },
-        { type: 'p', text: 'LibreOffice and Tesseract, when they run directly on our infrastructure, are software components of the service and not external services to which your documents are sent.' }
+        { type: 'p', text: 'The Office conversion engine and the OCR engine, when they run directly on our infrastructure, are software components of the service and not external services to which your documents are sent.' }
       ]
     },
     {

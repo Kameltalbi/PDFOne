@@ -746,10 +746,10 @@ export const ar: Messages = {
     downloadPpt: 'تنزيل ملف PowerPoint',
     reset: 'تحويل ملفات أخرى',
     invalidFile: 'هذا النوع من الملفات غير مقبول لهذا التحويل.',
-    tip: 'يستخدم التحويل LibreOffice. قد تفقد ملفات PDF الممسوحة والتخطيطات المعقدة دقتها.',
+    tip: 'قد تفقد ملفات PDF الممسوحة والتخطيطات المعقدة دقتها.',
     action: 'تحويل الملف',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'يجري التحويل عبر LibreOffice دون تثبيت Microsoft Office.' },
+      { icon: '⌘', tone: 'gold', title: 'بدون تثبيت', text: 'حوّل عبر الإنترنت دون تثبيت Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word وExcel وPowerPoint', text: 'DOC وDOCX وXLS وXLSX وPPT وPPTX وتنسيقات OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'تخطيط متغيّر', text: 'ملفات PDF الممسوحة والجداول المعقدة تُحوَّل بدقة أقل.' }
     ],

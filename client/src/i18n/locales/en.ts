@@ -1058,7 +1058,7 @@ export const en: Messages = {
   },
   htmlPdf: {
     title: 'HTML to PDF',
-    subtitle: 'Turn an HTML page into a PDF via LibreOffice.',
+    subtitle: 'Turn an HTML page into a PDF in one click.',
     tip: 'Import a .html file or paste HTML. Complex JS pages render less well.',
     action: 'Create PDF',
     running: 'Converting…',
@@ -1071,7 +1071,7 @@ export const en: Messages = {
     useHtml: 'Use this HTML',
     features: [
       { icon: '</>', tone: 'purple', title: 'File or paste', text: 'Drop a .html file or paste the code.' },
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'Conversion uses the same engine as Word and Excel.' },
+      { icon: '⌘', tone: 'gold', title: 'Online', text: 'Converted on our servers — no software to install.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'HTML is not kept on the server.' }
     ]
   },
@@ -1107,10 +1107,10 @@ export const en: Messages = {
     downloadPpt: 'Download PowerPoint file',
     reset: 'Convert more files',
     invalidFile: 'This file type is not accepted for this conversion.',
-    tip: 'Conversion uses LibreOffice. Scanned PDFs and complex layouts may lose fidelity.',
+    tip: 'Scanned PDFs and complex layouts may lose fidelity.',
     action: 'Convert the file',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'Conversion runs through LibreOffice, without Microsoft Office installed.' },
+      { icon: '⌘', tone: 'gold', title: 'No install needed', text: 'Convert online without installing Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX and OpenDocument formats.' },
       { icon: '✧', tone: 'purple', title: 'Variable layout', text: 'Scanned PDFs and complex tables convert less accurately.' }
     ],
@@ -1445,7 +1445,7 @@ export const en: Messages = {
     privacyIntro: 'One2PDF is privacy-first: we do not sell your documents and we do not keep them to train models.',
     privacyData: 'When you run a tool, the file is sent to our servers for the duration of the job (conversion, compression, OCR, and so on). A technical cookie stores the free-plan quota and, if you subscribe, your Pro access.',
     privacyRetention: 'The original file is deleted when processing ends. The result is available for a single download, then erased. Files that are not downloaded are purged automatically within 15 minutes.',
-    privacyThird: 'Payments: Stripe. Audience measurement: Google Analytics (gtag). Office conversions: LibreOffice on the server. OCR: Tesseract. Summarize / translate: an AI provider only if you use those tools.',
+    privacyThird: 'Payments: Stripe. Audience measurement: Google Analytics (gtag). Office conversions and OCR: processed on our servers. Summarize / translate: an AI provider only if you use those tools.',
     privacyRights: 'You may request access, correction or deletion of billing data tied to your Stripe email. Contact us at the address on the Contact page.',
     contactTitle: 'Contact',
     contactIntro: 'Questions, incidents or Pro support requests? Write to us. We reply in English and French.',

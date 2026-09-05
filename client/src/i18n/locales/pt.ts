@@ -746,10 +746,10 @@ export const pt: Messages = {
     downloadPpt: 'Transferir o ficheiro PowerPoint',
     reset: 'Converter outros ficheiros',
     invalidFile: 'Este tipo de ficheiro não é aceite para esta conversão.',
-    tip: 'A conversão usa o LibreOffice. PDFs digitalizados e layouts complexos podem perder fidelidade.',
+    tip: 'PDFs digitalizados e layouts complexos podem perder fidelidade.',
     action: 'Converter o ficheiro',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'A conversão corre no LibreOffice, sem Microsoft Office instalado.' },
+      { icon: '⌘', tone: 'gold', title: 'Sem instalação', text: 'Converta online, sem instalar o Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX e formatos OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'Layout variável', text: 'PDFs digitalizados e tabelas complexas convertem-se pior.' }
     ],

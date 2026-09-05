@@ -1058,7 +1058,7 @@ export const fr: Messages = {
   },
   htmlPdf: {
     title: 'HTML en PDF',
-    subtitle: 'Transformez une page HTML en fichier PDF via LibreOffice.',
+    subtitle: 'Transformez une page HTML en fichier PDF en un clic.',
     tip: 'Importez un .html ou collez du HTML. Les pages web complexes (JS) se rendent moins bien.',
     action: 'Créer le PDF',
     running: 'Conversion…',
@@ -1071,7 +1071,7 @@ export const fr: Messages = {
     useHtml: 'Utiliser ce HTML',
     features: [
       { icon: '</>', tone: 'purple', title: 'Fichier ou collage', text: 'Déposez un .html ou collez le code directement.' },
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'La conversion utilise le même moteur que Word et Excel.' },
+      { icon: '⌘', tone: 'gold', title: 'En ligne', text: 'Conversion sur nos serveurs, sans logiciel à installer.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le HTML n’est pas conservé sur le serveur.' }
     ]
   },
@@ -1107,10 +1107,10 @@ export const fr: Messages = {
     downloadPpt: 'Télécharger le fichier PowerPoint',
     reset: 'Convertir d’autres fichiers',
     invalidFile: 'Ce type de fichier n’est pas accepté pour cette conversion.',
-    tip: 'La conversion utilise LibreOffice. Les PDF scannés et les mises en page complexes peuvent perdre de la fidélité.',
+    tip: 'Les PDF scannés et les mises en page complexes peuvent perdre de la fidélité.',
     action: 'Convertir le fichier',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'La conversion passe par LibreOffice, sans Microsoft Office installé.' },
+      { icon: '⌘', tone: 'gold', title: 'Sans installation', text: 'Convertissez en ligne, sans installer Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX et formats OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'Mise en page variable', text: 'Les PDF scannés et les tableaux complexes se convertissent moins bien.' }
     ],
@@ -1445,7 +1445,7 @@ export const fr: Messages = {
     privacyIntro: 'One2PDF est conçu « privacy-first » : nous ne revendons pas vos documents et nous ne les conservons pas pour entraîner des modèles.',
     privacyData: 'Lors d’un traitement, le fichier est envoyé à nos serveurs le temps de l’opération (conversion, compression, OCR, etc.). Un cookie technique mémorise le quota gratuit et, le cas échéant, votre accès Pro.',
     privacyRetention: 'Le fichier d’origine est supprimé dès la fin du traitement. Le résultat est disponible au téléchargement unique, puis effacé. Les fichiers non téléchargés sont purgés automatiquement sous 15 minutes.',
-    privacyThird: 'Paiements : Stripe. Mesure d’audience : Google Analytics (gtag). Conversions Office : LibreOffice sur le serveur. OCR : Tesseract. Résumé / traduction : prestataire d’IA uniquement si ces outils sont utilisés.',
+    privacyThird: 'Paiements : Stripe. Mesure d’audience : Google Analytics (gtag). Conversions Office et OCR : traités sur nos serveurs. Résumé / traduction : prestataire d’IA uniquement si ces outils sont utilisés.',
     privacyRights: 'Vous pouvez demander l’accès, la rectification ou la suppression des données de facturation liées à votre e-mail Stripe. Contactez-nous à l’adresse indiquée sur la page Contact.',
     contactTitle: 'Contact',
     contactIntro: 'Une question, un incident ou une demande de support Pro ? Écrivez-nous. Nous répondons en français et en anglais.',

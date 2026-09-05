@@ -154,7 +154,7 @@ const privacyFr: BlogPost = {
     { type: 'p', text: 'Ce guide explique ce qui se passe réellement quand vous utilisez un outil PDF en ligne, pourquoi ce n’est pas forcément un problème — à condition de choisir le bon service — et ce qu’il faut vérifier avant de faire confiance à un outil avec un document sensible.' },
     { type: 'h2', text: 'Pourquoi presque tous les outils PDF en ligne fonctionnent par upload' },
     { type: 'p', text: 'Contrairement à ce que certains sites laissent entendre, la grande majorité des outils PDF en ligne — y compris les plus connus — ne traitent pas votre fichier « sur votre appareil ». Ils l’envoient sur un serveur, effectuent l’opération demandée (conversion, fusion, compression, OCR), puis vous renvoient le résultat.' },
-    { type: 'p', text: 'C’est vrai pour une raison simple : certaines opérations sont beaucoup trop lourdes pour être exécutées correctement dans un navigateur. Convertir un PDF vers un fichier Word ou Excel fidèle à la mise en page originale demande des moteurs de conversion professionnels (comme LibreOffice) que votre navigateur ne peut pas faire tourner seul. Idem pour la reconnaissance de texte (OCR) sur un document scanné, qui nécessite une puissance de calcul que peu d’appareils personnels peuvent offrir rapidement.' },
+    { type: 'p', text: 'C’est vrai pour une raison simple : certaines opérations sont beaucoup trop lourdes pour être exécutées correctement dans un navigateur. Convertir un PDF vers un fichier Word ou Excel fidèle à la mise en page originale demande des moteurs de conversion professionnels que votre navigateur ne peut pas faire tourner seul. Idem pour la reconnaissance de texte (OCR) sur un document scanné, qui nécessite une puissance de calcul que peu d’appareils personnels peuvent offrir rapidement.' },
     { type: 'p', text: 'Il existe quelques outils qui traitent réellement tout dans le navigateur (technologie WebAssembly), mais ils sont souvent limités aux opérations simples — et parfois plus lents ou moins fiables sur les gros fichiers ou les conversions complexes.' },
     { type: 'p', text: 'La vraie question n’est donc pas « est-ce que mon fichier est envoyé quelque part ? » — la réponse est presque toujours oui — mais « où, pour combien de temps, et par qui ? »' },
     { type: 'h2', text: 'Ce qu’il faut vérifier avant de faire confiance à un outil PDF' },
@@ -175,7 +175,7 @@ const privacyFr: BlogPost = {
       type: 'ul',
       items: [
         'Vos fichiers sont traités sur un serveur sécurisé — on ne prétend pas le contraire.',
-        'Le traitement repose sur des outils reconnus : pdf-lib pour la fusion, la compression, la protection et l’édition ; LibreOffice pour les conversions Word, Excel et PowerPoint (pour une fidélité de mise en page bien supérieure à des convertisseurs légers) ; Tesseract pour l’OCR sur les documents scannés.',
+        'Le traitement repose sur des outils reconnus pour la fusion, la compression, la protection et l’édition ; un moteur de conversion professionnel pour Word, Excel et PowerPoint ; et de l’OCR pour les documents scannés.',
         'Les fonctionnalités de résumé et de traduction, qui passent par un prestataire IA tiers, sont clairement séparées du reste et activées uniquement si vous les utilisez.',
         'Une fois votre fichier traité et téléchargé, il est supprimé automatiquement de nos serveurs.',
         'Aucune carte bancaire n’est requise pour essayer, et aucun abonnement ne se déclenche sans action claire de votre part.'
@@ -219,7 +219,7 @@ const privacyEn: BlogPost = {
     { type: 'p', text: 'This guide explains what actually happens when you use an online PDF tool, why that is not automatically a problem — if you pick the right service — and what to verify before you trust a tool with a sensitive document.' },
     { type: 'h2', text: 'Why almost every online PDF tool works by upload' },
     { type: 'p', text: 'Unlike what some sites imply, the vast majority of online PDF tools — including the best-known ones — do not process your file “on your device”. They send it to a server, run the job (conversion, merge, compression, OCR), then send the result back.' },
-    { type: 'p', text: 'There is a simple reason: some jobs are far too heavy to run well in a browser. Turning a PDF into a Word or Excel file that keeps the original layout needs professional conversion engines (such as LibreOffice) that your browser cannot run on its own. The same is true for text recognition (OCR) on a scanned document, which needs computing power few personal devices can offer quickly.' },
+    { type: 'p', text: 'There is a simple reason: some jobs are far too heavy to run well in a browser. Turning a PDF into a Word or Excel file that keeps the original layout needs professional conversion engines that your browser cannot run on its own. The same is true for text recognition (OCR) on a scanned document, which needs computing power few personal devices can offer quickly.' },
     { type: 'p', text: 'A few tools really do process everything in the browser (WebAssembly). They are often limited to simple jobs — and can be slower or less reliable on large files or complex conversions.' },
     { type: 'p', text: 'So the real question is not “is my file sent somewhere?” — the answer is almost always yes — but “where, for how long, and by whom?”' },
     { type: 'h2', text: 'What to check before you trust a PDF tool' },
@@ -240,7 +240,7 @@ const privacyEn: BlogPost = {
       type: 'ul',
       items: [
         'Your files are processed on a secure server — we do not pretend otherwise.',
-        'Processing uses established tools: pdf-lib for merge, compress, protect and edit; LibreOffice for Word, Excel and PowerPoint conversions (for layout fidelity well above lightweight converters); Tesseract for OCR on scanned documents.',
+        'Processing uses established tools for merge, compress, protect and edit; a professional conversion engine for Word, Excel and PowerPoint; and OCR for scanned documents.',
         'Summarize and translate, which go through a third-party AI provider, are clearly separated from the rest and run only if you use them.',
         'Once your file is processed and downloaded, it is deleted automatically from our servers.',
         'No card is required to try the product, and no subscription starts without a clear action from you.'

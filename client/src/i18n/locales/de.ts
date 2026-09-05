@@ -746,10 +746,10 @@ export const de: Messages = {
     downloadPpt: 'PowerPoint-Datei herunterladen',
     reset: 'Weitere Dateien konvertieren',
     invalidFile: 'Dieser Dateityp wird für diese Konvertierung nicht akzeptiert.',
-    tip: 'Die Konvertierung nutzt LibreOffice. Gescannte PDFs und komplexe Layouts können an Treue verlieren.',
+    tip: 'Gescannte PDFs und komplexe Layouts können an Treue verlieren.',
     action: 'Datei konvertieren',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'Die Konvertierung läuft über LibreOffice, ohne Microsoft Office.' },
+      { icon: '⌘', tone: 'gold', title: 'Keine Installation', text: 'Online konvertieren, ohne Microsoft Office zu installieren.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX und OpenDocument-Formate.' },
       { icon: '✧', tone: 'purple', title: 'Variables Layout', text: 'Gescannte PDFs und komplexe Tabellen werden weniger genau konvertiert.' }
     ],

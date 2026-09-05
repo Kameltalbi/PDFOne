@@ -746,10 +746,10 @@ export const tr: Messages = {
     downloadPpt: 'PowerPoint dosyasını indir',
     reset: 'Başka dosyalar dönüştürün',
     invalidFile: 'Bu dosya türü bu dönüştürme için kabul edilmez.',
-    tip: 'Dönüştürme LibreOffice kullanır. Taranmış PDF’ler ve karmaşık düzenler sadakat kaybedebilir.',
+    tip: 'Taranmış PDF’ler ve karmaşık düzenler sadakat kaybedebilir.',
     action: 'Dosyayı dönüştür',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'Dönüştürme Microsoft Office olmadan LibreOffice ile yapılır.' },
+      { icon: '⌘', tone: 'gold', title: 'Kurulum yok', text: 'Microsoft Office kurmadan çevrimiçi dönüştürün.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX ve OpenDocument biçimleri.' },
       { icon: '✧', tone: 'purple', title: 'Değişken düzen', text: 'Taranmış PDF’ler ve karmaşık tablolar daha az doğru dönüşür.' }
     ],

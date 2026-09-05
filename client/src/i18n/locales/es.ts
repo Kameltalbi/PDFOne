@@ -746,10 +746,10 @@ export const es: Messages = {
     downloadPpt: 'Descargar el archivo PowerPoint',
     reset: 'Convertir más archivos',
     invalidFile: 'Este tipo de archivo no se acepta para esta conversión.',
-    tip: 'La conversión usa LibreOffice. Los PDF escaneados y los diseños complejos pueden perder fidelidad.',
+    tip: 'Los PDF escaneados y los diseños complejos pueden perder fidelidad.',
     action: 'Convertir el archivo',
     features: [
-      { icon: '⌘', tone: 'gold', title: 'LibreOffice', text: 'La conversión se realiza con LibreOffice, sin Microsoft Office instalado.' },
+      { icon: '⌘', tone: 'gold', title: 'Sin instalación', text: 'Convierta en línea, sin instalar Microsoft Office.' },
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX y formatos OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'Diseño variable', text: 'Los PDF escaneados y las tablas complejas se convierten peor.' }
     ],
