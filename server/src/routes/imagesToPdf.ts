@@ -2,6 +2,8 @@ import express from 'express';
 import { uploadImages } from '../middleware/upload.js';
 import { imagesToPdf } from '../services/imagesToPdf.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -25,14 +27,14 @@ router.post('/', uploadImages.array('files', 20), async (req, res) => {
 
     res.json({
       success: true,
-      data: result,
+      data: publicToolResult(req, res, result),
       message: 'Images converties en PDF'
     });
   } catch (error) {
     console.error('Images to PDF error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de convertir ces images en PDF.'
+      error: publicErrorFromUnknown(error, 'Impossible de convertir ces images en PDF.')
     });
   } finally {
     await cleanupUploads(uploadedFiles);

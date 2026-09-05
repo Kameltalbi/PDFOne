@@ -1,5 +1,7 @@
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +31,7 @@ export function isTempRetained(filePath: string): boolean {
 }
 
 export function uniqueName(prefix: string, ext: string): string {
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  const id = crypto.randomBytes(16).toString('hex');
   return `${prefix}-${id}.${ext.replace(/^\./, '')}`;
 }
 
@@ -64,6 +66,34 @@ export function tempTtlMs(): number {
   return Math.max(60_000, Number(process.env.TEMP_FILE_TTL || 15 * 60 * 1000));
 }
 
+const NATIVE_PREFIXES = ['pdfone-ocr-', 'pdfone-ocr-layout-', 'pdfone-lo-out-', 'pdfone-lo-profile-', 'pdfone-unlock-'];
+
+export async function purgeAbandonedNativeTemp(maxAgeMs = 60 * 60 * 1000): Promise<number> {
+  const root = os.tmpdir();
+  const cutoff = Date.now() - maxAgeMs;
+  let removed = 0;
+  let entries: string[] = [];
+  try {
+    entries = await fs.readdir(root);
+  } catch {
+    return 0;
+  }
+
+  await Promise.all(entries.map(async (name) => {
+    if (!NATIVE_PREFIXES.some((prefix) => name.startsWith(prefix))) return;
+    const full = path.join(root, name);
+    try {
+      const stat = await fs.stat(full);
+      if (!stat.isDirectory() || stat.mtimeMs > cutoff) return;
+      await fs.rm(full, { recursive: true, force: true });
+      removed += 1;
+    } catch {
+      /* ignore */
+    }
+  }));
+  return removed;
+}
+
 export async function purgeExpiredTemp(ttlMs = tempTtlMs()): Promise<number> {
   const cutoff = Date.now() - ttlMs;
   let removed = 0;
@@ -84,9 +114,9 @@ export async function purgeExpiredTemp(ttlMs = tempTtlMs()): Promise<number> {
       }
     }));
   } catch {
-    return 0;
+    /* keep removed count */
   }
-  return removed;
+  return removed + await purgeAbandonedNativeTemp(Math.max(ttlMs, 60 * 60 * 1000));
 }
 
 export function startTempCleanup(intervalMs = 5 * 60 * 1000) {

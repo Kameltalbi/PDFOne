@@ -2,6 +2,8 @@ import express from 'express';
 import { upload } from '../middleware/upload.js';
 import { protectPdf } from '../services/protect.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -25,14 +27,14 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     res.json({
       success: true,
-      data: result,
+      data: publicToolResult(req, res, result),
       message: 'PDF protégé avec succès'
     });
   } catch (error) {
     console.error('Protect error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de protéger ce PDF.'
+      error: publicErrorFromUnknown(error, 'Impossible de protéger ce PDF.')
     });
   } finally {
     await cleanupUploads(uploadedFile);

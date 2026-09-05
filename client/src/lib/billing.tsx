@@ -56,7 +56,7 @@ type BillingContextValue = {
   refresh: () => Promise<void>;
   checkout: (plan: CheckoutPlan) => Promise<void>;
   confirm: (sessionId: string) => Promise<BillingState & { purchase?: PurchaseReceipt }>;
-  login: (email: string) => Promise<BillingState>;
+  login: (email: string, password: string) => Promise<BillingState>;
   loginWithPassword: (email: string, password: string) => Promise<BillingState>;
   signup: (name: string, email: string, password: string) => Promise<BillingState>;
   portal: () => Promise<void>;
@@ -65,7 +65,6 @@ type BillingContextValue = {
 
 const BillingContext = createContext<BillingContextValue | null>(null);
 const EMAIL_KEY = 'one2pdf_email';
-const SKIP_RESTORE_KEY = 'one2pdf_restore_skip';
 
 export function rememberedEmail(): string {
   try {
@@ -79,25 +78,8 @@ function rememberEmail(email: string | undefined) {
   if (!email) return;
   try {
     localStorage.setItem(EMAIL_KEY, email);
-    sessionStorage.removeItem(SKIP_RESTORE_KEY);
   } catch {
     /* ignore */
-  }
-}
-
-function skipAutoRestore() {
-  try {
-    sessionStorage.setItem(SKIP_RESTORE_KEY, '1');
-  } catch {
-    /* ignore */
-  }
-}
-
-function shouldAutoRestore() {
-  try {
-    return sessionStorage.getItem(SKIP_RESTORE_KEY) !== '1';
-  } catch {
-    return true;
   }
 }
 
@@ -171,23 +153,6 @@ export function BillingProvider({ children }: { children: ReactNode }) {
         setStatus(asState(data));
         return;
       }
-      const email = rememberedEmail();
-      if (email && shouldAutoRestore()) {
-        try {
-          const restored = await billingRequest('/api/billing/restore', {
-            method: 'POST',
-            body: JSON.stringify({ email })
-          });
-          if (restored?.paid) {
-            rememberEmail(restored.email);
-            setStatus(asState(restored));
-            return;
-          }
-          skipAutoRestore();
-        } catch {
-          skipAutoRestore();
-        }
-      }
       setStatus(asState(data));
     } catch {
       setStatus({ paid: false, user: null });
@@ -224,13 +189,14 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     return purchase ? { ...next, purchase } : next;
   }, []);
 
-  const login = useCallback(async (email: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const data = await billingRequest('/api/billing/restore', {
       method: 'POST',
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, password })
     });
     const next = asState(data);
     if (next.paid) rememberEmail(next.email);
+    else if (next.user?.email) rememberEmail(next.user.email);
     setStatus(next);
     return next;
   }, []);

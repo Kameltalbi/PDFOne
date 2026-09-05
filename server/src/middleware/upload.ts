@@ -1,6 +1,7 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 import { isPaid } from './quota.js';
@@ -11,6 +12,7 @@ import {
   maxRequestBytes
 } from '../utils/limits.js';
 import { cleanupUploads, retainTemp } from '../utils/temp.js';
+import { assertTempSpace } from '../utils/runtimeHealth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +26,7 @@ const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif']);
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, tempDir),
   filename: (_req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const uniqueSuffix = crypto.randomBytes(16).toString('hex');
     const ext = path.extname(file.originalname || '').toLowerCase() || '.bin';
     cb(null, `${uniqueSuffix}${ext}`);
   }
@@ -70,6 +72,7 @@ function withPaidLimits(
   return (req, res, next) => {
     void (async () => {
       try {
+        await assertTempSpace();
         const paid = await isPaid(req, res);
         const fileSize = maxFileBytes(paid);
         const files = maxFilesPerRequest();
@@ -82,6 +85,9 @@ function withPaidLimits(
           void rejectOversized(req, res, next);
         });
       } catch (error) {
+        if (error instanceof Error && (error as Error & { code?: string }).code === 'TEMP_DISK_FULL') {
+          return res.status(503).json({ success: false, code: 'TEMP_DISK_FULL', error: error.message });
+        }
         return next(error);
       }
     })();

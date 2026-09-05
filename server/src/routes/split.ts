@@ -2,6 +2,8 @@ import express from 'express';
 import { upload } from '../middleware/upload.js';
 import { splitPdf, type SplitMode } from '../services/split.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -19,14 +21,14 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     res.json({
       success: true,
-      data: result,
+      data: publicToolResult(req, res, result),
       message: 'PDF divisé avec succès'
     });
   } catch (error) {
     console.error('Split error:', error);
     res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de diviser ce PDF.'
+      error: publicErrorFromUnknown(error, 'Impossible de diviser ce PDF.')
     });
   } finally {
     await cleanupUploads(uploadedFile);

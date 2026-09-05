@@ -7,6 +7,8 @@ import { splitPdf } from '../services/split.js';
 import { fillAndSignPdf, type FillSignAnnotation } from '../services/fillSign.js';
 import { signPdf } from '../services/sign.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -27,12 +29,12 @@ async function handlePageTool(
       return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
     }
     const result = await run(uploadedFile.path);
-    return res.json({ success: true, data: result });
+    return res.json({ success: true, data: publicToolResult(req, res, result) });
   } catch (error) {
     console.error('Pages tool error:', error);
     return res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : fallback
+      error: publicErrorFromUnknown(error, fallback)
     });
   } finally {
     await cleanupUploads(uploadedFile);
@@ -155,7 +157,7 @@ router.post('/form-inspect', upload.single('file'), async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de lire ce formulaire.'
+      error: publicErrorFromUnknown(error, 'Impossible de lire ce formulaire.')
     });
   } finally {
     await cleanupUploads(uploadedFile);

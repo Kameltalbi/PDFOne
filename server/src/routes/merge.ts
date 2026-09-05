@@ -2,6 +2,8 @@ import express from 'express';
 import { upload } from '../middleware/upload.js';
 import { mergePDFs } from '../services/merge.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -29,14 +31,14 @@ router.post('/', upload.array('files', 10), async (req, res) => {
 
     res.json({
       success: true,
-      data: result,
+      data: publicToolResult(req, res, result),
       message: 'PDFs fusionnés avec succès'
     });
   } catch (error) {
     console.error('Merge error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de fusionner ces PDF.'
+      error: publicErrorFromUnknown(error, 'Impossible de fusionner ces PDF.')
     });
   } finally {
     await cleanupUploads(uploadedFiles);

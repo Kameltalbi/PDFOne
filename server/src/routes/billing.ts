@@ -1,8 +1,12 @@
 import express from 'express';
-import { getActiveEntitlementByEmail, getEntitlement, isEntitlementActive, usageSnapshot } from '../services/entitlements.js';
-import { getFreeUsage } from '../middleware/quota.js';
+import { getActiveEntitlementByEmail, getEntitlement, normalizeEmail, usageSnapshot } from '../services/entitlements.js';
 import { currentSession, readUser } from './auth.js';
-import { USER_COOKIE } from '../services/users.js';
+import {
+  authenticateUser,
+  publicUser,
+  USER_COOKIE,
+  type UserPayload
+} from '../services/users.js';
 import {
   ACCESS_COOKIE,
   cookieMaxAge,
@@ -20,18 +24,20 @@ import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } 
 const router = express.Router();
 const restoreAttempts = new Map<string, { window: number; count: number }>();
 
-function restoreMessage(req: express.Request, code: 'invalid' | 'none' | 'limit') {
+function restoreMessage(req: express.Request, code: 'invalid' | 'none' | 'limit' | 'auth') {
   const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
   const copy = {
     fr: {
       invalid: 'Indiquez l’e-mail utilisé lors du paiement.',
       none: 'Aucun pass actif pour cet e-mail. Vérifiez l’adresse, ou le pass a peut-être expiré.',
-      limit: 'Trop de tentatives. Réessayez dans une heure.'
+      limit: 'Trop de tentatives. Réessayez dans une heure.',
+      auth: 'Connectez-vous avec le mot de passe de votre compte One2PDF pour restaurer le pass.'
     },
     en: {
       invalid: 'Enter the email used at checkout.',
       none: 'No active pass for this email. Check the address, or the pass may have expired.',
-      limit: 'Too many attempts. Try again in an hour.'
+      limit: 'Too many attempts. Try again in an hour.',
+      auth: 'Sign in with your One2PDF account password to restore your pass.'
     }
   } as const;
   return (copy[lang as 'fr' | 'en'] || copy.fr)[code];
@@ -66,6 +72,14 @@ async function publicStatus(access: AccessPayload) {
 
 function grantAccess(res: express.Response, access: AccessPayload) {
   setCookie(res, ACCESS_COOKIE, signValue(access), cookieMaxAge(access.plan, access.expiresAt));
+}
+
+function grantUser(res: express.Response, user: { id: string; name: string; email: string }) {
+  setCookie(res, USER_COOKIE, signValue({
+    userId: user.id,
+    name: user.name,
+    email: user.email
+  } satisfies UserPayload), 60 * 60 * 24 * 365);
 }
 
 router.get('/me', async (req, res) => {
@@ -161,6 +175,12 @@ router.post('/confirm', async (req, res) => {
   }
 });
 
+/**
+ * Restore Pro/pass cookie only with proof of account control:
+ * - authenticated pdfone_user session matching the email, or
+ * - email + password via authenticateUser
+ * Email alone never grants access.
+ */
 router.post('/restore', async (req, res) => {
   const ip = clientIp(req);
   if (!allowRestore(ip)) {
@@ -168,13 +188,43 @@ router.post('/restore', async (req, res) => {
   }
 
   const email = typeof req.body?.email === 'string' ? req.body.email : '';
+  const password = typeof req.body?.password === 'string' ? req.body.password : '';
+  const needle = normalizeEmail(email);
+  if (!needle) {
+    return res.status(400).json({ success: false, error: restoreMessage(req, 'invalid') });
+  }
+
   try {
+    const sessionUser = readUser(req);
+    const sessionMatch = Boolean(sessionUser && normalizeEmail(sessionUser.email) === needle);
+    let userOut: { name: string; email: string } | null = sessionMatch && sessionUser
+      ? { name: sessionUser.name, email: sessionUser.email }
+      : null;
+
+    if (!sessionMatch) {
+      if (!password) {
+        return res.status(401).json({ success: false, error: restoreMessage(req, 'auth') });
+      }
+      const user = await authenticateUser(email, password);
+      if (!user) {
+        return res.status(401).json({ success: false, error: restoreMessage(req, 'auth') });
+      }
+      grantUser(res, user);
+      userOut = publicUser(user);
+    }
+
     const access = await restoreEntitlementByEmail(email);
     if (!access) {
       return res.status(404).json({ success: false, error: restoreMessage(req, 'none') });
     }
     grantAccess(res, access);
-    return res.json({ success: true, data: await publicStatus(access) });
+    return res.json({
+      success: true,
+      data: {
+        ...await publicStatus(access),
+        user: userOut
+      }
+    });
   } catch (error) {
     if (error instanceof Error && error.message === 'INVALID_EMAIL') {
       return res.status(400).json({ success: false, error: restoreMessage(req, 'invalid') });

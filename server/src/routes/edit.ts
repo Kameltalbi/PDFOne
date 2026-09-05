@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { upload } from '../middleware/upload.js';
 import { editPdf, type PdfAnnotation } from '../services/edit.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     console.error('PDF edit error:', error);
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Impossible de modifier le PDF'
+      error: publicErrorFromUnknown(error, 'Impossible de modifier le PDF')
     });
   } finally {
     if (uploadedFile) await fs.unlink(uploadedFile.path).catch(() => undefined);

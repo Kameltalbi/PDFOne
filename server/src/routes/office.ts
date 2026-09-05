@@ -2,6 +2,9 @@ import express from 'express';
 import { uploadExtensions } from '../middleware/upload.js';
 import { convertOfficeFile, OFFICE_JOBS, type OfficeJob } from '../services/office.js';
 import { cleanupUploads } from '../utils/temp.js';
+import { requestSignal } from '../utils/jobQueue.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
@@ -13,13 +16,20 @@ function officeRoute(job: OfficeJob, message: string) {
       if (!uploadedFile) {
         return res.status(400).json({ success: false, error: 'Aucun fichier reçu.' });
       }
-      const result = await convertOfficeFile(uploadedFile.path, job);
-      return res.json({ success: true, data: result });
+      const result = await convertOfficeFile(uploadedFile.path, job, requestSignal(req));
+      return res.json({ success: true, data: publicToolResult(req, res, result) });
     } catch (error) {
       console.error('Office convert error:', error);
-      return res.status(400).json({
+      const code = error instanceof Error ? (error as Error & { code?: string }).code : undefined;
+      const status = code === 'SERVER_BUSY' || code === 'QUEUE_WAIT_TIMEOUT' || code === 'JOB_TIMEOUT'
+        ? 503
+        : code === 'REQUEST_ABORTED'
+          ? 499
+          : 400;
+      return res.status(status).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Impossible de convertir ce fichier.'
+        code,
+        error: publicErrorFromUnknown(error, 'Impossible de convertir ce fichier.')
       });
     } finally {
       await cleanupUploads(uploadedFile);

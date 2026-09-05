@@ -12,14 +12,24 @@ import { convertOfficeFile } from '../services/office.js';
 import { consumeWeekAi, WEEK_AI_LIMIT } from '../services/entitlements.js';
 import { getPaidAccess } from '../middleware/quota.js';
 import { cleanupUploads, unlinkQuiet } from '../utils/temp.js';
+import { requestSignal } from '../utils/jobQueue.js';
+import { publicToolResult } from '../utils/downloadGrant.js';
+import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
 
 function sendError(res: express.Response, error: unknown, fallback: string) {
   console.error(fallback, error);
-  return res.status(400).json({
+  const code = error instanceof Error ? (error as Error & { code?: string }).code : undefined;
+  const status = code === 'SERVER_BUSY' || code === 'QUEUE_WAIT_TIMEOUT' || code === 'JOB_TIMEOUT' || code === 'TEMP_DISK_FULL'
+    ? 503
+    : code === 'REQUEST_ABORTED'
+      ? 499
+      : 400;
+  return res.status(status).json({
     success: false,
-    error: error instanceof Error ? error.message : fallback
+    code,
+    error: publicErrorFromUnknown(error, fallback)
   });
 }
 
@@ -51,7 +61,7 @@ router.post('/to-png', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    return res.json({ success: true, data: await pdfToPng(uploadedFile.path) });
+    return res.json({ success: true, data: publicToolResult(req, res, await pdfToPng(uploadedFile.path)) });
   } catch (error) {
     return sendError(res, error, 'Impossible de convertir ce PDF en PNG.');
   } finally {
@@ -63,7 +73,10 @@ router.post('/to-text', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    return res.json({ success: true, data: await pdfToText(uploadedFile.path, String(req.body.password || '')) });
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await pdfToText(uploadedFile.path, String(req.body.password || '')))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible d’extraire le texte.');
   } finally {
@@ -75,7 +88,10 @@ router.post('/unlock', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    return res.json({ success: true, data: await unlockPdf(uploadedFile.path, String(req.body.password || '')) });
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await unlockPdf(uploadedFile.path, String(req.body.password || '')))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible de déverrouiller ce PDF.');
   } finally {
@@ -87,7 +103,10 @@ router.post('/ocr', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    return res.json({ success: true, data: await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr')) });
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr'), requestSignal(req)))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible d’effectuer l’OCR.');
   } finally {
@@ -101,7 +120,10 @@ router.post('/summarize', upload.single('file'), async (req, res) => {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
     if (!(await allowWeekAi(req, res))) return;
     const length = req.body.length === 'short' ? 'short' : 'medium';
-    return res.json({ success: true, data: await summarizePdf(uploadedFile.path, length) });
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await summarizePdf(uploadedFile.path, length))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible de résumer ce PDF.');
   } finally {
@@ -116,7 +138,11 @@ router.post('/translate', upload.single('file'), async (req, res) => {
     if (!(await allowWeekAi(req, res))) return;
     return res.json({
       success: true,
-      data: await translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en'))
+      data: publicToolResult(
+        req,
+        res,
+        await translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en'))
+      )
     });
   } catch (error) {
     return sendError(res, error, 'Impossible de traduire ce PDF.');
@@ -156,7 +182,10 @@ router.post('/html-to-pdf', (req, res, next) => {
       await fs.writeFile(written, asHtmlDocument(pasted), 'utf8');
       source = written;
     }
-    return res.json({ success: true, data: await convertOfficeFile(source, 'html-to-pdf') });
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await convertOfficeFile(source, 'html-to-pdf'))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible de convertir ce HTML en PDF.');
   } finally {

@@ -23,8 +23,21 @@ import { applyStripeEvent, getStripe } from './services/billing.js';
 import { startTempCleanup, tempDir, unlinkQuiet } from './utils/temp.js';
 import { allQueueStats } from './utils/jobQueue.js';
 import { absoluteMaxFileBytes, FREE_MAX_FILE_BYTES } from './utils/limits.js';
+import {
+  pingConverters,
+  runtimeHealthSnapshot,
+  startEventLoopMonitor
+} from './utils/runtimeHealth.js';
+import { assertSessionSecretConfigured, readCookie } from './utils/cookies.js';
+import { corsOriginCallback } from './utils/corsAllowlist.js';
+import {
+  DOWNLOAD_OWNER_COOKIE,
+  canDownloadFile,
+  revokeDownloadGrant
+} from './utils/downloadGrant.js';
 
 dotenv.config();
+assertSessionSecretConfigured();
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -48,7 +61,10 @@ app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), asyn
   }
 });
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: corsOriginCallback,
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -57,7 +73,15 @@ app.get('/temp/:name', async (req, res) => {
   if (!name || name !== req.params.name) {
     return res.status(404).json({ success: false, error: 'Fichier introuvable.' });
   }
+
+  const owner = readCookie(req, DOWNLOAD_OWNER_COOKIE);
+  if (!canDownloadFile(name, owner)) {
+    return res.status(404).json({ success: false, error: 'Fichier introuvable ou déjà supprimé.' });
+  }
+
   const filepath = path.join(tempDir, name);
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.setHeader('Pragma', 'no-cache');
   res.download(filepath, name, async (error) => {
     if (error) {
       if (!res.headersSent) {
@@ -65,11 +89,13 @@ app.get('/temp/:name', async (req, res) => {
       }
       return;
     }
+    revokeDownloadGrant(name);
     await unlinkQuiet(filepath);
   });
 });
 
-app.get('/health', (_req, res) => {
+app.get('/health', async (_req, res) => {
+  const runtime = await runtimeHealthSnapshot();
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -77,7 +103,23 @@ app.get('/health', (_req, res) => {
     limits: {
       freeMaxFileBytes: FREE_MAX_FILE_BYTES,
       absoluteMaxFileBytes: absoluteMaxFileBytes()
-    }
+    },
+    ...runtime
+  });
+});
+
+app.get('/health/ready', async (_req, res) => {
+  const [runtime, converters] = await Promise.all([runtimeHealthSnapshot(), pingConverters()]);
+  const ready = runtime.tempDisk.freeBytes == null
+    || runtime.tempDisk.freeBytes >= (runtime.tempDisk.minFreeBytes || 0);
+  res.status(ready ? 200 : 503).json({
+    status: ready ? 'ready' : 'not_ready',
+    timestamp: new Date().toISOString(),
+    queues: allQueueStats(),
+    converters,
+    tempDisk: runtime.tempDisk,
+    eventLoopLagMs: runtime.eventLoopLagMs,
+    memory: runtime.memory
   });
 });
 
@@ -112,6 +154,14 @@ app.use((err: unknown, _req: express.Request, res: express.Response, next: expre
     return res.status(503).json({ success: false, code: 'SERVER_BUSY', error: err.message });
   }
 
+  if (err instanceof Error && ['QUEUE_WAIT_TIMEOUT', 'JOB_TIMEOUT', 'TEMP_DISK_FULL', 'DATA_LOCK_TIMEOUT'].includes((err as Error & { code?: string }).code || '')) {
+    return res.status(503).json({ success: false, code: (err as Error & { code?: string }).code, error: err.message });
+  }
+
+  if (err instanceof Error && (err as Error & { code?: string }).code === 'REQUEST_ABORTED') {
+    return res.status(499).json({ success: false, code: 'REQUEST_ABORTED', error: err.message });
+  }
+
   if (err instanceof Error && /seuls les fichiers|seules les images/i.test(err.message)) {
     return res.status(400).json({ success: false, error: err.message });
   }
@@ -121,6 +171,6 @@ app.use((err: unknown, _req: express.Request, res: express.Response, next: expre
 
 app.listen(PORT, () => {
   startTempCleanup();
+  startEventLoopMonitor();
   console.log(`Server running on port ${PORT}`);
-  console.log(`Temp directory: ${tempDir}`);
 });

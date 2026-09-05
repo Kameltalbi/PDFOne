@@ -1,0 +1,170 @@
+{
+  "at": "2026-09-05T19:41:52.850Z",
+  "api": "http://127.0.0.1:3002",
+  "marker": "ONE2PDF_SECURITY_TEST_549d7c1b-0ee6-4310-980b-48408a3735c3",
+  "passed": 33,
+  "failed": 0,
+  "results": [
+    {
+      "id": "p1-2.health_no_absolute_path",
+      "ok": true,
+      "note": "path omitted"
+    },
+    {
+      "id": "health.unauthenticated",
+      "ok": true,
+      "note": "liveness remains public"
+    },
+    {
+      "id": "p1-4.cors_rejects_evil_origin",
+      "ok": true,
+      "note": "ACAO=null"
+    },
+    {
+      "id": "p1-4.cors_allows_dev_origin",
+      "ok": true,
+      "note": "ACAO=http://127.0.0.1:5180 ACAC=true"
+    },
+    {
+      "id": "p0-1.session_secret_runtime_ok",
+      "ok": true,
+      "note": "download owner cookie minted"
+    },
+    {
+      "id": "idor.user_a_compress",
+      "ok": true,
+      "note": "status=200"
+    },
+    {
+      "id": "p1-1.json_no_filepath",
+      "ok": true,
+      "note": "filepath stripped"
+    },
+    {
+      "id": "temp.download_url_shape",
+      "ok": true,
+      "note": "/temp/compressed-9f9948934419f4331174c97777bc2b31.pdf"
+    },
+    {
+      "id": "temp.filename_high_entropy",
+      "ok": true,
+      "note": "compressed-9f9948934419f4331174c97777bc2b31.pdf"
+    },
+    {
+      "id": "p1-3.temp_requires_owner_cookie",
+      "ok": true,
+      "note": "stranger status=404"
+    },
+    {
+      "id": "p1-3.temp_denied_not_public_cache",
+      "ok": true,
+      "note": "Cache-Control=none"
+    },
+    {
+      "id": "p1-3.owner_can_download",
+      "ok": true,
+      "note": "status=200"
+    },
+    {
+      "id": "p1-3.cache_private_no_store",
+      "ok": true,
+      "note": "Cache-Control=private, no-store"
+    },
+    {
+      "id": "temp.unlink_after_download",
+      "ok": true,
+      "note": "second=404"
+    },
+    {
+      "id": "temp.traversal.../package.json",
+      "ok": true,
+      "note": "status=404"
+    },
+    {
+      "id": "temp.traversal...%2fpackage.json",
+      "ok": true,
+      "note": "status=404"
+    },
+    {
+      "id": "temp.traversal.....//....//package.json",
+      "ok": true,
+      "note": "status=404"
+    },
+    {
+      "id": "upload.filename_sanitized",
+      "ok": true,
+      "note": "storedName=compressed-efeecc384ce71bc011e0d328c9f9ecb9.pdf"
+    },
+    {
+      "id": "malformed.empty.pdf",
+      "ok": true,
+      "note": "status=500"
+    },
+    {
+      "id": "malformed.empty.pdf.no_path_leak",
+      "ok": true
+    },
+    {
+      "id": "malformed.truncated.pdf",
+      "ok": true,
+      "note": "status=500"
+    },
+    {
+      "id": "malformed.truncated.pdf.no_path_leak",
+      "ok": true
+    },
+    {
+      "id": "malformed.fake.pdf",
+      "ok": true,
+      "note": "status=500"
+    },
+    {
+      "id": "malformed.fake.pdf.no_path_leak",
+      "ok": true
+    },
+    {
+      "id": "lifecycle.result_ok",
+      "ok": true,
+      "note": "compressed-e46e80dba2898939665a13deb758915e.pdf"
+    },
+    {
+      "id": "lifecycle.marker_not_in_temp",
+      "ok": true,
+      "note": "hits=0"
+    },
+    {
+      "id": "limits.free_rejects_25mb",
+      "ok": true,
+      "note": "status=400"
+    },
+    {
+      "id": "unlock.wrong_password",
+      "ok": true,
+      "note": "status=400"
+    },
+    {
+      "id": "unlock.wrong_password.no_path_leak",
+      "ok": true
+    },
+    {
+      "id": "p1-6.restore_email_alone_rejected",
+      "ok": true,
+      "note": "status=401"
+    },
+    {
+      "id": "p1-5.no_builtin_superadmins",
+      "ok": true,
+      "note": "admins.ts is env-only"
+    },
+    {
+      "id": "cookies.quota_httponly",
+      "ok": true,
+      "note": "quota cookie present"
+    },
+    {
+      "id": "cookies.dl_httponly",
+      "ok": true,
+      "note": "dl cookie present"
+    }
+  ]
+}
