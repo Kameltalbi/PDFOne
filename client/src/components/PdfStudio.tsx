@@ -327,16 +327,8 @@ export function StudioResult({
           )}
 
           {!paid && (
-            <Link className="studio-done-pro" to="/pricing">
-              <div>
-                <strong>One2PDF Pro</strong>
-                <ul>
-                  {m.pricing.monthIncludes.slice(0, 3).map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <span>{m.pricing.monthCta}</span>
+            <Link className="studio-done-pro" to="/pricing" aria-label={m.common.getPro}>
+              <img src="/one2pdf-pro-banner.jpg" alt={m.common.getPro} />
             </Link>
           )}
 

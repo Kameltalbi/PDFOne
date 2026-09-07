@@ -867,37 +867,23 @@
 }
 
 .studio-done-pro {
+  display: block;
   margin-top: 1.15rem;
-  padding: 1.1rem 1.15rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #ed5e44, #c2410c);
-  color: white;
+  overflow: hidden;
+  border-radius: 12px;
+  line-height: 0;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.14);
 }
 
-.studio-done-pro:hover {
-  color: white;
-  filter: brightness(1.04);
+.studio-done-pro img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.2s ease;
 }
 
-.studio-done-pro ul {
-  margin: 0.4rem 0 0;
-  padding-inline-start: 1.1rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-}
-
-.studio-done-pro > span {
-  flex: 0 0 auto;
-  padding: 0.55rem 0.85rem;
-  border-radius: 6px;
-  background: white;
-  color: #ed5e44;
-  font-size: 0.82rem;
-  font-weight: 800;
+.studio-done-pro:hover img {
+  transform: scale(1.015);
 }
 
 .studio-done-restart {
