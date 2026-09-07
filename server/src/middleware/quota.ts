@@ -84,6 +84,28 @@ function releaseFreeUsage(req: Request, res: Response, previous: number, day: st
   commitFreeUsage(req, res, restored, day);
 }
 
+/** Run once before response headers leave, so Set-Cookie can still be applied. */
+function beforeHeaders(res: Response, onHeaders: () => void, onAbort?: () => void) {
+  let done = false;
+  const finish = (kind: 'headers' | 'abort') => {
+    if (done) return;
+    done = true;
+    if (kind === 'abort') onAbort?.();
+    else onHeaders();
+  };
+  const origWriteHead = res.writeHead.bind(res);
+  res.writeHead = ((...args: Parameters<Response['writeHead']>) => {
+    finish('headers');
+    return origWriteHead(...args);
+  }) as Response['writeHead'];
+  const origEnd = res.end.bind(res);
+  res.end = ((...args: Parameters<Response['end']>) => {
+    finish('headers');
+    return origEnd(...args);
+  }) as Response['end'];
+  res.on('close', () => finish('abort'));
+}
+
 /**
  * Commercial daily quota only.
  * Successful responses (2xx/3xx) keep the reserved unit; failures release it.
@@ -103,15 +125,13 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
     const access = await getPaidAccess(req, res);
     if (access) {
       let committed = false;
-      const commit = () => {
+      beforeHeaders(res, () => {
         if (committed) return;
         if (res.statusCode >= 200 && res.statusCode < 400) {
           committed = true;
           void incrementUsage(access.customerId);
         }
-      };
-      res.on('finish', commit);
-      res.on('close', commit);
+      });
       return next();
     }
 
@@ -126,7 +146,7 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
     ipUsage.set(clientIp(req), { day, count: reserved });
 
     let settled = false;
-    const settle = () => {
+    const settleSuccessOrFailure = () => {
       if (settled) return;
       settled = true;
       if (res.statusCode >= 200 && res.statusCode < 400) {
@@ -135,8 +155,12 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
         releaseFreeUsage(req, res, usage.usedToday, day);
       }
     };
-    res.on('finish', settle);
-    res.on('close', settle);
+    const settleAbort = () => {
+      if (settled) return;
+      settled = true;
+      releaseFreeUsage(req, res, usage.usedToday, day);
+    };
+    beforeHeaders(res, settleSuccessOrFailure, settleAbort);
     return next();
   } catch (error) {
     console.error('Quota error:', error);

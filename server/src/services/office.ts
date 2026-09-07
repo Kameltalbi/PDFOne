@@ -88,7 +88,7 @@ async function pdfToExcel(filePath: string) {
   return writeTemp(xlsx, 'pdf-to-excel', 'xlsx');
 }
 
-export async function convertOfficeFile(filePath: string, job: OfficeJob) {
+export async function convertOfficeFile(filePath: string, job: OfficeJob, signal?: AbortSignal) {
   const spec = OFFICE_JOBS[job];
   const ext = path.extname(filePath).toLowerCase();
   if (!(spec.in as readonly string[]).includes(ext)) {
@@ -96,7 +96,7 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob) {
   }
 
   if (job === 'pdf-to-excel') {
-    return officeQueue.run(() => pdfToExcel(filePath));
+    return officeQueue.run(() => pdfToExcel(filePath), { signal });
   }
 
   return officeQueue.run(async () => {
@@ -144,11 +144,15 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob) {
       const bytes = await fs.readFile(produced);
       return writeTemp(bytes, job, spec.out);
     } catch (error) {
+      const code = error instanceof Error ? (error as Error & { code?: string }).code : undefined;
       if (error instanceof Error && (
         error.message.includes('LibreOffice n’est pas installé')
         || error.message.includes('n’a pas produit')
         || error.message.includes('pris trop de temps')
-        || (error as Error & { code?: string }).code === 'SERVER_BUSY'
+        || code === 'SERVER_BUSY'
+        || code === 'QUEUE_WAIT_TIMEOUT'
+        || code === 'JOB_TIMEOUT'
+        || code === 'REQUEST_ABORTED'
       )) {
         throw error;
       }
@@ -157,5 +161,5 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob) {
       await rmTree(outDir);
       await rmTree(profile);
     }
-  });
+  }, { signal });
 }

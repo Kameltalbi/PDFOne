@@ -115,10 +115,10 @@ const workerEntry = resolveWorkerEntry();
 const pool = workerEntry ? new HeavyWorkerPool(envInt('HEAVY_WORKERS', 1), workerEntry) : null;
 
 /** Run a heavy PDF job off the API event loop when workers are available. */
-export async function runHeavyJob<T>(job: HeavyJob): Promise<T> {
+export async function runHeavyJob<T>(job: HeavyJob, signal?: AbortSignal): Promise<T> {
   return pdfQueue.run(async () => {
     if (pool) return pool.run<T>(job);
     const { executeHeavyJob } = await import('./heavyJobs.js');
     return executeHeavyJob(job) as Promise<T>;
-  });
+  }, { signal });
 }

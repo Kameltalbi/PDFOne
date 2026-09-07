@@ -2,6 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { withFileLock } from '../utils/fileLock.js';
+
 export type PaidPlan = 'week' | 'month' | 'year';
 export type StoredPlan = PaidPlan | 'business' | 'life';
 
@@ -27,7 +29,10 @@ const dataFile = path.join(dataDir, 'entitlements.json');
 let queue = Promise.resolve();
 
 function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(fn, fn);
+  const run = queue.then(
+    () => withFileLock('entitlements', fn),
+    () => withFileLock('entitlements', fn)
+  );
   queue = run.then(() => undefined, () => undefined);
   return run;
 }

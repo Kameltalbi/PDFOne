@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { normalizeEmail } from './entitlements.js';
+import { withFileLock } from '../utils/fileLock.js';
 
 const scryptAsync = promisify(scrypt);
 
@@ -33,7 +34,10 @@ const dataFile = path.join(dataDir, 'users.json');
 let queue = Promise.resolve();
 
 function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(fn, fn);
+  const run = queue.then(
+    () => withFileLock('users', fn),
+    () => withFileLock('users', fn)
+  );
   queue = run.then(() => undefined, () => undefined);
   return run;
 }

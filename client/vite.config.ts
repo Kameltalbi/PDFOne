@@ -90,12 +90,30 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost:3002',
+          target: 'http://127.0.0.1:3002',
           changeOrigin: true,
+          xfwd: true,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              const forwarded = req.headers['x-forwarded-for'];
+              if (typeof forwarded === 'string' && forwarded.trim()) {
+                proxyReq.setHeader('x-forwarded-for', forwarded.split(',')[0].trim());
+              }
+            });
+          },
         },
         '/temp': {
-          target: 'http://localhost:3002',
+          target: 'http://127.0.0.1:3002',
           changeOrigin: true,
+          xfwd: true,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              const forwarded = req.headers['x-forwarded-for'];
+              if (typeof forwarded === 'string' && forwarded.trim()) {
+                proxyReq.setHeader('x-forwarded-for', forwarded.split(',')[0].trim());
+              }
+            });
+          },
         },
       },
     },

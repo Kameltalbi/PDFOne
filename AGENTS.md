@@ -31,6 +31,8 @@ Copy `server/.env.example` → `server/.env`. Important knobs:
 - `MAX_FILE_SIZE`, `MAX_FILES`, `TEMP_FILE_TTL`, `FREE_DAILY_DOCS`
 - `PDF_CONCURRENCY` / `PDF_MAX_WAITING`, `OFFICE_*`, `OCR_*`
 - `HEAVY_WORKERS`, `RASTER_MAX_PIXELS`
+- `QUEUE_WAIT_TIMEOUT_MS`, `PDF_RUN_TIMEOUT_MS`, `OFFICE_RUN_TIMEOUT_MS`, `OCR_RUN_TIMEOUT_MS`
+- `MIN_FREE_TEMP_BYTES`
 - `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_MS`
 - Stripe / LibreOffice / Tesseract / OpenAI as needed
 
@@ -39,11 +41,16 @@ Copy `server/.env.example` → `server/.env`. Important knobs:
 - Free: 20 MB / file, 3 docs / day (default)
 - Paid: up to absolute max (default 1 GB, capped by `MAX_FILE_SIZE`)
 - Temp results: ~15 minutes TTL; retained files are not purged while pinned
+- Native OS temp dirs prefixed `pdfone-*` are purged when abandoned
+- JSON entitlements/users use atomic writes + cross-process lockfiles under `data/`
 - Port **3002** for the API (avoid 3001 conflicts)
 
-## Capacity / audits
+## Health
 
-See `capacity/` for local fixtures, stage runners, and the priority corrections report. Do not invent concurrency numbers without measurement.
+- `GET /health` — liveness + queues + memory + disk + converter presence + event-loop lag
+- `GET /health/ready` — readiness including LibreOffice/Tesseract `--version` pings
+
+See `capacity/` for load stages and fixtures. See `e2e/` for Playwright user journeys and the Stripe manual checklist. Do not invent concurrency numbers without measurement.
 
 ## Notes
 

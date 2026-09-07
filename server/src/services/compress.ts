@@ -5,7 +5,8 @@ export type CompressQuality = 'low' | 'medium' | 'high';
 
 export async function compressPdf(
   filePath: string,
-  quality: CompressQuality = 'medium'
+  quality: CompressQuality = 'medium',
+  signal?: AbortSignal
 ): Promise<{
   filepath: string;
   filename: string;
@@ -14,9 +15,12 @@ export async function compressPdf(
   compressedSize: number;
 }> {
   try {
-    return await runHeavyJob({ type: 'compress', filePath, quality });
+    return await runHeavyJob({ type: 'compress', filePath, quality }, signal);
   } catch (error) {
-    if ((error as Error & { code?: string }).code === 'SERVER_BUSY') throw error;
+    const code = (error as Error & { code?: string }).code;
+    if (code === 'SERVER_BUSY' || code === 'QUEUE_WAIT_TIMEOUT' || code === 'JOB_TIMEOUT' || code === 'REQUEST_ABORTED') {
+      throw error;
+    }
     throw new Error(mapPdfError(error, 'Impossible de compresser ce PDF.'));
   }
 }

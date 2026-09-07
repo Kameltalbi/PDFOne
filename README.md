@@ -38,6 +38,8 @@ Redis/BullMQ are **not** used by the current application code. Admission is in-m
 | Paid / absolute upload ceiling | 1 GB (or `MAX_FILE_SIZE` if lower) | `MAX_FILE_SIZE` |
 | Free daily docs | 3 | `FREE_DAILY_DOCS` |
 | Request rate limit | 30 / minute / IP | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_MS` |
+| Queue wait / run timeouts | 2 min wait; PDF 5 min; Office/OCR 10 min | `QUEUE_WAIT_TIMEOUT_MS`, `*_RUN_TIMEOUT_MS` |
+| Min free temp disk | 512 MB | `MIN_FREE_TEMP_BYTES` |
 | PDF jobs | 2 active, 20 waiting | `PDF_CONCURRENCY`, `PDF_MAX_WAITING` |
 | Office / OCR jobs | 1 active, 10 waiting each | `OFFICE_*`, `OCR_*` |
 | Heavy workers | 1 | `HEAVY_WORKERS` |
@@ -49,7 +51,12 @@ Failed tool requests do not consume the free daily quota (reserved unit is relea
 
 ## Health
 
-`GET /health` returns process liveness plus queue stats and upload limits.
+`GET /health` — liveness plus queues, memory, temp disk, converter presence, event-loop lag.  
+`GET /health/ready` — readiness check including LibreOffice/Tesseract version pings.
+
+## E2E
+
+See `e2e/README.md` (Playwright) and `e2e/CHECKLIST-STRIPE.md` (manual Stripe funnel).
 
 ## Build
 

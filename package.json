@@ -16,9 +16,16 @@
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
     "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
-    "clean": "rm -rf client/dist server/dist temp/*"
+    "clean": "rm -rf client/dist server/dist temp/*",
+    "test:e2e": "playwright test -c e2e/playwright.config.ts",
+    "test:e2e:ui": "playwright test -c e2e/playwright.config.ts --ui",
+    "test:e2e:mint-pro": "node e2e/scripts/mint-pro-access.mjs",
+    "test:e2e:chromium": "playwright test -c e2e/playwright.config.ts --project=chromium-desktop",
+    "test:e2e:webkit": "playwright test -c e2e/playwright.config.ts --project=webkit-desktop",
+    "test:e2e:mobile": "playwright test -c e2e/playwright.config.ts --project=mobile-safari"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "concurrently": "^8.2.2",
     "typescript": "^5.3.3"
   },

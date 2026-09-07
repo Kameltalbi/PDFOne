@@ -82,7 +82,7 @@ function parseTsvLines(tsv: string, pageIndex: number, pageWidth: number, pageHe
   return blocks;
 }
 
-export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<LayoutBlock[]> {
+export async function ocrLayoutBlocks(filePath: string, locale = 'fr', signal?: AbortSignal): Promise<LayoutBlock[]> {
   return ocrQueue.run(async () => {
     const bin = await resolveTesseract();
     const langs = await availableLangs(bin);
@@ -109,10 +109,10 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr'): Promise<
       await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);
     }
     return blocks;
-  });
+  }, { signal });
 }
 
-export async function ocrPdf(filePath: string, locale = 'fr') {
+export async function ocrPdf(filePath: string, locale = 'fr', signal?: AbortSignal) {
   return ocrQueue.run(async () => {
     try {
       const bin = await resolveTesseract();
@@ -183,5 +183,5 @@ export async function ocrPdf(filePath: string, locale = 'fr') {
       }
       throw new Error(mapPdfError(error, error instanceof Error ? error.message : 'Impossible d’effectuer l’OCR.'));
     }
-  });
+  }, { signal });
 }
