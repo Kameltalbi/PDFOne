@@ -1,6 +1,6 @@
-export const GA_MEASUREMENT_ID = 'G-YY8GVH11J4';
+export const GA_MEASUREMENT_ID = 'G-J905E602MX';
 
-/** Destinations are configured in index.html via gtag('config', GA_MEASUREMENT_ID). */
+/** The destination is configured once in index.html; page views are sent by AppShell. */
 
 export type ToolName =
   | 'merge_pdf'

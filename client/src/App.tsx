@@ -59,7 +59,7 @@ import './App.css';
 function AppShell() {
   const { pathname, search } = useLocation();
   const bare = pathname === '/login' || pathname === '/signup' || pathname.startsWith('/internal');
-  const skipFirstPageView = useRef(true);
+  const lastPageView = useRef<string | null>(null);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -74,10 +74,9 @@ function AppShell() {
 
   useEffect(() => {
     if (pathname.startsWith('/internal')) return;
-    if (skipFirstPageView.current) {
-      skipFirstPageView.current = false;
-      return;
-    }
+    const location = `${pathname}${search}`;
+    if (lastPageView.current === location) return;
+    lastPageView.current = location;
     trackPageView(pathname, search);
   }, [pathname, search]);
 
