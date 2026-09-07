@@ -13,6 +13,8 @@ export type RasterOptions = {
   password?: string;
   /** Soft cap on decoded pixels per page (width * height). */
   maxPixels?: number;
+  /** Stop after this many pages (1-based count). */
+  maxPages?: number;
 };
 
 type PdfjsCanvas = {
@@ -87,9 +89,10 @@ export async function forEachRasterPage(
   const { loadingTask, pdf } = await openPdf(pdfBytes, options.password || '');
   const canvasFactory = (pdf as unknown as { canvasFactory: PdfjsFactory }).canvasFactory;
   const total = pdf.numPages;
+  const limit = options.maxPages && options.maxPages > 0 ? Math.min(total, options.maxPages) : total;
 
   try {
-    for (let pageNumber = 1; pageNumber <= total; pageNumber++) {
+    for (let pageNumber = 1; pageNumber <= limit; pageNumber++) {
       const page = await pdf.getPage(pageNumber);
       const baseViewport = page.getViewport({ scale: 1 });
       const pageScale = effectiveScale(baseViewport.width, baseViewport.height, scale, maxPixels);
@@ -118,6 +121,18 @@ export async function forEachRasterPage(
   }
 
   return total;
+}
+
+/** First page only — used for result-screen thumbnails. */
+export async function rasterizeFirstPage(
+  pdfBytes: Uint8Array,
+  options: RasterOptions = {}
+): Promise<Buffer | null> {
+  let first: Buffer | null = null;
+  await forEachRasterPage(pdfBytes, { ...options, maxPages: 1 }, ({ image }) => {
+    first = image;
+  });
+  return first;
 }
 
 /** Convenience when the caller truly needs every page at once. Prefer `forEachRasterPage`. */

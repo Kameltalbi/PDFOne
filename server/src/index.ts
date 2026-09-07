@@ -21,6 +21,7 @@ import { quotaMiddleware } from './middleware/quota.js';
 import { rateLimitMiddleware } from './middleware/rateLimit.js';
 import { applyStripeEvent, getStripe } from './services/billing.js';
 import { startTempCleanup, tempDir, unlinkQuiet } from './utils/temp.js';
+import { buildResultPreview } from './utils/resultPreview.js';
 import { allQueueStats } from './utils/jobQueue.js';
 import { absoluteMaxFileBytes, FREE_MAX_FILE_BYTES } from './utils/limits.js';
 import {
@@ -67,6 +68,32 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/temp/:name/preview', async (req, res) => {
+  const name = path.basename(req.params.name);
+  if (!name || name !== req.params.name) {
+    return res.status(404).json({ success: false, error: 'Fichier introuvable.' });
+  }
+
+  const owner = readCookie(req, DOWNLOAD_OWNER_COOKIE);
+  if (!canDownloadFile(name, owner)) {
+    return res.status(404).json({ success: false, error: 'Fichier introuvable ou déjà supprimé.' });
+  }
+
+  try {
+    const preview = await buildResultPreview(path.join(tempDir, name));
+    if (!preview) {
+      return res.status(404).json({ success: false, error: 'Aperçu indisponible.' });
+    }
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Content-Type', 'image/jpeg');
+    res.setHeader('Content-Disposition', 'inline');
+    return res.send(preview);
+  } catch {
+    return res.status(404).json({ success: false, error: 'Aperçu indisponible.' });
+  }
+});
 
 app.get('/temp/:name', async (req, res) => {
   const name = path.basename(req.params.name);

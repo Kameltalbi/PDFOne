@@ -4,6 +4,7 @@ import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
 import { useBilling } from '../lib/billing';
 import { trackFileDownload } from '../lib/analytics';
+import { loadResultPreview } from '../lib/pdfPreview';
 import { AdBanner } from './AdBanner';
 import { RelatedTools } from './RelatedTools';
 import './Studio.css';
@@ -214,10 +215,43 @@ export function StudioResult({
   const { status } = useBilling();
   const paid = status.paid;
   const [copied, setCopied] = useState(false);
+  const [resultPreview, setResultPreview] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(true);
   const trackedDownload = useRef(false);
   const fileName = resultFileName(sourceName, downloadName);
   const ext = (fileName.split('.').pop() || 'FILE').toUpperCase();
   const showSource = Boolean(sourceName && sourceName !== fileName);
+  const shownPreview = resultPreview || previewSrc || null;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let stale = false;
+    let created: string | null = null;
+    setResultPreview(null);
+    setPreviewLoading(true);
+
+    void loadResultPreview(downloadUrl, fileName, controller.signal)
+      .then((result) => {
+        if (stale) {
+          if (result?.objectUrl) URL.revokeObjectURL(result.objectUrl);
+          return;
+        }
+        created = result?.objectUrl ?? null;
+        setResultPreview(result?.src ?? null);
+      })
+      .catch(() => {
+        if (!stale) setResultPreview(null);
+      })
+      .finally(() => {
+        if (!stale) setPreviewLoading(false);
+      });
+
+    return () => {
+      stale = true;
+      controller.abort();
+      if (created) URL.revokeObjectURL(created);
+    };
+  }, [downloadUrl, fileName]);
 
   const onDownload = () => {
     if (trackedDownload.current) return;
@@ -240,11 +274,11 @@ export function StudioResult({
     <div className="studio-done" aria-label={title}>
       <div className="studio-done-grid">
         <div className="studio-done-preview">
-          <a className="studio-done-sheet" href={downloadUrl} download={fileName} onClick={onDownload}>
-            {previewSrc ? (
-              <img src={previewSrc} alt={fileName} />
+          <a className="studio-done-sheet" href={downloadUrl} download={fileName} onClick={onDownload} aria-busy={previewLoading && !shownPreview}>
+            {shownPreview ? (
+              <img src={shownPreview} alt={fileName} />
             ) : (
-              <div className="studio-done-placeholder" aria-hidden="true">
+              <div className={`studio-done-placeholder${previewLoading ? ' is-loading' : ''}`} aria-hidden="true">
                 <span className="studio-done-fold" />
                 <b>{ext}</b>
                 <i /><i /><i />

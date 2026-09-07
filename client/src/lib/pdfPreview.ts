@@ -123,6 +123,95 @@ export function rotateImageDataUrl(src: string, degrees: number): Promise<string
   });
 }
 
+const IMAGE_EXT = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
+const PDF_PREVIEW_MAX_BYTES = 80 * 1024 * 1024;
+
+export type ResultPreview = { src: string; objectUrl?: string };
+
+function fileExt(name: string) {
+  const clean = name.split('?')[0].split('#')[0];
+  const dot = clean.lastIndexOf('.');
+  return dot >= 0 ? clean.slice(dot + 1).toLowerCase() : '';
+}
+
+function tempPreviewPath(downloadUrl: string): string | null {
+  try {
+    const url = new URL(downloadUrl, window.location.origin);
+    if (!url.pathname.startsWith('/temp/')) return null;
+    if (url.pathname.endsWith('/preview')) return `${url.pathname}${url.search}`;
+    return `${url.pathname}/preview${url.search}`;
+  } catch {
+    return null;
+  }
+}
+
+export async function renderPdfThumbFromUrl(url: string, signal?: AbortSignal): Promise<string | null> {
+  ensurePdfWorker();
+  const local = url.startsWith('blob:') || url.startsWith('data:');
+  const response = await fetch(url, local ? undefined : { signal, credentials: 'include' });
+  if (!response.ok || (!local && signal?.aborted)) return null;
+  const buffer = await response.arrayBuffer();
+  if (buffer.byteLength < 8 || buffer.byteLength > PDF_PREVIEW_MAX_BYTES) return null;
+  const data = new Uint8Array(buffer);
+  if (data[0] !== 0x25 || data[1] !== 0x50 || data[2] !== 0x44 || data[3] !== 0x46) return null;
+
+  const pdf = await pdfjsLib.getDocument({ data }).promise;
+  try {
+    const page = await pdf.getPage(1);
+    const base = page.getViewport({ scale: 1 });
+    const scale = Math.min(1.25, 720 / Math.max(base.width, 1));
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    await page.render({ canvas, canvasContext: context, viewport }).promise;
+    return canvas.toDataURL('image/jpeg', 0.78);
+  } catch {
+    return null;
+  } finally {
+    await closePdf(pdf);
+  }
+}
+
+/** Thumbnail of the processed download (PDF page 1 or image). Does not consume /temp downloads. */
+export async function loadResultPreview(
+  downloadUrl: string,
+  fileName: string,
+  signal?: AbortSignal
+): Promise<ResultPreview | null> {
+  const ext = fileExt(fileName) || fileExt(downloadUrl);
+  const local = downloadUrl.startsWith('blob:') || downloadUrl.startsWith('data:');
+
+  try {
+    if (local) {
+      if (IMAGE_EXT.has(ext)) return { src: downloadUrl };
+      if (ext === 'pdf' || !ext) {
+        const src = await renderPdfThumbFromUrl(downloadUrl);
+        return src ? { src } : null;
+      }
+      return null;
+    }
+
+    const previewPath = tempPreviewPath(downloadUrl);
+    if (previewPath) {
+      const response = await fetch(previewPath, { credentials: 'include', signal });
+      if (!response.ok || signal?.aborted) return null;
+      const blob = await response.blob();
+      if (blob.size < 32 || signal?.aborted) return null;
+      const objectUrl = URL.createObjectURL(blob);
+      return { src: objectUrl, objectUrl };
+    }
+
+    if (IMAGE_EXT.has(ext)) return { src: downloadUrl };
+    return null;
+  } catch (error) {
+    if (signal?.aborted || (error instanceof DOMException && error.name === 'AbortError')) return null;
+    return null;
+  }
+}
+
 export function parsePageRanges(input: string, pageCount: number): number[] {
   const pages = new Set<number>();
   const chunks = input.split(',').map((chunk) => chunk.trim()).filter(Boolean);

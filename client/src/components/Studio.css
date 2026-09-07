@@ -724,6 +724,14 @@
 .studio-done-placeholder i:nth-of-type(2) { width: 72%; }
 .studio-done-placeholder i:nth-of-type(3) { width: 54%; }
 
+.studio-done-placeholder.is-loading i {
+  animation: studio-done-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes studio-done-pulse {
+  50% { opacity: 0.4; }
+}
+
 .studio-done-ext {
   position: absolute;
   left: 0.7rem;
