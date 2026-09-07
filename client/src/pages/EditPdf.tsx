@@ -8,7 +8,7 @@ import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { useUpgrade } from '../lib/upgrade';
-import { ensurePdfWorker } from '../lib/pdfPreview';
+import { ensurePdfWorker, renderPdfThumbFromUrl } from '../lib/pdfPreview';
 import { trackFileUpload, trackProcessingSuccess } from '../lib/analytics';
 import { useIncomingPdf } from '../lib/incomingPdf';
 import './EditPdf.css';
@@ -332,6 +332,7 @@ function EditPdf() {
   const [redoStack, setRedoStack] = useState<Annotation[]>([]);
   const [zoom, setZoom] = useState(1);
   const [activePage, setActivePage] = useState(0);
+  const [toolTooltip, setToolTooltip] = useState<{ label: string; top: number } | null>(null);
 
   const openPdf = async (selectedFile: File) => {
     if (selectedFile.type !== 'application/pdf') {
@@ -364,31 +365,45 @@ function EditPdf() {
     if (!file) return;
     exportAborted.current = false;
     setIsExporting(true);
-    setExportProgress(25);
+    setExportProgress(12);
     setError('');
     const startedAt = Date.now();
+    let resultUrl: string | null = null;
+    let navigated = false;
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('annotations', JSON.stringify(annotations.map(({ id: _id, ...annotation }) => annotation)));
-      setExportProgress(55);
+      setExportProgress(38);
       const response = await fetch('/api/edit', { method: 'POST', body: formData, headers: { 'Accept-Language': document.documentElement.lang || 'en' } });
       if (!response.ok) throw new Error(m.edit.exportFail);
       const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+      resultUrl = URL.createObjectURL(blob);
       const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
-      setExportProgress(100);
+      setExportProgress(82);
+      let previewSrc: string | null = null;
+      try {
+        previewSrc = await renderPdfThumbFromUrl(resultUrl);
+      } catch {
+        previewSrc = null;
+      }
       if (exportAborted.current) {
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(resultUrl);
+        resultUrl = null;
         return;
       }
+      setExportProgress(100);
       trackProcessingSuccess(startedAt);
-      navigate('/edit-pdf/result', { state: { downloadUrl: url, filename, originalName: file.name } });
+      navigate('/edit-pdf/result', { state: { downloadUrl: resultUrl, filename, originalName: file.name, previewSrc } });
+      navigated = true;
     } catch {
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
       if (!exportAborted.current) setError(m.edit.generateFail);
     } finally {
-      setIsExporting(false);
-      setExportProgress(0);
+      if (!navigated) {
+        setIsExporting(false);
+        setExportProgress(0);
+      }
     }
   };
 
@@ -420,6 +435,7 @@ function EditPdf() {
       <StudioProcessing
         label={m.edit.exporting}
         progress={exportProgress}
+        fileName={file?.name}
         onCancel={() => {
           exportAborted.current = true;
           setIsExporting(false);
@@ -494,8 +510,32 @@ function EditPdf() {
     <main className="pdf-editor">
       <aside className="editor-toolrail" aria-label={m.edit.toolsAria}>
         <input ref={imageInputRef} hidden type="file" accept="image/png,image/jpeg" onChange={(event) => loadImage(event.target.files?.[0])} />
-        {tools.map((item) => <button key={item.id} className={tool === item.id ? 'active' : ''} onClick={() => chooseTool(item.id)} title={item.label}>{item.icon}</button>)}
+        {tools.map((item) => (
+          <button
+            key={item.id}
+            className={tool === item.id ? 'active' : ''}
+            onClick={() => chooseTool(item.id)}
+            aria-label={item.label}
+            onMouseEnter={(event) => {
+              const bounds = event.currentTarget.getBoundingClientRect();
+              setToolTooltip({ label: item.label, top: bounds.top + bounds.height / 2 });
+            }}
+            onMouseLeave={() => setToolTooltip(null)}
+            onFocus={(event) => {
+              const bounds = event.currentTarget.getBoundingClientRect();
+              setToolTooltip({ label: item.label, top: bounds.top + bounds.height / 2 });
+            }}
+            onBlur={() => setToolTooltip(null)}
+          >
+            {item.icon}
+          </button>
+        ))}
       </aside>
+      {toolTooltip && (
+        <span className="editor-tool-tooltip" role="tooltip" style={{ top: toolTooltip.top }}>
+          {toolTooltip.label}
+        </span>
+      )}
 
       <aside className="editor-sidebar">
         <div className="editor-file"><strong>{file?.name}</strong><span>{pdf.numPages} {pdf.numPages > 1 ? m.common.pages : m.common.page}</span></div>

@@ -138,41 +138,51 @@ export function StudioProcessing({
   label,
   progress,
   onCancel,
-  badge = 'PDF'
+  badge = 'PDF',
+  fileName
 }: {
   label: string;
   progress: number;
   onCancel: () => void;
   badge?: string;
+  fileName?: string;
 }) {
   const { m } = useI18n();
   const clamped = Math.max(0, Math.min(100, Math.round(progress)));
-  const radius = 54;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (clamped / 100) * circumference;
 
   return (
-    <div className="studio-processing">
-      <div className="studio-processing-ring">
-        <svg viewBox="0 0 120 120" aria-hidden="true">
-          <circle className="studio-processing-track" cx="60" cy="60" r={radius} />
-          <circle
-            className="studio-processing-value"
-            cx="60"
-            cy="60"
-            r={radius}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-          />
-        </svg>
-        <span className={`studio-processing-doc${badge.length > 1 ? ' is-long' : ''}`} aria-hidden="true">{badge}</span>
-      </div>
-      <p>
-        {label}
-        <strong>{clamped} %</strong>
-        <button type="button" className="studio-processing-cancel" onClick={onCancel} aria-label={m.common.closeMenu}>×</button>
-      </p>
-    </div>
+    <main className="studio-processing" aria-labelledby="studio-processing-title">
+      <section className="studio-processing-card" aria-live="polite">
+        <div className="studio-processing-visual" aria-hidden="true">
+          <span className={`studio-processing-doc${badge.length > 3 ? ' is-long' : ''}`}>{badge}</span>
+          <span className="studio-processing-pulse" />
+          <span className="studio-processing-pulse is-delayed" />
+        </div>
+
+        <div className="studio-processing-copy">
+          <h1 id="studio-processing-title">{label}</h1>
+          {fileName && <p title={fileName}>{fileName}</p>}
+        </div>
+
+        <div
+          className="studio-processing-progress"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={clamped}
+          aria-label={label}
+        >
+          <span style={{ width: `${clamped}%` }} />
+        </div>
+
+        <div className="studio-processing-meta">
+          <strong>{clamped} %</strong>
+          <button type="button" className="studio-processing-cancel" onClick={onCancel} aria-label={m.common.closeMenu}>
+            ×
+          </button>
+        </div>
+      </section>
+    </main>
   );
 }
 

@@ -557,71 +557,143 @@
 .studio-processing {
   min-height: calc(100svh - 88px);
   display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 1.35rem;
-  background: #fafafa;
+  place-items: center;
+  padding: 2rem 1.25rem;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(237, 94, 68, 0.09), transparent 34rem),
+    #f8fafc;
 }
 
-.studio-processing-ring {
+.studio-processing-card {
   position: relative;
-  width: 148px;
-  height: 148px;
+  width: min(560px, 100%);
+  padding: clamp(2rem, 6vw, 3.5rem);
+  display: grid;
+  justify-items: center;
+  border: 1px solid #e7eaf0;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+  text-align: center;
 }
 
-.studio-processing-ring svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.studio-processing-track,
-.studio-processing-value {
-  fill: none;
-  stroke-width: 3.5;
-}
-
-.studio-processing-track {
-  stroke: #ececec;
-}
-
-.studio-processing-value {
-  stroke: #ed5e44;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.35s ease;
+.studio-processing-visual {
+  position: relative;
+  width: 112px;
+  height: 130px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.75rem;
 }
 
 .studio-processing-doc {
-  position: absolute;
-  inset: 28px;
+  position: relative;
+  z-index: 2;
+  width: 84px;
+  height: 106px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: #2b579a;
+  border-radius: 10px 18px 10px 10px;
+  background: linear-gradient(145deg, #3569ad, #244d88);
   color: white;
-  font-size: 2.4rem;
-  font-weight: 800;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  font-size: 1.35rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  box-shadow: 0 18px 32px rgba(43, 87, 154, 0.25);
+}
+
+.studio-processing-doc::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 0 15px 0 6px;
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .studio-processing-doc.is-long {
-  font-size: 1.15rem;
+  font-size: 0.9rem;
 }
 
-.studio-processing p {
+.studio-processing-pulse {
+  position: absolute;
+  inset: 2px -7px;
+  border: 2px solid rgba(237, 94, 68, 0.28);
+  border-radius: 50%;
+  animation: studio-processing-pulse 2s ease-out infinite;
+}
+
+.studio-processing-pulse.is-delayed {
+  animation-delay: 1s;
+}
+
+@keyframes studio-processing-pulse {
+  0% { opacity: 0; transform: scale(0.72); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+.studio-processing-copy {
+  min-width: 0;
+  width: 100%;
+}
+
+.studio-processing-copy h1 {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(1.45rem, 4vw, 1.9rem);
+  font-weight: 780;
+  letter-spacing: -0.03em;
+}
+
+.studio-processing-copy p {
+  overflow: hidden;
+  margin: 0.65rem 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-processing-progress {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  margin-top: 2rem;
+  border-radius: 999px;
+  background: #e8edf3;
+}
+
+.studio-processing-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ed5e44, #f97316);
+  box-shadow: 0 0 16px rgba(237, 94, 68, 0.35);
+  transition: width 0.4s ease;
+}
+
+.studio-processing-meta {
+  width: 100%;
+  min-height: 36px;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin: 0;
-  color: #4b5563;
-  font-size: 1rem;
+  justify-content: center;
+  margin-top: 0.8rem;
 }
 
-.studio-processing strong {
-  color: #111827;
+.studio-processing-meta strong {
+  color: #334155;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .studio-processing-cancel {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.15rem;
   width: 28px;
   height: 28px;
   display: grid;
@@ -632,6 +704,17 @@
   color: white;
   font-size: 1.1rem;
   cursor: pointer;
+}
+
+.studio-processing-cancel:hover {
+  background: #9ca3af;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-processing-pulse {
+    animation: none;
+    opacity: 0.45;
+  }
 }
 
 .studio-done {

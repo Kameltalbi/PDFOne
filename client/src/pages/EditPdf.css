@@ -131,6 +131,23 @@
 .editor-toolrail button.active { background: #65be2e; color: white; }
 .editor-toolrail button.coming-tool { cursor: not-allowed; opacity: 0.42; }
 
+.editor-tool-tooltip {
+  position: fixed;
+  left: 43px;
+  z-index: 20;
+  padding: 0.32rem 0.5rem;
+  border-radius: 4px;
+  background: #fff;
+  color: #1f2937;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 18%);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
 .editor-sidebar {
   padding: 1.25rem;
   overflow-y: auto;
