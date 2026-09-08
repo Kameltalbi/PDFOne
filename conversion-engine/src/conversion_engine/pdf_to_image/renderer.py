@@ -166,6 +166,80 @@ class PdfiumPageRenderer:
             if document is not None:
                 document.close()
 
+    def render_pages(
+        self,
+        request: RenderRequest,
+        output_directory: Path,
+    ) -> RenderResult:
+        """Render complete pages as individual PNG files for OCR streaming."""
+        started = time.monotonic()
+        conversion_id = request.conversion_id or uuid.uuid4().hex
+        document = None
+        output_directory.mkdir(parents=True, exist_ok=True)
+        max_width = 0
+        max_height = 0
+        minimum_dpi = float(request.dpi)
+        capped_pages = 0
+        try:
+            document = pdfium.PdfDocument(
+                str(request.input_path),
+                password=request.password or None,
+            )
+            pages = len(document)
+            if pages <= 0:
+                raise InvalidPdfError("Le PDF ne contient aucune page.")
+            if pages > request.max_pages:
+                raise ResourceLimitError(
+                    f"Le PDF dépasse la limite de {request.max_pages} pages."
+                )
+            try:
+                document.init_forms()
+            except Exception:
+                pass
+            for index in range(pages):
+                image, effective_dpi, was_capped = self._render_page(
+                    document[index], request
+                )
+                width, height = image.size
+                max_width = max(max_width, width)
+                max_height = max(max_height, height)
+                minimum_dpi = min(minimum_dpi, effective_dpi)
+                capped_pages += int(was_capped)
+                image.save(
+                    output_directory / f"page-{index + 1:03d}.png",
+                    "PNG",
+                    dpi=(effective_dpi, effective_dpi),
+                )
+                image.close()
+            diagnostics = RenderDiagnostics(
+                pages=pages,
+                requested_dpi=request.dpi,
+                minimum_effective_dpi=round(minimum_dpi, 2),
+                maximum_width=max_width,
+                maximum_height=max_height,
+                output_kind="png-directory",
+                duration_ms=round((time.monotonic() - started) * 1000),
+                capped_pages=capped_pages,
+            )
+            return RenderResult(
+                output_path=output_directory,
+                extension="directory",
+                diagnostics=diagnostics,
+                conversion_id=conversion_id,
+            )
+        except (InvalidPdfError, ResourceLimitError, EncryptedPdfError):
+            raise
+        except Exception as error:
+            message = str(error).casefold()
+            if "password" in message or "security handler" in message:
+                raise EncryptedPdfError(
+                    "Ce PDF est protégé par un mot de passe. Déverrouillez-le avant de continuer."
+                ) from error
+            raise InvalidPdfError("Le fichier PDF est invalide ou corrompu.") from error
+        finally:
+            if document is not None:
+                document.close()
+
     def _render_page(
         self, page, request: RenderRequest
     ) -> Tuple[Image.Image, float, bool]:

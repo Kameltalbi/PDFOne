@@ -9,7 +9,7 @@ type EngineResponse = {
   ok?: boolean;
   code?: string;
   message?: string;
-  extension?: 'jpg' | 'zip';
+  extension?: 'jpg' | 'zip' | 'directory';
   conversionId?: string;
   diagnostics?: Record<string, unknown>;
 };
@@ -121,6 +121,53 @@ export async function pingPdfToImageEngine(): Promise<boolean> {
     return (await runEngine(['--check'], 8_000)).ok === true;
   } catch {
     return false;
+  }
+}
+
+export async function forEachPdfiumPage(
+  filePath: string,
+  onPage: (page: { index: number; total: number; image: Buffer }) => Promise<void> | void,
+  signal?: AbortSignal
+): Promise<number> {
+  const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-render-'));
+  const outputDirectory = path.join(workDir, 'pages');
+  try {
+    const response = await runEngine(
+      [
+        '--input', path.resolve(filePath),
+        '--output-directory', outputDirectory,
+        '--dpi', String(positiveEnv('OCR_RENDER_DPI', 200)),
+        '--max-pages', String(positiveEnv('PDF_TO_IMAGE_MAX_PAGES', 200)),
+        '--max-pixels', String(positiveEnv('RASTER_MAX_PIXELS', 12_000_000)),
+        '--max-dimension', String(positiveEnv('PDF_TO_IMAGE_MAX_DIMENSION', 10_000))
+      ],
+      positiveEnv('PDF_TO_IMAGE_RUN_TIMEOUT_MS', 300_000),
+      signal
+    );
+    if (response.extension !== 'directory') {
+      throw engineError(response);
+    }
+    const names = (await fs.readdir(outputDirectory))
+      .filter((name) => /^page-\d+\.png$/i.test(name))
+      .sort();
+    if (!names.length) {
+      throw new Error('Aucune page PDF rendue pour l’OCR.');
+    }
+    for (const [index, name] of names.entries()) {
+      if (signal?.aborted) {
+        const error = new Error('La requête a été annulée.');
+        (error as Error & { code?: string }).code = 'REQUEST_ABORTED';
+        throw error;
+      }
+      await onPage({
+        index,
+        total: names.length,
+        image: await fs.readFile(path.join(outputDirectory, name))
+      });
+    }
+    return names.length;
+  } finally {
+    await fs.rm(workDir, { recursive: true, force: true }).catch(() => undefined);
   }
 }
 

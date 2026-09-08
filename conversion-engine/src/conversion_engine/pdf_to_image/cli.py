@@ -17,6 +17,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--output-directory", type=Path)
     parser.add_argument("--dpi", type=int, default=180)
     parser.add_argument("--quality", type=int, default=85)
     parser.add_argument("--max-pages", type=int, default=200)
@@ -29,22 +30,26 @@ def main() -> int:
     if args.check:
         print(json.dumps({"ok": True, "engine": "pdfium", "version": 2}))
         return 0
-    if not args.input or not args.output:
+    if not args.input or (not args.output and not args.output_directory):
         print(json.dumps({"ok": False, "code": "INVALID_ARGUMENTS"}))
         return 2
     try:
-        result = PdfiumPageRenderer(configure_logging(args.verbose)).render(
-            RenderRequest(
-                input_path=args.input.resolve(),
-                output_path=args.output.resolve(),
-                dpi=max(72, min(300, args.dpi)),
-                jpeg_quality=max(40, min(100, args.quality)),
-                max_pages=max(1, args.max_pages),
-                max_pixels=max(1_000_000, args.max_pixels),
-                max_dimension=max(1_000, args.max_dimension),
-                password=args.password,
-                conversion_id=args.conversion_id,
-            )
+        request = RenderRequest(
+            input_path=args.input.resolve(),
+            output_path=(args.output or args.output_directory).resolve(),
+            dpi=max(72, min(300, args.dpi)),
+            jpeg_quality=max(40, min(100, args.quality)),
+            max_pages=max(1, args.max_pages),
+            max_pixels=max(1_000_000, args.max_pixels),
+            max_dimension=max(1_000, args.max_dimension),
+            password=args.password,
+            conversion_id=args.conversion_id,
+        )
+        renderer = PdfiumPageRenderer(configure_logging(args.verbose))
+        result = (
+            renderer.render_pages(request, args.output_directory.resolve())
+            if args.output_directory
+            else renderer.render(request)
         )
         print(
             json.dumps(

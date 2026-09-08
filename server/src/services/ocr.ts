@@ -4,11 +4,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { PDFDocument } from 'pdf-lib';
+import sharp from 'sharp';
 import { mapPdfError } from '../utils/pdf.js';
-import { forEachRasterPage } from '../utils/rasterize.js';
 import type { LayoutBlock } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 import { ocrQueue } from '../utils/jobQueue.js';
+import { forEachPdfiumPage } from './pdfToImage.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -90,13 +91,14 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr', signal?: 
     const lang = langs.has(wanted) ? (langs.has('eng') && wanted !== 'eng' ? `${wanted}+eng` : wanted) : 'eng';
     const bytes = await fs.readFile(filePath);
     const pdf = await PDFDocument.load(bytes);
-    const scale = 2;
     const work = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-layout-'));
     const blocks: LayoutBlock[] = [];
     try {
-      await forEachRasterPage(bytes, { scale, format: 'png' }, async ({ index, image }) => {
+      await forEachPdfiumPage(filePath, async ({ index, image }) => {
         const page = pdf.getPage(index);
         const { width, height } = page.getSize();
+        const rendered = await sharp(image).metadata();
+        const scale = (rendered.width || Math.round(width * 2)) / width;
         const input = path.join(work, `page-${index}.png`);
         const base = path.join(work, `out-${index}`);
         await fs.writeFile(input, image);
@@ -119,7 +121,6 @@ export async function ocrPdf(filePath: string, locale = 'fr', signal?: AbortSign
       const langs = await availableLangs(bin);
       const wanted = LANGS[locale] || 'eng';
       const lang = langs.has(wanted) ? (langs.has('eng') && wanted !== 'eng' ? `${wanted}+eng` : wanted) : 'eng';
-      const bytes = await fs.readFile(filePath);
       const work = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-'));
       try {
         const pdf = await PDFDocument.create();
@@ -127,7 +128,7 @@ export async function ocrPdf(filePath: string, locale = 'fr', signal?: AbortSign
         let pdfPageFailures = 0;
         let totalPages = 0;
 
-        totalPages = await forEachRasterPage(bytes, { scale: 2, format: 'png' }, async ({ index, image }) => {
+        totalPages = await forEachPdfiumPage(filePath, async ({ index, image }) => {
           const input = path.join(work, `page-${index}.png`);
           const base = path.join(work, `out-${index}`);
           await fs.writeFile(input, image);

@@ -112,6 +112,27 @@ def test_multi_page_pdf_returns_streamed_zip(image_pdf_fixtures, tmp_path):
                 assert nonwhite_ratio(image) > 0.001
 
 
+def test_ocr_mode_renders_complete_png_pages(image_pdf_fixtures, tmp_path):
+    output_directory = tmp_path / "ocr-pages"
+    request = RenderRequest(
+        input_path=image_pdf_fixtures["invoice"],
+        output_path=output_directory,
+        dpi=200,
+        max_pixels=5_000_000,
+    )
+    result = PdfiumPageRenderer(configure_logging()).render_pages(
+        request, output_directory
+    )
+    pages = sorted(output_directory.glob("page-*.png"))
+    assert result.extension == "directory"
+    assert [page.name for page in pages] == ["page-001.png"]
+    with Image.open(pages[0]) as image:
+        assert nonwhite_ratio(image) > 0.01
+        assert image.info["dpi"][0] == pytest.approx(
+            result.diagnostics.minimum_effective_dpi, abs=1
+        )
+
+
 def test_landscape_aspect_ratio_is_preserved(image_pdf_fixtures, tmp_path):
     _result, output = render(image_pdf_fixtures["landscape"], tmp_path)
     with open_jpeg(output) as image:
