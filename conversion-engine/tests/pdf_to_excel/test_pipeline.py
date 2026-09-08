@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from xml.etree import ElementTree
+from zipfile import ZipFile
 
 import pytest
 from openpyxl import Workbook, load_workbook
@@ -132,3 +134,13 @@ def test_formula_like_source_text_is_not_executable():
     assert cell.value == '=HYPERLINK("https://example.test")'
     assert cell.data_type == "s"
     assert cell.quotePrefix
+
+
+def test_table_does_not_duplicate_worksheet_auto_filter(pdf_fixtures, tmp_path):
+    result, _workbook = convert(pdf_fixtures["softfacture"], tmp_path)
+    namespace = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    with ZipFile(result.output_path) as archive:
+        worksheet = ElementTree.fromstring(archive.read("xl/worksheets/sheet2.xml"))
+        table = ElementTree.fromstring(archive.read("xl/tables/table1.xml"))
+    assert worksheet.find("x:autoFilter", namespace) is None
+    assert table.find("x:autoFilter", namespace) is not None

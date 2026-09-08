@@ -205,7 +205,6 @@ class ExcelBuilder:
                     horizontal="right" if isinstance(cell.value, (int, float)) else "left",
                 )
         sheet.freeze_panes = "A2"
-        sheet.auto_filter.ref = f"A1:{get_column_letter(len(headers))}{sheet.max_row}"
         if sheet.max_row >= 2:
             excel_table = ExcelTable(
                 displayName=f"ExtractedTable{index}",
@@ -219,6 +218,10 @@ class ExcelBuilder:
                 showColumnStripes=False,
             )
             sheet.add_table(excel_table)
+        else:
+            # A worksheet filter and a table filter over the same range make
+            # some Microsoft Excel versions report a corrupted workbook.
+            sheet.auto_filter.ref = f"A1:{get_column_letter(len(headers))}1"
         for column, header in enumerate(headers, start=1):
             values = [str(sheet.cell(row, column).value or "") for row in range(1, sheet.max_row + 1)]
             width = min(60, max(10, max(map(len, values), default=len(header)) + 2))
