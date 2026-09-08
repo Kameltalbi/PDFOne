@@ -102,7 +102,7 @@ function runEngine(
           reject(engineError(response));
           return;
         }
-        if (!response?.ok || !response.extension) {
+        if (!response?.ok) {
           reject(engineError(response));
           return;
         }
@@ -145,6 +145,9 @@ export async function convertPdfToJpegV2(
       positiveEnv('PDF_TO_IMAGE_RUN_TIMEOUT_MS', 300_000),
       signal
     );
+    if (!response.extension) {
+      throw engineError(response);
+    }
     const bytes = await fs.readFile(output);
     console.info('PDF_TO_IMAGE completed:', JSON.stringify({
       engine: 'v2',
