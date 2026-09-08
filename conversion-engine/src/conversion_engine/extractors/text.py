@@ -9,7 +9,11 @@ from conversion_engine.domain.models import BBox, ParagraphBlock, TextSpan
 
 def _inside(box: BBox, excluded: Sequence[BBox]) -> bool:
     cx, cy = (box.x0 + box.x1) / 2, (box.top + box.bottom) / 2
-    return any(item.x0 <= cx <= item.x1 and item.top <= cy <= item.bottom for item in excluded)
+    return any(
+        item.x0 - 2 <= cx <= item.x1 + 2
+        and item.top - 2 <= cy <= item.bottom + 2
+        for item in excluded
+    )
 
 
 def _color(value: Any):
@@ -58,7 +62,35 @@ class TextExtractor:
             else:
                 line.append(char)
 
-        return [self._line_to_block(sorted(line, key=lambda item: float(item["x0"]))) for line in lines]
+        blocks: List[ParagraphBlock] = []
+        for line in lines:
+            ordered = sorted(line, key=lambda item: float(item["x0"]))
+            blocks.extend(
+                self._line_to_block(segment)
+                for segment in self._split_columns(ordered)
+                if segment
+            )
+        return blocks
+
+    @staticmethod
+    def _split_columns(
+        chars: Sequence[Dict[str, Any]],
+    ) -> List[List[Dict[str, Any]]]:
+        """Split text sharing a baseline when a real layout column gap exists."""
+        if not chars:
+            return []
+        segments: List[List[Dict[str, Any]]] = [[chars[0]]]
+        for char in chars[1:]:
+            previous = segments[-1][-1]
+            gap = float(char["x0"]) - float(previous["x1"])
+            size = max(
+                float(char.get("size", 11)),
+                float(previous.get("size", 11)),
+            )
+            if gap >= max(18.0, size * 2.0):
+                segments.append([])
+            segments[-1].append(char)
+        return segments
 
     def _line_to_block(self, chars: Iterable[Dict[str, Any]]) -> ParagraphBlock:
         values = list(chars)

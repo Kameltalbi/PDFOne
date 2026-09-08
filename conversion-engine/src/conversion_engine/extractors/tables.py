@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Any, List
 
 from conversion_engine.domain.models import BBox, TableBlock
+from conversion_engine.pdf_to_excel.table_detector import TableDetector
+from conversion_engine.pdf_to_excel.text_extractor import TextExtractor
 
 
 class TableExtractor:
@@ -39,7 +41,30 @@ class TableExtractor:
                     confidence=0.9 if len(rows) >= 3 else 0.75,
                 )
             )
-        return blocks
+        if blocks:
+            return blocks
+
+        # Many invoices use only a colored header background and whitespace,
+        # without a complete ruled grid. Reuse the semantic detector from the
+        # Excel engine so these rows remain real editable Word tables.
+        extractor = TextExtractor()
+        words = extractor.extract_words(page)
+        lines = extractor.group_lines(words)
+        detected, _strategy = TableDetector().detect(page, words, lines, 1)
+        return [
+            TableBlock(
+                rows=[table.headers, *table.rows],
+                bbox=BBox(
+                    table.bbox.x0,
+                    table.bbox.top,
+                    min(float(page.width), table.bbox.x1),
+                    table.bbox.bottom,
+                ),
+                confidence=table.confidence,
+            )
+            for table in detected
+            if table.headers and table.rows
+        ]
 
     @staticmethod
     def _clean(value: Any) -> str:

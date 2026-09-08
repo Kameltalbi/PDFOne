@@ -146,10 +146,6 @@ class TableDetector:
         page_height: float,
     ) -> Tuple[List[List[str]], int]:
         x_values = [x for _label, x in anchors]
-        boundaries = [0.0] + [
-            (x_values[index] + x_values[index + 1]) / 2
-            for index in range(len(x_values) - 1)
-        ] + [page_width + 1]
         rows: List[List[str]] = []
         end_index = max(0, start - 1)
         previous_bottom: Optional[float] = None
@@ -165,16 +161,16 @@ class TableDetector:
             if previous_bottom is not None and line.bbox.top - previous_bottom > typical_height * 2.8:
                 break
             cells = [[] for _ in anchors]
-            for word in line.words:
-                column = next(
-                    (
-                        idx
-                        for idx in range(len(anchors))
-                        if boundaries[idx] <= word.x_center < boundaries[idx + 1]
-                    ),
-                    len(anchors) - 1,
+            for cluster in self._clusters(line.words):
+                # A long description may extend under the next header. Assigning
+                # every word independently at midpoint boundaries therefore
+                # corrupts borderless invoice rows. Cell-sized whitespace
+                # clusters are stable and their left edge aligns with headers.
+                column = min(
+                    range(len(anchors)),
+                    key=lambda idx: abs(cluster[0].bbox.x0 - x_values[idx]),
                 )
-                cells[column].append(word)
+                cells[column].extend(cluster)
             values = [
                 " ".join(word.text for word in sorted(cell, key=lambda item: item.bbox.x0))
                 for cell in cells

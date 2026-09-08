@@ -5,8 +5,10 @@ import re
 from dataclasses import asdict, dataclass
 from difflib import SequenceMatcher
 from pathlib import Path
+from zipfile import ZipFile
 
 from docx import Document
+from lxml import etree
 
 from conversion_engine.domain.models import (
     DocumentIR,
@@ -41,12 +43,13 @@ class QualityReport:
 class QualityEvaluator:
     def evaluate(self, source: DocumentIR, docx_path: Path) -> QualityReport:
         document = Document(docx_path)
-        output_parts = [paragraph.text for paragraph in document.paragraphs]
-        output_parts.extend(
-            cell.text
-            for table in document.tables
-            for row in table.rows
-            for cell in row.cells
+        with ZipFile(docx_path) as archive:
+            root = etree.fromstring(archive.read("word/document.xml"))
+        output_parts = root.xpath(
+            ".//w:t/text()",
+            namespaces={
+                "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            },
         )
         original = _normalize(source.text)
         output = _normalize("\n".join(output_parts))

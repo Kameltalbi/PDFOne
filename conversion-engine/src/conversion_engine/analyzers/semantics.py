@@ -14,8 +14,9 @@ class SemanticAnalyzer:
     def analyze(self, lines: Sequence[ParagraphBlock], page_width: float) -> List[ParagraphBlock]:
         if not lines:
             return []
+        two_column_layout = self._has_two_columns(lines, page_width)
         ordered = self._reading_order(lines, page_width)
-        paragraphs = self._merge_lines(ordered)
+        paragraphs = self._merge_lines(ordered, preserve_line_breaks=two_column_layout)
         body_size = median(
             span.font_size
             for block in paragraphs
@@ -51,8 +52,12 @@ class SemanticAnalyzer:
         self, lines: Sequence[ParagraphBlock], page_width: float
     ) -> List[ParagraphBlock]:
         narrow = [line for line in lines if line.bbox.width < page_width * 0.62]
-        left = [line for line in narrow if line.bbox.x1 <= page_width * 0.58]
-        right = [line for line in narrow if line.bbox.x0 >= page_width * 0.42]
+        left = [
+            line
+            for line in narrow
+            if (line.bbox.x0 + line.bbox.x1) / 2 < page_width * 0.5
+        ]
+        right = [line for line in narrow if line not in left]
         if len(left) >= 3 and len(right) >= 3:
             wide = [line for line in lines if line not in left and line not in right]
             before = [line for line in wide if line.bbox.top < min(item.bbox.top for item in narrow)]
@@ -61,7 +66,24 @@ class SemanticAnalyzer:
             return sorted(before, key=key) + sorted(left, key=key) + sorted(right, key=key) + sorted(after, key=key)
         return sorted(lines, key=lambda block: (block.bbox.top, block.bbox.x0))
 
-    def _merge_lines(self, lines: Sequence[ParagraphBlock]) -> List[ParagraphBlock]:
+    @staticmethod
+    def _has_two_columns(
+        lines: Sequence[ParagraphBlock], page_width: float
+    ) -> bool:
+        narrow = [line for line in lines if line.bbox.width < page_width * 0.62]
+        left = [
+            line
+            for line in narrow
+            if (line.bbox.x0 + line.bbox.x1) / 2 < page_width * 0.5
+        ]
+        right = [line for line in narrow if line not in left]
+        return len(left) >= 3 and len(right) >= 3
+
+    def _merge_lines(
+        self,
+        lines: Sequence[ParagraphBlock],
+        preserve_line_breaks: bool = False,
+    ) -> List[ParagraphBlock]:
         result: List[ParagraphBlock] = []
         for line in lines:
             previous = result[-1] if result else None
@@ -78,7 +100,10 @@ class SemanticAnalyzer:
             )
             if continuation:
                 if previous.spans and not previous.spans[-1].text.endswith((" ", "-")):
-                    previous.spans[-1].text += " "
+                    # Preserve the source line boundary. Word keeps this as an
+                    # editable line break, which is important for addresses,
+                    # totals and other stacked business-document fields.
+                    previous.spans[-1].text += "\n" if preserve_line_breaks else " "
                 previous.spans.extend(line.spans)
                 previous.bbox = BBox(
                     min(previous.bbox.x0, line.bbox.x0),

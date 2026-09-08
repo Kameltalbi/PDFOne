@@ -57,6 +57,16 @@ class DocumentAnalyzer:
                     tables = self.table_extractor.extract(page)
                     lines = self.text_extractor.extract(page, [table.bbox for table in tables])
                     paragraphs = self.semantic_analyzer.analyze(lines, float(page.width))
+                    for paragraph in paragraphs:
+                        center = (paragraph.bbox.x0 + paragraph.bbox.x1) / 2
+                        if (
+                            paragraph.bbox.width < float(page.width) * 0.72
+                            and abs(center - float(page.width) / 2)
+                            <= float(page.width) * 0.08
+                        ):
+                            paragraph.alignment = "center"
+                        elif paragraph.bbox.x0 >= float(page.width) * 0.58:
+                            paragraph.alignment = "right"
                     images = image_extractor.extract(page, number)
                     blocks = sorted(
                         [*paragraphs, *tables, *images],
