@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -105,13 +106,23 @@ def test_dense_pages_keep_source_positions_and_footer(tmp_path: Path):
         './/v:shape[contains(@style, "margin-top:796.00pt")]',
         namespaces=namespaces,
     )
+    positioned_shapes = root.xpath(
+        './/v:shape[contains(@style, "position:absolute")]',
+        namespaces=namespaces,
+    )
 
     assert len(Document(target).sections) == 2
     assert len(textboxes) == 8
     assert len(footer_shapes) == 2
+    for shape in positioned_shapes:
+        style = shape.get("style")
+        left = float(re.search(r"margin-left:([\d.]+)pt", style).group(1))
+        width = float(re.search(r"width:([\d.]+)pt", style).group(1))
+        assert left + width <= 595 - 24
+        assert left + width <= 550 + 3
 
 
 def test_normalizes_pdf_font_face_names():
     assert DocxBuilder._safe_font("ABCDEF+Arial-Bold") == "Arial"
     assert DocxBuilder._safe_font("Carlito-Regular") == "Arial"
-    assert DocxBuilder._word_font_size("Carlito-Regular", 11) == 9.9
+    assert DocxBuilder._word_font_size("Carlito-Regular", 11) == 9.35

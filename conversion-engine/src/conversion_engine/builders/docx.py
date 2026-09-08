@@ -147,10 +147,15 @@ class DocxBuilder:
             self._vml_shape_type_added = True
 
         font_size = max((span.font_size for span in block.spans), default=9)
-        width_padding = max(12.0, font_size * 2.0)
+        # Keep the PDF's right margin. A large safety width makes VML text
+        # boxes run to the page edge in Microsoft Word even when LibreOffice
+        # renders them correctly.
+        width_padding = min(3.0, max(1.5, (page.width - block.bbox.x1) * 0.05))
+        if block.kind == "heading" and block.alignment == "left":
+            width_padding = max(width_padding, font_size * 3.0)
         width = min(
             max(14.0, block.bbox.width + width_padding),
-            max(14.0, page.width - block.bbox.x0 - 12.0),
+            max(14.0, page.width - block.bbox.x0 - 24.0),
         )
         height = max(font_size * 1.35, block.bbox.height + 5)
         shape = etree.Element(f"{{{VML_NS}}}shape")
@@ -565,7 +570,7 @@ class DocxBuilder:
         # A small compensation prevents source lines from wrapping or being
         # clipped after these unavailable fonts are mapped to Arial.
         normalized = re.sub(r"^[A-Z]{6}\+", "", font_name or "").casefold()
-        scale = 0.9 if any(
+        scale = 0.85 if any(
             family in normalized for family in ("aptos", "calibri", "carlito")
         ) else 1.0
         return max(7.0, min(36.0, font_size * scale))
