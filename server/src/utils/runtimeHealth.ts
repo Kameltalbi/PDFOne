@@ -2,6 +2,17 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
 import { tempDir } from './temp.js';
+import {
+  pingPdfToDocxEngine
+} from '../services/pdfToDocx.js';
+import {
+  pdfToExcelV2Enabled,
+  pingPdfToExcelEngine
+} from '../services/pdfToExcel.js';
+import {
+  pdfToImageV2Enabled,
+  pingPdfToImageEngine
+} from '../services/pdfToImage.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -76,11 +87,20 @@ export async function converterAvailability() {
     '/usr/local/bin/tesseract',
     '/usr/bin/tesseract'
   ]);
+  const pdfToDocxPythonPath = await firstExisting([
+    process.env.PDF2DOCX_PYTHON_PATH,
+    '/opt/homebrew/bin/python3',
+    '/usr/local/bin/python3',
+    '/usr/bin/python3',
+    '/Library/Developer/CommandLineTools/usr/bin/python3'
+  ]);
   return {
     libreoffice: Boolean(libreoffice),
     tesseract: Boolean(tesseract),
+    pdfToDocx: Boolean(pdfToDocxPythonPath),
     libreofficePath: libreoffice,
-    tesseractPath: tesseract
+    tesseractPath: tesseract,
+    pdfToDocxPythonPath
   };
 }
 
@@ -88,6 +108,9 @@ export async function pingConverters() {
   const available = await converterAvailability();
   let libreofficeOk = false;
   let tesseractOk = false;
+  let pdfToDocxOk = false;
+  let pdfToExcelOk: boolean | null = null;
+  let pdfToImageOk: boolean | null = null;
   if (available.libreofficePath) {
     try {
       await execFileAsync(available.libreofficePath, ['--version'], { timeout: 8000 });
@@ -104,11 +127,26 @@ export async function pingConverters() {
       tesseractOk = false;
     }
   }
+  if (available.pdfToDocxPythonPath) {
+    pdfToDocxOk = await pingPdfToDocxEngine();
+  }
+  if (pdfToExcelV2Enabled()) {
+    pdfToExcelOk = await pingPdfToExcelEngine();
+  }
+  if (pdfToImageV2Enabled()) {
+    pdfToImageOk = await pingPdfToImageEngine();
+  }
   return {
     libreoffice: available.libreoffice,
     tesseract: available.tesseract,
+    pdfToDocx: available.pdfToDocx,
     libreofficeOk,
-    tesseractOk
+    tesseractOk,
+    pdfToDocxOk,
+    pdfToExcelEngine: pdfToExcelV2Enabled() ? 'v2' : 'v1',
+    pdfToExcelOk,
+    pdfToImageEngine: pdfToImageV2Enabled() ? 'v2' : 'v1',
+    pdfToImageOk
   };
 }
 
@@ -150,7 +188,10 @@ export async function runtimeHealthSnapshot() {
     },
     converters: {
       libreoffice: converters.libreoffice,
-      tesseract: converters.tesseract
+      tesseract: converters.tesseract,
+      pdfToDocx: converters.pdfToDocx,
+      pdfToExcelEngine: pdfToExcelV2Enabled() ? 'v2' : 'v1',
+      pdfToImageEngine: pdfToImageV2Enabled() ? 'v2' : 'v1'
     }
   };
 }

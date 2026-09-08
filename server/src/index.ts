@@ -137,8 +137,13 @@ app.get('/health', async (_req, res) => {
 
 app.get('/health/ready', async (_req, res) => {
   const [runtime, converters] = await Promise.all([runtimeHealthSnapshot(), pingConverters()]);
-  const ready = runtime.tempDisk.freeBytes == null
+  const diskReady = runtime.tempDisk.freeBytes == null
     || runtime.tempDisk.freeBytes >= (runtime.tempDisk.minFreeBytes || 0);
+  const excelReady = converters.pdfToExcelEngine !== 'v2'
+    || converters.pdfToExcelOk === true;
+  const imageReady = converters.pdfToImageEngine !== 'v2'
+    || converters.pdfToImageOk === true;
+  const ready = diskReady && converters.pdfToDocxOk && excelReady && imageReady;
   res.status(ready ? 200 : 503).json({
     status: ready ? 'ready' : 'not_ready',
     timestamp: new Date().toISOString(),

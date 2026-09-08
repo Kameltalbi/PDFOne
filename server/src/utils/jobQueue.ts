@@ -176,6 +176,8 @@ export function requestSignal(req: { on: (event: string, cb: () => void) => void
   };
   if (req.aborted) abort();
   req.on('aborted', abort);
-  req.on('close', abort);
+  req.on('close', () => {
+    if (req.aborted) abort();
+  });
   return controller.signal;
 }

@@ -4,11 +4,13 @@ import { pdfToJpg } from '../services/toJpg.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { requestSignal } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
 
   try {
     if (!uploadedFile) {
@@ -16,7 +18,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     const quality = Math.min(100, Math.max(40, Number(req.body.quality) || 85));
-    const result = await pdfToJpg(uploadedFile.path, quality);
+    const result = await pdfToJpg(uploadedFile.path, quality, signal);
 
     res.json({
       success: true,

@@ -8,11 +8,16 @@ import { extractPdfRows } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 import { rowsToXlsx } from '../utils/xlsx.js';
 import { officeQueue } from '../utils/jobQueue.js';
+import { convertPdfToDocx } from './pdfToDocx.js';
+import {
+  convertPdfToExcelV2,
+  pdfToExcelV2Enabled
+} from './pdfToExcel.js';
 
 const execFileAsync = promisify(execFile);
 
 export const OFFICE_JOBS = {
-  'pdf-to-word': { in: ['.pdf'], out: 'docx', filter: 'MS Word 2007 XML', inFilter: 'writer_pdf_import' },
+  'pdf-to-word': { in: ['.pdf'], out: 'docx' },
   'word-to-pdf': { in: ['.doc', '.docx', '.odt', '.rtf'], out: 'pdf', filter: 'writer_pdf_Export' },
   'pdf-to-excel': { in: ['.pdf'], out: 'xlsx' },
   'excel-to-pdf': { in: ['.xls', '.xlsx', '.ods', '.csv'], out: 'pdf', filter: 'calc_pdf_Export' },
@@ -96,7 +101,23 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob, signal
   }
 
   if (job === 'pdf-to-excel') {
-    return officeQueue.run(() => pdfToExcel(filePath), { signal });
+    return officeQueue.run(
+      () => pdfToExcelV2Enabled()
+        ? convertPdfToExcelV2(filePath, signal)
+        : pdfToExcel(filePath),
+      {
+        signal,
+        runTimeoutMs: pdfToExcelV2Enabled()
+          ? Number(process.env.PDF2EXCEL_RUN_TIMEOUT_MS || 300_000)
+          : undefined
+      }
+    );
+  }
+  if (job === 'pdf-to-word') {
+    return officeQueue.run(
+      () => convertPdfToDocx(filePath, signal),
+      { signal, runTimeoutMs: Number(process.env.PDF2DOCX_RUN_TIMEOUT_MS || 300_000) }
+    );
   }
 
   return officeQueue.run(async () => {

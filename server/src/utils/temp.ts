@@ -66,7 +66,16 @@ export function tempTtlMs(): number {
   return Math.max(60_000, Number(process.env.TEMP_FILE_TTL || 15 * 60 * 1000));
 }
 
-const NATIVE_PREFIXES = ['pdfone-ocr-', 'pdfone-ocr-layout-', 'pdfone-lo-out-', 'pdfone-lo-profile-', 'pdfone-unlock-'];
+const NATIVE_PREFIXES = [
+  'pdfone-ocr-',
+  'pdfone-ocr-layout-',
+  'pdfone-lo-out-',
+  'pdfone-lo-profile-',
+  'pdfone-docx-',
+  'pdfone-excel-',
+  'pdfone-image-',
+  'pdfone-unlock-'
+];
 
 export async function purgeAbandonedNativeTemp(maxAgeMs = 60 * 60 * 1000): Promise<number> {
   const root = os.tmpdir();

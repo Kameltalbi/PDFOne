@@ -4,6 +4,7 @@ import { convertOfficeFile, OFFICE_JOBS, type OfficeJob } from '../services/offi
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { requestSignal } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
@@ -11,11 +12,12 @@ function officeRoute(job: OfficeJob, message: string) {
   const uploader = uploadExtensions([...OFFICE_JOBS[job].in], message);
   router.post(`/${job}`, uploader.single('file'), async (req, res) => {
     const uploadedFile = req.file;
+    const signal = requestSignal(req);
     try {
       if (!uploadedFile) {
         return res.status(400).json({ success: false, error: 'Aucun fichier reçu.' });
       }
-      const result = await convertOfficeFile(uploadedFile.path, job);
+      const result = await convertOfficeFile(uploadedFile.path, job, signal);
       return res.json({ success: true, data: publicToolResult(req, res, result) });
     } catch (error) {
       console.error('Office convert error:', error);

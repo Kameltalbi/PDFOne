@@ -8,6 +8,7 @@ Web-based PDF tools (merge, compress, convert, OCR, Office conversions, etc.).
 client/     React + Vite frontend
 server/     Express + TypeScript API
 shared/     Shared TypeScript types
+conversion-engine/  Python PDF→DOCX analyzer and builder
 temp/       Temporary uploads/results (auto-cleanup)
 capacity/   Local capacity audit scripts and reports
 ```
@@ -16,7 +17,12 @@ capacity/   Local capacity audit scripts and reports
 
 - **Frontend**: React 19, TypeScript, Vite, React Router, Axios
 - **Backend**: Node.js, Express, TypeScript, Multer, pdf-lib, Sharp, pdf.js
-- **Office conversion**: LibreOffice on the server (`soffice`) — not Redis/BullMQ
+- **PDF → DOCX**: open-source Python engine (`pdfplumber`, `python-docx`, Pillow)
+- **PDF → Excel V2**: structured Python engine (`pdfplumber`, `openpyxl`),
+  opt-in with `PDF_TO_EXCEL_ENGINE=v2`
+- **PDF → JPG V2**: complete-page PDFium rasterizer, opt-in with
+  `PDF_TO_IMAGE_ENGINE=v2`
+- **Other Office conversions**: LibreOffice on the server (`soffice`)
 - **OCR**: Tesseract on the server
 - **Heavy PDF work**: in-process admission queues + `worker_threads` for compress / PDF→image
 - **Billing**: Stripe
@@ -27,8 +33,10 @@ Redis/BullMQ are **not** used by the current application code. Admission is in-m
 
 1. `npm install`
 2. `cp server/.env.example server/.env` and edit secrets / limits
-3. Optional: install LibreOffice and Tesseract for Office/OCR tools
-4. `npm run dev` — client on http://localhost:5173, API on http://localhost:3002
+3. `npm run setup:conversion-engine` — required for PDF → DOCX
+4. Optional: install LibreOffice and Tesseract for other Office/OCR tools
+5. Set `PDF2DOCX_PYTHON_PATH=/absolute/path/to/one2pdf/conversion-engine/.venv/bin/python`
+6. `npm run dev` — client on http://localhost:5173, API on http://localhost:3002
 
 ## Limits (defaults)
 
@@ -52,7 +60,8 @@ Failed tool requests do not consume the free daily quota (reserved unit is relea
 ## Health
 
 `GET /health` — liveness plus queues, memory, temp disk, converter presence, event-loop lag.  
-`GET /health/ready` — readiness check including LibreOffice/Tesseract version pings.
+`GET /health/ready` — readiness check including the PDF→DOCX Python engine and
+LibreOffice/Tesseract version pings.
 
 ## E2E
 

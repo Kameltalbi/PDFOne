@@ -52,3 +52,12 @@ Thumbs.db
 
 # Build outputs
 *.tsbuildinfo
+
+# Python conversion engine
+conversion-engine/.venv/
+conversion-engine/.pytest_cache/
+conversion-engine/**/__pycache__/
+conversion-engine/.coverage
+conversion-engine/htmlcov/
+conversion-engine/*quality-report.json
+conversion-engine/src/*.egg-info/
