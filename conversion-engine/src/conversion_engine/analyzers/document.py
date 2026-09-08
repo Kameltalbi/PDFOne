@@ -56,7 +56,11 @@ class DocumentAnalyzer:
                     started = time.monotonic()
                     tables = self.table_extractor.extract(page)
                     lines = self.text_extractor.extract(page, [table.bbox for table in tables])
-                    paragraphs = self.semantic_analyzer.analyze(lines, float(page.width))
+                    paragraphs = self.semantic_analyzer.analyze(
+                        lines,
+                        float(page.width),
+                        preserve_line_breaks=True,
+                    )
                     for paragraph in paragraphs:
                         center = (paragraph.bbox.x0 + paragraph.bbox.x1) / 2
                         if (

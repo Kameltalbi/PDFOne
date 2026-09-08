@@ -32,7 +32,7 @@ class TextExtractor:
         chars: List[Dict[str, Any]] = []
         for char in page.chars:
             text = str(char.get("text", ""))
-            if not text or text.isspace():
+            if not text:
                 continue
             bbox = BBox(
                 float(char.get("x0", 0)),

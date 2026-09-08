@@ -11,12 +11,20 @@ LIST_RE = re.compile(r"^\s*(?:(\d+|[A-Za-z])[.)]|[•●▪◦‣–-])\s+")
 
 
 class SemanticAnalyzer:
-    def analyze(self, lines: Sequence[ParagraphBlock], page_width: float) -> List[ParagraphBlock]:
+    def analyze(
+        self,
+        lines: Sequence[ParagraphBlock],
+        page_width: float,
+        preserve_line_breaks: bool = False,
+    ) -> List[ParagraphBlock]:
         if not lines:
             return []
         two_column_layout = self._has_two_columns(lines, page_width)
         ordered = self._reading_order(lines, page_width)
-        paragraphs = self._merge_lines(ordered, preserve_line_breaks=two_column_layout)
+        paragraphs = self._merge_lines(
+            ordered,
+            preserve_line_breaks=preserve_line_breaks or two_column_layout,
+        )
         body_size = median(
             span.font_size
             for block in paragraphs

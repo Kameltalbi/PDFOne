@@ -90,7 +90,11 @@ class DocxBuilder:
     @staticmethod
     def _use_fixed_layout(page: PageIR) -> bool:
         paragraphs = sum(isinstance(block, ParagraphBlock) for block in page.blocks)
-        return paragraphs >= 3 and any(
+        # Dense PDF pages must keep their source coordinates. Rebuilding them
+        # as flowing Word paragraphs adds the PDF's vertical gaps on top of
+        # Word's own line heights, which creates blank space, moves footers and
+        # can turn one source page into two Word pages.
+        return paragraphs >= 3 or any(
             isinstance(block, TableBlock) for block in page.blocks
         )
 
@@ -112,13 +116,18 @@ class DocxBuilder:
 
         for block in page.blocks:
             if isinstance(block, ParagraphBlock):
-                self._add_floating_textbox(anchor, block)
+                self._add_floating_textbox(anchor, block, page)
             elif isinstance(block, ImageBlock):
                 self._add_floating_image(anchor, block)
             elif isinstance(block, TableBlock):
                 self._add_table(document, block)
 
-    def _add_floating_textbox(self, anchor, block: ParagraphBlock) -> None:
+    def _add_floating_textbox(
+        self,
+        anchor,
+        block: ParagraphBlock,
+        page: PageIR,
+    ) -> None:
         run = anchor.add_run()
         pict = OxmlElement("w:pict")
         if not self._vml_shape_type_added:
@@ -137,8 +146,12 @@ class DocxBuilder:
             pict.append(shape_type)
             self._vml_shape_type_added = True
 
-        width = max(14.0, block.bbox.width + 5)
         font_size = max((span.font_size for span in block.spans), default=9)
+        width_padding = max(12.0, font_size * 2.0)
+        width = min(
+            max(14.0, block.bbox.width + width_padding),
+            max(14.0, page.width - block.bbox.x0 - 12.0),
+        )
         height = max(font_size * 1.35, block.bbox.height + 5)
         shape = etree.Element(f"{{{VML_NS}}}shape")
         shape.set("id", f"_x0000_s{1024 + self._shape_id}")
@@ -166,6 +179,17 @@ class DocxBuilder:
         spacing = OxmlElement("w:spacing")
         spacing.set(qn("w:before"), "0")
         spacing.set(qn("w:after"), "0")
+        line_count = max(
+            1,
+            1 + sum(span.text.count("\n") for span in block.spans),
+        )
+        source_line_height = (
+            max(font_size * 1.05, (block.bbox.height - font_size) / (line_count - 1))
+            if line_count > 1
+            else font_size * 1.15
+        )
+        spacing.set(qn("w:line"), str(round(source_line_height * 20)))
+        spacing.set(qn("w:lineRule"), "exact")
         properties.append(spacing)
         if block.alignment != "left":
             alignment = OxmlElement("w:jc")
@@ -195,7 +219,8 @@ class DocxBuilder:
         fonts.set(qn("w:hAnsi"), font_name)
         properties.append(fonts)
         size = OxmlElement("w:sz")
-        size.set(qn("w:val"), str(round(max(7, min(36, span.font_size)) * 2)))
+        word_size = DocxBuilder._word_font_size(span.font_name, span.font_size)
+        size.set(qn("w:val"), str(round(word_size * 2)))
         properties.append(size)
         if span.bold:
             properties.append(OxmlElement("w:b"))
@@ -417,7 +442,7 @@ class DocxBuilder:
             run.bold = span.bold
             run.italic = span.italic
             run.font.name = self._safe_font(span.font_name)
-            run.font.size = Pt(max(7, min(36, span.font_size)))
+            run.font.size = Pt(self._word_font_size(span.font_name, span.font_size))
             if span.color and not all(component > 245 for component in span.color):
                 run.font.color.rgb = RGBColor(*span.color)
 
@@ -521,7 +546,29 @@ class DocxBuilder:
     def _safe_font(value: str) -> str:
         cleaned = re.sub(r"^[A-Z]{6}\+", "", value or "")
         cleaned = re.sub(r"[^A-Za-z0-9 ._-]", "", cleaned).strip()
-        return cleaned[:80] or "Arial"
+        family = re.sub(
+            r"(?i)[ _-]?(?:regular|roman|bolditalic|boldoblique|semibold|"
+            r"bold|black|heavy|italic|oblique)$",
+            "",
+            cleaned,
+        ).strip()
+        aliases = {
+            "aptos": "Arial",
+            "calibri": "Arial",
+            "carlito": "Arial",
+        }
+        return aliases.get(family.casefold(), family[:80]) or "Arial"
+
+    @staticmethod
+    def _word_font_size(font_name: str, font_size: float) -> float:
+        # Carlito/Calibri PDF metrics are wider than Arial's Word metrics.
+        # A small compensation prevents source lines from wrapping or being
+        # clipped after these unavailable fonts are mapped to Arial.
+        normalized = re.sub(r"^[A-Z]{6}\+", "", font_name or "").casefold()
+        scale = 0.9 if any(
+            family in normalized for family in ("aptos", "calibri", "carlito")
+        ) else 1.0
+        return max(7.0, min(36.0, font_size * scale))
 
 
 def set_cell_margins(cells: Iterable, margin_twips: int = 80) -> None:

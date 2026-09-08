@@ -1,8 +1,8 @@
 import express from 'express';
 import fs from 'fs/promises';
-import path from 'path';
 import { upload } from '../middleware/upload.js';
 import { editPdf, type PdfAnnotation } from '../services/edit.js';
+import { originalDownloadName } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
 
 const router = express.Router();
@@ -21,10 +21,12 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     const outputPath = await editPdf(uploadedFile.path, annotations);
-    const safeBaseName = path.basename(uploadedFile.originalname, path.extname(uploadedFile.originalname))
-      .replace(/[^a-zA-Z0-9-_]/g, '-');
+    const downloadName = originalDownloadName(
+      uploadedFile.originalname,
+      'edited.pdf'
+    ) || 'document.pdf';
 
-    res.download(outputPath, `${safeBaseName || 'document'}-modifie.pdf`, async () => {
+    res.download(outputPath, downloadName, async () => {
       await fs.unlink(outputPath).catch(() => undefined);
     });
   } catch (error) {

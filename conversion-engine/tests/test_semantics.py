@@ -38,6 +38,14 @@ def test_merges_wrapped_lines_into_paragraph():
     assert len(result) == 1
     assert result[0].text == "A wrapped line without terminal punctuation."
 
+def test_can_preserve_source_line_breaks_for_fixed_layout():
+    result = SemanticAnalyzer().analyze(
+        [block("First source line", 50), block("second source line.", 61)],
+        595,
+        preserve_line_breaks=True,
+    )
+    assert result[0].text == "First source line\nsecond source line."
+
 
 def test_reads_two_columns_left_then_right():
     lines = [

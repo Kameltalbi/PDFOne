@@ -34,6 +34,7 @@ import { corsOriginCallback } from './utils/corsAllowlist.js';
 import {
   DOWNLOAD_OWNER_COOKIE,
   canDownloadFile,
+  originalDownloadName,
   revokeDownloadGrant
 } from './utils/downloadGrant.js';
 
@@ -107,9 +108,11 @@ app.get('/temp/:name', async (req, res) => {
   }
 
   const filepath = path.join(tempDir, name);
+  const requestedName = typeof req.query.name === 'string' ? req.query.name : null;
+  const downloadName = originalDownloadName(requestedName, name) || name;
   res.setHeader('Cache-Control', 'private, no-store');
   res.setHeader('Pragma', 'no-cache');
-  res.download(filepath, name, async (error) => {
+  res.download(filepath, downloadName, async (error) => {
     if (error) {
       if (!res.headersSent) {
         res.status(404).json({ success: false, error: 'Fichier introuvable ou déjà supprimé.' });

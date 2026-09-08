@@ -21,6 +21,16 @@ def test_extracts_positions_and_styles_and_exclusions():
     visible = TextExtractor().extract(FakePage(), [BBox(90, 25, 120, 50)])
     assert [block.text for block in visible] == ["Hi"]
 
+def test_preserves_explicit_pdf_spaces():
+    class SpacePage:
+        chars = [
+            {"text": "A", "x0": 10, "x1": 17, "top": 10, "bottom": 22, "size": 12, "fontname": "Arial"},
+            {"text": " ", "x0": 17, "x1": 20, "top": 10, "bottom": 22, "size": 12, "fontname": "Arial"},
+            {"text": "B", "x0": 20, "x1": 27, "top": 10, "bottom": 22, "size": 12, "fontname": "Arial"},
+        ]
+
+    assert TextExtractor().extract(SpacePage())[0].text == "A B"
+
 
 class FakeTable:
     bbox = (10, 20, 300, 120)

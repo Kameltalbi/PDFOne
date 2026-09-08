@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import path from 'node:path';
 import type { Request, Response } from 'express';
 import { readCookie, setCookie } from './cookies.js';
 import { tempTtlMs } from './temp.js';
@@ -57,6 +58,24 @@ export function canDownloadFile(filename: string, owner: string | null | undefin
   return crypto.timingSafeEqual(a, b);
 }
 
+export function originalDownloadName(
+  originalName: string | null | undefined,
+  storedFilename: string
+): string | null {
+  if (!originalName) return null;
+  const leaf = path.posix.basename(originalName.replace(/\\/g, '/'));
+  const sourceExtension = path.extname(leaf);
+  const outputExtension = path.extname(storedFilename).toLowerCase();
+  const rawStem = sourceExtension ? leaf.slice(0, -sourceExtension.length) : leaf;
+  const stem = rawStem
+    .replace(/[\u0000-\u001f\u007f]/g, '')
+    .replace(/[<>:"/\\|?*]/g, '-')
+    .trim()
+    .replace(/[. ]+$/g, '')
+    .slice(0, 140);
+  return stem && outputExtension ? `${stem}${outputExtension}` : null;
+}
+
 /** Strip absolute filepath and bind download to the request's download-owner cookie. */
 export function publicToolResult<T extends { filename: string; filepath?: string; downloadUrl: string }>(
   req: Request,
@@ -70,5 +89,10 @@ export function publicToolResult<T extends { filename: string; filepath?: string
     registerDownloadGrant(extra.textFilename, owner);
   }
   const { filepath: _filepath, ...rest } = result;
-  return rest;
+  const displayName = originalDownloadName(req.file?.originalname, result.filename);
+  if (!displayName) return rest;
+  return {
+    ...rest,
+    downloadUrl: `${rest.downloadUrl}?name=${encodeURIComponent(displayName)}`
+  };
 }
