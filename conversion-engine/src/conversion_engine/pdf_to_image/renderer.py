@@ -7,7 +7,7 @@ import time
 import uuid
 import zipfile
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pypdfium2 as pdfium
 from PIL import Image
@@ -170,6 +170,7 @@ class PdfiumPageRenderer:
         self,
         request: RenderRequest,
         output_directory: Path,
+        page_limit: Optional[int] = None,
     ) -> RenderResult:
         """Render complete pages as individual PNG files for OCR streaming."""
         started = time.monotonic()
@@ -192,11 +193,12 @@ class PdfiumPageRenderer:
                 raise ResourceLimitError(
                     f"Le PDF dépasse la limite de {request.max_pages} pages."
                 )
+            rendered_pages = min(pages, page_limit) if page_limit else pages
             try:
                 document.init_forms()
             except Exception:
                 pass
-            for index in range(pages):
+            for index in range(rendered_pages):
                 image, effective_dpi, was_capped = self._render_page(
                     document[index], request
                 )
@@ -212,7 +214,7 @@ class PdfiumPageRenderer:
                 )
                 image.close()
             diagnostics = RenderDiagnostics(
-                pages=pages,
+                pages=rendered_pages,
                 requested_dpi=request.dpi,
                 minimum_effective_dpi=round(minimum_dpi, 2),
                 maximum_width=max_width,

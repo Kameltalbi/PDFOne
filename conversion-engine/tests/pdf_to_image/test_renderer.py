@@ -133,6 +133,23 @@ def test_ocr_mode_renders_complete_png_pages(image_pdf_fixtures, tmp_path):
         )
 
 
+def test_preview_mode_limits_rendering_to_first_page(image_pdf_fixtures, tmp_path):
+    output_directory = tmp_path / "preview-page"
+    request = RenderRequest(
+        input_path=image_pdf_fixtures["multipage"],
+        output_path=output_directory,
+        dpi=83,
+        max_pixels=2_000_000,
+    )
+    result = PdfiumPageRenderer(configure_logging()).render_pages(
+        request, output_directory, page_limit=1
+    )
+    assert result.diagnostics.pages == 1
+    assert [page.name for page in output_directory.glob("*.png")] == [
+        "page-001.png"
+    ]
+
+
 def test_landscape_aspect_ratio_is_preserved(image_pdf_fixtures, tmp_path):
     _result, output = render(image_pdf_fixtures["landscape"], tmp_path)
     with open_jpeg(output) as image:

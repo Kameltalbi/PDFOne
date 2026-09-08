@@ -5,8 +5,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { mapPdfError } from '../utils/pdf.js';
-import { forEachRasterPage } from '../utils/rasterize.js';
 import { writeTemp } from '../utils/temp.js';
+import { forEachPdfiumPage } from './pdfToImage.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -42,15 +42,15 @@ export async function unlockPdf(filePath: string, password: string) {
     try {
       const pdf = await PDFDocument.create();
       let pages = 0;
-      await forEachRasterPage(
-        bytes,
-        { scale: 1.6, format: 'jpeg', quality: 88, password },
+      await forEachPdfiumPage(
+        filePath,
         async ({ image }) => {
-          const embedded = await pdf.embedJpg(image);
+          const embedded = await pdf.embedPng(image);
           const page = pdf.addPage([embedded.width, embedded.height]);
           page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
           pages += 1;
-        }
+        },
+        { dpi: 115, password }
       );
       if (!pages) throw new Error('empty');
       return writeTemp(await pdf.save(), 'unlocked', 'pdf');

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
-import { rasterizeFirstPage } from './rasterize.js';
+import { forEachPdfiumPage } from '../services/pdfToImage.js';
 
 const PREVIEW_MAX_BYTES = 80 * 1024 * 1024;
 const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
@@ -48,12 +48,17 @@ export async function buildResultPreview(filepath: string): Promise<Buffer | nul
 
   if (ext === '.pdf' || isPdfMagic(bytes)) {
     try {
-      return await rasterizeFirstPage(new Uint8Array(bytes), {
-        scale: 1.15,
-        format: 'jpeg',
-        quality: 78,
-        maxPixels: 2_000_000
-      });
+      let preview: Buffer | null = null;
+      await forEachPdfiumPage(
+        filepath,
+        async ({ image }) => {
+          preview = await sharp(image)
+            .jpeg({ quality: 78, mozjpeg: true })
+            .toBuffer();
+        },
+        { dpi: 83, maxPixels: 2_000_000, pageLimit: 1 }
+      );
+      return preview;
     } catch {
       return null;
     }

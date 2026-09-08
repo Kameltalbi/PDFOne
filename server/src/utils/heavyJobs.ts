@@ -2,9 +2,10 @@ import { parentPort, isMainThread } from 'node:worker_threads';
 import fs from 'node:fs/promises';
 import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
+import sharp from 'sharp';
 import { loadPdf, mapPdfError } from './pdf.js';
-import { forEachRasterPage } from './rasterize.js';
 import { writeTemp } from './temp.js';
+import { forEachPdfiumPage } from '../services/pdfToImage.js';
 
 type CompressQuality = 'low' | 'medium' | 'high';
 
@@ -34,15 +35,18 @@ async function compressJob(filePath: string, quality: CompressQuality) {
   } else {
     const source = await loadPdf(original);
     const output = await PDFDocument.create();
-    await forEachRasterPage(
-      original,
-      { scale: preset.scale, format: 'jpeg', quality: preset.jpeg },
+    await forEachPdfiumPage(
+      filePath,
       async ({ index, image }) => {
-        const embedded = await output.embedJpg(image);
+        const jpeg = await sharp(image)
+          .jpeg({ quality: preset.jpeg, mozjpeg: true })
+          .toBuffer();
+        const embedded = await output.embedJpg(jpeg);
         const { width, height } = source.getPage(index).getSize();
         const page = output.addPage([width, height]);
         page.drawImage(embedded, { x: 0, y: 0, width, height });
-      }
+      },
+      { dpi: Math.round(preset.scale * 72) }
     );
     outputBytes = await output.save({ useObjectStreams: true });
   }
@@ -61,23 +65,25 @@ async function toRasterJob(
   quality: number,
   password = ''
 ) {
-  const pdfBytes = await fs.readFile(filePath);
   const ext = format === 'png' ? 'png' : 'jpg';
   let single: Buffer | null = null;
   const zip = new JSZip();
   let count = 0;
 
-  await forEachRasterPage(
-    pdfBytes,
-    { scale: 2, format, quality, password },
+  await forEachPdfiumPage(
+    filePath,
     async ({ index, total, image }) => {
       count = total;
+      const encoded = format === 'png'
+        ? image
+        : await sharp(image).jpeg({ quality, mozjpeg: true }).toBuffer();
       if (total === 1) {
-        single = image;
+        single = encoded;
         return;
       }
-      zip.file(`page-${String(index + 1).padStart(3, '0')}.${ext}`, image);
-    }
+      zip.file(`page-${String(index + 1).padStart(3, '0')}.${ext}`, encoded);
+    },
+    { dpi: 144, password }
   );
 
   if (count === 1 && single) {

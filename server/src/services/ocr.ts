@@ -106,7 +106,7 @@ export async function ocrLayoutBlocks(filePath: string, locale = 'fr', signal?: 
         const tsv = await fs.readFile(`${base}.tsv`, 'utf8').catch(() => '');
         blocks.push(...parseTsvLines(tsv, index, width, height, scale));
         await fs.unlink(input).catch(() => undefined);
-      });
+      }, {}, signal);
     } finally {
       await fs.rm(work, { recursive: true, force: true }).catch(() => undefined);
     }
@@ -152,7 +152,7 @@ export async function ocrPdf(filePath: string, locale = 'fr', signal?: AbortSign
           const copied = await pdf.copyPages(part, part.getPageIndices());
           copied.forEach((page) => pdf.addPage(page));
           await fs.unlink(input).catch(() => undefined);
-        });
+        }, {}, signal);
 
         if (!totalPages) throw new Error('Aucune page à reconnaître.');
         if (pdfPageFailures > 0 && pdf.getPageCount() > 0 && pdf.getPageCount() < totalPages) {

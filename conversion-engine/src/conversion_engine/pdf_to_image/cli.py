@@ -18,6 +18,7 @@ def main() -> int:
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--output-directory", type=Path)
+    parser.add_argument("--page-limit", type=int)
     parser.add_argument("--dpi", type=int, default=180)
     parser.add_argument("--quality", type=int, default=85)
     parser.add_argument("--max-pages", type=int, default=200)
@@ -47,7 +48,11 @@ def main() -> int:
         )
         renderer = PdfiumPageRenderer(configure_logging(args.verbose))
         result = (
-            renderer.render_pages(request, args.output_directory.resolve())
+            renderer.render_pages(
+                request,
+                args.output_directory.resolve(),
+                max(1, args.page_limit) if args.page_limit else None,
+            )
             if args.output_directory
             else renderer.render(request)
         )

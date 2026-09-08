@@ -124,23 +124,40 @@ export async function pingPdfToImageEngine(): Promise<boolean> {
   }
 }
 
+export type PdfiumPageOptions = {
+  dpi?: number;
+  maxPages?: number;
+  maxPixels?: number;
+  maxDimension?: number;
+  pageLimit?: number;
+  password?: string;
+};
+
 export async function forEachPdfiumPage(
   filePath: string,
   onPage: (page: { index: number; total: number; image: Buffer }) => Promise<void> | void,
+  options: PdfiumPageOptions = {},
   signal?: AbortSignal
 ): Promise<number> {
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-ocr-render-'));
   const outputDirectory = path.join(workDir, 'pages');
   try {
-    const response = await runEngine(
-      [
+    const args = [
         '--input', path.resolve(filePath),
         '--output-directory', outputDirectory,
-        '--dpi', String(positiveEnv('OCR_RENDER_DPI', 200)),
-        '--max-pages', String(positiveEnv('PDF_TO_IMAGE_MAX_PAGES', 200)),
-        '--max-pixels', String(positiveEnv('RASTER_MAX_PIXELS', 12_000_000)),
-        '--max-dimension', String(positiveEnv('PDF_TO_IMAGE_MAX_DIMENSION', 10_000))
-      ],
+        '--dpi', String(options.dpi || positiveEnv('OCR_RENDER_DPI', 200)),
+        '--max-pages', String(options.maxPages || positiveEnv('PDF_TO_IMAGE_MAX_PAGES', 200)),
+        '--max-pixels', String(options.maxPixels || positiveEnv('RASTER_MAX_PIXELS', 12_000_000)),
+        '--max-dimension', String(options.maxDimension || positiveEnv('PDF_TO_IMAGE_MAX_DIMENSION', 10_000))
+      ];
+    if (options.pageLimit && options.pageLimit > 0) {
+      args.push('--page-limit', String(options.pageLimit));
+    }
+    if (options.password) {
+      args.push('--password', options.password);
+    }
+    const response = await runEngine(
+      args,
       positiveEnv('PDF_TO_IMAGE_RUN_TIMEOUT_MS', 300_000),
       signal
     );
