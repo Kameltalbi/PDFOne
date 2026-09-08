@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import errno
 import os
 import shutil
 import tempfile
@@ -78,7 +79,25 @@ class ConversionService:
             self.builder.build(document, temporary_output)
             report = self.evaluator.evaluate(document, temporary_output)
             request.output_path.parent.mkdir(parents=True, exist_ok=True)
-            os.replace(temporary_output, request.output_path)
+            try:
+                os.replace(temporary_output, request.output_path)
+            except OSError as error:
+                if error.errno != errno.EXDEV:
+                    raise
+                # The OS temp directory and result directory can be on different
+                # volumes. Stage beside the destination before the atomic rename.
+                staged = None
+                try:
+                    with tempfile.NamedTemporaryFile(
+                        dir=request.output_path.parent, suffix=".docx", delete=False
+                    ) as handle:
+                        staged = Path(handle.name)
+                        with temporary_output.open("rb") as source:
+                            shutil.copyfileobj(source, handle)
+                    os.replace(staged, request.output_path)
+                finally:
+                    if staged is not None:
+                        staged.unlink(missing_ok=True)
             if request.report_path:
                 self.evaluator.write(report, request.report_path)
             duration_ms = round((time.monotonic() - started) * 1000)

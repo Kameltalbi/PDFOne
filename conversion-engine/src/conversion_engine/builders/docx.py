@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import re
+from statistics import median
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from typing import Iterable, List, Sequence, Tuple
 
 from docx import Document
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
 from docx.enum.section import WD_SECTION
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -46,20 +47,36 @@ class DocxBuilder:
                 if index == 0
                 else document.add_section(WD_SECTION.NEW_PAGE)
             )
-            self._configure_section(section, page)
+            if index:
+                separator = document.paragraphs[-1]
+                separator.paragraph_format.space_before = Pt(0)
+                separator.paragraph_format.space_after = Pt(0)
+                separator.paragraph_format.line_spacing = Pt(1)
+                separator.paragraph_format.keep_with_next = False
+                separator.add_run().font.size = Pt(1)
+            body_blocks, footer_blocks = self._split_footer_blocks(page)
+            self._configure_section(section, page, body_blocks)
+            self._add_section_footer(section, footer_blocks, page)
             if self._use_fixed_layout(page):
                 self._add_fixed_page(document, page)
                 continue
-            previous_bottom = 24.0
-            for band in self._layout_bands(page.blocks):
+            # Flowing Word paragraphs for reports: Microsoft Word clips
+            # absolute VML textboxes on the right edge, so dense text pages
+            # must use real paragraphs that wrap inside the section margins.
+            previous_bottom = float(section.top_margin.pt)
+            for band in self._layout_bands(body_blocks):
                 top = min(block.bbox.top for block in band)
-                self._add_vertical_gap(document, top - previous_bottom)
+                gap = max(0.0, top - previous_bottom - 4.0)
                 columns = self._layout_columns(band)
                 if len(columns) > 1:
+                    self._add_vertical_gap(document, gap)
                     self._add_layout_row(document, columns, page)
                 else:
                     for block in sorted(columns[0], key=lambda item: item.bbox.top):
                         self._add_block(document, block, page)
+                        if document.paragraphs and not isinstance(block, TableBlock):
+                            document.paragraphs[-1].paragraph_format.space_before = Pt(gap)
+                        gap = 0.0
                 previous_bottom = max(block.bbox.bottom for block in band)
 
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -79,48 +96,135 @@ class DocxBuilder:
             style.paragraph_format.keep_with_next = True
 
     @staticmethod
-    def _configure_section(section, page: PageIR) -> None:
+    def _configure_section(section, page: PageIR, body_blocks: Sequence[Block] = ()) -> None:
         section.page_width = Pt(page.width)
         section.page_height = Pt(page.height)
-        section.top_margin = Pt(24)
-        section.bottom_margin = Pt(24)
-        section.left_margin = Pt(24)
-        section.right_margin = Pt(24)
+        content = [
+            block
+            for block in body_blocks
+            if isinstance(block, (ParagraphBlock, TableBlock, ImageBlock))
+        ]
+        if content:
+            left = min(block.bbox.x0 for block in content)
+            right = page.width - max(block.bbox.x1 for block in content)
+            top = min(block.bbox.top for block in content)
+            bottom = page.height - max(block.bbox.bottom for block in content)
+        else:
+            left = right = top = bottom = 24.0
+        section.top_margin = Pt(max(18.0, min(96.0, top)))
+        section.bottom_margin = Pt(max(28.0, min(96.0, bottom - 12 if bottom > 18 else 48.0)))
+        section.left_margin = Pt(max(24.0, min(90.0, left)))
+        section.right_margin = Pt(max(24.0, min(90.0, right)))
 
     @staticmethod
     def _use_fixed_layout(page: PageIR) -> bool:
-        paragraphs = sum(isinstance(block, ParagraphBlock) for block in page.blocks)
-        # Dense PDF pages must keep their source coordinates. Rebuilding them
-        # as flowing Word paragraphs adds the PDF's vertical gaps on top of
-        # Word's own line heights, which creates blank space, moves footers and
-        # can turn one source page into two Word pages.
-        return paragraphs >= 3 or any(
-            isinstance(block, TableBlock) for block in page.blocks
+        paragraphs = [
+            block for block in page.blocks if isinstance(block, ParagraphBlock)
+        ]
+        tables = any(isinstance(block, TableBlock) for block in page.blocks)
+        if len(paragraphs) < 3:
+            return False
+        # Long body copy must stay in flowing Word paragraphs. Absolute VML
+        # textboxes are clipped on the right by Microsoft Word even when the
+        # stored width looks correct.
+        long_count = sum(
+            1
+            for block in paragraphs
+            if block.bbox.width >= page.width * 0.65
+            and (
+                len(block.text) > 100
+                or block.bbox.height >= max(
+                    28.0,
+                    max((span.font_size for span in block.spans), default=11) * 2.2,
+                )
+            )
         )
+        if long_count >= 2:
+            return False
+        # Invoices keep absolute label placement around real Word tables.
+        if tables:
+            return True
+        return long_count <= 1
+
+    @staticmethod
+    def _split_footer_blocks(page: PageIR) -> Tuple[List[Block], List[Block]]:
+        body: List[Block] = []
+        footer: List[Block] = []
+        for block in page.blocks:
+            if DocxBuilder._is_footer_block(block, page):
+                footer.append(block)
+            else:
+                body.append(block)
+        return body, footer
+
+    @staticmethod
+    def _is_footer_block(block: Block, page: PageIR) -> bool:
+        if block.bbox.top < page.height * 0.88:
+            return False
+        if isinstance(block, ImageBlock):
+            return block.bbox.height <= 40
+        if isinstance(block, ParagraphBlock):
+            return bool(re.search(r"(?:\bpage\s+\d+|^\s*\d+\s*$)", block.text, re.I))
+        return False
+
+    def _add_section_footer(self, section, footer_blocks: Sequence[Block], page: PageIR) -> None:
+        footer = section.footer
+        footer.is_linked_to_previous = False
+        paragraph = footer.paragraphs[0]
+        paragraph.style = "Normal"
+        paragraph.paragraph_format.space_before = Pt(0)
+        paragraph.paragraph_format.space_after = Pt(0)
+        if not footer_blocks:
+            return
+        section.footer_distance = Pt(max(12, page.height - max(b.bbox.bottom for b in footer_blocks)))
+        for index, band in enumerate(self._layout_bands(footer_blocks)):
+            if index:
+                paragraph = footer.add_paragraph(style="Normal")
+                paragraph.paragraph_format.space_before = Pt(0)
+                paragraph.paragraph_format.space_after = Pt(0)
+            for block in sorted(band, key=lambda item: item.bbox.x0):
+                offset = max(0, block.bbox.x0 - section.left_margin.pt)
+                if offset:
+                    paragraph.paragraph_format.tab_stops.add_tab_stop(Pt(offset))
+                    paragraph.add_run("\t")
+                if isinstance(block, ParagraphBlock):
+                    for span in block.spans:
+                        run = paragraph.add_run(span.text.replace("\n", " "))
+                        run.bold = span.bold
+                        run.italic = span.italic
+                        run.font.name = self._safe_font(span.font_name)
+                        run.font.size = Pt(self._word_font_size(span.font_name, span.font_size))
+                        if span.color:
+                            run.font.color.rgb = RGBColor(*span.color)
+                elif isinstance(block, ImageBlock) and block.path.exists():
+                    paragraph.add_run().add_picture(
+                        str(block.path), width=Pt(block.bbox.width), height=Pt(block.bbox.height),
+                    )
 
     def _add_fixed_page(self, document: Document, page: PageIR) -> None:
         """Build business documents on a page canvas with editable objects."""
+        body_blocks, _footer_blocks = self._split_footer_blocks(page)
         anchor = document.add_paragraph()
         anchor.paragraph_format.space_before = Pt(0)
         first_table_top = min(
             (
                 block.bbox.top
-                for block in page.blocks
+                for block in body_blocks
                 if isinstance(block, TableBlock)
             ),
             default=24.0,
         )
-        anchor.paragraph_format.space_after = Pt(max(0, first_table_top - 26))
+        anchor.paragraph_format.space_after = Pt(max(0, first_table_top - document.sections[-1].top_margin.pt - 2))
         anchor.paragraph_format.line_spacing = Pt(1)
         anchor.add_run(" ").font.size = Pt(1)
 
-        for block in page.blocks:
+        for block in body_blocks:
             if isinstance(block, ParagraphBlock):
                 self._add_floating_textbox(anchor, block, page)
             elif isinstance(block, ImageBlock):
                 self._add_floating_image(anchor, block)
             elif isinstance(block, TableBlock):
-                self._add_table(document, block)
+                self._add_table(document, block, document.sections[-1])
 
     def _add_floating_textbox(
         self,
@@ -157,6 +261,12 @@ class DocxBuilder:
             max(14.0, block.bbox.width + width_padding),
             max(14.0, page.width - block.bbox.x0 - 24.0),
         )
+        # Centered cover labels need symmetric room for font substitution.
+        left = block.bbox.x0
+        if block.alignment == "center":
+            center = (block.bbox.x0 + block.bbox.x1) / 2
+            width = max(width, 2 * min(center - 24, page.width - 24 - center))
+            left = center - width / 2
         height = max(font_size * 1.35, block.bbox.height + 5)
         shape = etree.Element(f"{{{VML_NS}}}shape")
         shape.set("id", f"_x0000_s{1024 + self._shape_id}")
@@ -165,7 +275,7 @@ class DocxBuilder:
         shape.set(
             "style",
             (
-                f"position:absolute;margin-left:{block.bbox.x0:.2f}pt;"
+                f"position:absolute;margin-left:{left:.2f}pt;"
                 f"margin-top:{block.bbox.top:.2f}pt;width:{width:.2f}pt;"
                 f"height:{height:.2f}pt;mso-position-horizontal-relative:page;"
                 "mso-position-vertical-relative:page;z-index:251658240;"
@@ -345,11 +455,13 @@ class DocxBuilder:
 
     @staticmethod
     def _add_vertical_gap(document: Document, gap: float) -> None:
-        if gap <= 8:
+        # Only keep intentional whitespace. Small gaps are already covered by
+        # Word's natural line/paragraph metrics and must not be double-counted.
+        if gap <= 14:
             return
         paragraph = document.add_paragraph()
         paragraph.paragraph_format.space_before = Pt(0)
-        paragraph.paragraph_format.space_after = Pt(min(96, gap - 2))
+        paragraph.paragraph_format.space_after = Pt(min(72, gap - 10))
         paragraph.paragraph_format.line_spacing = Pt(1)
         paragraph.add_run(" ").font.size = Pt(1)
 
@@ -359,8 +471,9 @@ class DocxBuilder:
         columns: Sequence[Sequence[Block]],
         page: PageIR,
     ) -> None:
-        left_edge = 24.0
-        right_edge = page.width - 24.0
+        section = document.sections[-1]
+        left_edge = section.left_margin.pt
+        right_edge = page.width - section.right_margin.pt
         first_x = min(block.bbox.x0 for block in columns[0])
         last_x = max(block.bbox.x1 for block in columns[-1])
         spans_page = first_x < page.width * 0.35 and last_x > page.width * 0.65
@@ -406,7 +519,8 @@ class DocxBuilder:
         if isinstance(block, ParagraphBlock):
             self._add_paragraph(container, block, page, in_layout)
         elif isinstance(block, TableBlock):
-            self._add_table(container, block)
+            section = container.sections[-1] if hasattr(container, "sections") else None
+            self._add_table(container, block, section)
         elif isinstance(block, ImageBlock):
             self._add_image(container, block, page)
 
@@ -425,25 +539,41 @@ class DocxBuilder:
             else "Normal"
         )
         paragraph = document.add_paragraph(style=style)
+        paragraph.paragraph_format.space_before = Pt(0)
+        paragraph.paragraph_format.space_after = Pt(0)
+        # Preserve baseline spacing while allowing Word to expand for tall glyphs.
+        tops = sorted({round(span.bbox.top, 1) for span in block.spans if span.text.strip()})
+        size = max((span.font_size for span in block.spans), default=11)
+        leading = [b - a for a, b in zip(tops, tops[1:]) if size * .6 < b - a < size * 2]
+        paragraph.paragraph_format.line_spacing = Pt(median(leading) if leading else size * 1.15)
+        paragraph.paragraph_format.line_spacing_rule = WD_LINE_SPACING.AT_LEAST
+        paragraph.paragraph_format.widow_control = False
         paragraph.alignment = {
             "center": WD_ALIGN_PARAGRAPH.CENTER,
             "right": WD_ALIGN_PARAGRAPH.RIGHT,
             "justify": WD_ALIGN_PARAGRAPH.JUSTIFY,
         }.get(block.alignment, WD_ALIGN_PARAGRAPH.LEFT)
         if block.kind != "list" and not in_layout:
-            paragraph.paragraph_format.left_indent = Pt(
-                max(0, min(block.bbox.x0 - 24, page.width * 0.25))
-            )
+            # Section margins already encode the page's left edge. Avoid stacking
+            # another large indent that squeezes the right side of long lines.
+            paragraph.paragraph_format.left_indent = Pt(0)
         else:
             paragraph.paragraph_format.left_indent = Inches(0.25 * block.list_level)
 
         spans = list(block.spans)
-        if block.kind == "list" and spans:
-            spans[0].text = LIST_PREFIX.sub("", spans[0].text, count=1)
-        for span in spans:
+        for index, span in enumerate(spans):
             if not span.text:
                 continue
-            run = paragraph.add_run(span.text)
+            # Flowing pages should reflow; keep soft breaks only for stacked labels.
+            text = span.text if in_layout or block.kind != "paragraph" else span.text.replace("\n", " ")
+            if block.kind == "list" and index == 0:
+                text = LIST_PREFIX.sub("", text, count=1)
+            run = paragraph.add_run(text)
+            # A small tracking tolerance accommodates PDF glyph positioning
+            # without reducing the source font size or fixing line breaks.
+            spacing = OxmlElement("w:spacing")
+            spacing.set(qn("w:val"), "-2")
+            run._r.get_or_add_rPr().append(spacing)
             run.bold = span.bold
             run.italic = span.italic
             run.font.name = self._safe_font(span.font_name)
@@ -452,13 +582,16 @@ class DocxBuilder:
                 run.font.color.rgb = RGBColor(*span.color)
 
     @staticmethod
-    def _add_table(document, block: TableBlock):
+    def _add_table(document, block: TableBlock, section=None):
         columns = max((len(row) for row in block.rows), default=1)
         table = document.add_table(rows=len(block.rows), cols=columns)
         table.style = "Table Grid"
         table.alignment = WD_TABLE_ALIGNMENT.LEFT
         table.autofit = False
-        available = max(180.0, min(547.0, block.bbox.width))
+        left = section.left_margin.pt if section is not None else 24.0
+        content_width = (section.page_width.pt - left - section.right_margin.pt) if section is not None else 547.0
+        offset = max(0, block.bbox.x0 - left)
+        available = max(24.0, min(content_width - offset, block.bbox.width))
         widths = (
             [
                 available * ratio
@@ -476,7 +609,7 @@ class DocxBuilder:
         preferred_width.set(qn("w:w"), "0")
         indent = OxmlElement("w:tblInd")
         indent.set(qn("w:type"), "dxa")
-        indent.set(qn("w:w"), str(round(max(0, block.bbox.x0 - 24) * 20)))
+        indent.set(qn("w:w"), str(round(offset * 20)))
         table._tbl.tblPr.append(indent)
         for row_index, values in enumerate(block.rows):
             for column_index in range(columns):
@@ -542,10 +675,17 @@ class DocxBuilder:
     def _add_image(document: Document, block: ImageBlock, page: PageIR) -> None:
         if not block.path.exists():
             return
-        width = min(max(block.bbox.width, 36), page.width - 72)
+        section = document.sections[-1] if hasattr(document, "sections") else None
+        available = section.page_width.pt - section.left_margin.pt - section.right_margin.pt if section is not None else page.width - 72
+        width = min(max(block.bbox.width, 36), available)
         paragraph = document.add_paragraph()
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph.add_run().add_picture(str(block.path), width=Pt(width))
+        paragraph.paragraph_format.space_after = Pt(0)
+        paragraph.paragraph_format.line_spacing = 1
+        paragraph.add_run().add_picture(
+            str(block.path), width=Pt(width),
+            height=Pt(block.bbox.height * width / max(1, block.bbox.width)),
+        )
 
     @staticmethod
     def _safe_font(value: str) -> str:
@@ -558,22 +698,18 @@ class DocxBuilder:
             cleaned,
         ).strip()
         aliases = {
-            "aptos": "Arial",
-            "calibri": "Arial",
-            "carlito": "Arial",
+            # Carlito is shipped privately by LibreOffice, so Word may replace
+            # it with Times New Roman. Calibri is its Office counterpart.
+            "carlito": "Calibri",
+            "liberationsans": "Arial",
+            "liberationserif": "Times New Roman",
         }
         return aliases.get(family.casefold(), family[:80]) or "Arial"
 
     @staticmethod
     def _word_font_size(font_name: str, font_size: float) -> float:
-        # Carlito/Calibri PDF metrics are wider than Arial's Word metrics.
-        # A small compensation prevents source lines from wrapping or being
-        # clipped after these unavailable fonts are mapped to Arial.
-        normalized = re.sub(r"^[A-Z]{6}\+", "", font_name or "").casefold()
-        scale = 0.85 if any(
-            family in normalized for family in ("aptos", "calibri", "carlito")
-        ) else 1.0
-        return max(7.0, min(36.0, font_size * scale))
+        # Keep the source size; global shrinking makes reports hard to read.
+        return max(7.0, min(36.0, round(font_size * 2) / 2))
 
 
 def set_cell_margins(cells: Iterable, margin_twips: int = 80) -> None:

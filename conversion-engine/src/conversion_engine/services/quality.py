@@ -45,12 +45,27 @@ class QualityEvaluator:
         document = Document(docx_path)
         with ZipFile(docx_path) as archive:
             root = etree.fromstring(archive.read("word/document.xml"))
-        output_parts = root.xpath(
-            ".//w:t/text()",
-            namespaces={
-                "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-            },
-        )
+        namespaces = {
+            "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        }
+        output_parts = []
+        section_index = 0
+        # Read paragraph text without inserting spaces inside styled words.
+        # Footers belong after each section, where they occurred in the PDF.
+        for element in root.find("w:body", namespaces):
+            output_parts.extend(
+                "".join(
+                    node.text or "" if node.tag.endswith("}t") else " "
+                    for node in paragraph.xpath(".//w:t | .//w:br | .//w:tab", namespaces=namespaces)
+                )
+                for paragraph in element.xpath(
+                    "descendant-or-self::w:p[not(.//w:p)]", namespaces=namespaces
+                )
+            )
+            if element.xpath("descendant-or-self::w:sectPr", namespaces=namespaces):
+                footer = document.sections[section_index].footer
+                output_parts.extend(paragraph.text for paragraph in footer.paragraphs)
+                section_index += 1
         original = _normalize(source.text)
         output = _normalize("\n".join(output_parts))
         paragraph_blocks = [
