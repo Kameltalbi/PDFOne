@@ -177,7 +177,22 @@ export function PdfAction({
         {needsPro && (
           <p className="studio-premium-note" style={{ textAlign: 'center', margin: '0.75rem auto 1.5rem', maxWidth: '36rem' }}>
             {t(m.upgrade.premiumText, { feature: featureLabel })}{' '}
-            <Link to="/pricing" onClick={() => trackUpgradeClick(premiumFeature || 'premium')}>{m.common.getPro}</Link>
+            {(premiumFeature === 'summarize' || premiumFeature === 'translate') ? (
+              <Link to="/pricing" onClick={() => trackUpgradeClick(premiumFeature)}>{m.common.getPro}</Link>
+            ) : (
+              <button
+                type="button"
+                className="studio-premium-link"
+                onClick={() => {
+                  if (premiumFeature) {
+                    trackUpgradeClick(premiumFeature);
+                    openPremiumUpgrade(premiumFeature);
+                  }
+                }}
+              >
+                {m.common.getPro}
+              </button>
+            )}
           </p>
         )}
       </>

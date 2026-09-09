@@ -147,7 +147,7 @@ function About() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <Link className="about-btn ghost" to="/pricing">{a.plansCta} <span>→</span></Link>
+          <Link className="about-btn ghost" to="/tools">{m.home.seeAllTools} <span>→</span></Link>
         </div>
       </section>
 

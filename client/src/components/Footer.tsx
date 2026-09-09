@@ -32,7 +32,6 @@ function Footer() {
           <nav aria-labelledby="footer-company">
             <h2 id="footer-company">{m.common.footerCompany}</h2>
             <Link to="/about">{m.common.about}</Link>
-            <Link to="/pricing">{m.common.pricing}</Link>
             <Link to="/blog">{m.common.blog}</Link>
             <Link to="/contact">{m.common.contact}</Link>
           </nav>

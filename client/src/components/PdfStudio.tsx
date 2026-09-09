@@ -2,8 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
-import { useBilling } from '../lib/billing';
-import { trackFileDownload, trackUpgradeClick } from '../lib/analytics';
+import { trackFileDownload } from '../lib/analytics';
 import { loadResultPreview } from '../lib/pdfPreview';
 import { AdBanner } from './AdBanner';
 import { RelatedTools } from './RelatedTools';
@@ -222,8 +221,6 @@ export function StudioResult({
   sourceName?: string;
 }) {
   const { m } = useI18n();
-  const { status } = useBilling();
-  const paid = status.paid;
   const [copied, setCopied] = useState(false);
   const [resultPreview, setResultPreview] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(true);
@@ -334,17 +331,6 @@ export function StudioResult({
             >
               {extraDownloadLabel}
             </a>
-          )}
-
-          {!paid && !status.monetization.growthMode && (
-            <Link
-              className="studio-done-pro"
-              to="/pricing"
-              aria-label={m.common.getPro}
-              onClick={() => trackUpgradeClick('result_banner')}
-            >
-              <img src="/one2pdf-pro-banner.jpg" alt={m.common.getPro} />
-            </Link>
           )}
 
           <button type="button" className="studio-done-restart" onClick={onReset}>

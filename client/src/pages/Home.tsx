@@ -226,54 +226,32 @@ function Home() {
         <AdBanner />
       </section>
 
-      <section className="pro-plans" aria-labelledby="home-plans-title">
-        <div className="pro-plans-inner">
-          <header className="pro-plans-intro">
-            <span className="pro-section-label">{m.home.plansLabel}</span>
-            <h2 id="home-plans-title">{m.home.plansTitle}</h2>
-            <p>{m.home.plansSubtitle}</p>
+      <section className="pro-free-value" aria-labelledby="home-free-value-title">
+        <div className="pro-free-value-inner">
+          <header className="pro-free-value-intro">
+            <span className="pro-section-label">{m.home.freeValueLabel}</span>
+            <h2 id="home-free-value-title">{m.home.freeValueTitle}</h2>
+            <p>{m.home.freeValueText}</p>
           </header>
-
-          <div className="pro-plans-grid">
-            <article className="pro-plan-card">
-              <p className="pro-plan-kicker">{m.home.plansFreeLabel}</p>
-              <h3>{m.home.plansFreeTitle}</h3>
-              <p className="pro-plan-desc">{m.home.plansFreeDesc}</p>
-              <ul>
-                {m.home.plansFreePoints.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-              <Link to="/tools" className="pro-btn secondary">{m.home.plansFreeCta}</Link>
+          <div className="pro-free-value-grid">
+            <article>
+              <span className="pro-free-value-icon" aria-hidden="true">✓</span>
+              <h3>{m.home.freeValueFreeTitle}</h3>
+              <p>{m.home.freeValueFreeText}</p>
             </article>
-
-            <article className="pro-plan-card featured">
-              <p className="pro-plan-kicker">{m.home.plansPassLabel}</p>
-              <h3>{m.home.plansPassTitle}</h3>
-              <p className="pro-plan-desc">{m.home.plansPassDesc}</p>
-              <ul>
-                {m.home.plansPassPoints.map((item) => <li key={item}>{item}</li>)}
-                <li className="pro-plan-highlight">{m.home.plansPassHighlight}</li>
-              </ul>
-              <Link to="/pricing" className="pro-btn primary">{m.home.plansPassCta}</Link>
+            <article>
+              <span className="pro-free-value-icon" aria-hidden="true">⚡</span>
+              <h3>{m.home.freeValueSimpleTitle}</h3>
+              <p>{m.home.freeValueSimpleText}</p>
             </article>
-
-            <article className="pro-plan-card">
-              <p className="pro-plan-kicker">{m.home.plansProLabel}</p>
-              <h3>{m.home.plansProTitle}</h3>
-              <p className="pro-plan-desc">{m.home.plansProDesc}</p>
-              <ul>
-                {m.home.plansProPoints.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-              <Link to="/pricing" className="pro-btn secondary">{m.home.plansProCta}</Link>
+            <article>
+              <span className="pro-free-value-icon" aria-hidden="true">◎</span>
+              <h3>{m.home.freeValueSecureTitle}</h3>
+              <p>{m.home.freeValueSecureText}</p>
             </article>
           </div>
-
-          <div className="pro-plans-reassure">
-            <p className="pro-plans-reassure-title">{m.home.plansReassureTitle}</p>
-            <p>{m.home.plansReassureText}</p>
-            <ul>
-              {m.home.plansReassureItems.map((item) => <li key={item}>{item}</li>)}
-            </ul>
-            <Link to="/pricing" className="pro-plans-see">{m.home.plansSeeAll} <span aria-hidden="true">→</span></Link>
+          <div className="pro-free-value-cta">
+            <Link to="/tools" className="pro-btn secondary">{m.home.freeValueCta}</Link>
           </div>
         </div>
       </section>

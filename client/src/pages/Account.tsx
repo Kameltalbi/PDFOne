@@ -96,9 +96,6 @@ export function AccountPage() {
               {m.pricing.manage}
             </button>
           )}
-          {!status.paid && (
-            <Link className="pricing-cta outline" to="/pricing">{m.common.pricing}</Link>
-          )}
           <button className="pricing-cta ghost" type="button" onClick={() => void logout()}>
             {m.pricing.logout}
           </button>

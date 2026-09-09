@@ -1834,3 +1834,15 @@ html[dir='rtl'] .sign-preview {
     flex: 1;
   }
 }
+
+.studio-premium-note a,
+.studio-premium-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #0050f8;
+  font: inherit;
+  font-weight: 750;
+  text-decoration: underline;
+  cursor: pointer;
+}
