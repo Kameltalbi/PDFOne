@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   StudioDocumentCanvas,
   StudioLanding,
@@ -20,9 +20,7 @@ import {
   trackUpgradeClick
 } from '../lib/analytics';
 import { useI18n } from '../i18n';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
-import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
-import type { PageSeoCopy } from '../i18n/types';
+import { usePageSeo } from '../lib/usePageSeo';
 
 export type SummaryMode = 'quick' | 'detailed' | 'key_points';
 export type SummaryLanguage = 'same' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'ar';
@@ -40,10 +38,10 @@ const MODES: SummaryMode[] = ['quick', 'detailed', 'key_points'];
 export default function Summarize() {
   const { m, t } = useI18n();
   const copy = m.summarizePdf;
-  const { pathname } = useLocation();
   const pdf = useSinglePdf({ allPages: false });
   const { status } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
+  usePageSeo(`${copy.title} | One2PDF`, copy.subtitle);
 
   const [mode, setMode] = useState<SummaryMode>('detailed');
   const [language, setLanguage] = useState<SummaryLanguage>('same');
@@ -65,27 +63,6 @@ export default function Summarize() {
       | 'pt'
       | 'ar'
   };
-
-  const pageSeo = copy.seoTitle && copy.seoDescription && copy.seoH2 && copy.seoP1 && copy.seoP2 && copy.seoP3
-    ? {
-        seoTitle: copy.seoTitle,
-        seoDescription: copy.seoDescription,
-        seoH2: copy.seoH2,
-        seoP1: copy.seoP1,
-        seoP2: copy.seoP2,
-        seoP3: copy.seoP3,
-        howTitle: copy.howTitle,
-        howSteps: copy.howSteps,
-        faqTitle: copy.faqTitle,
-        faq: copy.faq
-      } satisfies PageSeoCopy
-    : undefined;
-  usePageSeo(pageSeo?.seoTitle, pageSeo?.seoDescription);
-  const faqJsonLd = useMemo(
-    () => (pageSeo?.faq?.length ? faqPageJsonLd(pageSeo.faq, pageUrl(pathname)) : null),
-    [pageSeo?.faq, pathname]
-  );
-  useJsonLd(`one2pdf-faq-${pathname}`, faqJsonLd);
 
   const modeLabel = (value: SummaryMode) => {
     if (value === 'quick') return copy.modeQuick;
@@ -112,9 +89,9 @@ export default function Summarize() {
 
   const languageOptions: SummaryLanguage[] = ['same', 'en', 'fr', 'es', 'de', 'it', 'pt', 'ar'];
 
-  const loadFile = async (files: FileList | File[] | null) => {
+  const loadFile = async (files: FileList | File[]) => {
     await pdf.loadFile(files);
-    const file = files instanceof FileList ? files[0] : files?.[0];
+    const file = files instanceof FileList ? files[0] : files[0];
     if (file) trackFileUpload(file, 'summarize_pdf');
   };
 
@@ -282,7 +259,6 @@ export default function Summarize() {
           isLoading={pdf.isLoading}
           error={pdf.error}
           features={copy.features}
-          seo={pageSeo ? landingSeoFrom(pageSeo) : undefined}
           onDragOver={() => pdf.setIsDragging(true)}
           onDragLeave={() => pdf.setIsDragging(false)}
           onDrop={pdf.onDropFiles}
@@ -318,6 +294,7 @@ export default function Summarize() {
           progress={progress}
           isProcessing={isProcessing}
           actionLabel={needsPro ? m.common.getPro : copy.action}
+          disabled={false}
           onAction={() => {
             if (needsPro) {
               trackUpgradeClick('summarize');
