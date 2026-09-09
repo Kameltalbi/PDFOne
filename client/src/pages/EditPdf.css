@@ -126,6 +126,9 @@
   cursor: pointer;
   font-size: 1.2rem;
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .editor-toolrail button.active { background: #65be2e; color: white; }

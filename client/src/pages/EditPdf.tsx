@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
@@ -22,8 +22,31 @@ type ShapeAnnotation = { id: string; type: 'shape'; page: number; shape: 'rectan
 type ImageAnnotation = { id: string; type: 'image'; page: number; x: number; y: number; width: number; height: number; dataUrl: string };
 type Annotation = TextAnnotation | DrawingAnnotation | ShapeAnnotation | ImageAnnotation;
 type Tool = 'pan' | 'select' | 'text' | 'draw' | 'rectangle' | 'erase' | 'line' | 'arrow' | 'image' | 'underline' | 'strike' | 'signature';
+type DragSession = {
+  id: string;
+  mode: 'move' | 'resize';
+  pointerX: number;
+  pointerY: number;
+  snapshot: Annotation;
+};
 
 const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+function ImageToolIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+      <rect x="3.25" y="3.25" width="17.5" height="17.5" rx="3.2" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="16.2" cy="8.6" r="1.55" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M4.4 17.2 9.1 11.8l3.2 3.1 3.6-4.5 3.7 6.8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 interface PdfPageProps {
   pdf: PDFDocumentProxy;
@@ -35,19 +58,43 @@ interface PdfPageProps {
   color: string;
   strokeWidth: number;
   zoom: number;
+  focusAnnotationId?: string | null;
+  onFocusHandled?: () => void;
   onAdd: (annotation: Annotation) => void;
   onRemove: (id: string) => void;
   onUpdate: (annotation: Annotation) => void;
 }
 
-function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, strokeWidth, zoom, onAdd, onRemove, onUpdate }: PdfPageProps) {
+function PdfPage({
+  pdf,
+  pageNumber,
+  annotations,
+  tool,
+  text,
+  size,
+  color,
+  strokeWidth,
+  zoom,
+  focusAnnotationId,
+  onFocusHandled,
+  onAdd,
+  onRemove,
+  onUpdate
+}: PdfPageProps) {
   const { m } = useI18n();
   const pdfCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
+  const dragRef = useRef<DragSession | null>(null);
   const [page, setPage] = useState<PDFPageProxy | null>(null);
   const [drawing, setDrawing] = useState<Point[] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isResizing, setIsResizing] = useState(false);
+
+  useEffect(() => {
+    if (!focusAnnotationId) return;
+    if (!annotations.some((item) => item.id === focusAnnotationId)) return;
+    setSelectedId(focusAnnotationId);
+    onFocusHandled?.();
+  }, [focusAnnotationId, annotations, onFocusHandled]);
 
   useEffect(() => {
     let active = true;
@@ -166,7 +213,10 @@ function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, stroke
       if (tool === 'select' && currentSelection?.type === 'image') {
         const handleDistance = Math.hypot(point.x - (currentSelection.x + currentSelection.width), point.y - (currentSelection.y + currentSelection.height));
         if (handleDistance < .035) {
-          setIsResizing(true); setDrawing([point]); event.currentTarget.setPointerCapture(event.pointerId); return;
+          dragRef.current = { id: currentSelection.id, mode: 'resize', pointerX: point.x, pointerY: point.y, snapshot: currentSelection };
+          setSelectedId(currentSelection.id);
+          event.currentTarget.setPointerCapture(event.pointerId);
+          return;
         }
       }
       const hit = [...annotations].reverse().find((annotation) => {
@@ -178,8 +228,15 @@ function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, stroke
         return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
       });
       if (hit && tool === 'erase') onRemove(hit.id);
-      if (hit && tool === 'select') { setSelectedId(hit.id); setIsResizing(false); setDrawing([point]); event.currentTarget.setPointerCapture(event.pointerId); }
-      if (!hit && tool === 'select') setSelectedId(null);
+      if (hit && tool === 'select') {
+        dragRef.current = { id: hit.id, mode: 'move', pointerX: point.x, pointerY: point.y, snapshot: hit };
+        setSelectedId(hit.id);
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }
+      if (!hit && tool === 'select') {
+        dragRef.current = null;
+        setSelectedId(null);
+      }
       return;
     }
     if (tool === 'image') {
@@ -195,28 +252,38 @@ function PdfPage({ pdf, pageNumber, annotations, tool, text, size, color, stroke
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    if (drawing) {
-      const point = getPoint(event);
-      if (tool === 'select' && selectedId) {
-        const selected = annotations.find((item) => item.id === selectedId);
-        if (selected) {
-          const dx = point.x - drawing[0].x; const dy = point.y - drawing[0].y;
-          if (selected.type === 'image' && isResizing) {
-            const factor = Math.max(.2, (selected.width + dx) / selected.width);
-            onUpdate({ ...selected, width: Math.max(.04, selected.width * factor), height: Math.max(.03, selected.height * factor) });
-          } else if (selected.type === 'text' || selected.type === 'image') onUpdate({ ...selected, x: selected.x + dx, y: selected.y + dy });
-          else if (selected.type === 'drawing') onUpdate({ ...selected, points: selected.points.map((item) => ({ x: item.x + dx, y: item.y + dy })) });
-          else onUpdate({ ...selected, start: { x: selected.start.x + dx, y: selected.start.y + dy }, end: { x: selected.end.x + dx, y: selected.end.y + dy } });
-        }
-        setDrawing([point]);
-        return;
+    const point = getPoint(event);
+    const drag = dragRef.current;
+    if (tool === 'select' && drag) {
+      const dx = point.x - drag.pointerX;
+      const dy = point.y - drag.pointerY;
+      const selected = drag.snapshot;
+      if (selected.type === 'image' && drag.mode === 'resize') {
+        const factor = Math.max(.2, (selected.width + dx) / selected.width);
+        onUpdate({ ...selected, width: Math.max(.04, selected.width * factor), height: Math.max(.03, selected.height * factor) });
+      } else if (selected.type === 'text' || selected.type === 'image') {
+        onUpdate({ ...selected, x: selected.x + dx, y: selected.y + dy });
+      } else if (selected.type === 'drawing') {
+        onUpdate({ ...selected, points: selected.points.map((item) => ({ x: item.x + dx, y: item.y + dy })) });
+      } else {
+        onUpdate({
+          ...selected,
+          start: { x: selected.start.x + dx, y: selected.start.y + dy },
+          end: { x: selected.end.x + dx, y: selected.end.y + dy }
+        });
       }
+      return;
+    }
+    if (drawing) {
       setDrawing(tool === 'draw' || tool === 'signature' ? [...drawing, point] : [drawing[0], point]);
     }
   };
 
   const finishDrawing = () => {
-    if (tool === 'select') { setDrawing(null); setIsResizing(false); return; }
+    if (tool === 'select') {
+      dragRef.current = null;
+      return;
+    }
     if (drawing && drawing.length > 1) {
       if (tool === 'draw' || tool === 'signature') onAdd({ id: uid(), type: 'drawing', page: pageNumber - 1, points: drawing, color: tool === 'signature' ? '#111827' : color, width: tool === 'signature' ? 2 : strokeWidth });
       else if (tool === 'rectangle' || tool === 'line' || tool === 'arrow') onAdd({ id: uid(), type: 'shape', page: pageNumber - 1, shape: tool, start: drawing[0], end: drawing.at(-1)!, color, width: strokeWidth });
@@ -333,6 +400,37 @@ function EditPdf() {
   const [zoom, setZoom] = useState(1);
   const [activePage, setActivePage] = useState(0);
   const [toolTooltip, setToolTooltip] = useState<{ label: string; top: number } | null>(null);
+  const [focusAnnotationId, setFocusAnnotationId] = useState<string | null>(null);
+  const activePageRef = useRef(0);
+  const workspaceRef = useRef<HTMLElement>(null);
+  activePageRef.current = activePage;
+
+  useEffect(() => {
+    if (!pdf) return;
+    const root = workspaceRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let best: { index: number; ratio: number } | null = null;
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const match = entry.target.id.match(/^pdf-page-(\d+)$/);
+          if (!match) continue;
+          const index = Number(match[1]) - 1;
+          if (!best || entry.intersectionRatio > best.ratio) {
+            best = { index, ratio: entry.intersectionRatio };
+          }
+        }
+        if (best && best.ratio >= 0.25) setActivePage(best.index);
+      },
+      { root, threshold: [0.25, 0.4, 0.6, 0.8] }
+    );
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const el = document.getElementById(`pdf-page-${i}`);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [pdf, pdf?.numPages]);
 
   const openPdf = async (selectedFile: File) => {
     if (selectedFile.type !== 'application/pdf') {
@@ -462,12 +560,12 @@ function EditPdf() {
     return items.slice(0, -1);
   });
 
-  const tools: Array<{ id: Tool; icon: string; label: string }> = [
+  const tools: Array<{ id: Tool; icon: ReactNode; label: string }> = [
     { id: 'pan', icon: '☝', label: m.edit.pan }, { id: 'select', icon: '↖', label: m.edit.selectTool },
     { id: 'text', icon: 'T', label: m.edit.text }, { id: 'draw', icon: '✎', label: m.edit.draw },
     { id: 'rectangle', icon: '▭', label: m.edit.rectangle }, { id: 'erase', icon: '⌫', label: m.edit.erase },
     { id: 'line', icon: '╱', label: m.edit.line }, { id: 'arrow', icon: '↗', label: m.edit.arrow },
-    { id: 'image', icon: '🖼', label: m.edit.image }, { id: 'underline', icon: 'U', label: m.edit.underline },
+    { id: 'image', icon: <ImageToolIcon />, label: m.edit.image }, { id: 'underline', icon: 'U', label: m.edit.underline },
     { id: 'strike', icon: 'S', label: m.edit.strike }, { id: 'signature', icon: '〰', label: m.edit.signature }
   ];
 
@@ -476,14 +574,15 @@ function EditPdf() {
     setTool(selectedTool);
   };
 
-  const loadImage = (imageFile?: File) => {
+  const loadImage = (imageFile?: File, input?: HTMLInputElement | null) => {
     if (!imageFile || !imageFile.type.startsWith('image/')) return;
+    const targetPage = activePageRef.current;
     const reader = new FileReader();
     reader.onload = async () => {
       const dataUrl = String(reader.result);
       const image = new Image();
       await new Promise<void>((resolve, reject) => { image.onload = () => resolve(); image.onerror = () => reject(); image.src = dataUrl; });
-      const pdfPage = await pdf.getPage(activePage + 1);
+      const pdfPage = await pdf.getPage(targetPage + 1);
       const pageSize = pdfPage.getViewport({ scale: 1 });
       const widthInPoints = image.naturalWidth * .75;
       const heightInPoints = image.naturalHeight * .75;
@@ -492,24 +591,28 @@ function EditPdf() {
       const fitScale = Math.min(1, .35 / naturalWidthRatio, .28 / naturalHeightRatio);
       const fittedWidth = naturalWidthRatio * fitScale;
       const fittedHeight = naturalHeightRatio * fitScale;
+      const id = uid();
       addAnnotation({
-        id: uid(), type: 'image', page: activePage,
+        id, type: 'image', page: targetPage,
         x: (1 - fittedWidth) / 2,
         y: (1 - fittedHeight) / 2,
         width: fittedWidth,
         height: fittedHeight,
         dataUrl
       });
+      setFocusAnnotationId(id);
+      setActivePage(targetPage);
       setTool('select');
-      document.getElementById(`pdf-page-${activePage + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById(`pdf-page-${targetPage + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
     reader.readAsDataURL(imageFile);
+    if (input) input.value = '';
   };
 
   return (
     <main className="pdf-editor">
       <aside className="editor-toolrail" aria-label={m.edit.toolsAria}>
-        <input ref={imageInputRef} hidden type="file" accept="image/png,image/jpeg" onChange={(event) => loadImage(event.target.files?.[0])} />
+        <input ref={imageInputRef} hidden type="file" accept="image/png,image/jpeg" onChange={(event) => loadImage(event.target.files?.[0], event.target)} />
         {tools.map((item) => (
           <button
             key={item.id}
@@ -556,10 +659,26 @@ function EditPdf() {
         <button className="change-file" onClick={() => { setPdf(null); setFile(null); }}>{m.edit.changeFile}</button>
       </aside>
 
-      <section className="editor-workspace">
+      <section className="editor-workspace" ref={workspaceRef}>
         <div className="editor-history"><button onClick={undo} disabled={!annotations.length} title={m.edit.undo}>↶</button><button onClick={redo} disabled={!redoStack.length} title={m.edit.redo}>↷</button></div>
         {Array.from({ length: pdf.numPages }, (_, index) => (
-          <PdfPage key={index} pdf={pdf} pageNumber={index + 1} annotations={annotations.filter((item) => item.page === index)} tool={tool} text={text} size={size} color={color} strokeWidth={strokeWidth} zoom={zoom} onAdd={addAnnotation} onRemove={(id) => setAnnotations((items) => items.filter((item) => item.id !== id))} onUpdate={(updated) => setAnnotations((items) => items.map((item) => item.id === updated.id ? updated : item))} />
+          <PdfPage
+            key={index}
+            pdf={pdf}
+            pageNumber={index + 1}
+            annotations={annotations.filter((item) => item.page === index)}
+            tool={tool}
+            text={text}
+            size={size}
+            color={color}
+            strokeWidth={strokeWidth}
+            zoom={zoom}
+            focusAnnotationId={focusAnnotationId}
+            onFocusHandled={() => setFocusAnnotationId(null)}
+            onAdd={addAnnotation}
+            onRemove={(id) => setAnnotations((items) => items.filter((item) => item.id !== id))}
+            onUpdate={(updated) => setAnnotations((items) => items.map((item) => item.id === updated.id ? updated : item))}
+          />
         ))}
         <div className="editor-zoom"><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(1.6, value + .1))}>+</button><button onClick={() => setZoom((value) => Math.max(.6, value - .1))}>−</button></div>
       </section>
