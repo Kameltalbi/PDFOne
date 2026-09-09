@@ -32,6 +32,19 @@ type DragSession = {
 
 const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+const TEXT_COLORS = [
+  '#ef4444',
+  '#f97316',
+  '#eab308',
+  '#22c55e',
+  '#14b8a6',
+  '#3b82f6',
+  '#ec4899',
+  '#6b7280',
+  '#111827',
+  '#ffffff'
+] as const;
+
 function ImageToolIcon() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
@@ -58,6 +71,7 @@ interface PdfPageProps {
   color: string;
   strokeWidth: number;
   zoom: number;
+  fitWidth: number;
   focusAnnotationId?: string | null;
   onFocusHandled?: () => void;
   onAdd: (annotation: Annotation) => void;
@@ -75,6 +89,7 @@ function PdfPage({
   color,
   strokeWidth,
   zoom,
+  fitWidth,
   focusAnnotationId,
   onFocusHandled,
   onAdd,
@@ -105,7 +120,7 @@ function PdfPage({
   useEffect(() => {
     if (!page || !pdfCanvasRef.current || !overlayRef.current) return;
     const baseViewport = page.getViewport({ scale: 1 });
-    const scale = Math.min(1.35, 760 / baseViewport.width) * zoom;
+    const scale = Math.max(0.25, (fitWidth / baseViewport.width) * zoom);
     const viewport = page.getViewport({ scale });
     const canvas = pdfCanvasRef.current;
     const overlay = overlayRef.current;
@@ -124,7 +139,7 @@ function PdfPage({
     if (!context) return;
     const renderTask = page.render({ canvas, canvasContext: context, viewport, transform: pixelRatio === 1 ? undefined : [pixelRatio, 0, 0, pixelRatio, 0, 0] });
     return () => renderTask.cancel();
-  }, [page, zoom]);
+  }, [page, zoom, fitWidth]);
 
   const redraw = useCallback(() => {
     const canvas = overlayRef.current;
@@ -401,9 +416,25 @@ function EditPdf() {
   const [activePage, setActivePage] = useState(0);
   const [toolTooltip, setToolTooltip] = useState<{ label: string; top: number } | null>(null);
   const [focusAnnotationId, setFocusAnnotationId] = useState<string | null>(null);
+  const [fitWidth, setFitWidth] = useState(900);
   const activePageRef = useRef(0);
   const workspaceRef = useRef<HTMLElement>(null);
   activePageRef.current = activePage;
+
+  useEffect(() => {
+    if (!pdf) return;
+    const root = workspaceRef.current;
+    if (!root) return;
+    const measure = () => {
+      const styles = getComputedStyle(root);
+      const pad = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
+      setFitWidth(Math.max(280, root.clientWidth - pad - 4));
+    };
+    measure();
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(root);
+    return () => resizeObserver.disconnect();
+  }, [pdf]);
 
   useEffect(() => {
     if (!pdf) return;
@@ -648,11 +679,50 @@ function EditPdf() {
             <label>{m.edit.content}<input value={text} onChange={(event) => setText(event.target.value)} maxLength={120} /></label>
             <label>{m.edit.font}<select><option>Helvetica</option></select></label>
             <label>{m.edit.size}<input type="range" min="8" max="72" value={size} onChange={(event) => setSize(Number(event.target.value))} /><span>{size} px</span></label>
+            <div className="color-swatches" role="group" aria-label={m.edit.color}>
+              <span>{m.edit.color}</span>
+              <div className="color-swatch-grid">
+                {TEXT_COLORS.map((swatch) => (
+                  <button
+                    key={swatch}
+                    type="button"
+                    className={`color-swatch${color.toLowerCase() === swatch ? ' active' : ''}${swatch === '#ffffff' ? ' light' : ''}`}
+                    style={{ background: swatch }}
+                    aria-label={swatch}
+                    aria-pressed={color.toLowerCase() === swatch}
+                    onClick={() => setColor(swatch)}
+                  />
+                ))}
+                <label className="color-swatch custom" title={m.edit.color}>
+                  <input type="color" value={color} onChange={(event) => setColor(event.target.value)} aria-label={m.edit.color} />
+                </label>
+              </div>
+            </div>
           </div>
         ) : !['pan', 'select', 'erase', 'image'].includes(tool) ? (
-          <div className="tool-options"><label>{m.edit.thickness}<input type="range" min="1" max="12" value={strokeWidth} onChange={(event) => setStrokeWidth(Number(event.target.value))} /><span>{strokeWidth} px</span></label></div>
+          <div className="tool-options">
+            <label>{m.edit.thickness}<input type="range" min="1" max="12" value={strokeWidth} onChange={(event) => setStrokeWidth(Number(event.target.value))} /><span>{strokeWidth} px</span></label>
+            <div className="color-swatches" role="group" aria-label={m.edit.color}>
+              <span>{m.edit.color}</span>
+              <div className="color-swatch-grid">
+                {TEXT_COLORS.map((swatch) => (
+                  <button
+                    key={swatch}
+                    type="button"
+                    className={`color-swatch${color.toLowerCase() === swatch ? ' active' : ''}${swatch === '#ffffff' ? ' light' : ''}`}
+                    style={{ background: swatch }}
+                    aria-label={swatch}
+                    aria-pressed={color.toLowerCase() === swatch}
+                    onClick={() => setColor(swatch)}
+                  />
+                ))}
+                <label className="color-swatch custom" title={m.edit.color}>
+                  <input type="color" value={color} onChange={(event) => setColor(event.target.value)} aria-label={m.edit.color} />
+                </label>
+              </div>
+            </div>
+          </div>
         ) : null}
-        {!['pan', 'select', 'erase', 'image', 'signature'].includes(tool) && <label className="color-option">{m.edit.color}<input type="color" value={color} onChange={(event) => setColor(event.target.value)} /></label>}
         {tool === 'image' && <button className="change-image" onClick={() => imageInputRef.current?.click()}>{m.edit.addAnotherImage}</button>}
         <p className="editor-help">{tool === 'erase' ? m.edit.helpErase : tool === 'image' ? t(m.edit.helpImage, { page: activePage + 1 }) : tool === 'pan' ? m.edit.helpPan : tool === 'select' ? m.edit.helpSelect : ['text','underline','strike'].includes(tool) ? m.edit.helpText : m.edit.helpDraw}</p>
         <button className="clear-page" disabled={!annotations.length} onClick={() => { setAnnotations([]); setRedoStack([]); }}>{m.edit.clearAll}</button>
@@ -673,6 +743,7 @@ function EditPdf() {
             color={color}
             strokeWidth={strokeWidth}
             zoom={zoom}
+            fitWidth={fitWidth}
             focusAnnotationId={focusAnnotationId}
             onFocusHandled={() => setFocusAnnotationId(null)}
             onAdd={addAnnotation}
@@ -680,7 +751,7 @@ function EditPdf() {
             onUpdate={(updated) => setAnnotations((items) => items.map((item) => item.id === updated.id ? updated : item))}
           />
         ))}
-        <div className="editor-zoom"><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(1.6, value + .1))}>+</button><button onClick={() => setZoom((value) => Math.max(.6, value - .1))}>−</button></div>
+        <div className="editor-zoom"><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(2, +(value + .1).toFixed(1)))}>+</button><button onClick={() => setZoom((value) => Math.max(.5, +(value - .1).toFixed(1)))}>−</button></div>
       </section>
 
       <aside className="editor-pages">
