@@ -158,6 +158,13 @@ export type Messages = {
     batchTitle: string;
     batchText: string;
     batchDismiss: string;
+    premiumKicker: string;
+    premiumTitle: string;
+    premiumText: string;
+    premiumDismiss: string;
+    featureOcr: string;
+    featureTranslate: string;
+    featureSummarize: string;
     alreadyPaid: string;
   };
   account: {
@@ -269,6 +276,8 @@ export type Messages = {
     seoDescription: string;
     eyebrow: string;
     title: string;
+    /** Word highlighted in logo blue inside `title` via `{free}` placeholder. */
+    titleFree: string;
     titleAccent: string;
     subtitle: string;
     ctaEdit: string;
@@ -884,9 +893,31 @@ export type Messages = {
     doneText: string;
     reset: string;
     download: string;
-    length: string;
-    short: string;
-    medium: string;
+    copy: string;
+    copied: string;
+    modeQuestion: string;
+    modeQuick: string;
+    modeQuickHint: string;
+    modeDetailed: string;
+    modeDetailedHint: string;
+    modeKeyPoints: string;
+    modeKeyPointsHint: string;
+    languageLabel: string;
+    languageSame: string;
+    langEn: string;
+    langFr: string;
+    langEs: string;
+    langDe: string;
+    langIt: string;
+    langPt: string;
+    langAr: string;
+    resultMode: string;
+    resultLanguage: string;
+    documentLabel: string;
+    /** @deprecated kept for older locale partials */
+    length?: string;
+    short?: string;
+    medium?: string;
     features: FeatureCopy[];
   };
   translatePdf: {

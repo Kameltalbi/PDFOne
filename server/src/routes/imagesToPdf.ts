@@ -4,11 +4,13 @@ import { imagesToPdf } from '../services/imagesToPdf.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', uploadImages.array('files', 20), async (req, res) => {
   const uploadedFiles = (req.files as Express.Multer.File[]) || [];
+  const signal = requestSignal(req);
 
   try {
     if (uploadedFiles.length === 0) {
@@ -23,7 +25,10 @@ router.post('/', uploadImages.array('files', 20), async (req, res) => {
         .filter((file: Express.Multer.File | undefined): file is Express.Multer.File => Boolean(file));
     }
 
-    const result = await imagesToPdf(sortedFiles.map((file) => file.path));
+    const result = await runPdfJob(
+      () => imagesToPdf(sortedFiles.map((file) => file.path)),
+      { signal }
+    );
 
     res.json({
       success: true,
@@ -32,7 +37,8 @@ router.post('/', uploadImages.array('files', 20), async (req, res) => {
     });
   } catch (error) {
     console.error('Images to PDF error:', error);
-    res.status(500).json({
+    const status = queueErrorStatus(error) || 500;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de convertir ces images en PDF.')
     });

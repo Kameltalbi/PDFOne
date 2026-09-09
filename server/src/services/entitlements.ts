@@ -1,8 +1,7 @@
-import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { withFileLock } from '../utils/fileLock.js';
+import { createJsonStoreLock, readJsonFile, writeJsonAtomic } from '../utils/jsonStore.js';
 
 export type PaidPlan = 'week' | 'month' | 'year';
 export type StoredPlan = PaidPlan | 'business' | 'life';
@@ -25,39 +24,14 @@ export const WEEK_AI_LIMIT = 10;
 
 const dataDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../data');
 const dataFile = path.join(dataDir, 'entitlements.json');
-
-let queue = Promise.resolve();
-
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(
-    () => withFileLock('entitlements', fn),
-    () => withFileLock('entitlements', fn)
-  );
-  queue = run.then(() => undefined, () => undefined);
-  return run;
-}
+const withLock = createJsonStoreLock('entitlements');
 
 async function readAll(): Promise<Record<string, Entitlement>> {
-  try {
-    const raw = await fs.readFile(dataFile, 'utf8');
-    try {
-      return JSON.parse(raw) as Record<string, Entitlement>;
-    } catch {
-      throw new Error('ENTITLEMENTS_CORRUPT');
-    }
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return {};
-    if (error instanceof Error && error.message === 'ENTITLEMENTS_CORRUPT') throw error;
-    throw error;
-  }
+  return readJsonFile(dataFile, { empty: {}, corruptCode: 'ENTITLEMENTS_CORRUPT' });
 }
 
 async function writeAll(data: Record<string, Entitlement>) {
-  await fs.mkdir(dataDir, { recursive: true });
-  const payload = JSON.stringify(data, null, 2);
-  const tmp = `${dataFile}.${process.pid}.${Date.now()}.tmp`;
-  await fs.writeFile(tmp, payload, 'utf8');
-  await fs.rename(tmp, dataFile);
+  await writeJsonAtomic(dataFile, data);
 }
 
 export function normalizeEmail(value: string | null | undefined): string {

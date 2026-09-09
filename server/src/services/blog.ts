@@ -1,7 +1,7 @@
-import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { markdownToBlocks, type BlogBlock } from './blogMarkdown.js';
+import { createJsonStoreLock, readJsonFile, writeJsonAtomic } from '../utils/jsonStore.js';
 
 export const BLOG_LOCALES = ['fr', 'en', 'es', 'pt', 'de', 'tr', 'ar', 'it'] as const;
 export type BlogLocale = (typeof BLOG_LOCALES)[number];
@@ -42,28 +42,20 @@ export type PublicBlogPost = {
 const MAX_POSTS = 80;
 const dataDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../data');
 const dataFile = path.join(dataDir, 'blog.json');
+const withLock = createJsonStoreLock('blog');
 
-let queue = Promise.resolve();
-
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(fn, fn);
-  queue = run.then(() => undefined, () => undefined);
-  return run;
-}
+type BlogFile = { posts: StoredBlogPost[] };
 
 async function readAll(): Promise<StoredBlogPost[]> {
-  try {
-    const raw = await fs.readFile(dataFile, 'utf8');
-    const parsed = JSON.parse(raw) as { posts?: StoredBlogPost[] } | StoredBlogPost[];
-    return Array.isArray(parsed) ? parsed : (parsed.posts || []);
-  } catch {
-    return [];
-  }
+  const parsed = await readJsonFile<BlogFile | StoredBlogPost[]>(dataFile, {
+    empty: { posts: [] },
+    corruptCode: 'BLOG_CORRUPT'
+  });
+  return Array.isArray(parsed) ? parsed : (parsed.posts || []);
 }
 
 async function writeAll(posts: StoredBlogPost[]) {
-  await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(dataFile, JSON.stringify({ posts }, null, 2));
+  await writeJsonAtomic(dataFile, { posts });
 }
 
 export function slugify(value: string): string {

@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { getEntitlement, incrementUsage, isEntitlementActive, todayUtc } from '../services/entitlements.js';
 import { ACCESS_COOKIE, QUOTA_COOKIE, type AccessPayload } from '../services/billing.js';
+import { skipFreeDailyQuota } from '../config/monetization.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
 export const FREE_DAILY_DOCS = Math.max(1, Number(process.env.FREE_DAILY_DOCS || 3));
@@ -132,6 +133,12 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
           void incrementUsage(access.customerId);
         }
       });
+      return next();
+    }
+
+    // Growth First: standard tools skip the free daily doc quota. Premium routes
+    // still enforce Pro via assertPremiumAccess (OCR / translate / summarize).
+    if (skipFreeDailyQuota()) {
       return next();
     }
 

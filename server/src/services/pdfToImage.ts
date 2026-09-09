@@ -176,11 +176,17 @@ export async function forEachPdfiumPage(
         (error as Error & { code?: string }).code = 'REQUEST_ABORTED';
         throw error;
       }
-      await onPage({
-        index,
-        total: names.length,
-        image: await fs.readFile(path.join(outputDirectory, name))
-      });
+      const pagePath = path.join(outputDirectory, name);
+      try {
+        await onPage({
+          index,
+          total: names.length,
+          image: await fs.readFile(pagePath)
+        });
+      } finally {
+        // Drop each page file after use so multi-page jobs do not keep every PNG on disk.
+        await fs.unlink(pagePath).catch(() => undefined);
+      }
     }
     return names.length;
   } finally {

@@ -7,6 +7,7 @@ export default function Ocr() {
     <PdfAction
       copy={m.ocrPdf}
       endpoint="/api/ocr"
+      premiumFeature="ocr"
       extraForm={(form) => form.append('lang', locale)}
       downloadName="ocr.pdf"
     />

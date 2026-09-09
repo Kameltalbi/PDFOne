@@ -4,11 +4,13 @@ import { splitPdf, type SplitMode } from '../services/split.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
 
   try {
     if (!uploadedFile) {
@@ -17,7 +19,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     const mode: SplitMode = req.body.mode === 'separate' ? 'separate' : 'extract';
     const pages = req.body.pages ? JSON.parse(req.body.pages) : [];
-    const result = await splitPdf(uploadedFile.path, pages, mode);
+    const result = await runPdfJob(() => splitPdf(uploadedFile.path, pages, mode), { signal });
 
     res.json({
       success: true,
@@ -26,7 +28,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
   } catch (error) {
     console.error('Split error:', error);
-    res.status(400).json({
+    const status = queueErrorStatus(error) || 400;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de diviser ce PDF.')
     });

@@ -7,13 +7,15 @@ import { pdfToPng } from '../services/toJpg.js';
 import { pdfToText } from '../services/toText.js';
 import { unlockPdf } from '../services/unlock.js';
 import { ocrPdf } from '../services/ocr.js';
-import { summarizePdf, translatePdf } from '../services/nlp.js';
+import { parseSummaryLanguage, parseSummaryMode, summarizePdf, translatePdf } from '../services/nlp.js';
 import { convertOfficeFile } from '../services/office.js';
 import { consumeWeekAi, WEEK_AI_LIMIT } from '../services/entitlements.js';
 import { getPaidAccess } from '../middleware/quota.js';
+import { assertPremiumAccess } from '../middleware/premiumGate.js';
 import { cleanupUploads, unlinkQuiet } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
@@ -58,9 +60,14 @@ async function allowWeekAi(req: express.Request, res: express.Response): Promise
 
 router.post('/to-png', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    return res.json({ success: true, data: publicToolResult(req, res, await pdfToPng(uploadedFile.path)) });
+    // Already admitted via pdfQueue inside pdfToRaster / worker pool.
+    return res.json({
+      success: true,
+      data: publicToolResult(req, res, await pdfToPng(uploadedFile.path, signal))
+    });
   } catch (error) {
     return sendError(res, error, 'Impossible de convertir ce PDF en PNG.');
   } finally {
@@ -70,11 +77,16 @@ router.post('/to-png', upload.single('file'), async (req, res) => {
 
 router.post('/to-text', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    const result = await runPdfJob(
+      () => pdfToText(uploadedFile.path, String(req.body.password || '')),
+      { signal }
+    );
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await pdfToText(uploadedFile.path, String(req.body.password || '')))
+      data: publicToolResult(req, res, result)
     });
   } catch (error) {
     return sendError(res, error, 'Impossible d’extraire le texte.');
@@ -85,11 +97,16 @@ router.post('/to-text', upload.single('file'), async (req, res) => {
 
 router.post('/unlock', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    const result = await runPdfJob(
+      (jobSignal) => unlockPdf(uploadedFile.path, String(req.body.password || ''), jobSignal),
+      { signal }
+    );
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await unlockPdf(uploadedFile.path, String(req.body.password || '')))
+      data: publicToolResult(req, res, result)
     });
   } catch (error) {
     return sendError(res, error, 'Impossible de déverrouiller ce PDF.');
@@ -100,11 +117,14 @@ router.post('/unlock', upload.single('file'), async (req, res) => {
 
 router.post('/ocr', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    if (!(await assertPremiumAccess(req, res, 'ocr'))) return;
+    // Already admitted via ocrQueue inside ocrPdf.
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr')))
+      data: publicToolResult(req, res, await ocrPdf(uploadedFile.path, String(req.body.lang || 'fr'), signal))
     });
   } catch (error) {
     return sendError(res, error, 'Impossible d’effectuer l’OCR.');
@@ -115,13 +135,34 @@ router.post('/ocr', upload.single('file'), async (req, res) => {
 
 router.post('/summarize', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    if (!(await assertPremiumAccess(req, res, 'summarize'))) return;
     if (!(await allowWeekAi(req, res))) return;
-    const length = req.body.length === 'short' ? 'short' : 'medium';
+    const mode = parseSummaryMode(req.body.mode ?? req.body.length ?? 'detailed');
+    if (!mode) {
+      return res.status(400).json({
+        success: false,
+        code: 'INVALID_SUMMARY_MODE',
+        error: 'Invalid summary mode. Use quick, detailed, or key_points.'
+      });
+    }
+    const language = parseSummaryLanguage(req.body.language ?? 'same');
+    if (!language) {
+      return res.status(400).json({
+        success: false,
+        code: 'INVALID_SUMMARY_LANGUAGE',
+        error: 'Invalid summary language.'
+      });
+    }
+    const result = await runPdfJob(
+      () => summarizePdf(uploadedFile.path, mode, language),
+      { signal }
+    );
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await summarizePdf(uploadedFile.path, length))
+      data: publicToolResult(req, res, result)
     });
   } catch (error) {
     return sendError(res, error, 'Impossible de résumer ce PDF.');
@@ -132,16 +173,18 @@ router.post('/summarize', upload.single('file'), async (req, res) => {
 
 router.post('/translate', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
+    if (!(await assertPremiumAccess(req, res, 'translate'))) return;
     if (!(await allowWeekAi(req, res))) return;
+    const result = await runPdfJob(
+      () => translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en')),
+      { signal }
+    );
     return res.json({
       success: true,
-      data: publicToolResult(
-        req,
-        res,
-        await translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en'))
-      )
+      data: publicToolResult(req, res, result)
     });
   } catch (error) {
     return sendError(res, error, 'Impossible de traduire ce PDF.');
@@ -168,6 +211,7 @@ router.post('/html-to-pdf', (req, res, next) => {
   });
 }, async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
   let written: string | null = null;
   try {
     const pasted = String(req.body.html || '').trim();
@@ -181,9 +225,10 @@ router.post('/html-to-pdf', (req, res, next) => {
       await fs.writeFile(written, asHtmlDocument(pasted), 'utf8');
       source = written;
     }
+    // Already admitted via officeQueue inside convertOfficeFile.
     return res.json({
       success: true,
-      data: publicToolResult(req, res, await convertOfficeFile(source, 'html-to-pdf'))
+      data: publicToolResult(req, res, await convertOfficeFile(source, 'html-to-pdf', signal))
     });
   } catch (error) {
     return sendError(res, error, 'Impossible de convertir ce HTML en PDF.');

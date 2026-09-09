@@ -4,11 +4,13 @@ import { compressPdf, type CompressQuality } from '../services/compress.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
 
   try {
     if (!uploadedFile) {
@@ -18,7 +20,7 @@ router.post('/', upload.single('file'), async (req, res) => {
     const quality = (['low', 'medium', 'high'].includes(req.body.quality)
       ? req.body.quality
       : 'medium') as CompressQuality;
-    const result = await compressPdf(uploadedFile.path, quality);
+    const result = await compressPdf(uploadedFile.path, quality, signal);
 
     res.json({
       success: true,
@@ -27,7 +29,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
   } catch (error) {
     console.error('Compress error:', error);
-    res.status(500).json({
+    const status = queueErrorStatus(error) || 500;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de compresser ce PDF.')
     });

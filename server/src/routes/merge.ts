@@ -4,11 +4,13 @@ import { mergePDFs } from '../services/merge.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.array('files', 10), async (req, res) => {
   const uploadedFiles = (req.files as Express.Multer.File[]) || [];
+  const signal = requestSignal(req);
 
   try {
     if (uploadedFiles.length < 2) {
@@ -27,7 +29,10 @@ router.post('/', upload.array('files', 10), async (req, res) => {
     }
 
     const pageNumbers = req.body.pageNumbers === 'true' || req.body.pageNumbers === true;
-    const result = await mergePDFs(sortedFiles.map((file) => file.path), { pageNumbers });
+    const result = await runPdfJob(
+      () => mergePDFs(sortedFiles.map((file) => file.path), { pageNumbers }),
+      { signal }
+    );
 
     res.json({
       success: true,
@@ -36,7 +41,8 @@ router.post('/', upload.array('files', 10), async (req, res) => {
     });
   } catch (error) {
     console.error('Merge error:', error);
-    res.status(500).json({
+    const status = queueErrorStatus(error) || 500;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de fusionner ces PDF.')
     });

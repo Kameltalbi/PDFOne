@@ -49,9 +49,36 @@ export function applyRegionalCopy(
 
 export function usePricingCopy(): Messages['pricing'] {
   const { m, t, locale } = useI18n();
-  const { prices } = useBilling();
-  return useMemo(
-    () => applyRegionalCopy(m.pricing, prices, locale, t),
-    [m.pricing, prices, locale, t]
-  );
+  const { prices, status } = useBilling();
+  return useMemo(() => {
+    const base = applyRegionalCopy(m.pricing, prices, locale, t);
+    if (!status.monetization.growthMode || !status.monetization.standardToolsFree) return base;
+    const growthFreeIncludes = locale === 'fr'
+      ? [
+        'Outils PDF de base illimités (fusion, compression, conversion, édition…)',
+        'Téléchargement sans paywall',
+        'Fichiers jusqu’à 20 Mo',
+        'OCR, traduction IA et résumé IA : réservés à Pro',
+        'Fichiers traités puis supprimés automatiquement'
+      ]
+      : [
+        'Unlimited core PDF tools (merge, compress, convert, edit…)',
+        'Download without a paywall',
+        'Files up to 20 MB',
+        'OCR, AI translation and AI summary: Pro only',
+        'Files processed, then deleted automatically'
+      ];
+    const growthFreeNote = locale === 'fr'
+      ? 'Les gros fichiers (>20 Mo), le hors-pub et les fonctions IA avancées restent sur les offres payantes.'
+      : 'Large files (>20 MB), an ad-free experience, and advanced AI features stay on paid plans.';
+    const growthFreePitch = locale === 'fr'
+      ? 'Utilisez les outils PDF de base librement — carte bancaire non requise.'
+      : 'Use core PDF tools freely — no credit card required.';
+    return {
+      ...base,
+      freePitch: growthFreePitch,
+      freeNote: growthFreeNote,
+      freeIncludes: growthFreeIncludes
+    };
+  }, [m.pricing, prices, locale, t, status.monetization.growthMode, status.monetization.standardToolsFree]);
 }

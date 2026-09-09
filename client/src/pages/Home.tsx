@@ -114,7 +114,16 @@ function Home() {
         <div className="pro-hero-glow one" /><div className="pro-hero-glow two" />
         <div className="pro-hero-inner">
           <h1>
-            <span className="pro-hero-title-main">{m.home.title}</span>
+            <span className="pro-hero-title-main">
+              {m.home.title.split('{free}').map((part, index, parts) => (
+                <span key={`title-${index}`}>
+                  {part}
+                  {index < parts.length - 1 && (
+                    <span className="pro-hero-title-free">{m.home.titleFree}</span>
+                  )}
+                </span>
+              ))}
+            </span>
             <span className="pro-hero-title-accent">{m.home.titleAccent}</span>
           </h1>
 
@@ -130,8 +139,8 @@ function Home() {
           </nav>
 
           <div className="pro-trust-row">
-            <span>✓ {m.home.trustSize}</span>
             <span>✓ {m.home.trustInstall}</span>
+            <span>✓ {m.home.trustSize}</span>
             <span>✓ {m.home.trustDelete}</span>
           </div>
 

@@ -20,6 +20,7 @@ import {
 } from '../services/billing.js';
 import { amountsForZone, detectPricingZone } from '../services/pricingZones.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
+import { publicMonetizationFlags } from '../config/monetization.js';
 
 const router = express.Router();
 const restoreAttempts = new Map<string, { window: number; count: number }>();
@@ -60,6 +61,7 @@ async function publicStatus(access: AccessPayload) {
   const usage = usageSnapshot(stored);
   return {
     paid: true as const,
+    monetization: publicMonetizationFlags(),
     plan: access.plan,
     email: access.email,
     expiresAt: access.expiresAt,

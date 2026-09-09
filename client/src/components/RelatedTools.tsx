@@ -29,7 +29,7 @@ const RELATED: Record<string, string[]> = {
   '/ocr': ['/pdf-to-word', '/pdf-to-text', '/compress'],
   '/pdf-to-text': ['/ocr', '/pdf-to-word', '/summarize'],
   '/html-to-pdf': ['/word-to-pdf', '/heic-to-pdf', '/compress', '/merge'],
-  '/summarize': ['/pdf-to-text', '/translate', '/pdf-to-word'],
+  '/summarize': ['/pdf-to-text', '/ocr', '/pdf-to-word'],
   '/translate': ['/summarize', '/pdf-to-word', '/ocr'],
   '/extract-pages': ['/split', '/delete-pages', '/extract-images'],
   '/extract-images': ['/to-jpg', '/extract-pages', '/compress'],

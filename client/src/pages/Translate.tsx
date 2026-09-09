@@ -1,42 +1,23 @@
-import { useState } from 'react';
-import { PdfAction } from '../components/PdfAction';
-import { LOCALES } from '../i18n/types';
+import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
+import { usePageSeo } from '../lib/usePageSeo';
+import './Tools.css';
 
+/** Translate PDF is temporarily marked Soon — UI kept for future work together. */
 export default function Translate() {
-  const { m, locale } = useI18n();
-  const [target, setTarget] = useState(locale === 'en' ? 'fr' : 'en');
-  const names: Record<(typeof LOCALES)[number], string> = {
-    fr: m.translatePdf.langFr,
-    en: m.translatePdf.langEn,
-    es: m.translatePdf.langEs,
-    pt: m.translatePdf.langPt,
-    de: m.translatePdf.langDe,
-    tr: m.translatePdf.langTr,
-    ar: m.translatePdf.langAr,
-    it: m.translatePdf.langIt
-  };
+  const { m } = useI18n();
+  usePageSeo(`${m.translatePdf.title} | One2PDF`, m.translatePdf.subtitle);
+
   return (
-    <PdfAction
-      copy={m.translatePdf}
-      endpoint="/api/translate"
-      extraForm={(form) => {
-        form.append('target', target);
-        form.append('source', 'auto');
-      }}
-      downloadName="traduction.pdf"
-      downloadLabel={m.translatePdf.download}
-      extraDownloadLabel={m.translatePdf.downloadTxt}
-      extra={(
-        <div className="studio-field">
-          <label htmlFor="translate-target">{m.translatePdf.target}</label>
-          <select id="translate-target" value={target} onChange={(event) => setTarget(event.target.value)}>
-            {LOCALES.map((code) => (
-              <option key={code} value={code}>{names[code]}</option>
-            ))}
-          </select>
-        </div>
-      )}
-    />
+    <main className="pdf-tools-page">
+      <section className="pdf-tools-intro" style={{ paddingBottom: '4rem' }}>
+        <p className="pdf-tools-eyebrow">{m.tools.badgeSoon}</p>
+        <h1>{m.translatePdf.title}</h1>
+        <p>{m.translatePdf.subtitle}</p>
+        <p style={{ marginTop: '1.25rem', color: '#64748b' }}>
+          <Link to="/tools" style={{ color: '#0050f8', fontWeight: 700 }}>{m.home.seeAllTools}</Link>
+        </p>
+      </section>
+    </main>
   );
 }

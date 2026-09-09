@@ -85,6 +85,39 @@ export function UpgradeModal() {
     }
   ];
 
+  const featureLabel = offer.reason === 'premium'
+    ? (offer.feature === 'ocr'
+      ? m.upgrade.featureOcr
+      : offer.feature === 'translate'
+        ? m.upgrade.featureTranslate
+        : m.upgrade.featureSummarize)
+    : '';
+
+  const kicker = offer.reason === 'batch'
+    ? m.upgrade.batchKicker
+    : offer.reason === 'premium'
+      ? m.upgrade.premiumKicker
+      : m.upgrade.kicker;
+  const title = offer.reason === 'batch'
+    ? m.upgrade.batchTitle
+    : offer.reason === 'premium'
+      ? t(m.upgrade.premiumTitle, { feature: featureLabel })
+      : m.upgrade.title;
+  const lead = offer.reason === 'batch'
+    ? t(m.upgrade.batchText, { count: offer.count })
+    : offer.reason === 'premium'
+      ? t(m.upgrade.premiumText, { feature: featureLabel })
+      : t(m.upgrade.text, {
+        name: offer.name,
+        size: formatFileSize(offer.size),
+        limit: m.upgrade.limit
+      });
+  const dismiss = offer.reason === 'batch'
+    ? m.upgrade.batchDismiss
+    : offer.reason === 'premium'
+      ? m.upgrade.premiumDismiss
+      : m.upgrade.dismiss;
+
   return (
     <div className="upgrade-overlay" onClick={() => { if (!paying) closeUpgrade(); }}>
       <div
@@ -97,17 +130,9 @@ export function UpgradeModal() {
         <button type="button" className="upgrade-close" onClick={closeUpgrade} aria-label={m.common.closeMenu} disabled={Boolean(paying)}>
           ×
         </button>
-        <p className="upgrade-kicker">{offer.reason === 'batch' ? m.upgrade.batchKicker : m.upgrade.kicker}</p>
-        <h2 id={titleId}>{offer.reason === 'batch' ? m.upgrade.batchTitle : m.upgrade.title}</h2>
-        <p className="upgrade-lead">
-          {offer.reason === 'batch'
-            ? t(m.upgrade.batchText, { count: offer.count })
-            : t(m.upgrade.text, {
-              name: offer.name,
-              size: formatFileSize(offer.size),
-              limit: m.upgrade.limit
-            })}
-        </p>
+        <p className="upgrade-kicker">{kicker}</p>
+        <h2 id={titleId}>{title}</h2>
+        <p className="upgrade-lead">{lead}</p>
 
         <div className="upgrade-plans">
           {plans.map((plan) => (
@@ -135,7 +160,7 @@ export function UpgradeModal() {
         <RestoreAccess compact onRestored={closeUpgrade} />
         <p className="upgrade-trust">{pricing.trust}</p>
         <button type="button" className="upgrade-dismiss" onClick={closeUpgrade} disabled={Boolean(paying)}>
-          {offer.reason === 'batch' ? m.upgrade.batchDismiss : m.upgrade.dismiss}
+          {dismiss}
         </button>
       </div>
     </div>

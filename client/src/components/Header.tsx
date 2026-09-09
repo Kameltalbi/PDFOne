@@ -5,7 +5,7 @@ import { remainingLabel } from '../lib/account';
 import { useBilling } from '../lib/billing';
 import './Header.css';
 
-type MenuId = 'editor' | 'convert';
+type MenuId = 'tools' | 'convert';
 type NavItem = { name: string; path: string };
 
 function isDesktopNav() {
@@ -85,12 +85,12 @@ function Header() {
     setOpenMenu((current) => (current === id ? null : id));
   };
 
-  const editorTools: NavItem[] = [
-    { name: m.tools.edit, path: '/edit-pdf' },
-    { name: m.tools.fillSign, path: '/fill-sign-pdf' },
+  const pdfTools: NavItem[] = [
     { name: m.tools.merge, path: '/merge' },
     { name: m.tools.split, path: '/split' },
     { name: m.tools.compress, path: '/compress' },
+    { name: m.tools.edit, path: '/edit-pdf' },
+    { name: m.tools.fillSign, path: '/fill-sign-pdf' },
     { name: m.tools.rotate, path: '/rotate' },
     { name: m.tools.deletePages, path: '/delete-pages' },
     { name: m.tools.sign, path: '/sign' },
@@ -117,9 +117,12 @@ function Header() {
     { name: m.tools.pngToPdf, path: '/png-to-pdf' }
   ];
 
-  const editorMid = Math.ceil(editorTools.length / 2);
-  const editorActive = editorTools.some((item) => pathIsActive(location.pathname, item.path));
+  const toolsMid = Math.ceil(pdfTools.length / 2);
+  const toolsActive = pdfTools.some((item) => pathIsActive(location.pathname, item.path));
   const convertActive = [...fromPdf, ...toPdf].some((item) => pathIsActive(location.pathname, item.path));
+  const compressActive = pathIsActive(location.pathname, '/compress');
+  const editActive = pathIsActive(location.pathname, '/edit-pdf');
+  const signActive = pathIsActive(location.pathname, '/fill-sign-pdf') || pathIsActive(location.pathname, '/sign');
 
   const accountActions = status.user || status.paid ? (
     <>
@@ -133,10 +136,7 @@ function Header() {
       <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
     </>
   ) : (
-    <>
-      <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
-      <Link to="/pricing" className="header-button signup" onClick={closeMenu}>{m.common.getPro}</Link>
-    </>
+    <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
   );
 
   const renderItems = (items: NavItem[]) => items.map((item) => {
@@ -178,37 +178,45 @@ function Header() {
         <nav id="site-nav" className={`nav${menuOpen ? ' open' : ''}`} ref={navRef}>
           <div
             className="nav-dropdown"
-            onMouseEnter={() => { if (isDesktopNav()) openNow('editor'); }}
+            onMouseEnter={() => { if (isDesktopNav()) openNow('tools'); }}
             onMouseLeave={closeSoon}
           >
             <button
               type="button"
-              className={`nav-link dropdown-toggle${openMenu === 'editor' || editorActive ? ' active' : ''}`}
-              aria-expanded={openMenu === 'editor'}
+              className={`nav-link dropdown-toggle${openMenu === 'tools' || toolsActive ? ' active' : ''}`}
+              aria-expanded={openMenu === 'tools'}
               aria-haspopup="true"
-              aria-controls="nav-editor-menu"
+              aria-controls="nav-tools-menu"
               onClick={() => {
-                if (isDesktopNav() && openMenu === 'editor') return;
-                toggleMenu('editor');
+                if (isDesktopNav() && openMenu === 'tools') return;
+                toggleMenu('tools');
               }}
             >
-              {m.nav.editor}
+              {m.nav.pdfTools}
               <span className="dropdown-arrow" aria-hidden="true">
                 <svg viewBox="0 0 12 8" width="10" height="7" fill="none">
                   <path d="M1.5 1.75 6 6.25 10.5 1.75" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
             </button>
-            {openMenu === 'editor' && (
-              <div id="nav-editor-menu" className="dropdown-menu dropdown-menu-tools" role="region" aria-label={m.nav.editor}>
-                <ul className="dropdown-col">{renderItems(editorTools.slice(0, editorMid))}</ul>
-                <ul className="dropdown-col">{renderItems(editorTools.slice(editorMid))}</ul>
+            {openMenu === 'tools' && (
+              <div id="nav-tools-menu" className="dropdown-menu dropdown-menu-tools" role="region" aria-label={m.nav.pdfTools}>
+                <ul className="dropdown-col">{renderItems(pdfTools.slice(0, toolsMid))}</ul>
+                <ul className="dropdown-col">{renderItems(pdfTools.slice(toolsMid))}</ul>
                 <Link to="/tools" className="dropdown-see-all" onClick={closeMenu}>
                   {m.nav.allTools} <span aria-hidden="true">→</span>
                 </Link>
               </div>
             )}
           </div>
+
+          <NavLink
+            to="/compress"
+            className={({ isActive }) => `nav-link${isActive || compressActive ? ' active' : ''}`}
+            onClick={closeMenu}
+          >
+            {m.nav.compress}
+          </NavLink>
 
           <div
             className="nav-dropdown"
@@ -250,7 +258,22 @@ function Header() {
             )}
           </div>
 
-          <NavLink to="/pricing" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={closeMenu}>{m.common.pricing}</NavLink>
+          <NavLink
+            to="/edit-pdf"
+            className={({ isActive }) => `nav-link${isActive || editActive ? ' active' : ''}`}
+            onClick={closeMenu}
+          >
+            {m.nav.edit}
+          </NavLink>
+
+          <NavLink
+            to="/fill-sign-pdf"
+            className={({ isActive }) => `nav-link${isActive || signActive ? ' active' : ''}`}
+            onClick={closeMenu}
+          >
+            {m.home.shortcutSign}
+          </NavLink>
+
           <div className="nav-mobile-actions">
             {accountActions}
           </div>
@@ -269,10 +292,7 @@ function Header() {
               <button type="button" className="header-button logout" onClick={() => void logout()}>{m.pricing.logout}</button>
             </>
           ) : (
-            <>
-              <Link to="/login" className="header-button login">{m.common.login}</Link>
-              <Link to="/pricing" className="header-button signup">{m.common.getPro}</Link>
-            </>
+            <Link to="/login" className="header-button login">{m.common.login}</Link>
           )}
         </div>
       </div>

@@ -4,18 +4,32 @@ import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Tools.css';
 
-type ToolDef = { id: string; name: string; path?: string; icon: string; color: string; keywords?: string };
+type ToolDef = {
+  id: string;
+  name: string;
+  path?: string;
+  icon: string;
+  color: string;
+  keywords?: string;
+  soon?: boolean;
+};
 
-function ToolCard({ tool }: { tool: ToolDef }) {
+function ToolCard({ tool, soonLabel }: { tool: ToolDef; soonLabel: string }) {
   const content = (
     <>
+      {tool.soon && <span className="pdf-tool-badge soon">{soonLabel}</span>}
       <span className="pdf-tool-icon" style={{ color: tool.color, borderColor: tool.color }} aria-hidden="true">{tool.icon}</span>
       <span className="pdf-tool-name">{tool.name}</span>
     </>
   );
-  return tool.path
-    ? <Link className="pdf-tool-card" to={tool.path}>{content}</Link>
-    : <div className="pdf-tool-card unavailable" aria-disabled="true">{content}</div>;
+  if (tool.soon || !tool.path) {
+    return (
+      <div className="pdf-tool-card unavailable" aria-disabled="true" title={soonLabel}>
+        {content}
+      </div>
+    );
+  }
+  return <Link className="pdf-tool-card" to={tool.path}>{content}</Link>;
 }
 
 function Tools() {
@@ -41,7 +55,7 @@ function Tools() {
     { id: 'reorderPages', name: m.tools.reorderPages, path: '/reorder', icon: '▦', color: '#f59e0b' },
     { id: 'ocr', name: m.tools.ocr, path: '/ocr', icon: 'OCR', color: '#374151', keywords: 'ocr scan texte tesseract' },
     { id: 'summarize', name: m.tools.summarize, path: '/summarize', icon: '☷', color: '#54b92f', keywords: 'résumer summary resume' },
-    { id: 'translate', name: m.tools.translate, path: '/translate', icon: 'A文', color: '#ef5b45', keywords: 'traduire translate traduction' },
+    { id: 'translate', name: m.tools.translate, icon: 'A文', color: '#ef5b45', keywords: 'traduire translate traduction', soon: true },
     { id: 'pngToPdf', name: m.tools.pngToPdf, path: '/png-to-pdf', icon: 'PNG', color: '#27b51c' },
     { id: 'pdfToPng', name: m.tools.pdfToPng, path: '/to-png', icon: '⇩', color: '#27b51c', keywords: 'png image' },
     { id: 'unlock', name: m.tools.unlock, path: '/unlock', icon: '🔓', color: '#333333', keywords: 'password mot de passe déverrouiller' },
@@ -91,7 +105,7 @@ function Tools() {
         {tools.length > 0 ? (
           <section className="pdf-tool-section">
             <div className="pdf-tools-grid">
-              {tools.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+              {tools.map((tool) => <ToolCard key={tool.id} tool={tool} soonLabel={m.tools.badgeSoon} />)}
             </div>
           </section>
         ) : (

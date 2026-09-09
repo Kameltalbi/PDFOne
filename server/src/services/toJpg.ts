@@ -39,7 +39,7 @@ export async function pdfToJpg(
 ) {
   if (pdfToImageV2Enabled()) {
     return pdfQueue.run(
-      () => convertPdfToJpegV2(filePath, quality, signal),
+      (jobSignal) => convertPdfToJpegV2(filePath, quality, jobSignal),
       {
         signal,
         runTimeoutMs: imageRunTimeoutMs()
@@ -49,6 +49,6 @@ export async function pdfToJpg(
   return pdfToRaster(filePath, 'jpeg', quality, '', signal);
 }
 
-export async function pdfToPng(filePath: string) {
-  return pdfToRaster(filePath, 'png');
+export async function pdfToPng(filePath: string, signal?: AbortSignal) {
+  return pdfToRaster(filePath, 'png', 90, '', signal);
 }

@@ -1,10 +1,15 @@
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { useBilling } from '../lib/billing';
+import { useUpgrade } from '../lib/upgrade';
+import { featureRequiresPro, type PremiumFeature } from '../lib/monetization';
+import { trackUpgradeClick } from '../lib/analytics';
 import type { FeatureCopy, PageSeoCopy } from '../i18n/types';
+import { useI18n } from '../i18n';
 import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 
@@ -30,7 +35,8 @@ export function PdfAction({
   allowLocked = false,
   downloadName,
   downloadLabel,
-  extraDownloadLabel
+  extraDownloadLabel,
+  premiumFeature
 }: {
   copy: Copy;
   endpoint: string;
@@ -41,9 +47,14 @@ export function PdfAction({
   downloadName: string;
   downloadLabel?: string;
   extraDownloadLabel?: string;
+  /** When set, unpaid users are gated if monetization requires Pro for this feature. */
+  premiumFeature?: PremiumFeature;
 }) {
   const pdf = useSinglePdf({ allPages: false, allowLocked });
   const { pathname } = useLocation();
+  const { m, t } = useI18n();
+  const { status } = useBilling();
+  const { openPremiumUpgrade } = useUpgrade();
   const pageSeo = copy.seoTitle && copy.seoDescription && copy.seoH2 && copy.seoP1 && copy.seoP2 && copy.seoP3
     ? {
         seoTitle: copy.seoTitle,
@@ -69,8 +80,24 @@ export function PdfAction({
   const [resultName, setResultName] = useState(downloadName);
   const [textDownload, setTextDownload] = useState<{ url: string; name: string } | null>(null);
 
+  const needsPro = Boolean(
+    premiumFeature
+    && !status.paid
+    && featureRequiresPro(status.monetization, premiumFeature)
+  );
+
+  const featureLabel = premiumFeature === 'ocr'
+    ? m.upgrade.featureOcr
+    : premiumFeature === 'translate'
+      ? m.upgrade.featureTranslate
+      : m.upgrade.featureSummarize;
+
   const run = async () => {
     if (!pdf.file) return;
+    if (needsPro && premiumFeature) {
+      openPremiumUpgrade(premiumFeature);
+      return;
+    }
     setIsProcessing(true);
     pdf.setError(null);
     setProgress(25);
@@ -132,20 +159,28 @@ export function PdfAction({
 
   if (!pdf.file) {
     return (
-      <StudioLanding
-        title={copy.title}
-        subtitle={copy.subtitle}
-        pickerId={pdf.pickerId}
-        isDragging={pdf.isDragging}
-        isLoading={pdf.isLoading}
-        error={pdf.error}
-        features={copy.features}
-        seo={pageSeo ? landingSeoFrom(pageSeo) : undefined}
-        onDragOver={() => pdf.setIsDragging(true)}
-        onDragLeave={() => pdf.setIsDragging(false)}
-        onDrop={pdf.onDropFiles}
-        onFiles={(files) => void pdf.loadFile(files)}
-      />
+      <>
+        <StudioLanding
+          title={copy.title}
+          subtitle={copy.subtitle}
+          pickerId={pdf.pickerId}
+          isDragging={pdf.isDragging}
+          isLoading={pdf.isLoading}
+          error={pdf.error}
+          features={copy.features}
+          seo={pageSeo ? landingSeoFrom(pageSeo) : undefined}
+          onDragOver={() => pdf.setIsDragging(true)}
+          onDragLeave={() => pdf.setIsDragging(false)}
+          onDrop={pdf.onDropFiles}
+          onFiles={(files) => void pdf.loadFile(files)}
+        />
+        {needsPro && (
+          <p className="studio-premium-note" style={{ textAlign: 'center', margin: '0.75rem auto 1.5rem', maxWidth: '36rem' }}>
+            {t(m.upgrade.premiumText, { feature: featureLabel })}{' '}
+            <Link to="/pricing" onClick={() => trackUpgradeClick(premiumFeature || 'premium')}>{m.common.getPro}</Link>
+          </p>
+        )}
+      </>
     );
   }
 
@@ -164,12 +199,15 @@ export function PdfAction({
       sidebar={(
         <StudioSidebarFrame
           title={copy.title}
-          tip={copy.tip}
+          tip={needsPro ? t(m.upgrade.premiumText, { feature: featureLabel }) : copy.tip}
           error={pdf.error}
           progress={progress}
           isProcessing={isProcessing}
-          actionLabel={isProcessing ? copy.running : copy.action}
-          onAction={() => void run()}
+          actionLabel={needsPro ? m.common.getPro : (isProcessing ? copy.running : copy.action)}
+          onAction={() => {
+            if (needsPro && premiumFeature) openPremiumUpgrade(premiumFeature);
+            else void run();
+          }}
           disabled={disabled}
           onChangeFile={reset}
         >

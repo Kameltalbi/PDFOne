@@ -14,11 +14,18 @@ type WorkerResponse =
 type Pending = {
   resolve: (value: unknown) => void;
   reject: (error: Error) => void;
+  worker?: Worker;
 };
 
 function envInt(name: string, fallback: number): number {
   const value = Number.parseInt(process.env[name] || '', 10);
   return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function abortError() {
+  const error = new Error('La requête a été annulée.');
+  (error as Error & { code?: string }).code = 'REQUEST_ABORTED';
+  return error;
 }
 
 function resolveWorkerEntry(): { script: string; execArgv?: string[] } | null {
@@ -53,6 +60,7 @@ class HeavyWorkerPool {
       const entry = this.pending.get(message.id);
       if (!entry) return;
       this.pending.delete(message.id);
+      entry.worker = undefined;
       this.idle.push(worker);
       if (message.ok) entry.resolve(message.result);
       else {
@@ -68,6 +76,12 @@ class HeavyWorkerPool {
     worker.on('exit', (code) => {
       this.workers = this.workers.filter((item) => item !== worker);
       this.idle = this.idle.filter((item) => item !== worker);
+      for (const [id, entry] of this.pending) {
+        if (entry.worker === worker) {
+          this.pending.delete(id);
+          entry.reject(abortError());
+        }
+      }
       if (code !== 0) console.error(`Heavy worker stopped with code ${code}`);
       if (this.started && this.workers.length < this.size) {
         const replacement = this.spawn();
@@ -93,18 +107,37 @@ class HeavyWorkerPool {
     while (this.idle.length && this.queue.length) {
       const worker = this.idle.pop()!;
       const next = this.queue.shift()!;
+      const entry = this.pending.get(next.id);
+      if (entry) entry.worker = worker;
       worker.postMessage({ id: next.id, job: next.job });
     }
   }
 
-  run<T>(job: HeavyJob): Promise<T> {
+  run<T>(job: HeavyJob, signal?: AbortSignal): Promise<T> {
     this.ensureStarted();
+    if (signal?.aborted) return Promise.reject(abortError());
+
     const id = this.nextId++;
     return new Promise<T>((resolve, reject) => {
-      this.pending.set(id, {
+      const entry: Pending = {
         resolve: (value) => resolve(value as T),
         reject
-      });
+      };
+      this.pending.set(id, entry);
+
+      const onAbort = () => {
+        this.queue = this.queue.filter((item) => item.id !== id);
+        const pending = this.pending.get(id);
+        if (!pending) return;
+        this.pending.delete(id);
+        const worker = pending.worker;
+        pending.reject(abortError());
+        if (worker) {
+          void worker.terminate().catch(() => undefined);
+        }
+      };
+      signal?.addEventListener('abort', onAbort, { once: true });
+
       this.queue.push({ id, job });
       this.drain();
     });
@@ -116,9 +149,14 @@ const pool = workerEntry ? new HeavyWorkerPool(envInt('HEAVY_WORKERS', 1), worke
 
 /** Run a heavy PDF job off the API event loop when workers are available. */
 export async function runHeavyJob<T>(job: HeavyJob, signal?: AbortSignal): Promise<T> {
-  return pdfQueue.run(async () => {
-    if (pool) return pool.run<T>(job);
+  return pdfQueue.run(async (jobSignal) => {
+    if (pool) return pool.run<T>(job, jobSignal);
     const { executeHeavyJob } = await import('./heavyJobs.js');
+    if (jobSignal.aborted) {
+      const error = new Error('La requête a été annulée.');
+      (error as Error & { code?: string }).code = 'REQUEST_ABORTED';
+      throw error;
+    }
     return executeHeavyJob(job) as Promise<T>;
   }, { signal });
 }

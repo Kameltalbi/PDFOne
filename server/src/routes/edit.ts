@@ -4,11 +4,13 @@ import { upload } from '../middleware/upload.js';
 import { editPdf, type PdfAnnotation } from '../services/edit.js';
 import { originalDownloadName } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
 
   try {
     if (!uploadedFile) {
@@ -20,7 +22,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ success: false, error: 'Annotations invalides' });
     }
 
-    const outputPath = await editPdf(uploadedFile.path, annotations);
+    const outputPath = await runPdfJob(() => editPdf(uploadedFile.path, annotations), { signal });
     const downloadName = originalDownloadName(
       uploadedFile.originalname,
       'edited.pdf'
@@ -31,7 +33,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
   } catch (error) {
     console.error('PDF edit error:', error);
-    res.status(500).json({
+    const status = queueErrorStatus(error) || 500;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de modifier le PDF')
     });

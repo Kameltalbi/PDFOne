@@ -1,5 +1,3 @@
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -8,13 +6,12 @@ import { extractPdfRows } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
 import { rowsToXlsx } from '../utils/xlsx.js';
 import { officeQueue } from '../utils/jobQueue.js';
+import { execFileAbortable } from '../utils/execFileAbortable.js';
 import { convertPdfToDocx } from './pdfToDocx.js';
 import {
   convertPdfToExcelV2,
   pdfToExcelV2Enabled
 } from './pdfToExcel.js';
-
-const execFileAsync = promisify(execFile);
 
 export const OFFICE_JOBS = {
   'pdf-to-word': { in: ['.pdf'], out: 'docx' },
@@ -102,8 +99,8 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob, signal
 
   if (job === 'pdf-to-excel') {
     return officeQueue.run(
-      () => pdfToExcelV2Enabled()
-        ? convertPdfToExcelV2(filePath, signal)
+      (jobSignal) => pdfToExcelV2Enabled()
+        ? convertPdfToExcelV2(filePath, jobSignal)
         : pdfToExcel(filePath),
       {
         signal,
@@ -115,12 +112,12 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob, signal
   }
   if (job === 'pdf-to-word') {
     return officeQueue.run(
-      () => convertPdfToDocx(filePath, signal),
+      (jobSignal) => convertPdfToDocx(filePath, jobSignal),
       { signal, runTimeoutMs: Number(process.env.PDF2DOCX_RUN_TIMEOUT_MS || 300_000) }
     );
   }
 
-  return officeQueue.run(async () => {
+  return officeQueue.run(async (jobSignal) => {
     const soffice = await resolveSoffice();
     const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-lo-out-'));
     const profile = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-lo-profile-'));
@@ -128,6 +125,11 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob, signal
       let produced: string | null = null;
       let lastError: unknown;
       for (const attempt of attemptsFor(job)) {
+        if (jobSignal.aborted) {
+          const error = new Error('La requête a été annulée.');
+          (error as Error & { code?: string }).code = 'REQUEST_ABORTED';
+          throw error;
+        }
         const existing = await fs.readdir(outDir);
         await Promise.all(existing.map((name) => fs.unlink(path.join(outDir, name)).catch(() => undefined)));
         const args = [
@@ -142,13 +144,16 @@ export async function convertOfficeFile(filePath: string, job: OfficeJob, signal
         if (attempt.inFilter) args.push(`--infilter=${attempt.inFilter}`);
         args.push('--convert-to', attempt.target, '--outdir', outDir, filePath);
         try {
-          await execFileAsync(soffice, args, {
+          await execFileAbortable(soffice, args, {
             timeout: 180000,
             maxBuffer: 8 * 1024 * 1024,
+            signal: jobSignal,
             env: { ...process.env, SAL_USE_VCLPLUGIN: 'svp' }
           });
         } catch (error) {
           lastError = error;
+          const code = error instanceof Error ? (error as Error & { code?: string }).code : undefined;
+          if (code === 'REQUEST_ABORTED' || code === 'JOB_TIMEOUT') throw error;
         }
         produced = await findOutput(outDir, spec.out);
         if (produced) break;

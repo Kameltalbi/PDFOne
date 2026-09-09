@@ -1,14 +1,11 @@
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { mapPdfError } from '../utils/pdf.js';
 import { writeTemp } from '../utils/temp.js';
+import { execFileAbortable } from '../utils/execFileAbortable.js';
 import { forEachPdfiumPage } from './pdfToImage.js';
-
-const execFileAsync = promisify(execFile);
 
 async function copyWithoutEncryption(src: PDFDocument) {
   const out = await PDFDocument.create();
@@ -17,7 +14,7 @@ async function copyWithoutEncryption(src: PDFDocument) {
   return Buffer.from(await out.save());
 }
 
-export async function unlockPdf(filePath: string, password: string) {
+export async function unlockPdf(filePath: string, password: string, signal?: AbortSignal) {
   const bytes = await fs.readFile(filePath);
   try {
     const pdf = await PDFDocument.load(bytes, password ? { password } : undefined);
@@ -35,7 +32,11 @@ export async function unlockPdf(filePath: string, password: string) {
   const outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'pdfone-unlock-'));
   const outPath = path.join(outDir, 'unlocked.pdf');
   try {
-    await execFileAsync('qpdf', [`--password=${password}`, '--decrypt', filePath, outPath], { timeout: 60000 });
+    await execFileAbortable(
+      'qpdf',
+      [`--password=${password}`, '--decrypt', filePath, outPath],
+      { timeout: 60000, signal }
+    );
     const unlocked = await fs.readFile(outPath);
     return writeTemp(unlocked, 'unlocked', 'pdf');
   } catch {
@@ -50,7 +51,8 @@ export async function unlockPdf(filePath: string, password: string) {
           page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
           pages += 1;
         },
-        { dpi: 115, password }
+        { dpi: 115, password },
+        signal
       );
       if (!pages) throw new Error('empty');
       return writeTemp(await pdf.save(), 'unlocked', 'pdf');

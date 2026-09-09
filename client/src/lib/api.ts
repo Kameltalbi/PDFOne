@@ -1,6 +1,12 @@
 import { dictionaries } from '../i18n/dictionaries';
 import { getRuntimeLocale } from '../i18n/runtime';
-import { trackProcessingSuccess } from './analytics';
+import {
+  trackProcessingFailed,
+  trackProcessingStarted,
+  trackProcessingSuccess,
+  type AnalyticsParams,
+  type ToolName
+} from './analytics';
 
 export type ToolResult = {
   downloadUrl: string;
@@ -9,10 +15,18 @@ export type ToolResult = {
   compressedSize?: number;
   textDownloadUrl?: string;
   textFilename?: string;
+  summary?: string;
+  mode?: string;
+  language?: string;
 };
 
-export async function postFormData<T>(url: string, formData: FormData): Promise<T> {
+export async function postFormData<T>(
+  url: string,
+  formData: FormData,
+  analytics?: { toolName?: ToolName; extras?: AnalyticsParams }
+): Promise<T> {
   const locale = getRuntimeLocale();
+  trackProcessingStarted(analytics?.toolName, analytics?.extras);
   const response = await fetch(url, {
     method: 'POST',
     body: formData,
@@ -21,15 +35,20 @@ export async function postFormData<T>(url: string, formData: FormData): Promise<
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || !payload.success) {
+    trackProcessingFailed(analytics?.toolName, analytics?.extras);
     throw new Error(payload.error || dictionaries[locale].common.processingFailed);
   }
   return payload.data as T;
 }
 
-export async function postForm(url: string, formData: FormData): Promise<ToolResult> {
+export async function postForm(
+  url: string,
+  formData: FormData,
+  analytics?: { toolName?: ToolName; extras?: AnalyticsParams }
+): Promise<ToolResult> {
   const startedAt = Date.now();
-  const result = await postFormData<ToolResult>(url, formData);
-  trackProcessingSuccess(startedAt);
+  const result = await postFormData<ToolResult>(url, formData, analytics);
+  trackProcessingSuccess(startedAt, analytics?.toolName, analytics?.extras);
   return result;
 }
 

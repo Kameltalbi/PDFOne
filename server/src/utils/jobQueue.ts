@@ -1,3 +1,5 @@
+import { sharedJobBudget } from './resourceBudget.js';
+
 export type QueueStats = {
   name: string;
   active: number;
@@ -56,23 +58,31 @@ function sleep(ms: number, signal?: AbortSignal) {
 async function withTimeout<T>(
   promise: Promise<T>,
   ms: number,
-  signal?: AbortSignal
+  jobController: AbortController
 ): Promise<T> {
-  if (signal?.aborted) throw abortError();
+  const signal = jobController.signal;
+  if (signal.aborted) throw abortError();
   let timer: ReturnType<typeof setTimeout> | undefined;
   let onAbort: (() => void) | undefined;
+  let timedOut = false;
   try {
     return await Promise.race([
       promise,
       new Promise<T>((_resolve, reject) => {
-        timer = setTimeout(() => reject(timeoutError('run')), ms);
-        onAbort = () => reject(abortError());
-        signal?.addEventListener('abort', onAbort, { once: true });
+        timer = setTimeout(() => {
+          timedOut = true;
+          if (!jobController.signal.aborted) jobController.abort();
+          reject(timeoutError('run'));
+        }, ms);
+        onAbort = () => {
+          if (!timedOut) reject(abortError());
+        };
+        signal.addEventListener('abort', onAbort, { once: true });
       })
     ]);
   } finally {
     if (timer) clearTimeout(timer);
-    if (onAbort) signal?.removeEventListener('abort', onAbort);
+    if (onAbort) signal.removeEventListener('abort', onAbort);
   }
 }
 
@@ -100,9 +110,16 @@ export class BoundedQueue {
     };
   }
 
-  async run<T>(fn: () => Promise<T>, options: RunOptions = {}): Promise<T> {
-    const signal = options.signal;
-    if (signal?.aborted) throw abortError();
+  /**
+   * Admit and run work. `fn` receives a job signal that aborts on client disconnect
+   * or run timeout so native children / workers can be killed.
+   */
+  async run<T>(
+    fn: (jobSignal: AbortSignal) => Promise<T>,
+    options: RunOptions = {}
+  ): Promise<T> {
+    const parent = options.signal;
+    if (parent?.aborted) throw abortError();
 
     if (this.active + this.waiting >= this.concurrency + this.maxWaiting) {
       const error = new Error(
@@ -119,23 +136,49 @@ export class BoundedQueue {
     this.waiting += 1;
     try {
       while (this.active >= this.concurrency) {
-        if (signal?.aborted) throw abortError();
+        if (parent?.aborted) throw abortError();
         if (Date.now() - waitStarted > waitLimit) throw timeoutError('wait');
-        await sleep(40, signal);
+        await sleep(40, parent);
       }
+      // Reserve the local slot before waiting on the shared budget.
+      this.active += 1;
     } catch (error) {
       this.waiting -= 1;
       throw error;
     }
     this.waiting -= 1;
 
-    if (signal?.aborted) throw abortError();
-
-    this.active += 1;
     try {
-      return await withTimeout(Promise.resolve().then(fn), runLimit, signal);
-    } finally {
+      const remaining = Math.max(0, waitLimit - (Date.now() - waitStarted));
+      await sharedJobBudget.acquire(parent, remaining);
+    } catch (error) {
       this.active -= 1;
+      throw error;
+    }
+
+    if (parent?.aborted) {
+      sharedJobBudget.release();
+      this.active -= 1;
+      throw abortError();
+    }
+
+    const jobController = new AbortController();
+    const forwardParent = () => {
+      if (!jobController.signal.aborted) jobController.abort();
+    };
+    if (parent?.aborted) forwardParent();
+    else parent?.addEventListener('abort', forwardParent, { once: true });
+
+    try {
+      return await withTimeout(
+        Promise.resolve().then(() => fn(jobController.signal)),
+        runLimit,
+        jobController
+      );
+    } finally {
+      parent?.removeEventListener('abort', forwardParent);
+      this.active -= 1;
+      sharedJobBudget.release();
     }
   }
 }
@@ -165,7 +208,39 @@ export const ocrQueue = new BoundedQueue(
 );
 
 export function allQueueStats(): QueueStats[] {
-  return [pdfQueue.stats(), officeQueue.stats(), ocrQueue.stats()];
+  const global = sharedJobBudget.stats();
+  return [
+    pdfQueue.stats(),
+    officeQueue.stats(),
+    ocrQueue.stats(),
+    {
+      name: global.name,
+      active: global.active,
+      waiting: 0,
+      concurrency: global.concurrency,
+      maxWaiting: 0,
+      waitTimeoutMs: 0,
+      runTimeoutMs: 0
+    }
+  ];
+}
+
+/** Run CPU/RAM PDF work through the shared bounded admission queue. */
+export function runPdfJob<T>(
+  fn: (jobSignal: AbortSignal) => Promise<T>,
+  options: RunOptions = {}
+): Promise<T> {
+  return pdfQueue.run(fn, options);
+}
+
+/** Map queue/resource failures to HTTP status codes used by tool routes. */
+export function queueErrorStatus(error: unknown): number {
+  const code = error instanceof Error ? (error as Error & { code?: string }).code : undefined;
+  if (code === 'SERVER_BUSY' || code === 'QUEUE_WAIT_TIMEOUT' || code === 'JOB_TIMEOUT' || code === 'TEMP_DISK_FULL') {
+    return 503;
+  }
+  if (code === 'REQUEST_ABORTED') return 499;
+  return 0;
 }
 
 /** AbortSignal tied to the HTTP request lifecycle (client disconnect). */

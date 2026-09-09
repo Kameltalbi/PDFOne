@@ -4,11 +4,13 @@ import { protectPdf } from '../services/protect.js';
 import { cleanupUploads } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
+import { queueErrorStatus, requestSignal, runPdfJob } from '../utils/jobQueue.js';
 
 const router = express.Router();
 
 router.post('/', upload.single('file'), async (req, res) => {
   const uploadedFile = req.file;
+  const signal = requestSignal(req);
 
   try {
     if (!uploadedFile) {
@@ -23,7 +25,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       });
     }
 
-    const result = await protectPdf(uploadedFile.path, password);
+    const result = await runPdfJob(() => protectPdf(uploadedFile.path, password), { signal });
 
     res.json({
       success: true,
@@ -32,7 +34,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
   } catch (error) {
     console.error('Protect error:', error);
-    res.status(500).json({
+    const status = queueErrorStatus(error) || 500;
+    res.status(status).json({
       success: false,
       error: publicErrorFromUnknown(error, 'Impossible de protéger ce PDF.')
     });

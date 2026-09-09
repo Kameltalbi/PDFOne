@@ -1,10 +1,9 @@
 import { randomBytes, scrypt, timingSafeEqual } from 'crypto';
 import { promisify } from 'util';
-import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { normalizeEmail } from './entitlements.js';
-import { withFileLock } from '../utils/fileLock.js';
+import { createJsonStoreLock, readJsonFile, writeJsonAtomic } from '../utils/jsonStore.js';
 
 const scryptAsync = promisify(scrypt);
 
@@ -30,39 +29,14 @@ export type UserPayload = {
 
 const dataDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../data');
 const dataFile = path.join(dataDir, 'users.json');
-
-let queue = Promise.resolve();
-
-function withLock<T>(fn: () => Promise<T>): Promise<T> {
-  const run = queue.then(
-    () => withFileLock('users', fn),
-    () => withFileLock('users', fn)
-  );
-  queue = run.then(() => undefined, () => undefined);
-  return run;
-}
+const withLock = createJsonStoreLock('users');
 
 async function readAll(): Promise<Record<string, StoredUser>> {
-  try {
-    const raw = await fs.readFile(dataFile, 'utf8');
-    try {
-      return JSON.parse(raw) as Record<string, StoredUser>;
-    } catch {
-      throw new Error('USERS_CORRUPT');
-    }
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return {};
-    if (error instanceof Error && error.message === 'USERS_CORRUPT') throw error;
-    throw error;
-  }
+  return readJsonFile(dataFile, { empty: {}, corruptCode: 'USERS_CORRUPT' });
 }
 
 async function writeAll(data: Record<string, StoredUser>) {
-  await fs.mkdir(dataDir, { recursive: true });
-  const payload = JSON.stringify(data, null, 2);
-  const tmp = `${dataFile}.${process.pid}.${Date.now()}.tmp`;
-  await fs.writeFile(tmp, payload, 'utf8');
-  await fs.rename(tmp, dataFile);
+  await writeJsonAtomic(dataFile, data);
 }
 
 export function publicUser(user: StoredUser): PublicUser {

@@ -1,7 +1,9 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
+import os from 'node:os';
 import { tempDir } from './temp.js';
+import { sharedJobBudget } from './resourceBudget.js';
 import {
   pingPdfToDocxEngine
 } from '../services/pdfToDocx.js';
@@ -178,8 +180,10 @@ export async function runtimeHealthSnapshot() {
       rss: mem.rss,
       heapUsed: mem.heapUsed,
       heapTotal: mem.heapTotal,
-      external: mem.external
+      external: mem.external,
+      free: os.freemem()
     },
+    jobBudget: sharedJobBudget.stats(),
     eventLoopLagMs: getEventLoopLagMs(),
     tempDisk: {
       freeBytes: disk.freeBytes,

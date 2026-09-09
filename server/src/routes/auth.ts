@@ -19,6 +19,7 @@ import {
   type UserPayload
 } from '../services/users.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
+import { publicMonetizationFlags } from '../config/monetization.js';
 
 const router = express.Router();
 const loginAttempts = new Map<string, { window: number; count: number }>();
@@ -102,12 +103,14 @@ async function sessionPayload(
     : (access && (!access.expiresAt || Date.parse(access.expiresAt) > Date.now()) ? access : null);
 
   const superadmin = Boolean(user && isSuperAdminEmail(user.email));
+  const monetization = publicMonetizationFlags();
 
   if (live) {
     const usage = usageSnapshot(stored);
     return {
       user,
       superadmin,
+      monetization,
       paid: true as const,
       plan: live.plan,
       email: live.email,
@@ -122,6 +125,7 @@ async function sessionPayload(
   return {
     user,
     superadmin,
+    monetization,
     paid: false as const,
     ...getFreeUsage(req)
   };

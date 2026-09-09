@@ -7,8 +7,8 @@ import { writeTemp } from '../utils/temp.js';
 import { ocrLayoutBlocks } from './ocr.js';
 import { translateFragments } from './nlp.js';
 
-const MAX_PAGES = 30;
-const MAX_BLOCKS = 280;
+const MAX_PAGES = 100;
+const MAX_BLOCKS = 1000;
 const LANGS = new Set(['fr', 'en', 'es', 'pt', 'de', 'tr', 'ar', 'it']);
 
 const LANG_NAMES: Record<string, string> = {

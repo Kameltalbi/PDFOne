@@ -2,6 +2,10 @@ import fs from 'node:fs/promises';
 import { mapPdfError } from '../utils/pdf.js';
 import { extractPdfText } from '../utils/pdfText.js';
 import { writeTemp } from '../utils/temp.js';
+import type { SummaryLanguage, SummaryMode } from '../utils/summaryOptions.js';
+
+export type { SummaryLanguage, SummaryMode } from '../utils/summaryOptions.js';
+export { parseSummaryLanguage, parseSummaryMode } from '../utils/summaryOptions.js';
 
 const STOP = new Set([
   'the', 'a', 'an', 'and', 'or', 'to', 'of', 'in', 'on', 'for', 'with', 'is', 'are', 'was', 'be', 'as', 'at', 'by', 'this', 'that',
@@ -133,16 +137,90 @@ export async function translatePdf(filePath: string, target: string, source = 'a
   return translatePdfDocument(filePath, target, source);
 }
 
-export async function summarizePdf(filePath: string, length: 'short' | 'medium' = 'medium') {
+const LANGUAGE_INSTRUCTION: Record<SummaryLanguage, string> = {
+  same: 'Write the summary in the same language as the source document.',
+  en: 'Write the summary in English.',
+  fr: 'Write the summary in French (français).',
+  es: 'Write the summary in Spanish (español).',
+  de: 'Write the summary in German (Deutsch).',
+  it: 'Write the summary in Italian (italiano).',
+  pt: 'Write the summary in Portuguese (português).',
+  ar: 'Write the summary in Arabic (العربية). Preserve right-to-left script correctly.'
+};
+
+function modeInstruction(mode: SummaryMode): string {
+  if (mode === 'quick') {
+    return [
+      'Mode: QUICK.',
+      'Produce a short, concise overview of the document.',
+      'Include only the most important information.',
+      'Avoid unnecessary detail, lists of minor points, or filler.',
+      'Prefer 1 short paragraph or up to 4 short sentences.'
+    ].join(' ');
+  }
+  if (mode === 'key_points') {
+    return [
+      'Mode: KEY POINTS.',
+      'Produce clear bullet points with the essential information only.',
+      'Prioritize major facts, decisions, conclusions, numbers, dates, amounts, percentages, and obligations/actions when present.',
+      'Do not turn trivial details into bullets.',
+      'Use a plain bullet list (one point per line starting with "- ").',
+      'Do not add an introduction or conclusion outside the bullets.'
+    ].join(' ');
+  }
+  return [
+    'Mode: DETAILED.',
+    'Produce a structured, comprehensive summary covering the important content.',
+    'Use short headings/subheadings where appropriate.',
+    'Preserve important facts, names, dates, numbers, amounts, percentages, conclusions, conditions, and warnings.',
+    'Do not unnecessarily repeat information.'
+  ].join(' ');
+}
+
+function buildSummarizePrompt(text: string, mode: SummaryMode, language: SummaryLanguage): string {
+  return [
+    'You are a careful document summarizer.',
+    'Summarize ONLY information contained in the document below.',
+    'Never invent facts, numbers, names, dates, amounts, percentages, conclusions, conditions, or warnings.',
+    'If the source is ambiguous or uncertain, keep that uncertainty; do not guess.',
+    'Preserve Unicode characters correctly.',
+    modeInstruction(mode),
+    LANGUAGE_INSTRUCTION[language],
+    '',
+    'Document:',
+    text.slice(0, 18000)
+  ].join('\n');
+}
+
+function extractiveForMode(text: string, mode: SummaryMode): string {
+  if (mode === 'quick') return extractiveSummary(text, 4);
+  if (mode === 'key_points') {
+    const summary = extractiveSummary(text, 8);
+    return splitSentences(summary)
+      .slice(0, 8)
+      .map((sentence) => `- ${sentence}`)
+      .join('\n');
+  }
+  return extractiveSummary(text, 10);
+}
+
+export async function summarizePdf(
+  filePath: string,
+  mode: SummaryMode = 'detailed',
+  language: SummaryLanguage = 'same'
+) {
   try {
     const text = await extractPdfText(await fs.readFile(filePath));
     if (!text) throw new Error('Aucun texte extractible. Lancez d’abord l’OCR sur un scan.');
-    const maxSentences = length === 'short' ? 4 : 8;
-    const llm = await llmComplete(
-      `Résume le document suivant en ${maxSentences} phrases claires, dans la langue du texte :\n\n${text.slice(0, 18000)}`
-    );
-    const summary = llm || extractiveSummary(text, maxSentences);
-    return writeTemp(Buffer.from(`${summary}\n`, 'utf8'), 'resume', 'txt');
+    const llm = await llmComplete(buildSummarizePrompt(text, mode, language));
+    const summary = (llm || extractiveForMode(text, mode)).trim();
+    const file = await writeTemp(Buffer.from(`${summary}\n`, 'utf8'), 'resume', 'txt');
+    return {
+      ...file,
+      summary,
+      mode,
+      language
+    };
   } catch (error) {
     throw new Error(mapPdfError(error, error instanceof Error ? error.message : 'Impossible de résumer ce PDF.'));
   }

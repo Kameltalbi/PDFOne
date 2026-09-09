@@ -1689,3 +1689,148 @@ html[dir='rtl'] .sign-preview {
   color: #6b7280;
   font-size: 0.88rem;
 }
+
+/* Summarize PDF — mode cards + result */
+.summarize-modes {
+  margin-bottom: 0.35rem;
+}
+
+.summarize-modes-question {
+  margin: 0 0 0.55rem;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.summarize-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.summarize-mode-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  align-items: flex-start;
+  min-height: 4.4rem;
+  padding: 0.65rem 0.55rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.summarize-mode-card strong {
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.summarize-mode-card span {
+  color: #6b7280;
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.summarize-mode-card:hover {
+  border-color: #9ca3af;
+}
+
+.summarize-mode-card.is-selected {
+  border-color: #5cb85c;
+  background: #f3faf3;
+  box-shadow: inset 0 0 0 1px #5cb85c;
+}
+
+.summarize-mode-card.is-selected strong {
+  color: #166534;
+}
+
+.summarize-done {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.summarize-done-panel {
+  width: min(720px, 100%);
+  display: grid;
+  gap: 0.85rem;
+}
+
+.summarize-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.85rem;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #374151;
+  font-size: 0.86rem;
+}
+
+.summarize-meta dt {
+  margin: 0;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.summarize-meta dd {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.summarize-output {
+  margin: 0;
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  padding: 1rem 1.05rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.summarize-actions {
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.summarize-actions .studio-done-download,
+.summarize-actions .studio-done-secondary {
+  flex: 1 1 10rem;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .summarize-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summarize-mode-card {
+    min-height: 0;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.7rem 0.75rem;
+  }
+
+  .summarize-mode-card span {
+    flex: 1;
+  }
+}

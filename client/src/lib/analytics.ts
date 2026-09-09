@@ -52,6 +52,8 @@ export type AnalyticsParams = {
   transaction_id?: string;
   page_path?: string;
   page_location?: string;
+  summary_mode?: 'quick' | 'detailed' | 'key_points';
+  summary_language?: 'same_as_document' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'ar';
 };
 
 const ALLOWED_KEYS = new Set<keyof AnalyticsParams>([
@@ -64,7 +66,9 @@ const ALLOWED_KEYS = new Set<keyof AnalyticsParams>([
   'currency',
   'transaction_id',
   'page_path',
-  'page_location'
+  'page_location',
+  'summary_mode',
+  'summary_language'
 ]);
 
 const TOOL_BY_PATH: Record<string, ToolName> = {
@@ -223,6 +227,8 @@ export function trackToolOpen(pathname: string): void {
   if (lastToolOpen === tool) return;
   lastToolOpen = tool;
   trackEvent('tool_open', { tool_name: tool });
+  // Alias requested for funnel reporting.
+  trackEvent('tool_page_view', { tool_name: tool });
 }
 
 export function trackFileUpload(file?: File, toolName = currentToolName()): void {
@@ -235,18 +241,50 @@ export function trackFileUpload(file?: File, toolName = currentToolName()): void
   trackEvent('file_upload', params);
 }
 
-export function trackProcessingSuccess(startedAt?: number, toolName = currentToolName()): void {
+export function trackProcessingStarted(
+  toolName = currentToolName(),
+  extras?: AnalyticsParams
+): void {
   if (!toolName) return;
-  const params: AnalyticsParams = { tool_name: toolName };
+  trackEvent('processing_started', { ...extras, tool_name: toolName });
+}
+
+export function trackProcessingSuccess(
+  startedAt?: number,
+  toolName = currentToolName(),
+  extras?: AnalyticsParams
+): void {
+  if (!toolName) return;
+  const params: AnalyticsParams = { ...extras, tool_name: toolName };
   if (typeof startedAt === 'number' && startedAt > 0) {
     params.processing_time_ms = Math.max(0, Date.now() - startedAt);
   }
   trackEvent('processing_success', params);
 }
 
+export function trackProcessingFailed(
+  toolName = currentToolName(),
+  extras?: AnalyticsParams
+): void {
+  if (!toolName) return;
+  trackEvent('processing_failed', { ...extras, tool_name: toolName });
+}
+
 export function trackFileDownload(toolName = currentToolName()): void {
   if (!toolName) return;
   trackEvent('file_download', { tool_name: toolName });
+  trackEvent('download', { tool_name: toolName });
+}
+
+export function trackUpgradeClick(source = 'unknown'): void {
+  trackEvent('upgrade_click', {
+    page_path: isBrowser() ? window.location.pathname : undefined,
+    plan: source.slice(0, 64)
+  });
+}
+
+export function trackSignup(): void {
+  trackEvent('signup');
 }
 
 export function trackPricingView(pathname: string): void {

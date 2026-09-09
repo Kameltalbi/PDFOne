@@ -1,7 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getRuntimeLocale } from '../i18n/runtime';
 import { dictionaries } from '../i18n/dictionaries';
-import { trackCheckoutStarted } from './analytics';
+import { trackCheckoutStarted, trackSignup } from './analytics';
+import {
+  DEFAULT_MONETIZATION,
+  parseMonetization,
+  type MonetizationFlags
+} from './monetization';
 
 export type CheckoutPlan = 'week' | 'month' | 'year';
 export type PaidPlan = CheckoutPlan | 'business' | 'life';
@@ -27,12 +32,16 @@ function browserTimeZone(): string {
   }
 }
 
+type BillingBase = {
+  user: UserSession | null;
+  superadmin?: boolean;
+  monetization: MonetizationFlags;
+};
+
 export type BillingState =
-  | { paid: false; user: UserSession | null; superadmin?: boolean; usedToday?: number; dailyLimit?: number; remainingToday?: number }
-  | {
+  | (BillingBase & { paid: false; usedToday?: number; dailyLimit?: number; remainingToday?: number })
+  | (BillingBase & {
     paid: true;
-    user: UserSession | null;
-    superadmin?: boolean;
     plan: PaidPlan;
     email: string;
     expiresAt: string | null;
@@ -40,7 +49,7 @@ export type BillingState =
     docsUsed: number;
     usedToday: number;
     remainingMs: number | null;
-  };
+  });
 
 export type PurchaseReceipt = {
   transactionId: string;
@@ -91,15 +100,27 @@ function forgetEmail() {
   }
 }
 
-function asState(data: BillingState | undefined): BillingState {
-  if (data?.paid) return { ...data, user: data.user ?? null, superadmin: Boolean(data.superadmin) };
+function asState(data: BillingState | Record<string, unknown> | undefined): BillingState {
+  const monetization = parseMonetization(data && 'monetization' in (data || {}) ? (data as { monetization?: unknown }).monetization : undefined);
+  if (data && (data as BillingState).paid) {
+    const paid = data as Extract<BillingState, { paid: true }>;
+    return {
+      ...paid,
+      paid: true,
+      user: paid.user ?? null,
+      superadmin: Boolean(paid.superadmin),
+      monetization
+    };
+  }
+  const free = data as Extract<BillingState, { paid: false }> | undefined;
   return {
     paid: false,
-    user: data && 'user' in data ? data.user : null,
-    superadmin: Boolean(data && 'superadmin' in data && data.superadmin),
-    usedToday: data && 'usedToday' in data ? data.usedToday : 0,
-    dailyLimit: data && 'dailyLimit' in data ? data.dailyLimit : 3,
-    remainingToday: data && 'remainingToday' in data ? data.remainingToday : 3
+    user: free && 'user' in free ? free.user : null,
+    superadmin: Boolean(free && 'superadmin' in free && free.superadmin),
+    monetization,
+    usedToday: free && 'usedToday' in free ? free.usedToday : 0,
+    dailyLimit: free && 'dailyLimit' in free ? free.dailyLimit : 3,
+    remainingToday: free && 'remainingToday' in free ? free.remainingToday : 3
   };
 }
 
@@ -134,7 +155,11 @@ async function billingRequest(path: string, init?: RequestInit) {
 }
 
 export function BillingProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<BillingState>({ paid: false, user: null });
+  const [status, setStatus] = useState<BillingState>({
+    paid: false,
+    user: null,
+    monetization: DEFAULT_MONETIZATION
+  });
   const [loading, setLoading] = useState(true);
   const [prices, setPrices] = useState<PlanAmounts>(DEFAULT_AMOUNTS);
 
@@ -155,7 +180,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
       }
       setStatus(asState(data));
     } catch {
-      setStatus({ paid: false, user: null });
+      setStatus({ paid: false, user: null, monetization: DEFAULT_MONETIZATION });
     } finally {
       setLoading(false);
     }
@@ -220,6 +245,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
     const next = asState(data);
     rememberEmail(next.user?.email || email);
     setStatus(next);
+    trackSignup();
     return next;
   }, []);
 
@@ -231,7 +257,7 @@ export function BillingProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     forgetEmail();
     await billingRequest('/api/auth/logout', { method: 'POST' });
-    setStatus({ paid: false, user: null });
+    setStatus({ paid: false, user: null, monetization: DEFAULT_MONETIZATION });
   }, []);
 
   const value = useMemo<BillingContextValue>(() => ({

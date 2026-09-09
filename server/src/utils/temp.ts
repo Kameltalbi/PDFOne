@@ -67,14 +67,7 @@ export function tempTtlMs(): number {
 }
 
 const NATIVE_PREFIXES = [
-  'pdfone-ocr-',
-  'pdfone-ocr-layout-',
-  'pdfone-lo-out-',
-  'pdfone-lo-profile-',
-  'pdfone-docx-',
-  'pdfone-excel-',
-  'pdfone-image-',
-  'pdfone-unlock-'
+  'pdfone-'
 ];
 
 export async function purgeAbandonedNativeTemp(maxAgeMs = 60 * 60 * 1000): Promise<number> {
