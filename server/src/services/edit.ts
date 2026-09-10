@@ -27,7 +27,7 @@ type DrawingAnnotation = {
 };
 
 type ShapeAnnotation = {
-  type: 'shape'; page: number; shape: 'rectangle' | 'line' | 'arrow'; color: string; width: number;
+  type: 'shape'; page: number; shape: 'rectangle' | 'line' | 'arrow' | 'whiteout'; color: string; width: number;
   start: { x: number; y: number }; end: { x: number; y: number };
 };
 
@@ -93,7 +93,16 @@ export async function editPdf(filePath: string, annotations: PdfAnnotation[]): P
     if (annotation.type === 'shape') {
       const start = { x: annotation.start.x * width, y: height - annotation.start.y * height };
       const end = { x: annotation.end.x * width, y: height - annotation.end.y * height };
-      if (annotation.shape === 'rectangle') {
+      if (annotation.shape === 'whiteout') {
+        page.drawRectangle({
+          x: Math.min(start.x, end.x),
+          y: Math.min(start.y, end.y),
+          width: Math.abs(end.x - start.x),
+          height: Math.abs(end.y - start.y),
+          color: rgb(1, 1, 1),
+          borderWidth: 0
+        });
+      } else if (annotation.shape === 'rectangle') {
         page.drawRectangle({ x: Math.min(start.x, end.x), y: Math.min(start.y, end.y), width: Math.abs(end.x - start.x), height: Math.abs(end.y - start.y), borderWidth: annotation.width, borderColor: pdfColor });
       } else {
         page.drawLine({ start, end, thickness: annotation.width, color: pdfColor });

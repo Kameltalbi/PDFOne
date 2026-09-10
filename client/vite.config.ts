@@ -25,8 +25,12 @@ export default defineConfig(({ mode }) => {
       searchConsolePlugin(verification),
       react(),
       VitePWA({
-        registerType: 'autoUpdate',
-        injectRegister: 'auto',
+        // Prompt + deferred reload: never force-refresh mid PDF job (see registerPwa.ts).
+        registerType: 'prompt',
+        injectRegister: false,
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.ts',
         includeAssets: [
           'favicon-32x32.png',
           'apple-touch-icon.png',
@@ -67,16 +71,9 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        workbox: {
-          globPatterns: ['**/*.{js,mjs,css,html,ico,png,svg,woff2,webp}'],
-          navigateFallback: 'index.html',
-          navigateFallbackDenylist: [/^\/api\//, /^\/temp\//],
-          runtimeCaching: [
-            {
-              urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/temp/'),
-              handler: 'NetworkOnly',
-            },
-          ],
+        injectManifest: {
+          // No index.html in precache: navigations use NetworkFirst in sw.ts.
+          globPatterns: ['**/*.{js,mjs,css,ico,png,svg,woff2,webp}'],
         },
         devOptions: {
           enabled: true,

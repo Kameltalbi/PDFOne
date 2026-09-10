@@ -1100,6 +1100,8 @@ export type Messages = {
     helpPan: string;
     helpSelect: string;
     helpText: string;
+    helpUnderline: string;
+    helpStrike: string;
     helpDraw: string;
     clearAll: string;
     changeFile: string;

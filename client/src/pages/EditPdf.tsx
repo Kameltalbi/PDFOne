@@ -4,6 +4,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { useI18n } from '../i18n';
 import { StudioLanding, StudioProcessing } from '../components/PdfStudio';
+import { withAppBusy } from '../lib/appBusy';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
@@ -18,7 +19,7 @@ ensurePdfWorker();
 type Point = { x: number; y: number };
 type TextAnnotation = { id: string; type: 'text'; page: number; x: number; y: number; text: string; size: number; color: string; decoration?: 'underline' | 'strike' };
 type DrawingAnnotation = { id: string; type: 'drawing'; page: number; color: string; width: number; points: Point[] };
-type ShapeAnnotation = { id: string; type: 'shape'; page: number; shape: 'rectangle' | 'line' | 'arrow'; color: string; width: number; start: Point; end: Point };
+type ShapeAnnotation = { id: string; type: 'shape'; page: number; shape: 'rectangle' | 'line' | 'arrow' | 'whiteout'; color: string; width: number; start: Point; end: Point };
 type ImageAnnotation = { id: string; type: 'image'; page: number; x: number; y: number; width: number; height: number; dataUrl: string };
 type Annotation = TextAnnotation | DrawingAnnotation | ShapeAnnotation | ImageAnnotation;
 type Tool = 'pan' | 'select' | 'text' | 'draw' | 'rectangle' | 'erase' | 'line' | 'arrow' | 'image' | 'underline' | 'strike' | 'signature';
@@ -175,18 +176,26 @@ function PdfPage({
         annotation.points.slice(1).forEach((point) => context.lineTo(point.x * width, point.y * height));
         context.stroke();
       } else if (annotation.type === 'shape') {
-        context.strokeStyle = annotation.color;
-        context.lineWidth = annotation.width;
         const x1 = annotation.start.x * width; const y1 = annotation.start.y * height;
         const x2 = annotation.end.x * width; const y2 = annotation.end.y * height;
-        context.beginPath();
-        if (annotation.shape === 'rectangle') context.rect(x1, y1, x2 - x1, y2 - y1);
-        else { context.moveTo(x1, y1); context.lineTo(x2, y2); }
-        context.stroke();
-        if (annotation.shape === 'arrow') {
-          const angle = Math.atan2(y2 - y1, x2 - x1); const head = 12;
-          context.beginPath(); context.moveTo(x2, y2); context.lineTo(x2 - head * Math.cos(angle - .45), y2 - head * Math.sin(angle - .45));
-          context.moveTo(x2, y2); context.lineTo(x2 - head * Math.cos(angle + .45), y2 - head * Math.sin(angle + .45)); context.stroke();
+        if (annotation.shape === 'whiteout') {
+          context.fillStyle = '#ffffff';
+          context.strokeStyle = '#d1d5db';
+          context.lineWidth = 1;
+          context.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+          context.strokeRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+        } else {
+          context.strokeStyle = annotation.color;
+          context.lineWidth = annotation.width;
+          context.beginPath();
+          if (annotation.shape === 'rectangle') context.rect(x1, y1, x2 - x1, y2 - y1);
+          else { context.moveTo(x1, y1); context.lineTo(x2, y2); }
+          context.stroke();
+          if (annotation.shape === 'arrow') {
+            const angle = Math.atan2(y2 - y1, x2 - x1); const head = 12;
+            context.beginPath(); context.moveTo(x2, y2); context.lineTo(x2 - head * Math.cos(angle - .45), y2 - head * Math.sin(angle - .45));
+            context.moveTo(x2, y2); context.lineTo(x2 - head * Math.cos(angle + .45), y2 - head * Math.sin(angle + .45)); context.stroke();
+          }
         }
       }
     }
@@ -202,14 +211,34 @@ function PdfPage({
     }
 
     if (drawing && drawing.length > 1) {
-      context.strokeStyle = tool === 'signature' ? '#111827' : color;
-      context.lineWidth = strokeWidth;
-      context.lineCap = 'round';
-      context.beginPath();
-      context.moveTo(drawing[0].x * width, drawing[0].y * height);
-      if (tool === 'rectangle') context.rect(drawing[0].x * width, drawing[0].y * height, (drawing.at(-1)!.x - drawing[0].x) * width, (drawing.at(-1)!.y - drawing[0].y) * height);
-      else drawing.slice(1).forEach((point) => context.lineTo(point.x * width, point.y * height));
-      context.stroke();
+      const x1 = drawing[0].x * width; const y1 = drawing[0].y * height;
+      const x2 = drawing.at(-1)!.x * width; const y2 = drawing.at(-1)!.y * height;
+      if (tool === 'erase') {
+        context.fillStyle = 'rgba(255,255,255,.92)';
+        context.strokeStyle = '#9ca3af';
+        context.setLineDash([4, 3]);
+        context.lineWidth = 1;
+        context.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+        context.strokeRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+        context.setLineDash([]);
+      } else if (tool === 'underline' || tool === 'strike') {
+        context.strokeStyle = color;
+        context.lineWidth = strokeWidth;
+        context.lineCap = 'round';
+        context.beginPath();
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y1);
+        context.stroke();
+      } else {
+        context.strokeStyle = tool === 'signature' ? '#111827' : color;
+        context.lineWidth = strokeWidth;
+        context.lineCap = 'round';
+        context.beginPath();
+        context.moveTo(x1, y1);
+        if (tool === 'rectangle') context.rect(x1, y1, x2 - x1, y2 - y1);
+        else drawing.slice(1).forEach((point) => context.lineTo(point.x * width, point.y * height));
+        context.stroke();
+      }
     }
   }, [annotations, drawing, color, strokeWidth, tool, selectedId]);
 
@@ -242,26 +271,37 @@ function PdfPage({
         const minY = Math.min(annotation.start.y, annotation.end.y) - .035; const maxY = Math.max(annotation.start.y, annotation.end.y) + .035;
         return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
       });
-      if (hit && tool === 'erase') onRemove(hit.id);
+      if (hit && tool === 'erase') {
+        onRemove(hit.id);
+        return;
+      }
       if (hit && tool === 'select') {
         dragRef.current = { id: hit.id, mode: 'move', pointerX: point.x, pointerY: point.y, snapshot: hit };
         setSelectedId(hit.id);
         event.currentTarget.setPointerCapture(event.pointerId);
+        return;
       }
       if (!hit && tool === 'select') {
         dragRef.current = null;
         setSelectedId(null);
+        return;
+      }
+      // Erase on empty PDF area: drag a whiteout rectangle over document content.
+      if (tool === 'erase' && !hit) {
+        event.currentTarget.setPointerCapture(event.pointerId);
+        setDrawing([point]);
       }
       return;
     }
     if (tool === 'image') {
       return;
     }
-    if (tool === 'text' || tool === 'underline' || tool === 'strike') {
+    if (tool === 'text') {
       if (!text.trim()) return;
-      onAdd({ id: uid(), type: 'text', page: pageNumber - 1, ...point, text: text.trim(), size, color, decoration: tool === 'underline' ? 'underline' : tool === 'strike' ? 'strike' : undefined });
+      onAdd({ id: uid(), type: 'text', page: pageNumber - 1, ...point, text: text.trim(), size, color });
       return;
     }
+    // underline / strike / draw / shapes: drag on the document itself
     event.currentTarget.setPointerCapture(event.pointerId);
     setDrawing([point]);
   };
@@ -290,7 +330,11 @@ function PdfPage({
       return;
     }
     if (drawing) {
-      setDrawing(tool === 'draw' || tool === 'signature' ? [...drawing, point] : [drawing[0], point]);
+      if (tool === 'underline' || tool === 'strike') {
+        setDrawing([drawing[0], { x: point.x, y: drawing[0].y }]);
+      } else {
+        setDrawing(tool === 'draw' || tool === 'signature' ? [...drawing, point] : [drawing[0], point]);
+      }
     }
   };
 
@@ -300,8 +344,22 @@ function PdfPage({
       return;
     }
     if (drawing && drawing.length > 1) {
-      if (tool === 'draw' || tool === 'signature') onAdd({ id: uid(), type: 'drawing', page: pageNumber - 1, points: drawing, color: tool === 'signature' ? '#111827' : color, width: tool === 'signature' ? 2 : strokeWidth });
-      else if (tool === 'rectangle' || tool === 'line' || tool === 'arrow') onAdd({ id: uid(), type: 'shape', page: pageNumber - 1, shape: tool, start: drawing[0], end: drawing.at(-1)!, color, width: strokeWidth });
+      const start = drawing[0];
+      const end = drawing.at(-1)!;
+      const dragged = Math.hypot(end.x - start.x, end.y - start.y) > 0.008;
+      if (!dragged) {
+        setDrawing(null);
+        return;
+      }
+      if (tool === 'draw' || tool === 'signature') {
+        onAdd({ id: uid(), type: 'drawing', page: pageNumber - 1, points: drawing, color: tool === 'signature' ? '#111827' : color, width: tool === 'signature' ? 2 : strokeWidth });
+      } else if (tool === 'erase') {
+        onAdd({ id: uid(), type: 'shape', page: pageNumber - 1, shape: 'whiteout', start, end, color: '#ffffff', width: 1 });
+      } else if (tool === 'underline' || tool === 'strike') {
+        onAdd({ id: uid(), type: 'shape', page: pageNumber - 1, shape: 'line', start, end: { x: end.x, y: start.y }, color, width: strokeWidth });
+      } else if (tool === 'rectangle' || tool === 'line' || tool === 'arrow') {
+        onAdd({ id: uid(), type: 'shape', page: pageNumber - 1, shape: tool, start, end, color, width: strokeWidth });
+      }
     }
     setDrawing(null);
   };
@@ -366,12 +424,17 @@ function PdfThumbnail({ pdf, pageNumber, annotations }: { pdf: PDFDocumentProxy;
             context.beginPath(); context.moveTo(annotation.points[0].x * width, annotation.points[0].y * height);
             annotation.points.slice(1).forEach((point) => context.lineTo(point.x * width, point.y * height)); context.stroke();
           } else {
-            context.strokeStyle = annotation.color; context.lineWidth = Math.max(.5, annotation.width * viewport.scale);
             const x1 = annotation.start.x * width; const y1 = annotation.start.y * height; const x2 = annotation.end.x * width; const y2 = annotation.end.y * height;
-            context.beginPath();
-            if (annotation.shape === 'rectangle') context.rect(x1, y1, x2 - x1, y2 - y1);
-            else { context.moveTo(x1, y1); context.lineTo(x2, y2); }
-            context.stroke();
+            if (annotation.shape === 'whiteout') {
+              context.fillStyle = '#ffffff';
+              context.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+            } else {
+              context.strokeStyle = annotation.color; context.lineWidth = Math.max(.5, annotation.width * viewport.scale);
+              context.beginPath();
+              if (annotation.shape === 'rectangle') context.rect(x1, y1, x2 - x1, y2 - y1);
+              else { context.moveTo(x1, y1); context.lineTo(x2, y2); }
+              context.stroke();
+            }
           }
         }
       }).catch((error) => {
@@ -500,31 +563,33 @@ function EditPdf() {
     let resultUrl: string | null = null;
     let navigated = false;
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('annotations', JSON.stringify(annotations.map(({ id: _id, ...annotation }) => annotation)));
-      setExportProgress(38);
-      const response = await fetch('/api/edit', { method: 'POST', body: formData, headers: { 'Accept-Language': document.documentElement.lang || 'en' } });
-      if (!response.ok) throw new Error(m.edit.exportFail);
-      const blob = await response.blob();
-      resultUrl = URL.createObjectURL(blob);
-      const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
-      setExportProgress(82);
-      let previewSrc: string | null = null;
-      try {
-        previewSrc = await renderPdfThumbFromUrl(resultUrl);
-      } catch {
-        previewSrc = null;
-      }
-      if (exportAborted.current) {
-        URL.revokeObjectURL(resultUrl);
-        resultUrl = null;
-        return;
-      }
-      setExportProgress(100);
-      trackProcessingSuccess(startedAt);
-      navigate('/edit-pdf/result', { state: { downloadUrl: resultUrl, filename, originalName: file.name, previewSrc } });
-      navigated = true;
+      await withAppBusy(async () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('annotations', JSON.stringify(annotations.map(({ id: _id, ...annotation }) => annotation)));
+        setExportProgress(38);
+        const response = await fetch('/api/edit', { method: 'POST', body: formData, headers: { 'Accept-Language': document.documentElement.lang || 'en' } });
+        if (!response.ok) throw new Error(m.edit.exportFail);
+        const blob = await response.blob();
+        resultUrl = URL.createObjectURL(blob);
+        const filename = `${file.name.replace(/\.pdf$/i, '')}-modifie.pdf`;
+        setExportProgress(82);
+        let previewSrc: string | null = null;
+        try {
+          previewSrc = await renderPdfThumbFromUrl(resultUrl);
+        } catch {
+          previewSrc = null;
+        }
+        if (exportAborted.current) {
+          URL.revokeObjectURL(resultUrl);
+          resultUrl = null;
+          return;
+        }
+        setExportProgress(100);
+        trackProcessingSuccess(startedAt);
+        navigate('/edit-pdf/result', { state: { downloadUrl: resultUrl, filename, originalName: file.name, previewSrc } });
+        navigated = true;
+      });
     } catch {
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       if (!exportAborted.current) setError(m.edit.generateFail);
@@ -674,7 +739,7 @@ function EditPdf() {
       <aside className="editor-sidebar">
         <div className="editor-file"><strong>{file?.name}</strong><span>{pdf.numPages} {pdf.numPages > 1 ? m.common.pages : m.common.page}</span></div>
         <h2>{tools.find((item) => item.id === tool)?.label}</h2>
-        {['text', 'underline', 'strike'].includes(tool) ? (
+        {tool === 'text' ? (
           <div className="tool-options">
             <label>{m.edit.content}<input value={text} onChange={(event) => setText(event.target.value)} maxLength={120} /></label>
             <label>{m.edit.font}<select><option>Helvetica</option></select></label>
@@ -724,7 +789,7 @@ function EditPdf() {
           </div>
         ) : null}
         {tool === 'image' && <button className="change-image" onClick={() => imageInputRef.current?.click()}>{m.edit.addAnotherImage}</button>}
-        <p className="editor-help">{tool === 'erase' ? m.edit.helpErase : tool === 'image' ? t(m.edit.helpImage, { page: activePage + 1 }) : tool === 'pan' ? m.edit.helpPan : tool === 'select' ? m.edit.helpSelect : ['text','underline','strike'].includes(tool) ? m.edit.helpText : m.edit.helpDraw}</p>
+        <p className="editor-help">{tool === 'erase' ? m.edit.helpErase : tool === 'image' ? t(m.edit.helpImage, { page: activePage + 1 }) : tool === 'pan' ? m.edit.helpPan : tool === 'select' ? m.edit.helpSelect : tool === 'underline' ? m.edit.helpUnderline : tool === 'strike' ? m.edit.helpStrike : tool === 'text' ? m.edit.helpText : m.edit.helpDraw}</p>
         <button className="clear-page" disabled={!annotations.length} onClick={() => { setAnnotations([]); setRedoStack([]); }}>{m.edit.clearAll}</button>
         <button className="change-file" onClick={() => { setPdf(null); setFile(null); }}>{m.edit.changeFile}</button>
       </aside>

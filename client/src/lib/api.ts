@@ -7,6 +7,7 @@ import {
   type AnalyticsParams,
   type ToolName
 } from './analytics';
+import { withAppBusy } from './appBusy';
 
 export type ToolResult = {
   downloadUrl: string;
@@ -25,20 +26,22 @@ export async function postFormData<T>(
   formData: FormData,
   analytics?: { toolName?: ToolName; extras?: AnalyticsParams }
 ): Promise<T> {
-  const locale = getRuntimeLocale();
-  trackProcessingStarted(analytics?.toolName, analytics?.extras);
-  const response = await fetch(url, {
-    method: 'POST',
-    body: formData,
-    credentials: 'include',
-    headers: { 'Accept-Language': locale }
+  return withAppBusy(async () => {
+    const locale = getRuntimeLocale();
+    trackProcessingStarted(analytics?.toolName, analytics?.extras);
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+      headers: { 'Accept-Language': locale }
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.success) {
+      trackProcessingFailed(analytics?.toolName, analytics?.extras);
+      throw new Error(payload.error || dictionaries[locale].common.processingFailed);
+    }
+    return payload.data as T;
   });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok || !payload.success) {
-    trackProcessingFailed(analytics?.toolName, analytics?.extras);
-    throw new Error(payload.error || dictionaries[locale].common.processingFailed);
-  }
-  return payload.data as T;
 }
 
 export async function postForm(
