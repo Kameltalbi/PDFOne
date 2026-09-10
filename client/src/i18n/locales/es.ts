@@ -423,7 +423,8 @@ export const es: Messages = {
       { icon: '◆', tone: 'gold', title: 'Contenido conservado', text: 'Solo cambia el orden. El texto y las imágenes permanecen igual.' },
       { icon: '⏱', tone: 'purple', title: 'Exportación rápida', text: 'El nuevo PDF está listo en unos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Procesamiento seguro', text: 'Los archivos son temporales y se eliminan después del procesamiento.' }
-    ]
+    ],
+    ...seoEn.reorder
   },
   rotatePdf: {
     title: 'Rotar PDF',

@@ -423,7 +423,8 @@ export const de: Messages = {
       { icon: '◆', tone: 'gold', title: 'Inhalt bleibt erhalten', text: 'Nur die Reihenfolge ändert sich. Text und Bilder bleiben unverändert.' },
       { icon: '⏱', tone: 'purple', title: 'Schneller Export', text: 'Das neue PDF ist in wenigen Sekunden bereit.' },
       { icon: '✧', tone: 'teal', title: 'Sichere Verarbeitung', text: 'Die Dateien bleiben temporär und werden nach der Verarbeitung gelöscht.' }
-    ]
+    ],
+    ...seoEn.reorder
   },
   rotatePdf: {
     title: 'PDF drehen',

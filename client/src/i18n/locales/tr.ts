@@ -423,7 +423,8 @@ export const tr: Messages = {
       { icon: '◆', tone: 'gold', title: 'İçerik korunur', text: 'Yalnızca sıra değişir. Metin ve görseller olduğu gibi kalır.' },
       { icon: '⏱', tone: 'purple', title: 'Hızlı dışa aktarma', text: 'Yeni PDF birkaç saniye içinde hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Güvenli işleme', text: 'Dosyalar geçici kalır ve işlemden sonra silinir.' }
-    ]
+    ],
+    ...seoEn.reorder
   },
   rotatePdf: {
     title: 'PDF döndür',

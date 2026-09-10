@@ -20,7 +20,7 @@ import {
   trackUpgradeClick
 } from '../lib/analytics';
 import { useI18n } from '../i18n';
-import { usePageSeo } from '../lib/usePageSeo';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 
 export type SummaryMode = 'quick' | 'detailed' | 'key_points';
 export type SummaryLanguage = 'same' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'ar';
@@ -41,7 +41,7 @@ export default function Summarize() {
   const pdf = useSinglePdf({ allPages: false });
   const { status } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
-  usePageSeo(`${copy.title} | One2PDF`, copy.subtitle);
+  usePageSeo(copy.seoTitle, copy.seoDescription);
 
   const [mode, setMode] = useState<SummaryMode>('detailed');
   const [language, setLanguage] = useState<SummaryLanguage>('same');
@@ -259,6 +259,7 @@ export default function Summarize() {
           isLoading={pdf.isLoading}
           error={pdf.error}
           features={copy.features}
+          seo={landingSeoFrom(copy)}
           onDragOver={() => pdf.setIsDragging(true)}
           onDragLeave={() => pdf.setIsDragging(false)}
           onDrop={pdf.onDropFiles}

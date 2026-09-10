@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useSinglePdf } from '../lib/useSinglePdf';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function ReorderPages() {
   const { m, t } = useI18n();
+  usePageSeo(m.reorderPages.seoTitle, m.reorderPages.seoDescription);
   const pdf = useSinglePdf();
   const [order, setOrder] = useState<number[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -76,6 +78,7 @@ function ReorderPages() {
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.reorderPages.features}
+        seo={landingSeoFrom(m.reorderPages)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}

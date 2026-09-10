@@ -644,7 +644,8 @@ export const fr: Messages = {
       { icon: '◆', tone: 'gold', title: 'Contenu conservé', text: 'Seul l’ordre change. Texte et images restent tels quels.' },
       { icon: '⏱', tone: 'purple', title: 'Export rapide', text: 'Le nouveau PDF est prêt en quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Les fichiers restent temporaires et sont supprimés après traitement.' }
-    ]
+    ],
+    ...seoFr.reorder
   },
   rotatePdf: {
     title: 'Pivoter PDF',
@@ -948,7 +949,8 @@ export const fr: Messages = {
       { icon: 'PNG', tone: 'green', title: 'Une image par page', text: 'Chaque page devient un PNG, idéal pour le web et les captures.' },
       { icon: '✓', tone: 'blue', title: 'ZIP automatique', text: 'Dès qu’il y a plusieurs pages, tout est regroupé.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF source est traité puis supprimé.' }
-    ]
+    ],
+    ...seoFr.toPng
   },
   toText: {
     title: 'PDF en texte',
@@ -965,7 +967,8 @@ export const fr: Messages = {
       { icon: 'TXT', tone: 'blue', title: 'Texte brut', text: 'Récupérez le contenu pour le coller, l’indexer ou le retravailler.' },
       { icon: '★', tone: 'green', title: 'Sans installation', text: 'L’extraction se fait dans le navigateur, puis le .txt se télécharge.' },
       { icon: '✧', tone: 'purple', title: 'Scans', text: 'Si le PDF est une image, passez par l’outil OCR.' }
-    ]
+    ],
+    ...seoFr.toText
   },
   unlockPdf: {
     title: 'Déverrouiller PDF',
@@ -1039,7 +1042,8 @@ export const fr: Messages = {
       { icon: '☷', tone: 'green', title: 'Trois modes', text: 'Rapide, Détaillé ou Points clés — selon votre besoin.' },
       { icon: '★', tone: 'blue', title: 'Texte requis', text: 'Sur un scan, lancez d’abord l’OCR.' },
       { icon: '✧', tone: 'teal', title: 'Fichier .txt', text: 'Copiez ou téléchargez ; rien n’est stocké.' }
-    ]
+    ],
+    ...seoFr.summarize
   },
   translatePdf: {
     title: 'Traduire le PDF',
@@ -1086,7 +1090,8 @@ export const fr: Messages = {
       { icon: '</>', tone: 'purple', title: 'Fichier ou collage', text: 'Déposez un .html ou collez le code directement.' },
       { icon: '⌘', tone: 'gold', title: 'En ligne', text: 'Conversion sur nos serveurs, sans logiciel à installer.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le HTML n’est pas conservé sur le serveur.' }
-    ]
+    ],
+    ...seoFr.htmlPdf
   },
   convert: {
     pdfToWordTitle: 'PDF en Word',

@@ -177,13 +177,13 @@ export const seoFr = {
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
   translate: {
-    seoTitle: 'Traduire un PDF en conservant la mise en page | One2PDF',
-    seoDescription: 'Traduisez un PDF et récupérez un PDF, pas un TXT. La mise en page d’origine est conservée autant que possible. Gratuit — démarrez sur One2PDF.',
-    seoH2: 'Comment traduire un PDF en ligne en gardant la mise en page',
-    seoP1: 'Vous devez envoyer une facture, un contrat ou un dossier dans une autre langue, sans tout recréer ? One2PDF permet de traduire un PDF en ligne gratuitement. Importez le fichier, choisissez la langue, puis téléchargez un PDF traduit : images, logos et tableaux restent, le texte est remplacé dans ses zones.',
-    seoP2: 'Traduire un PDF n’a pas à extraire tout le texte dans un fichier .txt. L’outil analyse les blocs, les traduit, puis les replace. La mise en page n’est pas identique au pixel près — une phrase allemande est plus longue, une phrase anglaise plus courte — mais le document reste lisible comme l’original. Un scan peu textuel passe par l’OCR avant traduction.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF traduit se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Traduisez votre PDF maintenant, vérifiez quelques pages, et revenez sur One2PDF dès qu’un document doit changer de langue sans perdre sa forme. Le traitement ne prend que quelques secondes, sans logiciel à installer.',
-    howTitle: 'Comment traduire un PDF',
+    seoTitle: 'Traduire un PDF — bientôt disponible | One2PDF',
+    seoDescription: 'L’outil Traduire un PDF arrive bientôt sur One2PDF. Conservez la mise en page autant que possible. En attendant, explorez les autres outils PDF gratuits.',
+    seoH2: 'Traduire un PDF en ligne en gardant la mise en page — bientôt sur One2PDF',
+    seoP1: 'Vous devez envoyer une facture, un contrat ou un dossier dans une autre langue, sans tout recréer ? One2PDF prépare un outil pour traduire un PDF en ligne tout en conservant images, logos et tableaux. L’outil n’est pas encore ouvert : il est marqué bientôt disponible.',
+    seoP2: 'L’objectif n’est pas d’extraire tout le texte dans un fichier .txt, mais de remplacer le texte dans ses zones pour un PDF encore lisible. La mise en page ne sera pas identique au pixel près — une langue peut allonger ou raccourcir les phrases — mais le document restera proche de l’original. Un scan peu textuel passera par l’OCR avant traduction.',
+    seoP3: 'Dès la mise en service, le parcours restera centré sur la sécurité : fichier d’origine non conservé, PDF traduit téléchargeable puis supprimé. En attendant, utilisez les autres outils One2PDF (OCR, PDF en texte, résumé) et revenez sur cette page lorsque la traduction sera disponible.',
+    howTitle: 'Comment ça marchera',
     howSteps: [
       'Importez le PDF à traduire',
       'Choisissez la langue cible',
@@ -192,16 +192,16 @@ export const seoFr = {
     faqTitle: 'Questions fréquentes sur la traduction de PDF',
     faq: [
       {
-        question: 'Est-ce que je récupère un PDF ou un fichier texte ?',
-        answer: 'Le résultat principal est un PDF traduit. Un fichier .txt est aussi proposé si vous n’avez besoin que du contenu.'
+        question: 'L’outil est-il disponible maintenant ?',
+        answer: 'Non. La traduction de PDF est bientôt disponible sur One2PDF. Cette page présente le futur outil ; vous pouvez déjà utiliser OCR, PDF en texte ou résumé.'
+      },
+      {
+        question: 'Est-ce que je récupérerai un PDF ou un fichier texte ?',
+        answer: 'Le résultat principal sera un PDF traduit. Un fichier .txt pourra aussi être proposé si vous n’avez besoin que du contenu.'
       },
       {
         question: 'La mise en page sera-t-elle identique ?',
-        answer: 'Elle est conservée autant que possible : images, logos et zones de texte restent. Une traduction plus longue ou plus courte peut adapter la taille de police. Ce n’est pas une copie pixel-perfect.'
-      },
-      {
-        question: 'Est-ce que ça marche sur un scan ?',
-        answer: 'Oui, dans la mesure où l’OCR reconnaît le texte. Un scan flou donnera une traduction moins fiable.'
+        answer: 'Elle sera conservée autant que possible : images, logos et zones de texte restent. Une traduction plus longue ou plus courte pourra adapter la taille de police. Ce ne sera pas une copie pixel-perfect.'
       }
     ]
   },
@@ -236,6 +236,151 @@ export const seoFr = {
     seoP1: 'Une page blanche, une pub scannée ou une annexe en trop alourdit le dossier ? One2PDF permet de supprimer des pages d’un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, cliquez sur les pages à retirer, puis exportez le document allégé — il doit rester au moins une page.',
     seoP2: 'Enlever des pages n’a pas à tout reconstruire. L’aperçu montre chaque feuille avant suppression, pour éviter une erreur. C’est la méthode adaptée si vous cherchez comment retirer une page d’un PDF, supprimer une couverture ou nettoyer un scan trop long avant envoi.',
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF nettoyé se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Supprimez les pages inutiles maintenant, contrôlez ce qui reste, et revenez sur One2PDF dès qu’un document doit être plus court. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
+  },
+  reorder: {
+    seoTitle: 'Réorganiser les pages d’un PDF | One2PDF',
+    seoDescription: 'Remettez vos pages dans le bon ordre par glisser-déposer. Réorganisez gratuitement en ligne — démarrez sur One2PDF.',
+    seoH2: 'Comment réorganiser les pages d’un PDF facilement et en toute sécurité',
+    seoP1: 'Une couverture au milieu, une annexe trop tôt, des pages dans le désordre après un scan ? One2PDF permet de réorganiser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, glissez les miniatures, puis téléchargez le document dans l’ordre voulu.',
+    seoP2: 'Changer l’ordre des pages n’a pas à tout reconstruire. L’aperçu montre chaque feuille avant l’export, pour éviter une erreur. C’est la méthode adaptée si vous cherchez comment réordonner un PDF, déplacer une page ou préparer un dossier avant envoi.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF réorganisé se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Réorganisez votre PDF maintenant, vérifiez l’ordre, et revenez sur One2PDF dès qu’un document doit suivre une logique claire.',
+    howTitle: 'Comment réorganiser un PDF',
+    howSteps: [
+      'Importez le PDF à réordonner',
+      'Glissez les miniatures dans le bon ordre',
+      'Téléchargez le PDF mis à jour'
+    ],
+    faqTitle: 'Questions fréquentes sur la réorganisation de PDF',
+    faq: [
+      {
+        question: 'Le contenu des pages est-il modifié ?',
+        answer: 'Non. Seul l’ordre des pages change. Texte, images et qualité restent identiques.'
+      },
+      {
+        question: 'Faut-il un compte pour réorganiser un PDF ?',
+        answer: 'Non. L’outil fonctionne sans inscription pour un usage ponctuel.'
+      },
+      {
+        question: 'Les fichiers sont-ils conservés ?',
+        answer: 'Non. L’original est supprimé après traitement. Le résultat est effacé après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.'
+      }
+    ]
+  },
+  toPng: {
+    seoTitle: 'Convertir PDF en PNG en ligne | One2PDF',
+    seoDescription: 'Transformez chaque page de votre PDF en image PNG nette. Convertissez gratuitement — démarrez sur One2PDF.',
+    seoH2: 'Comment convertir un PDF en PNG facilement et en toute sécurité',
+    seoP1: 'Vous devez publier une page, l’insérer dans un design ou garder des aplats nets ? One2PDF permet de convertir un PDF en PNG en ligne gratuitement, sans installer de logiciel. Importez le fichier : chaque page devient une image PNG, regroupée dans un ZIP s’il y en a plusieurs.',
+    seoP2: 'Passer d’un PDF à des PNG n’a pas à être technique. Le format conserve les zones plates et la transparence utile pour le web ou la retouche. C’est la méthode adaptée si vous cherchez comment extraire une page en PNG, transformer un PDF en images haute qualité ou partager hors format PDF.',
+    seoP3: 'La sécurité reste au centre du parcours : le PDF d’origine n’est pas conservé, les images se téléchargent, puis sont supprimées. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre PDF en PNG maintenant, vérifiez les pages, et revenez sur One2PDF dès qu’un document doit circuler en image.',
+    howTitle: 'Comment convertir un PDF en PNG',
+    howSteps: [
+      'Importez le PDF à convertir',
+      'Lancez l’export PNG',
+      'Téléchargez l’image ou le ZIP'
+    ],
+    faqTitle: 'Questions fréquentes sur PDF vers PNG',
+    faq: [
+      {
+        question: 'Quelle différence avec JPG ?',
+        answer: 'Le PNG convient mieux aux graphiques, logos et aplats. Le JPG est souvent plus léger pour les photos.'
+      },
+      {
+        question: 'Plusieurs pages donnent-elles plusieurs fichiers ?',
+        answer: 'Oui. Chaque page devient un PNG. S’il y en a plusieurs, elles sont regroupées dans un ZIP.'
+      },
+      {
+        question: 'Faut-il installer un logiciel ?',
+        answer: 'Non. La conversion se fait en ligne, dans le navigateur.'
+      }
+    ]
+  },
+  toText: {
+    seoTitle: 'Extraire le texte d’un PDF | One2PDF',
+    seoDescription: 'Récupérez le texte sélectionnable de votre PDF en fichier .txt. Extrayez gratuitement — démarrez sur One2PDF.',
+    seoH2: 'Comment extraire le texte d’un PDF facilement et en toute sécurité',
+    seoP1: 'Vous devez copier un contrat, indexer un rapport ou reprendre un contenu sans tout retaper ? One2PDF permet d’extraire le texte d’un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, lancez l’extraction, puis téléchargez un .txt prêt à coller ou à archiver.',
+    seoP2: 'Passer d’un PDF à du texte brut n’a pas à être réservé aux experts. L’outil lit la couche texte du document. Sur un scan image, lancez d’abord l’OCR. C’est la méthode adaptée si vous cherchez comment copier le texte d’un PDF, convertir un PDF en TXT ou préparer un résumé.',
+    seoP3: 'La sécurité reste au centre du parcours : le PDF d’origine n’est pas conservé, le fichier texte se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Extrayez le texte maintenant, vérifiez le contenu, et revenez sur One2PDF dès qu’un document doit redevenir éditable en texte.',
+    howTitle: 'Comment extraire le texte d’un PDF',
+    howSteps: [
+      'Importez le PDF contenant du texte',
+      'Lancez l’extraction',
+      'Téléchargez le fichier .txt'
+    ],
+    faqTitle: 'Questions fréquentes sur PDF vers texte',
+    faq: [
+      {
+        question: 'Ça marche sur un scan ?',
+        answer: 'Un scan image nécessite d’abord l’outil OCR pour créer une couche texte, puis l’extraction.'
+      },
+      {
+        question: 'Quel format de sortie ?',
+        answer: 'Un fichier texte (.txt) contenant le contenu sélectionnable du PDF.'
+      },
+      {
+        question: 'Les fichiers sont-ils stockés ?',
+        answer: 'Non. Le PDF et le résultat sont traités temporairement, puis supprimés.'
+      }
+    ]
+  },
+  summarize: {
+    seoTitle: 'Résumer un PDF en ligne | One2PDF',
+    seoDescription: 'Obtenez un résumé clair (rapide, détaillé ou points clés) à partir de votre PDF. Résumez en ligne — démarrez sur One2PDF.',
+    seoH2: 'Comment résumer un PDF facilement et en toute sécurité',
+    seoP1: 'Un rapport trop long, un contrat dense, un dossier à survoler avant une réunion ? One2PDF permet de résumer un PDF en ligne. Importez le fichier, choisissez le mode (rapide, détaillé ou points clés) et la langue, puis récupérez un résumé clair à copier ou télécharger.',
+    seoP2: 'Résumer un PDF n’a pas à tout lire page par page. L’outil s’appuie sur le texte du document : sur un scan, lancez d’abord l’OCR. C’est la méthode adaptée si vous cherchez comment obtenir la synthèse d’un PDF, extraire les points clés ou préparer une note de lecture.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résumé se télécharge, puis est supprimé. Aucune inscription n’est exigée pour découvrir l’outil (selon le plan). Résumez votre PDF maintenant, relisez le résultat, et revenez sur One2PDF dès qu’un document long doit devenir actionnable.',
+    howTitle: 'Comment résumer un PDF',
+    howSteps: [
+      'Importez le PDF à résumer',
+      'Choisissez le mode et la langue',
+      'Copiez ou téléchargez le résumé'
+    ],
+    faqTitle: 'Questions fréquentes sur le résumé de PDF',
+    faq: [
+      {
+        question: 'Quels modes de résumé sont proposés ?',
+        answer: 'Rapide (vue d’ensemble courte), Détaillé (structuré) et Points clés (liste à puces).'
+      },
+      {
+        question: 'Ça marche sur un PDF scanné ?',
+        answer: 'Le résumé a besoin de texte. Sur un scan, utilisez d’abord l’outil OCR.'
+      },
+      {
+        question: 'Le résumé est-il stocké ?',
+        answer: 'Non. Le PDF et le résumé sont traités temporairement, puis supprimés après téléchargement ou automatiquement sous 15 minutes.'
+      }
+    ]
+  },
+  htmlPdf: {
+    seoTitle: 'Convertir HTML en PDF en ligne | One2PDF',
+    seoDescription: 'Transformez une page HTML ou un collage de code en PDF. Convertissez gratuitement — démarrez sur One2PDF.',
+    seoH2: 'Comment convertir du HTML en PDF facilement et en toute sécurité',
+    seoP1: 'Vous avez une page, un e-mail HTML ou un extrait de code à figer pour l’archivage ? One2PDF permet de convertir du HTML en PDF en ligne gratuitement, sans installer de logiciel. Importez un fichier .html ou collez le code, puis téléchargez un PDF prêt à envoyer.',
+    seoP2: 'Passer du HTML au PDF n’a pas à ouvrir une impression hasardeuse. L’outil rend le contenu côté serveur. Les pages très dynamiques (JavaScript lourd) se rendent moins bien qu’un HTML simple. C’est la méthode adaptée si vous cherchez comment créer un PDF depuis une page web ou archiver un contenu HTML.',
+    seoP3: 'La sécurité reste au centre du parcours : le HTML n’est pas conservé, le PDF se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre HTML en PDF maintenant, vérifiez le rendu, et revenez sur One2PDF dès qu’une page doit devenir un document stable.',
+    howTitle: 'Comment convertir HTML en PDF',
+    howSteps: [
+      'Importez un fichier .html ou collez le HTML',
+      'Lancez la conversion',
+      'Téléchargez le PDF'
+    ],
+    faqTitle: 'Questions fréquentes sur HTML vers PDF',
+    faq: [
+      {
+        question: 'Puis-je coller du HTML sans fichier ?',
+        answer: 'Oui. Collez le code dans la zone prévue, puis lancez la création du PDF.'
+      },
+      {
+        question: 'Les pages web complexes sont-elles supportées ?',
+        answer: 'Le HTML simple se rend bien. Les pages très dynamiques (JS) peuvent être incomplètes.'
+      },
+      {
+        question: 'Faut-il un compte ?',
+        answer: 'Non pour un usage ponctuel. Le fichier et le résultat restent temporaires.'
+      }
+    ]
   }
 } satisfies Record<string, PageSeoCopy>;
 
@@ -416,13 +561,13 @@ export const seoEn = {
     seoP3: 'Security stays at the center of the flow: the original is not kept, the OCR PDF is available for download, then deleted. No account is required for occasional use. Run OCR now, check a few sentences, and come back to One2PDF whenever a scan must become real text again. The whole process takes only a few seconds, with no extra software on your computer.'
   },
   translate: {
-    seoTitle: 'Translate a PDF and Keep the Layout | One2PDF',
-    seoDescription: 'Translate a PDF and download a PDF, not a TXT. Original layout is kept as far as possible. Free — start now on One2PDF.',
-    seoH2: 'How to translate a PDF online while keeping the layout',
-    seoP1: 'Need to send an invoice, a contract, or a pack in another language without rebuilding it? One2PDF lets you translate a PDF online for free. Import the file, pick the language, then download a translated PDF: images, logos, and tables stay, and the text is replaced in its original zones.',
-    seoP2: 'Translating a PDF does not have to dump everything into a .txt file. The tool reads text blocks, translates them, then puts them back. Layout is not pixel-identical — German often runs longer, English shorter — but the document still reads like the original. A scan with little selectable text goes through OCR first.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the translated PDF is available for download, then deleted. No account is required for occasional use. Translate your PDF now, check a few pages, and come back to One2PDF whenever a document must change language without losing its shape. The whole process takes only a few seconds, with no extra software on your computer.',
-    howTitle: 'How to translate a PDF',
+    seoTitle: 'Translate a PDF — Coming Soon | One2PDF',
+    seoDescription: 'PDF Translate is coming soon on One2PDF. Keep the layout as far as possible. Meanwhile, explore the other free PDF tools.',
+    seoH2: 'Translate a PDF online while keeping the layout — coming soon on One2PDF',
+    seoP1: 'Need to send an invoice, a contract, or a pack in another language without rebuilding it? One2PDF is preparing a tool to translate a PDF online while keeping images, logos, and tables. The tool is not open yet: it is marked coming soon.',
+    seoP2: 'The goal is not to dump everything into a .txt file, but to replace text in its zones so the PDF stays readable. Layout will not be pixel-identical — some languages run longer or shorter — but the document should stay close to the original. A scan with little selectable text will go through OCR first.',
+    seoP3: 'When it launches, the flow will stay privacy-first: the original is not kept, the translated PDF is downloadable then deleted. Until then, use other One2PDF tools (OCR, PDF to text, summarize) and return to this page when translation is available.',
+    howTitle: 'How it will work',
     howSteps: [
       'Import the PDF to translate',
       'Choose the target language',
@@ -431,16 +576,16 @@ export const seoEn = {
     faqTitle: 'Frequently asked questions about PDF translation',
     faq: [
       {
-        question: 'Do I get a PDF or a text file?',
-        answer: 'The main result is a translated PDF. A .txt file is also offered if you only need the wording.'
+        question: 'Is the tool available now?',
+        answer: 'No. PDF translation is coming soon on One2PDF. This page describes the upcoming tool; you can already use OCR, PDF to text, or summarize.'
+      },
+      {
+        question: 'Will I get a PDF or a text file?',
+        answer: 'The main result will be a translated PDF. A .txt file may also be offered if you only need the wording.'
       },
       {
         question: 'Will the layout be identical?',
-        answer: 'It is kept as far as possible: images, logos, and text zones stay. A longer or shorter translation may shrink the font. It is not a pixel-perfect copy.'
-      },
-      {
-        question: 'Does it work on a scan?',
-        answer: 'Yes, as far as OCR can read the text. A blurry scan will translate less reliably.'
+        answer: 'It will be kept as far as possible: images, logos, and text zones stay. A longer or shorter translation may shrink the font. It will not be a pixel-perfect copy.'
       }
     ]
   },
@@ -475,5 +620,150 @@ export const seoEn = {
     seoP1: 'A blank page, a scanned ad, or an extra annex making the pack too heavy? One2PDF lets you delete PDF pages online for free, with no software to install. Import the file, click the pages to remove, then export the lighter document — at least one page must remain.',
     seoP2: 'Removing pages does not have to mean rebuilding the file. The preview shows every sheet before deletion, so you avoid a mistake. It is a practical way to remove a page from a PDF, drop a cover, or clean a long scan before sending.',
     seoP3: 'Security stays at the center of the flow: the original is not kept, the cleaned PDF is available for download, then deleted. No account is required for occasional use. Delete the extra pages now, check what remains, and come back to One2PDF whenever a document must be shorter. The whole process takes only a few seconds, with no extra software on your computer.'
+  },
+  reorder: {
+    seoTitle: 'Reorder PDF Pages Online Free | One2PDF',
+    seoDescription: 'Put your pages in the right order with drag and drop. Reorder a PDF online for free — start now on One2PDF.',
+    seoH2: 'How to reorder PDF pages quickly and securely',
+    seoP1: 'Cover in the middle, annex too early, pages scrambled after a scan? One2PDF lets you reorder a PDF online for free, with no software to install. Import the file, drag the thumbnails, then download the document in the order you want.',
+    seoP2: 'Changing page order does not have to mean rebuilding the file. The preview shows every sheet before export, so you avoid a mistake. It is a practical way to rearrange a PDF, move a page, or prepare a pack before sending.',
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the reordered PDF is available for download, then deleted. No account is required for occasional use. Reorder your PDF now, check the sequence, and come back to One2PDF whenever a document must follow a clear logic.',
+    howTitle: 'How to reorder a PDF',
+    howSteps: [
+      'Upload the PDF to rearrange',
+      'Drag the thumbnails into the right order',
+      'Download the updated PDF'
+    ],
+    faqTitle: 'Frequently asked questions about reordering PDFs',
+    faq: [
+      {
+        question: 'Does reordering change page content?',
+        answer: 'No. Only page order changes. Text, images, and quality stay the same.'
+      },
+      {
+        question: 'Do I need an account to reorder a PDF?',
+        answer: 'No. The tool works without signing up for occasional use.'
+      },
+      {
+        question: 'Are my files kept?',
+        answer: 'No. The original is deleted after processing. The result is erased after download, or within 15 minutes if you do not download it.'
+      }
+    ]
+  },
+  toPng: {
+    seoTitle: 'Convert PDF to PNG Online | One2PDF',
+    seoDescription: 'Turn every PDF page into a sharp PNG image. Convert PDF to PNG for free — start now on One2PDF.',
+    seoH2: 'How to convert a PDF to PNG quickly and securely',
+    seoP1: 'Need to publish a page, drop it into a design, or keep flat colors sharp? One2PDF lets you convert a PDF to PNG online for free, with no software to install. Import the file: each page becomes a PNG, packed in a ZIP when there are several.',
+    seoP2: 'Turning a PDF into PNGs does not have to be technical. The format keeps flat areas and transparency useful for the web or editing. It is a practical way to export a page as PNG, turn a PDF into high-quality images, or share outside the PDF format.',
+    seoP3: 'Security stays at the center of the flow: the original PDF is not kept, the images are available for download, then deleted. No account is required for occasional use. Convert your PDF to PNG now, check the pages, and come back to One2PDF whenever a document must circulate as images.',
+    howTitle: 'How to convert a PDF to PNG',
+    howSteps: [
+      'Upload the PDF to convert',
+      'Start the PNG export',
+      'Download the image or ZIP'
+    ],
+    faqTitle: 'Frequently asked questions about PDF to PNG',
+    faq: [
+      {
+        question: 'How is PNG different from JPG?',
+        answer: 'PNG is better for graphics, logos, and flat colors. JPG is often lighter for photos.'
+      },
+      {
+        question: 'Do multiple pages create multiple files?',
+        answer: 'Yes. Each page becomes a PNG. If there are several, they are grouped in a ZIP.'
+      },
+      {
+        question: 'Do I need to install software?',
+        answer: 'No. Conversion runs online in your browser.'
+      }
+    ]
+  },
+  toText: {
+    seoTitle: 'Extract Text from a PDF | One2PDF',
+    seoDescription: 'Pull selectable text from your PDF into a .txt file. Extract online for free — start now on One2PDF.',
+    seoH2: 'How to extract text from a PDF quickly and securely',
+    seoP1: 'Need to copy a contract, index a report, or reuse content without retyping? One2PDF lets you extract text from a PDF online for free, with no software to install. Import the file, start extraction, then download a .txt ready to paste or archive.',
+    seoP2: 'Turning a PDF into plain text does not have to be expert-only. The tool reads the document text layer. On an image scan, run OCR first. It is a practical way to copy text from a PDF, convert PDF to TXT, or prepare a summary.',
+    seoP3: 'Security stays at the center of the flow: the original PDF is not kept, the text file is available for download, then deleted. No account is required for occasional use. Extract the text now, check the content, and come back to One2PDF whenever a document must become editable text again.',
+    howTitle: 'How to extract text from a PDF',
+    howSteps: [
+      'Upload a PDF that contains text',
+      'Start the extraction',
+      'Download the .txt file'
+    ],
+    faqTitle: 'Frequently asked questions about PDF to text',
+    faq: [
+      {
+        question: 'Does it work on a scan?',
+        answer: 'An image scan needs the OCR tool first to create a text layer, then extraction.'
+      },
+      {
+        question: 'What output format do I get?',
+        answer: 'A text file (.txt) with the selectable content from the PDF.'
+      },
+      {
+        question: 'Are files stored?',
+        answer: 'No. The PDF and the result are processed temporarily, then deleted.'
+      }
+    ]
+  },
+  summarize: {
+    seoTitle: 'Summarize a PDF Online | One2PDF',
+    seoDescription: 'Get a clear summary (quick, detailed, or key points) from your PDF. Summarize online — start now on One2PDF.',
+    seoH2: 'How to summarize a PDF quickly and securely',
+    seoP1: 'A long report, a dense contract, a pack to skim before a meeting? One2PDF lets you summarize a PDF online. Import the file, choose the mode (quick, detailed, or key points) and the language, then get a clear summary to copy or download.',
+    seoP2: 'Summarizing a PDF does not have to mean reading every page. The tool uses the document text: on a scan, run OCR first. It is a practical way to get a PDF synthesis, pull key points, or prepare a briefing note.',
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the summary is available for download, then deleted. No account is required to discover the tool (depending on plan). Summarize your PDF now, review the result, and come back to One2PDF whenever a long document must become actionable.',
+    howTitle: 'How to summarize a PDF',
+    howSteps: [
+      'Upload the PDF to summarize',
+      'Choose the mode and language',
+      'Copy or download the summary'
+    ],
+    faqTitle: 'Frequently asked questions about PDF summaries',
+    faq: [
+      {
+        question: 'Which summary modes are available?',
+        answer: 'Quick (short overview), Detailed (structured), and Key points (bullet list).'
+      },
+      {
+        question: 'Does it work on a scanned PDF?',
+        answer: 'The summary needs text. On a scan, use the OCR tool first.'
+      },
+      {
+        question: 'Is the summary stored?',
+        answer: 'No. The PDF and summary are processed temporarily, then deleted after download or automatically within 15 minutes.'
+      }
+    ]
+  },
+  htmlPdf: {
+    seoTitle: 'Convert HTML to PDF Online | One2PDF',
+    seoDescription: 'Turn an HTML page or pasted code into a PDF. Convert for free — start now on One2PDF.',
+    seoH2: 'How to convert HTML to PDF quickly and securely',
+    seoP1: 'Have a page, an HTML email, or a code snippet to freeze for archiving? One2PDF lets you convert HTML to PDF online for free, with no software to install. Import a .html file or paste the code, then download a PDF ready to send.',
+    seoP2: 'Going from HTML to PDF does not have to mean a messy print dialog. The tool renders content on the server. Very dynamic pages (heavy JavaScript) render less well than simple HTML. It is a practical way to create a PDF from a web page or archive HTML content.',
+    seoP3: 'Security stays at the center of the flow: the HTML is not kept, the PDF is available for download, then deleted. No account is required for occasional use. Convert your HTML to PDF now, check the render, and come back to One2PDF whenever a page must become a stable document.',
+    howTitle: 'How to convert HTML to PDF',
+    howSteps: [
+      'Upload a .html file or paste HTML',
+      'Start the conversion',
+      'Download the PDF'
+    ],
+    faqTitle: 'Frequently asked questions about HTML to PDF',
+    faq: [
+      {
+        question: 'Can I paste HTML without a file?',
+        answer: 'Yes. Paste the code in the box, then create the PDF.'
+      },
+      {
+        question: 'Are complex web pages supported?',
+        answer: 'Simple HTML renders well. Very dynamic JS pages may be incomplete.'
+      },
+      {
+        question: 'Do I need an account?',
+        answer: 'Not for occasional use. The file and result stay temporary.'
+      }
+    ]
   }
 } satisfies Record<string, PageSeoCopy>;

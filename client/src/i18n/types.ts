@@ -551,6 +551,16 @@ export type Messages = {
     reset: string;
     fail: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   rotatePdf: {
     title: string;
@@ -817,6 +827,16 @@ export type Messages = {
     reset: string;
     download: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   toText: {
     title: string;
@@ -830,6 +850,16 @@ export type Messages = {
     reset: string;
     download: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   unlockPdf: {
     title: string;
@@ -906,6 +936,16 @@ export type Messages = {
     short?: string;
     medium?: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   translatePdf: {
     title: string;
@@ -929,6 +969,16 @@ export type Messages = {
     langAr: string;
     langIt: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   htmlPdf: {
     title: string;
@@ -944,6 +994,16 @@ export type Messages = {
     pastePh: string;
     useHtml: string;
     features: FeatureCopy[];
+    seoTitle: string;
+    seoDescription: string;
+    seoH2: string;
+    seoP1: string;
+    seoP2: string;
+    seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   convert: {
     pdfToWordTitle: string;

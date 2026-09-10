@@ -644,7 +644,8 @@ export const en: Messages = {
       { icon: '◆', tone: 'gold', title: 'Keep the content', text: 'Only the order changes. Text and images stay as they are.' },
       { icon: '⏱', tone: 'purple', title: 'Fast export', text: 'The new PDF is ready in a few seconds.' },
       { icon: '✧', tone: 'teal', title: 'Secure processing', text: 'Files stay temporary and are removed after processing.' }
-    ]
+    ],
+    ...seoEn.reorder
   },
   rotatePdf: {
     title: 'Rotate PDF',
@@ -948,7 +949,8 @@ export const en: Messages = {
       { icon: 'PNG', tone: 'green', title: 'One image per page', text: 'Each page becomes a PNG, ideal for the web and screenshots.' },
       { icon: '✓', tone: 'blue', title: 'Automatic ZIP', text: 'Several pages are grouped into one archive.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The source PDF is processed then deleted.' }
-    ]
+    ],
+    ...seoEn.toPng
   },
   toText: {
     title: 'PDF to text',
@@ -965,7 +967,8 @@ export const en: Messages = {
       { icon: 'TXT', tone: 'blue', title: 'Plain text', text: 'Get the content to paste, index or rewrite.' },
       { icon: '★', tone: 'green', title: 'No installation', text: 'Extraction runs in the browser, then you download the .txt.' },
       { icon: '✧', tone: 'purple', title: 'Scans', text: 'If the PDF is an image, use the OCR tool.' }
-    ]
+    ],
+    ...seoEn.toText
   },
   unlockPdf: {
     title: 'Unlock PDF',
@@ -1039,7 +1042,8 @@ export const en: Messages = {
       { icon: '☷', tone: 'green', title: 'Three modes', text: 'Quick, Detailed, or Key Points — pick what you need.' },
       { icon: '★', tone: 'blue', title: 'Text required', text: 'On a scan, run OCR first.' },
       { icon: '✧', tone: 'teal', title: '.txt file', text: 'Copy or download; nothing is stored.' }
-    ]
+    ],
+    ...seoEn.summarize
   },
   translatePdf: {
     title: 'Translate PDF',
@@ -1086,7 +1090,8 @@ export const en: Messages = {
       { icon: '</>', tone: 'purple', title: 'File or paste', text: 'Drop a .html file or paste the code.' },
       { icon: '⌘', tone: 'gold', title: 'Online', text: 'Converted on our servers — no software to install.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'HTML is not kept on the server.' }
-    ]
+    ],
+    ...seoEn.htmlPdf
   },
   convert: {
     pdfToWordTitle: 'PDF to Word',

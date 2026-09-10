@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { useOfficeFile } from '../lib/useOfficeFile';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 export default function HtmlToPdf() {
   const { m } = useI18n();
+  usePageSeo(m.htmlPdf.seoTitle, m.htmlPdf.seoDescription);
   const fileState = useOfficeFile(['.html', '.htm']);
   const [draft, setDraft] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -79,6 +81,7 @@ export default function HtmlToPdf() {
         error={fileState.error}
         features={m.htmlPdf.features}
         accept=".html,.htm,text/html"
+        seo={landingSeoFrom(m.htmlPdf)}
         onDragOver={() => fileState.setIsDragging(true)}
         onDragLeave={() => fileState.setIsDragging(false)}
         onDrop={fileState.onDropFiles}
