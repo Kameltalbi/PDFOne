@@ -70,7 +70,7 @@ function PwaInstallBanner() {
 
   return (
     <div className="pwa-banner" role="dialog" aria-label={m.common.pwaTitle}>
-      <img src="/pwa-192x192.png" alt="" width={40} height={40} />
+      <img src="/icon-192x192.png?v=20260911" alt="" width={40} height={40} />
       <div className="pwa-banner-copy">
         <strong>{m.common.pwaTitle}</strong>
         <span>{ios ? m.common.pwaIosText : m.common.pwaText}</span>
