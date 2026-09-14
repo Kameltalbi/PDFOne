@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   StudioDocumentCanvas,
@@ -21,6 +21,7 @@ import {
 } from '../lib/analytics';
 import { useI18n } from '../i18n';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 
 export type SummaryMode = 'quick' | 'detailed' | 'key_points';
 export type SummaryLanguage = 'same' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'ar';
@@ -42,6 +43,11 @@ export default function Summarize() {
   const { status } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
   usePageSeo(copy.seoTitle, copy.seoDescription);
+  const faqJsonLd = useMemo(
+    () => (copy.faq?.length ? faqPageJsonLd(copy.faq, pageUrl('/summarize')) : null),
+    [copy.faq]
+  );
+  useJsonLd('one2pdf-faq-summarize', faqJsonLd);
 
   const [mode, setMode] = useState<SummaryMode>('detailed');
   const [language, setLanguage] = useState<SummaryLanguage>('same');

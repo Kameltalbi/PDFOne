@@ -13,6 +13,7 @@ export type SeoPrerenderPage = {
   copy?: PageSeoCopy;
   jsonLdId?: string;
   jsonLd?: object;
+  robots?: string;
   articleHtml?: string;
 };
 
@@ -185,13 +186,13 @@ export function indexableSeoPages(): SeoPrerenderPage[] {
     toolNamed('/sign', m.signPdf.title, m.signPdf.subtitle, m.signPdf),
     toolNamed('/watermark', m.watermark.title, m.watermark.subtitle, m.watermark),
     toolNamed('/page-numbers', m.numberPages.title, m.numberPages.subtitle, m.numberPages),
-    toolNamed('/rotate', m.rotatePdf.title, m.rotatePdf.subtitle, m.rotatePdf),
+    toolNamed('/rotate', m.rotatePdf.title, m.rotatePdf.subtitle, m.rotatePdf, 'one2pdf-faq-rotate'),
     toolNamed('/crop', m.cropPdf.title, m.cropPdf.subtitle, m.cropPdf),
     toolNamed('/delete-pages', m.deletePages.title, m.deletePages.subtitle, m.deletePages),
     toolNamed('/reorder', m.reorderPages.title, m.reorderPages.subtitle, m.reorderPages),
     toolNamed('/pdf-to-text', m.toText.title, m.toText.subtitle, m.toText, 'one2pdf-faq-/pdf-to-text'),
     toolNamed('/html-to-pdf', m.htmlPdf.title, m.htmlPdf.subtitle, m.htmlPdf),
-    toolNamed('/summarize', m.summarizePdf.title, m.summarizePdf.subtitle, m.summarizePdf),
+    toolNamed('/summarize', m.summarizePdf.title, m.summarizePdf.subtitle, m.summarizePdf, 'one2pdf-faq-summarize'),
     toolNamed('/translate', m.translatePdf.title, m.translatePdf.subtitle, m.translatePdf, 'one2pdf-faq-translate'),
     toolNamed('/extract-pages', m.extractPages.title, m.extractPages.subtitle, m.extractPages),
     toolNamed('/extract-images', m.extractImages.title, m.extractImages.subtitle, m.extractImages),
@@ -202,7 +203,9 @@ export function indexableSeoPages(): SeoPrerenderPage[] {
     toolNamed('/heic-to-pdf', m.heicToPdf.title, m.heicToPdf.subtitle, m.heicToPdf)
   ];
 
-  return pages;
+  return pages.map((page) => (
+    page.path === '/translate' ? { ...page, robots: 'noindex, follow' } : page
+  ));
 }
 
 export function seoArticleHtml(page: SeoPrerenderPage): string {

@@ -85,3 +85,22 @@ export function usePageSeo(title: string | null | undefined, description: string
     };
   }, [title, description, url, ogLocale]);
 }
+
+export function useRobotsMeta(content: string) {
+  useEffect(() => {
+    let robots = document.head.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    const created = !robots;
+    const previous = robots?.getAttribute('content') ?? '';
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.setAttribute('name', 'robots');
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute('content', content);
+    return () => {
+      if (created) robots?.remove();
+      else if (previous) robots?.setAttribute('content', previous);
+      else robots?.remove();
+    };
+  }, [content]);
+}

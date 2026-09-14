@@ -3,7 +3,7 @@ import { useBilling, type PaidPlan } from '../lib/billing';
 import { remainingLabel } from '../lib/account';
 import { useI18n } from '../i18n';
 import type { Messages } from '../i18n/types';
-import { usePageSeo } from '../lib/usePageSeo';
+import { usePageSeo, useRobotsMeta } from '../lib/usePageSeo';
 import '../pages/Pricing.css';
 import './Account.css';
 
@@ -18,6 +18,7 @@ export function AccountPage() {
   const { m, t } = useI18n();
   const { status, loading, logout, portal } = useBilling();
   usePageSeo(m.account.seoTitle, m.account.seoDescription);
+  useRobotsMeta('noindex, follow');
 
   if (!loading && !status.user && !status.paid) return <Navigate to="/login" replace />;
 

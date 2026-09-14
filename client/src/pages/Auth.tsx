@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { rememberedEmail, useBilling } from '../lib/billing';
 import { useI18n } from '../i18n';
-import { usePageSeo } from '../lib/usePageSeo';
+import { usePageSeo, useRobotsMeta } from '../lib/usePageSeo';
 import './Auth.css';
 
 function AuthAside({
@@ -70,6 +70,7 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [forgotOpen, setForgotOpen] = useState(false);
   usePageSeo(m.account.loginSeoTitle, m.account.loginSeoDescription);
+  useRobotsMeta('noindex, follow');
 
   if (!loading && status.user) return <Navigate to="/account" replace />;
 
@@ -139,6 +140,7 @@ export function SignupPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   usePageSeo(m.account.signupSeoTitle, m.account.signupSeoDescription);
+  useRobotsMeta('noindex, follow');
 
   if (!loading && status.user) return <Navigate to="/account" replace />;
 

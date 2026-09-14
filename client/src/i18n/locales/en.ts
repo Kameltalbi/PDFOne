@@ -581,7 +581,7 @@ export const en: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Immediate result', text: 'The split takes a few seconds and is ready to download.' },
       { icon: '✧', tone: 'teal', title: 'Safe processing', text: 'Your document is deleted automatically after the download.' }
     ],
-    seoTitle: 'Split PDF Online — Extract Pages | One2PDF',
+    seoTitle: 'Split PDF into Multiple Files | One2PDF',
     seoDescription: 'Extract pages or split a PDF into separate files in seconds. Split a PDF online for free, then download — start now on One2PDF.',
     seoH2: 'How to split a PDF online quickly and securely',
     seoP1: 'Need only a few pages from a pack, a contract, or a scan that runs too long? One2PDF lets you split a PDF online for free, with no software to install. Import the file, select the pages to keep — by click or with a range such as 1-3, 5, 8 — then start the job.',
@@ -596,8 +596,8 @@ export const en: Messages = {
     faqTitle: 'Frequently asked questions about splitting PDFs',
     faq: [
       {
-        question: 'Can I extract only some pages?',
-        answer: 'Yes. Use Extract to keep selected pages in one PDF, or Separate to export each page in a ZIP. You can also type a range such as 1-3, 5, 8.'
+        question: 'Can I split a PDF into several files?',
+        answer: 'Yes. Separate exports each page as its own PDF, packed in a ZIP. That is how you split a PDF into multiple files. To keep a few pages in one document, use Extract pages.'
       },
       {
         question: 'Is splitting a PDF free?',

@@ -25,6 +25,7 @@ function Footer() {
             <Link to="/word-to-pdf">{m.tools.wordToPdf}</Link>
             <Link to="/jpg-to-pdf">{m.tools.jpgToPdf}</Link>
             <Link to="/split">{m.tools.split}</Link>
+            <Link to="/rotate">{m.tools.rotate}</Link>
             <Link to="/extract-pages">{m.tools.extractPages}</Link>
             <Link to="/tools">{m.nav.allTools}</Link>
           </nav>

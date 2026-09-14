@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { rotateImageDataUrl } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
+import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useI18n } from '../i18n';
 
 function turn(value: number, delta: number) {
@@ -13,6 +14,11 @@ function turn(value: number, delta: number) {
 function Rotate() {
   const { m, t } = useI18n();
   usePageSeo(m.rotatePdf.seoTitle, m.rotatePdf.seoDescription);
+  const faqJsonLd = useMemo(
+    () => (m.rotatePdf.faq?.length ? faqPageJsonLd(m.rotatePdf.faq, pageUrl('/rotate')) : null),
+    [m.rotatePdf.faq]
+  );
+  useJsonLd('one2pdf-faq-rotate', faqJsonLd);
   const pdf = useSinglePdf();
   const [angles, setAngles] = useState<number[]>([]);
   const [active, setActive] = useState(0);

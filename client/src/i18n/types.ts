@@ -590,6 +590,10 @@ export type Messages = {
     seoP1: string;
     seoP2: string;
     seoP3: string;
+    howTitle?: string;
+    howSteps?: string[];
+    faqTitle?: string;
+    faq?: { question: string; answer: string }[];
   };
   watermark: {
     title: string;

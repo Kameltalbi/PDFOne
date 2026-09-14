@@ -581,7 +581,7 @@ export const fr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'La division prend quelques secondes, prêt à télécharger.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Votre document est supprimé automatiquement après le téléchargement.' }
     ],
-    seoTitle: 'Diviser un PDF en ligne, extraire | One2PDF',
+    seoTitle: 'Diviser un PDF en plusieurs fichiers | One2PDF',
     seoDescription: 'Extrayez des pages ou séparez un PDF en fichiers distincts, en quelques secondes. Divisez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment diviser un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous n’avez besoin que de quelques pages d’un dossier, d’un contrat ou d’un scan trop long ? One2PDF permet de diviser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, sélectionnez les pages à conserver — au clic ou via une plage du type 1-3, 5, 8 — puis lancez le traitement.',
@@ -596,8 +596,8 @@ export const fr: Messages = {
     faqTitle: 'Questions fréquentes sur la division de PDF',
     faq: [
       {
-        question: 'Puis-je extraire seulement certaines pages ?',
-        answer: 'Oui. Extraire garde les pages choisies dans un PDF. Séparer exporte chaque page dans un ZIP. Vous pouvez aussi saisir une plage du type 1-3, 5, 8.'
+        question: 'Puis-je diviser un PDF en plusieurs fichiers ?',
+        answer: 'Oui. Séparer exporte chaque page dans son propre PDF, regroupés dans un ZIP. C’est le mode pour découper un PDF en plusieurs fichiers. Pour conserver quelques pages dans un seul document, utilisez Extraire des pages.'
       },
       {
         question: 'Diviser un PDF est-il gratuit ?',

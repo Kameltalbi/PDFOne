@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useI18n } from '../i18n';
 import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
-import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
+import { landingSeoFrom, usePageSeo, useRobotsMeta } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
 import '../components/Studio.css';
 import './Tools.css';
@@ -12,6 +12,7 @@ export default function Translate() {
   const { m } = useI18n();
   const copy = m.translatePdf;
   usePageSeo(copy.seoTitle, copy.seoDescription);
+  useRobotsMeta('noindex, follow');
   const seo = landingSeoFrom(copy);
   const faqJsonLd = useMemo(
     () => (seo.faq?.length ? faqPageJsonLd(seo.faq, pageUrl('/translate')) : null),

@@ -134,7 +134,28 @@ export const seoFr = {
     seoH2: 'Comment tourner les pages d’un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Une page de scan est à l’envers, un justificatif a été photographié en travers ? One2PDF permet de tourner un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, pivotez la page concernée — ou toutes les pages — de 90° en 90°, puis téléchargez le document redressé.',
     seoP2: 'Corriger l’orientation d’un PDF n’a pas à tout réimprimer. L’aperçu montre la nouvelle rotation avant l’export, page par page. C’est la méthode adaptée si vous cherchez comment faire pivoter un PDF, redresser un scan ou tourner seulement certaines pages d’un dossier.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF pivoté se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Tournez votre PDF maintenant, vérifiez chaque page, et revenez sur One2PDF dès qu’un document doit être lu à l’endroit. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF pivoté se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Tournez votre PDF maintenant, vérifiez chaque page, et revenez sur One2PDF dès qu’un document doit être lu à l’endroit. Le traitement ne prend que quelques secondes, sans logiciel à installer.',
+    howTitle: 'Comment tourner les pages d’un PDF en ligne',
+    howSteps: [
+      'Importez votre PDF',
+      'Tournez les pages concernées',
+      'Téléchargez le PDF corrigé'
+    ],
+    faqTitle: 'Questions fréquentes sur la rotation de PDF',
+    faq: [
+      {
+        question: 'Puis-je tourner une seule page d’un PDF ?',
+        answer: 'Oui. Choisissez la page, puis tournez-la de 90° à gauche ou à droite. Les autres pages restent inchangées, sauf si vous appliquez la rotation à toutes les pages.'
+      },
+      {
+        question: 'La rotation des pages est-elle définitive ?',
+        answer: 'Oui. Une fois la rotation appliquée, le PDF téléchargé conserve la nouvelle orientation. Le fichier d’origine n’est pas conservé.'
+      },
+      {
+        question: 'L’outil de rotation PDF est-il gratuit ?',
+        answer: 'Oui, sans créer de compte. Le plan gratuit permet 3 documents par jour et des fichiers jusqu’à 20 Mo. Pro retire ces limites.'
+      }
+    ]
   },
   watermark: {
     seoTitle: 'Ajouter un filigrane PDF en ligne | One2PDF',
@@ -518,7 +539,28 @@ export const seoEn = {
     seoH2: 'How to rotate PDF pages online quickly and securely',
     seoP1: 'Is a scanned page upside down, or was a receipt photographed sideways? One2PDF lets you rotate a PDF online for free, with no software to install. Import the file, turn the page you need — or every page — in 90° steps, then download the corrected document.',
     seoP2: 'Fixing PDF orientation does not have to mean reprinting. The preview shows the new rotation before export, page by page. It is a practical way to rotate a PDF, straighten a scan, or turn only some pages in a pack.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the rotated PDF is available for download, then deleted. No account is required for occasional use. Rotate your PDF now, check each page, and come back to One2PDF whenever a document must be read the right way up. The whole process takes only a few seconds, with no extra software on your computer.'
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the rotated PDF is available for download, then deleted. No account is required for occasional use. Rotate your PDF now, check each page, and come back to One2PDF whenever a document must be read the right way up. The whole process takes only a few seconds, with no extra software on your computer.',
+    howTitle: 'How to rotate PDF pages online',
+    howSteps: [
+      'Upload your PDF',
+      'Rotate the pages you need',
+      'Download the corrected PDF'
+    ],
+    faqTitle: 'Frequently asked questions about rotating PDFs',
+    faq: [
+      {
+        question: 'Can I rotate only one page in a PDF?',
+        answer: 'Yes. Select the page, then turn it 90° left or right. Other pages stay as they are unless you rotate every page.'
+      },
+      {
+        question: 'Can I permanently rotate PDF pages?',
+        answer: 'Yes. After you apply the rotation, the downloaded PDF keeps the new orientation. The original file is not stored.'
+      },
+      {
+        question: 'Is the PDF rotation tool free?',
+        answer: 'Yes, without creating an account. The free plan allows 3 documents per day and files up to 20 MB. Pro removes those limits.'
+      }
+    ]
   },
   watermark: {
     seoTitle: 'Add a PDF Watermark Online | One2PDF',

@@ -5,7 +5,7 @@ import './Studio.css';
 const RELATED: Record<string, string[]> = {
   '/compress': ['/merge', '/split', '/pdf-to-word', '/protect'],
   '/merge': ['/split', '/compress', '/pdf-to-word', '/page-numbers'],
-  '/split': ['/merge', '/delete-pages', '/compress'],
+  '/split': ['/merge', '/extract-pages', '/compress'],
   '/pdf-to-word': ['/word-to-pdf', '/compress', '/merge', '/pdf-to-excel'],
   '/word-to-pdf': ['/pdf-to-word', '/compress', '/merge'],
   '/pdf-to-excel': ['/excel-to-pdf', '/pdf-to-word', '/compress'],
@@ -24,7 +24,7 @@ const RELATED: Record<string, string[]> = {
   '/page-numbers': ['/merge', '/watermark', '/rotate'],
   '/rotate': ['/crop', '/delete-pages', '/compress'],
   '/crop': ['/rotate', '/compress', '/to-jpg'],
-  '/delete-pages': ['/split', '/reorder', '/compress'],
+  '/delete-pages': ['/split', '/reorder', '/rotate'],
   '/reorder': ['/delete-pages', '/merge', '/rotate'],
   '/ocr': ['/pdf-to-word', '/pdf-to-text', '/compress'],
   '/pdf-to-text': ['/ocr', '/pdf-to-word', '/summarize'],
