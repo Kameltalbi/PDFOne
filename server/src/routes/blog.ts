@@ -1,5 +1,6 @@
 import express from 'express';
 import { getPublishedPost, listPublishedPosts } from '../services/blog.js';
+import { blogMediaFile } from '../services/blogMedia.js';
 
 const router = express.Router();
 
@@ -16,6 +17,18 @@ router.get('/', async (req, res) => {
     console.error('Blog list error:', error);
     return res.status(500).json({ success: false, error: 'Impossible de charger le blog.' });
   }
+});
+
+router.get('/image/:name', (req, res) => {
+  const file = blogMediaFile(req.params.name);
+  if (!file) return res.status(404).json({ success: false, error: 'Image introuvable.' });
+  res.setHeader('Content-Type', 'image/webp');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  return res.sendFile(file, (error) => {
+    if (error && !res.headersSent) {
+      res.status(404).json({ success: false, error: 'Image introuvable.' });
+    }
+  });
 });
 
 router.get('/:slug', async (req, res) => {

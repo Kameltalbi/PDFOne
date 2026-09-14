@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import express from 'express';
+import multer from 'multer';
 import { authenticateUser, getUserByEmail, isValidEmail, listUsersPublic, USER_COOKIE, type UserPayload } from '../services/users.js';
 import { isSuperAdminEmail } from '../services/admins.js';
 import {
@@ -15,6 +16,7 @@ import {
   type Entitlement
 } from '../services/entitlements.js';
 import { deletePost, getStoredPost, listStoredPosts, postSummary, upsertPost } from '../services/blog.js';
+import { saveBlogImage } from '../services/blogMedia.js';
 import { getStripe } from '../services/billing.js';
 import { amountsForZone, DEFAULT_ZONE } from '../services/pricingZones.js';
 import { pingConverters, runtimeHealthSnapshot } from '../utils/runtimeHealth.js';
@@ -22,6 +24,19 @@ import { clientIp, clearCookie, readCookie, setCookie, signValue, verifyValue } 
 
 const router = express.Router();
 export const OPS_COOKIE = 'pdfone_ops';
+
+const blogImageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 4 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    const ok = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.mimetype);
+    if (!ok) {
+      cb(new Error('INVALID_IMAGE'));
+      return;
+    }
+    cb(null, true);
+  }
+});
 
 type OpsSession = { ok: true; at: number };
 
@@ -285,6 +300,35 @@ router.post('/revoke', async (req, res) => {
     console.error('Admin revoke error:', error);
     return res.status(500).json({ success: false, error: 'Révocation impossible.' });
   }
+});
+
+router.post('/blog/image', (req, res) => {
+  if (!requireOps(req, res)) return;
+  blogImageUpload.single('image')(req, res, (err) => {
+    void (async () => {
+      if (err) {
+        const tooBig = err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE';
+        return res.status(400).json({
+          success: false,
+          error: tooBig ? 'Image trop lourde (4 Mo max).' : 'Image JPEG, PNG, WebP ou GIF, 4 Mo max.'
+        });
+      }
+      if (!req.file?.buffer) {
+        return res.status(400).json({ success: false, error: 'Choisissez une image à téléverser.' });
+      }
+      try {
+        const saved = await saveBlogImage(req.file.buffer);
+        return res.json({ success: true, data: saved });
+      } catch (error) {
+        const code = error instanceof Error ? error.message : '';
+        if (code === 'IMAGE_TOO_LARGE') {
+          return res.status(400).json({ success: false, error: 'Image trop lourde (4 Mo max).' });
+        }
+        console.error('Admin blog image error:', error);
+        return res.status(400).json({ success: false, error: 'Image illisible.' });
+      }
+    })();
+  });
 });
 
 router.get('/blog', async (req, res) => {

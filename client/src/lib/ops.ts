@@ -1,8 +1,9 @@
 export async function opsRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const isForm = typeof FormData !== 'undefined' && init?.body instanceof FormData;
   const response = await fetch(path, {
     credentials: 'include',
     headers: {
-      'Content-Type': 'application/json',
+      ...(isForm ? {} : { 'Content-Type': 'application/json' }),
       ...(init?.headers || {})
     },
     ...init

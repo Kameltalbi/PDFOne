@@ -103,6 +103,7 @@ function BlogPostPage() {
         <p className="legal-eyebrow">{m.common.blog}</p>
         <h1>{post.title}</h1>
         <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
+        {post.coverImage ? <img className="blog-cover" src={post.coverImage} alt="" /> : null}
         {post.body.map(renderBlock)}
         <Link className="blog-cta" to={post.ctaTo}>{post.cta}</Link>
       </article>

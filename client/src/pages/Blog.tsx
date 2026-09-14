@@ -36,6 +36,7 @@ function Blog() {
         <div className="blog-list">
           {posts.map((post) => (
             <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
+              {post.coverImage ? <img className="blog-card-cover" src={post.coverImage} alt="" /> : null}
               <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
               <h2>{post.title}</h2>
               <p>{post.excerpt}</p>

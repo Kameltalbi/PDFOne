@@ -41,6 +41,7 @@ export type PublicBlogPost = {
   body: BlogBlock[];
   cta: string;
   ctaTo: string;
+  coverImage?: string;
 };
 
 const MAX_POSTS = 80;
@@ -183,7 +184,8 @@ export function toPublicPost(post: StoredBlogPost, locale: string): PublicBlogPo
     excerpt: copy.excerpt,
     body,
     cta: copy.cta || (lang === 'fr' ? 'Essayer One2PDF' : 'Try One2PDF'),
-    ctaTo: isValidPath(copy.ctaTo) ? copy.ctaTo : '/tools'
+    ctaTo: isValidPath(copy.ctaTo) ? copy.ctaTo : '/tools',
+    coverImage: post.coverImage || ''
   };
 }
 

@@ -25,6 +25,7 @@ export type BlogPost = {
   body: BlogBlock[];
   cta: string;
   ctaTo: string;
+  coverImage?: string;
 };
 
 const compressFr: BlogPost = {

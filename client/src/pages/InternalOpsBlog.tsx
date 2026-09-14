@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { opsRequest } from '../lib/ops';
 import { formatDate } from './opsShared';
 
@@ -181,6 +181,25 @@ export default function InternalOpsBlog() {
     }
   };
 
+  const uploadCover = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setBusy(true);
+    setError(null);
+    const body = new FormData();
+    body.append('image', file);
+    void opsRequest<{ url: string }>('/api/admin/blog/image', { method: 'POST', body })
+      .then((data) => {
+        setCoverImage(data.url);
+        setSaved('Image téléversée sur One2PDF.');
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : 'Téléversement impossible.');
+      })
+      .finally(() => setBusy(false));
+  };
+
   const save = (event: FormEvent) => {
     event.preventDefault();
     setBusy(true);
@@ -350,11 +369,12 @@ export default function InternalOpsBlog() {
               </select>
             </label>
             <label>
-              Image (URL)
-              <input value={coverImage} onChange={(event) => setCoverImage(event.target.value)} placeholder="https://… ou /image.jpg" />
+              Image de couverture
+              <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadCover} />
             </label>
           </div>
           <p className="ops-muted">
+            Téléversez une image : elle est stockée sur One2PDF (JPG, PNG, WebP ou GIF, 4 Mo max). Pas besoin d’hébergeur.
             Si le statut est « Publié » avec une date future, la publication est programmée automatiquement.
             Markdown : ## titre, ### sous-titre, - liste, [texte](/compress).
           </p>
