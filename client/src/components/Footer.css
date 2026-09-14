@@ -1,26 +1,36 @@
 .site-footer {
   margin-top: auto;
-  padding: 3.25rem 1.5rem 1.4rem;
+  padding: 3.25rem max(1rem, env(safe-area-inset-right)) 1.4rem max(1rem, env(safe-area-inset-left));
   background: #111827;
   color: #94a3b8;
+  text-align: start;
 }
 
 .site-footer-inner {
   width: min(100%, 1120px);
-  margin: 0 auto;
+  margin: 0;
 }
 
 .site-footer-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 1.35fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(180px, 1.15fr) repeat(3, minmax(0, 1fr));
   gap: 2.4rem 2.75rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.site-footer-brand,
+.site-footer-grid nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 100%;
+  text-align: start;
 }
 
 .site-footer-brand {
-  display: grid;
   gap: 0.9rem;
-  min-width: 0;
 }
 
 .site-footer-logo img {
@@ -36,10 +46,7 @@
   max-width: 16.5rem;
   font-size: 0.84rem;
   line-height: 1.6;
-}
-
-.site-footer-grid nav {
-  min-width: 0;
+  text-align: start;
 }
 
 .site-footer-grid h2 {
@@ -49,15 +56,18 @@
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-align: start;
 }
 
 .site-footer-grid a {
   display: block;
+  width: 100%;
   margin: 0 0 0.55rem;
   color: #94a3b8;
   font-size: 0.86rem;
   line-height: 1.4;
   overflow-wrap: break-word;
+  text-align: start;
 }
 
 .site-footer-grid a:hover {
@@ -74,6 +84,7 @@
   border-top: 1px solid #273244;
   font-size: 0.72rem;
   line-height: 1.5;
+  text-align: start;
 }
 
 @media (max-width: 900px) {
@@ -93,8 +104,8 @@
   }
 
   .site-footer-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.6rem 0.85rem;
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
   }
 
   .site-footer-grid h2 {
