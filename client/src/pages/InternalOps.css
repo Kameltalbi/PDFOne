@@ -669,6 +669,31 @@
   gap: 0.7rem;
 }
 
+.ops-blog-meta-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ops-blog-more {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.15rem 0.9rem 0.9rem;
+  border: 1px solid #eef1f6;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.ops-blog-more summary {
+  cursor: pointer;
+  padding: 0.55rem 0;
+  color: #374151;
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.ops-blog-more .ops-links {
+  padding-top: 0.2rem;
+}
+
 .ops-grant-row {
   grid-template-columns: 110px auto 1fr auto;
   align-items: end;
@@ -873,6 +898,7 @@
   .ops-kpis,
   .ops-grid-2,
   .ops-blog-meta,
+  .ops-blog-meta-2,
   .ops-grant-row,
   .ops-mix,
   .ops-facts,

@@ -281,169 +281,192 @@ export default function InternalOpsBlog() {
     <div className="ops-pagebody">
       <div className="ops-pagehead">
         <div>
-          <h1>Blog / Articles</h1>
-          <p>Mini CMS : brouillons, programmation automatique et publication.</p>
+          <h1>{editing ? (editing === 'new' ? 'Nouvel article' : 'Modifier l’article') : 'Blog / Articles'}</h1>
+          <p>{editing ? 'Titre, image, texte. Le reste est optionnel.' : 'Brouillons, programmation et publication.'}</p>
         </div>
-        <button type="button" onClick={startNew} disabled={busy}>Nouvel article</button>
+        {editing ? (
+          <button type="button" className="ops-ghost" onClick={resetForm}>Retour à la liste</button>
+        ) : (
+          <button type="button" onClick={startNew} disabled={busy}>Nouvel article</button>
+        )}
       </div>
 
-      <section className="ops-panel">
-        <div className="ops-seg">
-          {([
-            ['all', 'Tous'],
-            ['draft', 'Brouillons'],
-            ['scheduled', 'Programmés'],
-            ['published', 'Publiés']
-          ] as const).map(([id, label]) => (
-            <button key={id} type="button" className={filter === id ? 'ops-tab-on' : ''} onClick={() => setFilter(id)}>
-              {label}
-              <em>{id === 'all' ? posts.length : posts.filter((post) => post.status === id).length}</em>
-            </button>
-          ))}
-        </div>
-        {error && !editing && <p className="ops-error">{error}</p>}
-        <div className="ops-table-wrap">
-          <table className="ops-table">
-            <thead>
-              <tr>
-                <th>Article</th>
-                <th>Statut</th>
-                <th>Publication</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {visible.length === 0 ? (
-                <tr><td colSpan={4}><p>Aucun article dans ce filtre.</p></td></tr>
-              ) : visible.map((post) => (
-                <tr key={post.slug}>
-                  <td>
-                    <strong>{post.title}</strong>
-                    <p>/blog/{post.slug} · {post.locales.join(', ') || '—'}</p>
-                  </td>
-                  <td>
-                    <span className={post.status === 'published' ? 'ops-ok' : post.status === 'scheduled' ? 'ops-pill ops-pill-week' : 'ops-off'}>
-                      {statusLabel(post.status)}
-                    </span>
-                  </td>
-                  <td>{formatDate(post.publishedIso, true)}</td>
-                  <td className="ops-actions">
-                    <button type="button" onClick={() => void startEdit(post.slug)} disabled={busy}>Modifier</button>
-                    <button type="button" className="ops-danger" onClick={() => remove(post.slug)} disabled={busy}>Supprimer</button>
-                  </td>
+      {!editing && (
+        <section className="ops-panel">
+          <div className="ops-seg">
+            {([
+              ['all', 'Tous'],
+              ['draft', 'Brouillons'],
+              ['scheduled', 'Programmés'],
+              ['published', 'Publiés']
+            ] as const).map(([id, label]) => (
+              <button key={id} type="button" className={filter === id ? 'ops-tab-on' : ''} onClick={() => setFilter(id)}>
+                {label}
+                <em>{id === 'all' ? posts.length : posts.filter((post) => post.status === id).length}</em>
+              </button>
+            ))}
+          </div>
+          {error && <p className="ops-error">{error}</p>}
+          <div className="ops-table-wrap">
+            <table className="ops-table">
+              <thead>
+                <tr>
+                  <th>Article</th>
+                  <th>Statut</th>
+                  <th>Publication</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {visible.length === 0 ? (
+                  <tr><td colSpan={4}><p>Aucun article dans ce filtre.</p></td></tr>
+                ) : visible.map((post) => (
+                  <tr key={post.slug}>
+                    <td>
+                      <strong>{post.title}</strong>
+                      <p>/blog/{post.slug} · {post.locales.join(', ') || '—'}</p>
+                    </td>
+                    <td>
+                      <span className={post.status === 'published' ? 'ops-ok' : post.status === 'scheduled' ? 'ops-pill ops-pill-week' : 'ops-off'}>
+                        {statusLabel(post.status)}
+                      </span>
+                    </td>
+                    <td>{formatDate(post.publishedIso, true)}</td>
+                    <td className="ops-actions">
+                      <button type="button" onClick={() => void startEdit(post.slug)} disabled={busy}>Modifier</button>
+                      <button type="button" className="ops-danger" onClick={() => remove(post.slug)} disabled={busy}>Supprimer</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       {editing && (
         <form className="ops-panel ops-blog-form" onSubmit={save}>
-          <h2>{editing === 'new' ? 'Nouvel article' : `Modifier ${slug}`}</h2>
-          <div className="ops-blog-meta">
-            <label>
-              Titre
-              <input
-                value={copy.title}
-                onChange={(event) => {
-                  const title = event.target.value;
-                  patchCopy({ title });
-                  if (!slugLocked && locale === 'fr') setSlug(slugify(title));
-                }}
-                required={locale === 'fr' || Boolean(locales.en.title)}
-              />
-            </label>
-            <label>
-              Slug
-              <input
-                value={slug}
-                onChange={(event) => setSlug(event.target.value)}
-                disabled={slugLocked}
-                placeholder="généré depuis le titre FR"
-              />
-            </label>
-            <label>
-              Mot-clé principal
-              <input value={copy.keywords} onChange={(event) => patchCopy({ keywords: event.target.value })} placeholder="compresser PDF" />
-            </label>
-          </div>
-          <div className="ops-blog-meta">
-            <label>
-              Titre SEO
-              <input value={copy.seoTitle} onChange={(event) => patchCopy({ seoTitle: event.target.value })} maxLength={70} />
-            </label>
-            <label>
-              Meta description
-              <input value={copy.seoDescription} onChange={(event) => patchCopy({ seoDescription: event.target.value })} maxLength={170} />
-            </label>
-          </div>
-          <div className="ops-blog-meta">
-            <label>
-              Date / heure de publication
-              <input type="datetime-local" value={publishedLocal} onChange={(event) => setPublishedLocal(event.target.value)} />
-            </label>
-            <label>
-              Statut
-              <select value={status} onChange={(event) => setStatus(event.target.value as BlogStatus)}>
-                <option value="draft">Brouillon</option>
-                <option value="scheduled">Programmé</option>
-                <option value="published">Publié</option>
-              </select>
-            </label>
-            <label>
-              Image de couverture
-              <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadCover} />
-            </label>
-          </div>
-          <p className="ops-muted">
-            Téléversez une image : elle est stockée sur One2PDF (JPG, PNG, WebP ou GIF, 4 Mo max).
-            Sélectionnez du texte puis utilisez la barre : gras, italique, souligné, alignement, titres, listes, taille et couleurs.
-          </p>
           <div className="ops-presets">
             <button type="button" className={locale === 'fr' ? 'ops-tab-on' : ''} onClick={() => setLocale('fr')}>Français</button>
             <button type="button" className={locale === 'en' ? 'ops-tab-on' : ''} onClick={() => setLocale('en')}>English</button>
           </div>
           <label>
-            Chapô
-            <textarea rows={3} value={copy.excerpt} onChange={(event) => patchCopy({ excerpt: event.target.value })} />
+            Titre
+            <input
+              value={copy.title}
+              onChange={(event) => {
+                const title = event.target.value;
+                patchCopy({ title });
+                if (!slugLocked && locale === 'fr') setSlug(slugify(title));
+              }}
+              required={locale === 'fr' || Boolean(locales.en.title)}
+            />
           </label>
-          <div className="ops-blog-meta">
+          <div className={`ops-blog-meta ${status === 'scheduled' ? '' : 'ops-blog-meta-2'}`}>
             <label>
-              Bouton
-              <input value={copy.cta} onChange={(event) => patchCopy({ cta: event.target.value })} />
+              Statut
+              <select
+                value={status}
+                onChange={(event) => {
+                  const next = event.target.value as BlogStatus;
+                  setStatus(next);
+                  if (next !== 'scheduled') return;
+                  const current = publishedLocal ? new Date(publishedLocal) : new Date(0);
+                  if (Number.isNaN(current.getTime()) || current.getTime() <= Date.now()) {
+                    setPublishedLocal(toLocalInput(new Date(Date.now() + 60 * 60 * 1000).toISOString()));
+                  }
+                }}
+              >
+                <option value="draft">Brouillon</option>
+                <option value="scheduled">Programmé</option>
+                <option value="published">Publié</option>
+              </select>
             </label>
+            {status === 'scheduled' ? (
+              <label>
+                Date et heure de publication
+                <input
+                  type="datetime-local"
+                  value={publishedLocal}
+                  required
+                  onChange={(event) => setPublishedLocal(event.target.value)}
+                />
+              </label>
+            ) : null}
             <label>
-              Lien du bouton
-              <input value={copy.ctaTo} onChange={(event) => patchCopy({ ctaTo: event.target.value })} placeholder="/compress" />
+              Image de couverture
+              <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={uploadCover} />
             </label>
           </div>
-          <fieldset className="ops-links">
-            <legend>Liens internes</legend>
-            <div className="ops-presets">
-              {TOOL_LINKS.map((item) => (
-                <button
-                  key={item.to}
-                  type="button"
-                  className={internalLinks.includes(item.to) ? 'ops-tab-on' : ''}
-                  onClick={() => toggleLink(item.to)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-          {coverImage && (
-            <img className="ops-cover" src={coverImage} alt="" />
-          )}
+          {status === 'scheduled' ? (
+            <p className="ops-muted">Cliquez le champ date pour ouvrir le calendrier. L’article sera publié automatiquement à l’heure choisie.</p>
+          ) : null}
+          {coverImage ? <img className="ops-cover" src={coverImage} alt="" /> : null}
+          <label>
+            Chapô
+            <textarea rows={2} value={copy.excerpt} onChange={(event) => patchCopy({ excerpt: event.target.value })} placeholder="2 ou 3 phrases pour la carte du blog" />
+          </label>
           <div className="ops-editor-wrap">
-            <span>Contenu</span>
+            <span>Article</span>
             <OpsRichTextEditor
               value={copy.bodyMarkdown}
               onChange={(html) => patchCopy({ bodyMarkdown: html })}
               placeholder="Écrivez l’article, puis mettez le texte en forme."
             />
           </div>
+          <details className="ops-blog-more">
+            <summary>Options (SEO, bouton, liens)</summary>
+            <div className="ops-blog-meta ops-blog-meta-2">
+              <label>
+                Slug
+                <input
+                  value={slug}
+                  onChange={(event) => setSlug(event.target.value)}
+                  disabled={slugLocked}
+                  placeholder="généré depuis le titre"
+                />
+              </label>
+              <label>
+                Mot-clé principal
+                <input value={copy.keywords} onChange={(event) => patchCopy({ keywords: event.target.value })} placeholder="compresser PDF" />
+              </label>
+            </div>
+            <div className="ops-blog-meta ops-blog-meta-2">
+              <label>
+                Titre SEO
+                <input value={copy.seoTitle} onChange={(event) => patchCopy({ seoTitle: event.target.value })} maxLength={70} />
+              </label>
+              <label>
+                Meta description
+                <input value={copy.seoDescription} onChange={(event) => patchCopy({ seoDescription: event.target.value })} maxLength={170} />
+              </label>
+            </div>
+            <div className="ops-blog-meta ops-blog-meta-2">
+              <label>
+                Bouton
+                <input value={copy.cta} onChange={(event) => patchCopy({ cta: event.target.value })} />
+              </label>
+              <label>
+                Lien du bouton
+                <input value={copy.ctaTo} onChange={(event) => patchCopy({ ctaTo: event.target.value })} placeholder="/compress" />
+              </label>
+            </div>
+            <fieldset className="ops-links">
+              <legend>Liens internes</legend>
+              <div className="ops-presets">
+                {TOOL_LINKS.map((item) => (
+                  <button
+                    key={item.to}
+                    type="button"
+                    className={internalLinks.includes(item.to) ? 'ops-tab-on' : ''}
+                    onClick={() => toggleLink(item.to)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          </details>
           {error && <p className="ops-error">{error}</p>}
           {saved && (
             <div ref={saveBannerRef} className="ops-publish-ok" role="status">
@@ -465,7 +488,7 @@ export default function InternalOpsBlog() {
                       ? 'Publier'
                       : 'Mettre à jour'}
             </button>
-            <button type="button" className="ops-ghost" onClick={resetForm}>Fermer</button>
+            <button type="button" className="ops-ghost" onClick={resetForm}>Retour à la liste</button>
           </div>
         </form>
       )}
