@@ -75,8 +75,9 @@ function alignFromAttrs(attrs: Record<string, string> | undefined): BlockAlign |
   return sanitizeAlign(attrs['data-align'] || attrs.align || fromStyle);
 }
 
-function withAlign<T extends object>(block: T, align?: BlockAlign): T {
-  return align && align !== 'left' ? { ...block, align } : block;
+function withAlign(block: BlogBlock, align?: BlockAlign): BlogBlock {
+  if (!align || align === 'left') return block;
+  return { ...block, align };
 }
 
 export function sanitizeSize(value: string | null | undefined): string | undefined {
@@ -140,8 +141,10 @@ function collapseParts(parts: InlinePart[]): string | InlinePart[] {
 function paragraphFromParts(parts: InlinePart[], align?: BlockAlign): BlogBlock | null {
   const collapsed = collapseParts(parts);
   if (!collapsed || (typeof collapsed === 'string' && !collapsed.trim())) return null;
-  if (typeof collapsed === 'string') return withAlign({ type: 'p', text: collapsed.trim() }, align);
-  return withAlign({ type: 'p', parts: collapsed }, align);
+  const block: BlogBlock = typeof collapsed === 'string'
+    ? { type: 'p', text: collapsed.trim() }
+    : { type: 'p', parts: collapsed };
+  return withAlign(block, align);
 }
 
 type Marks = {
@@ -232,7 +235,10 @@ function htmlToBlocks(html: string): BlogBlock[] {
       list = null;
       return;
     }
-    blocks.push(withAlign({ type: list.type, items: list.items }, list.align));
+    const block: BlogBlock = list.type === 'ol'
+      ? { type: 'ol', items: list.items }
+      : { type: 'ul', items: list.items };
+    blocks.push(withAlign(block, list.align));
     list = null;
   };
 
@@ -275,7 +281,10 @@ function htmlToBlocks(html: string): BlogBlock[] {
           flushList();
           const align = currentAlign();
           const text = headingText();
-          if (text) blocks.push(withAlign({ type: name === 'h3' ? 'h3' : 'h2', text }, align));
+          if (text) {
+            const heading: BlogBlock = name === 'h3' ? { type: 'h3', text } : { type: 'h2', text };
+            blocks.push(withAlign(heading, align));
+          }
           stack.pop();
           continue;
         }
