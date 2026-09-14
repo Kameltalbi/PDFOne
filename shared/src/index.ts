@@ -1,3 +1,3 @@
-export * from './types';
-export * from './utils/file';
-export * from './plans';
+export * from './types/index.js';
+export * from './utils/file.js';
+export * from './plans.js';
