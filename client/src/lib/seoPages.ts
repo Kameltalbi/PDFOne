@@ -58,7 +58,17 @@ function escapeHtml(value: string) {
 function renderInline(parts: InlinePart[]): string {
   return parts.map((part) => {
     if (typeof part === 'string') return escapeHtml(part);
-    return `<a href="${escapeHtml(part.to)}">${escapeHtml(part.text)}</a>`;
+    const text = escapeHtml(part.text);
+    let html = part.to ? `<a href="${escapeHtml(part.to)}">${text}</a>` : text;
+    if (part.bold) html = `<strong>${html}</strong>`;
+    if (part.italic) html = `<em>${html}</em>`;
+    if (part.underline) html = `<u>${html}</u>`;
+    const styles = [
+      part.color ? `color:${escapeHtml(part.color)}` : '',
+      part.fontSize ? `font-size:${escapeHtml(part.fontSize)}px` : ''
+    ].filter(Boolean).join(';');
+    if (styles) html = `<span style="${styles}">${html}</span>`;
+    return html;
   }).join('');
 }
 
@@ -69,12 +79,10 @@ function renderBlogBlock(block: BlogBlock): string {
     if ('parts' in block) return `<p>${renderInline(block.parts)}</p>`;
     return `<p>${escapeHtml(block.text)}</p>`;
   }
-  if (block.type === 'ul') {
-    return `<ul>${block.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
-  }
-  return `<ol>${block.items.map((item) => (
+  const items = block.items.map((item) => (
     `<li>${typeof item === 'string' ? escapeHtml(item) : renderInline(item)}</li>`
-  )).join('')}</ol>`;
+  )).join('');
+  return block.type === 'ul' ? `<ul>${items}</ul>` : `<ol>${items}</ol>`;
 }
 
 function blogPage(post: BlogPost): SeoPrerenderPage {

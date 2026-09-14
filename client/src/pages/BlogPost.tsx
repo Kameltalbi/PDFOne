@@ -10,7 +10,16 @@ import './Blog.css';
 function renderInline(parts: InlinePart[]): ReactNode {
   return parts.map((part, index) => {
     if (typeof part === 'string') return <Fragment key={index}>{part}</Fragment>;
-    return <Link key={index} to={part.to}>{part.text}</Link>;
+    const style = {
+      ...(part.color ? { color: part.color } : {}),
+      ...(part.fontSize ? { fontSize: `${part.fontSize}px` } : {})
+    };
+    let node: ReactNode = part.to ? <Link to={part.to}>{part.text}</Link> : part.text;
+    if (part.bold) node = <strong>{node}</strong>;
+    if (part.italic) node = <em>{node}</em>;
+    if (part.underline) node = <u>{node}</u>;
+    if (part.color || part.fontSize) node = <span style={style}>{node}</span>;
+    return <Fragment key={index}>{node}</Fragment>;
   });
 }
 
@@ -26,7 +35,9 @@ function renderBlock(block: BlogBlock, index: number): ReactNode {
   if (block.type === 'ul') {
     return (
       <ul key={index}>
-        {block.items.map((item) => <li key={item}>{item}</li>)}
+        {block.items.map((item, itemIndex) => (
+          <li key={itemIndex}>{typeof item === 'string' ? item : renderInline(item)}</li>
+        ))}
       </ul>
     );
   }

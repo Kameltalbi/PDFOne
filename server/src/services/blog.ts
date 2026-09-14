@@ -89,6 +89,10 @@ function clip(value: unknown, max: number): string {
   return String(value || '').trim().slice(0, max);
 }
 
+function hasBodyText(value: string): boolean {
+  return value.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').trim().length > 0;
+}
+
 function publishTime(iso: string): number {
   const raw = String(iso || '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return Date.parse(`${raw}T00:00:00`);
@@ -197,7 +201,7 @@ function sanitizeCopy(raw: Partial<BlogLocaleCopy> | undefined): BlogLocaleCopy 
   if (!raw) return null;
   const title = clip(raw.title, 140);
   const bodyMarkdown = clip(raw.bodyMarkdown, 80000) || clip(raw.excerpt, 400);
-  if (!title || !bodyMarkdown) return null;
+  if (!title || !bodyMarkdown || !hasBodyText(bodyMarkdown)) return null;
   const ctaTo = clip(raw.ctaTo, 120) || '/tools';
   return {
     title,

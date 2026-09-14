@@ -3,14 +3,22 @@ import type { Locale } from '../i18n/types';
 export const COMPRESS_EMAIL_SLUG = 'reduire-taille-pdf-email';
 export const PRIVACY_PDF_SLUG = 'confidentialite-pdf-en-ligne';
 
-export type InlinePart = string | { text: string; to: string };
+export type InlinePart = string | {
+  text: string;
+  to?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  color?: string;
+  fontSize?: string;
+};
 
 export type BlogBlock =
   | { type: 'p'; text: string }
   | { type: 'p'; parts: InlinePart[] }
   | { type: 'h2'; text: string }
   | { type: 'h3'; text: string }
-  | { type: 'ul'; items: string[] }
+  | { type: 'ul'; items: Array<string | InlinePart[]> }
   | { type: 'ol'; items: Array<string | InlinePart[]> };
 
 export type BlogPost = {
@@ -280,6 +288,29 @@ export function getBlogPosts(locale: Locale): BlogPost[] {
 
 export function getBlogPost(locale: Locale, slug: string): BlogPost | undefined {
   return postsFor(locale).find((post) => post.slug === slug);
+}
+
+function plainInline(parts: InlinePart[]): string {
+  return parts.map((part) => (typeof part === 'string' ? part : part.text)).join('');
+}
+
+function bodyPlainText(post: BlogPost): string {
+  const chunks: string[] = [];
+  for (const block of post.body) {
+    if (block.type === 'p') {
+      chunks.push('parts' in block ? plainInline(block.parts) : block.text);
+    }
+  }
+  return chunks.join(' ').replace(/\s+/g, ' ').trim();
+}
+
+export function blogCardLead(post: BlogPost, sentences = 3): string {
+  const source = (post.excerpt || '').replace(/\s+/g, ' ').trim() || bodyPlainText(post);
+  if (!source) return '';
+  const pieces = source.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g);
+  const lead = (pieces ? pieces.slice(0, sentences).join(' ') : source).replace(/\s+/g, ' ').trim();
+  if (lead.length <= 320) return lead;
+  return `${lead.slice(0, 320).replace(/\s+\S*$/, '')}…`;
 }
 
 export function mergeBlogPosts(locale: Locale, remote: BlogPost[]): BlogPost[] {

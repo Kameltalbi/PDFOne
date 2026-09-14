@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { opsRequest } from '../lib/ops';
 import { formatDate } from './opsShared';
+import OpsRichTextEditor from './OpsRichTextEditor';
 
 type BlogLocale = 'fr' | 'en';
 type BlogStatus = 'draft' | 'published' | 'scheduled';
@@ -109,6 +110,7 @@ export default function InternalOpsBlog() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const saveBannerRef = useRef<HTMLDivElement>(null);
 
   const copy = locales[locale];
   const visible = useMemo(
@@ -126,6 +128,11 @@ export default function InternalOpsBlog() {
       setError(err instanceof Error ? err.message : 'Impossible de charger les articles.');
     });
   }, []);
+
+  useEffect(() => {
+    if (!saved || !saveBannerRef.current) return;
+    saveBannerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [saved]);
 
   const patchCopy = (patch: Partial<BlogCopy>) => {
     setLocales((current) => ({ ...current, [locale]: { ...current[locale], ...patch } }));
@@ -175,14 +182,14 @@ export default function InternalOpsBlog() {
   };
 
   const toggleLink = (to: string) => {
+    const item = TOOL_LINKS.find((link) => link.to === to);
     setInternalLinks((current) => (
-      current.includes(to) ? current.filter((item) => item !== to) : [...current, to]
+      current.includes(to) ? current.filter((value) => value !== to) : [...current, to]
     ));
-    if (!copy.bodyMarkdown.includes(`](${to})`)) {
-      patchCopy({
-        bodyMarkdown: `${copy.bodyMarkdown.trim()}\n\n[${TOOL_LINKS.find((item) => item.to === to)?.label || to}](${to})\n`
-      });
-    }
+    if (!item || copy.bodyMarkdown.includes(`href="${to}"`)) return;
+    patchCopy({
+      bodyMarkdown: `${copy.bodyMarkdown.trim()}${copy.bodyMarkdown.trim() ? '' : ''}<p><a href="${item.to}">${item.label}</a></p>`
+    });
   };
 
   const uploadCover = (event: ChangeEvent<HTMLInputElement>) => {
@@ -236,9 +243,14 @@ export default function InternalOpsBlog() {
         setSlug(post.slug);
         setSlugLocked(true);
         setStatus(post.status);
-        if (post.status === 'scheduled') setSaved('Programmé. Il sera publié automatiquement à l’heure indiquée.');
-        else if (post.status === 'published') setSaved('Publié. Visible tout de suite sur /blog.');
-        else setSaved('Brouillon enregistré.');
+        if (post.status === 'published') setFilter('published');
+        if (post.status === 'scheduled') {
+          setSaved('Article programmé. Il sera publié automatiquement à l’heure indiquée.');
+        } else if (post.status === 'published') {
+          setSaved(`Article publié. Il est en ligne sur /blog/${post.slug}.`);
+        } else {
+          setSaved('Brouillon enregistré. Il n’est pas encore visible sur le blog.');
+        }
         await loadList();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Enregistrement impossible.');
@@ -289,8 +301,7 @@ export default function InternalOpsBlog() {
             </button>
           ))}
         </div>
-        {error && <p className="ops-error">{error}</p>}
-        {saved && <p className="ops-ok-msg">{saved}</p>}
+        {error && !editing && <p className="ops-error">{error}</p>}
         <div className="ops-table-wrap">
           <table className="ops-table">
             <thead>
@@ -386,9 +397,8 @@ export default function InternalOpsBlog() {
             </label>
           </div>
           <p className="ops-muted">
-            Téléversez une image : elle est stockée sur One2PDF (JPG, PNG, WebP ou GIF, 4 Mo max). Pas besoin d’hébergeur.
-            Si le statut est « Publié » avec une date future, la publication est programmée automatiquement.
-            Markdown : ## titre, ### sous-titre, - liste, [texte](/compress).
+            Téléversez une image : elle est stockée sur One2PDF (JPG, PNG, WebP ou GIF, 4 Mo max).
+            Sélectionnez du texte puis utilisez la barre : gras, italique, souligné, titres, listes, taille et couleurs.
           </p>
           <div className="ops-presets">
             <button type="button" className={locale === 'fr' ? 'ops-tab-on' : ''} onClick={() => setLocale('fr')}>Français</button>
@@ -426,20 +436,34 @@ export default function InternalOpsBlog() {
           {coverImage && (
             <img className="ops-cover" src={coverImage} alt="" />
           )}
-          <label>
-            Contenu
-            <textarea
-              className="ops-md"
-              rows={16}
+          <div className="ops-editor-wrap">
+            <span>Contenu</span>
+            <OpsRichTextEditor
               value={copy.bodyMarkdown}
-              onChange={(event) => patchCopy({ bodyMarkdown: event.target.value })}
-              placeholder={'Premier paragraphe.\n\n## Titre\n\n- point\n\nAllez sur [Compresser un PDF](/compress).'}
-              required={locale === 'fr' || Boolean(locales.en.bodyMarkdown)}
+              onChange={(html) => patchCopy({ bodyMarkdown: html })}
+              placeholder="Écrivez l’article, puis mettez le texte en forme."
             />
-          </label>
+          </div>
+          {error && <p className="ops-error">{error}</p>}
+          {saved && (
+            <div ref={saveBannerRef} className="ops-publish-ok" role="status">
+              <strong>{saved}</strong>
+              {status === 'published' && slug && saved.startsWith('Article publié') ? (
+                <a href={`/blog/${slug}`} target="_blank" rel="noreferrer">Voir l’article sur le blog</a>
+              ) : null}
+            </div>
+          )}
           <div className="ops-blog-save">
             <button type="submit" disabled={busy}>
-              {busy ? 'Enregistrement…' : (status === 'published' ? 'Publier' : status === 'scheduled' ? 'Programmer' : 'Enregistrer le brouillon')}
+              {busy
+                ? 'Enregistrement…'
+                : status === 'draft'
+                  ? 'Enregistrer le brouillon'
+                  : status === 'scheduled'
+                    ? 'Programmer'
+                    : editing === 'new'
+                      ? 'Publier'
+                      : 'Mettre à jour'}
             </button>
             <button type="button" className="ops-ghost" onClick={resetForm}>Fermer</button>
           </div>

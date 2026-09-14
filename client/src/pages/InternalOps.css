@@ -610,6 +610,33 @@
   font-weight: 650;
 }
 
+.ops-publish-ok {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0.2rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.ops-publish-ok strong {
+  font-size: 0.95rem;
+}
+
+.ops-publish-ok p {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.ops-publish-ok a {
+  color: #047857;
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
 .ops-pagebody {
   display: grid;
   gap: 0.85rem;
@@ -716,6 +743,92 @@
 
 .ops-card h1 {
   margin: 0.2rem 0 0.35rem;
+}
+
+.ops-editor-wrap {
+  display: grid;
+  gap: 0.35rem;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ops-editor {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 500;
+}
+
+.ops-editor-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid #eef1f6;
+  background: #f8fafc;
+}
+
+.ops-editor-bar button,
+.ops-editor-bar select {
+  min-height: 32px;
+  padding: 0 0.55rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.ops-editor-sep {
+  width: 1px;
+  height: 18px;
+  background: #e5e7eb;
+}
+
+.ops-editor-colors {
+  display: flex;
+  gap: 0.28rem;
+}
+
+.ops-editor-swatch {
+  width: 18px;
+  min-height: 18px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+}
+
+.ops-editor-area {
+  min-height: 280px;
+  padding: 0.9rem 1rem 1.1rem;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.6;
+  outline: none;
+}
+
+.ops-editor-area h2 {
+  margin: 0.4rem 0 0.6rem;
+  font-size: 1.25rem;
+}
+
+.ops-editor-area h3 {
+  margin: 0.35rem 0 0.45rem;
+  font-size: 1.05rem;
+}
+
+.ops-editor-area p {
+  margin: 0 0 0.7rem;
+}
+
+.ops-editor-area ul,
+.ops-editor-area ol {
+  margin: 0 0 0.7rem;
+  padding-inline-start: 1.2rem;
 }
 
 @media (max-width: 1100px) {

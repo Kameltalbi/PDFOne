@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { mergeBlogPosts, type BlogPost } from '../content/blog';
+import { mergeBlogPosts, blogCardLead, type BlogPost } from '../content/blog';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Legal.css';
@@ -34,15 +34,22 @@ function Blog() {
         <h1>{m.blogPage.title}</h1>
         <p className="blog-lead">{m.blogPage.subtitle}</p>
         <div className="blog-list">
-          {posts.map((post) => (
-            <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
-              {post.coverImage ? <img className="blog-card-cover" src={post.coverImage} alt="" /> : null}
-              <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
-              <h2>{post.title}</h2>
-              <p>{post.excerpt}</p>
-              <span>{m.blogPage.readMore}</span>
-            </Link>
-          ))}
+          {posts.map((post) => {
+            const lead = blogCardLead(post);
+            return (
+              <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
+                {post.coverImage ? (
+                  <img className="blog-card-cover" src={post.coverImage} alt="" />
+                ) : null}
+                <div className="blog-card-body">
+                  <h2>{post.title}</h2>
+                  <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
+                  {lead ? <p>{lead}</p> : null}
+                  <span>{m.blogPage.readMore}</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </main>
