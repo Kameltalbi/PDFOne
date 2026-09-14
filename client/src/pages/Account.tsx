@@ -37,7 +37,8 @@ export function AccountPage() {
     ? new Date(status.expiresAt).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })
     : m.account.unlimitedTime;
   const freeUsed = status.paid === false ? (status.usedToday ?? 0) : 0;
-  const freeLimit = status.paid === false ? (status.dailyLimit ?? 3) : 3;
+  const freeLimit = status.paid === false ? (status.dailyLimit ?? 5) : 5;
+  const ai = status.ai;
 
   return (
     <main className="pricing-page account-page">
@@ -73,6 +74,12 @@ export function AccountPage() {
               <span>{m.account.remainingDocs}</span>
               <strong>{m.account.unlimitedDocs}</strong>
             </article>
+            {ai && (
+              <article>
+                <span>{m.account.aiCredits}</span>
+                <strong>{ai.remaining} / {ai.limit}</strong>
+              </article>
+            )}
           </div>
         ) : (
           <div className="account-stats">
@@ -84,6 +91,12 @@ export function AccountPage() {
               <span>{m.account.remainingDocs}</span>
               <strong>{t(m.account.freeLimit, { used: freeUsed, limit: freeLimit })}</strong>
             </article>
+            {ai && (
+              <article>
+                <span>{m.account.aiCredits}</span>
+                <strong>{ai.remaining} / {ai.limit}</strong>
+              </article>
+            )}
           </div>
         )}
 

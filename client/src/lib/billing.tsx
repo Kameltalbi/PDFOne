@@ -36,6 +36,9 @@ type BillingBase = {
   user: UserSession | null;
   superadmin?: boolean;
   monetization: MonetizationFlags;
+  maxFileBytes?: number;
+  maxFileLabel?: string;
+  ai?: { used: number; limit: number; remaining: number; period: string };
 };
 
 export type BillingState =
@@ -119,8 +122,11 @@ function asState(data: BillingState | Record<string, unknown> | undefined): Bill
     superadmin: Boolean(free && 'superadmin' in free && free.superadmin),
     monetization,
     usedToday: free && 'usedToday' in free ? free.usedToday : 0,
-    dailyLimit: free && 'dailyLimit' in free ? free.dailyLimit : 3,
-    remainingToday: free && 'remainingToday' in free ? free.remainingToday : 3
+    dailyLimit: free && 'dailyLimit' in free ? free.dailyLimit : 5,
+    remainingToday: free && 'remainingToday' in free ? free.remainingToday : 5,
+    maxFileBytes: free && 'maxFileBytes' in free ? free.maxFileBytes : undefined,
+    maxFileLabel: free && 'maxFileLabel' in free ? free.maxFileLabel : undefined,
+    ai: free && 'ai' in free ? free.ai : undefined
   };
 }
 

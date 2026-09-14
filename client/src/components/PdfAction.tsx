@@ -53,7 +53,7 @@ export function PdfAction({
   const pdf = useSinglePdf({ allPages: false, allowLocked });
   const { pathname } = useLocation();
   const { m, t } = useI18n();
-  const { status } = useBilling();
+  const { status, refresh } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
   const pageSeo = copy.seoTitle && copy.seoDescription && copy.seoH2 && copy.seoP1 && copy.seoP2 && copy.seoP3
     ? {
@@ -92,6 +92,10 @@ export function PdfAction({
       ? m.upgrade.featureTranslate
       : m.upgrade.featureSummarize;
 
+  const gateText = premiumFeature === 'ocr'
+    ? t(m.upgrade.premiumText, { feature: featureLabel })
+    : t(m.upgrade.creditsText, { feature: featureLabel });
+
   const run = async () => {
     if (!pdf.file) return;
     if (needsPro && premiumFeature) {
@@ -118,6 +122,7 @@ export function PdfAction({
       setProgress(0);
     } finally {
       setIsProcessing(false);
+      if (premiumFeature === 'translate' || premiumFeature === 'summarize') void refresh();
     }
   };
 
@@ -176,7 +181,7 @@ export function PdfAction({
         />
         {needsPro && (
           <p className="studio-premium-note" style={{ textAlign: 'center', margin: '0.75rem auto 1.5rem', maxWidth: '36rem' }}>
-            {t(m.upgrade.premiumText, { feature: featureLabel })}{' '}
+            {gateText}{' '}
             {(premiumFeature === 'summarize' || premiumFeature === 'translate') ? (
               <Link to="/pricing" onClick={() => trackUpgradeClick(premiumFeature)}>{m.common.getPro}</Link>
             ) : (
@@ -214,7 +219,7 @@ export function PdfAction({
       sidebar={(
         <StudioSidebarFrame
           title={copy.title}
-          tip={needsPro ? t(m.upgrade.premiumText, { feature: featureLabel }) : copy.tip}
+          tip={needsPro ? gateText : copy.tip}
           error={pdf.error}
           progress={progress}
           isProcessing={isProcessing}
@@ -226,6 +231,9 @@ export function PdfAction({
           disabled={disabled}
           onChangeFile={reset}
         >
+          {status.ai && (premiumFeature === 'translate' || premiumFeature === 'summarize') && (
+            <p className="studio-count">{t(m.common.aiCreditsLeft, { remaining: status.ai.remaining, limit: status.ai.limit })}</p>
+          )}
           {extra}
         </StudioSidebarFrame>
       )}

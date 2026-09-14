@@ -91,6 +91,11 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    resolve: {
+      alias: {
+        '@mini-pdf-tools/shared': fileURLToPath(new URL('../shared/src/index.ts', import.meta.url))
+      }
+    },
     worker: {
       format: 'es',
     },

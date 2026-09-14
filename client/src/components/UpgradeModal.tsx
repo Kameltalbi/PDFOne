@@ -93,20 +93,21 @@ export function UpgradeModal() {
         : m.upgrade.featureSummarize)
     : '';
 
+  const isPremiumAi = offer.reason === 'premium' && offer.feature !== 'ocr';
   const kicker = offer.reason === 'batch'
     ? m.upgrade.batchKicker
     : offer.reason === 'premium'
-      ? m.upgrade.premiumKicker
+      ? (isPremiumAi ? m.upgrade.creditsKicker : m.upgrade.premiumKicker)
       : m.upgrade.kicker;
   const title = offer.reason === 'batch'
     ? m.upgrade.batchTitle
     : offer.reason === 'premium'
-      ? t(m.upgrade.premiumTitle, { feature: featureLabel })
+      ? t(isPremiumAi ? m.upgrade.creditsTitle : m.upgrade.premiumTitle, { feature: featureLabel })
       : m.upgrade.title;
   const lead = offer.reason === 'batch'
     ? t(m.upgrade.batchText, { count: offer.count })
     : offer.reason === 'premium'
-      ? t(m.upgrade.premiumText, { feature: featureLabel })
+      ? t(isPremiumAi ? m.upgrade.creditsText : m.upgrade.premiumText, { feature: featureLabel })
       : t(m.upgrade.text, {
         name: offer.name,
         size: formatFileSize(offer.size),

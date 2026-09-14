@@ -1,4 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
+import { readFile } from 'node:fs/promises';
 
 export function mapPdfError(error: unknown, fallback: string): string {
   const message = error instanceof Error ? error.message : String(error);
@@ -9,6 +10,11 @@ export function mapPdfError(error: unknown, fallback: string): string {
     return 'Le fichier PDF est invalide ou corrompu.';
   }
   return fallback;
+}
+
+export async function countPdfPages(filePath: string): Promise<number> {
+  const pdf = await loadPdf(await readFile(filePath));
+  return pdf.getPageCount();
 }
 
 export async function loadPdf(bytes: Buffer | Uint8Array): Promise<PDFDocument> {

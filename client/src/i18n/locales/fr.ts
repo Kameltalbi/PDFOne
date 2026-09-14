@@ -27,7 +27,9 @@ export const fr: Messages = {
     pdfOnly: 'Seuls les fichiers PDF sont acceptés.',
     imagesOnly: 'Seules les images JPG, PNG, WebP ou HEIC sont acceptées.',
     maxFiles: 'Maximum {count} fichiers.',
-    quotaReached: 'Le plan gratuit est limité à 3 documents par jour. Passez Pro pour continuer.',
+    quotaReached: 'Le plan gratuit est limité à {count} documents par jour. Passez Pro pour continuer.',
+    jobsLeft: '{remaining} / {limit} traitements restants aujourd’hui',
+    aiCreditsLeft: '{remaining} / {limit} crédits IA',
     adLabel: 'Publicité',
     doneShort: 'Fini !',
     copyLink: 'Copier le lien',
@@ -76,29 +78,35 @@ export const fr: Messages = {
     freeName: 'Gratuit',
     freePrice: '0 $',
     freePeriod: '/ mois',
-    freePitch: 'Testez tous les outils de base, sans carte bancaire.',
-    freeNote: 'Les gros fichiers, le hors-pub et le traitement par lots sont réservés aux offres payantes.',
+    freePitch: 'Les outils PDF de base, avec un plafond quotidien clair — sans carte.',
+    freeNote: 'L’OCR, les fichiers de plus de 20 Mo et des crédits IA supplémentaires sont sur les offres payantes.',
     freeIncludes: [
-      'Tous les outils de base',
-      '3 documents par jour',
-      'Fichiers jusqu’à 20 Mo',
+      'Tous les outils PDF de base',
+      '{dailyJobs} documents par jour',
+      'Fichiers jusqu’à {freeSize}',
+      '{freeAi} crédits IA par mois (traduction et résumé)',
       'Publicités légères, non bloquantes',
       'Fichiers traités puis supprimés automatiquement'
     ],
     freeCta: 'Continuer gratuitement',
     freeMicro: 'Aucune carte requise.',
+    seeIncludedTools: 'Voir les outils inclus',
+    hideIncludedTools: 'Masquer la liste',
+    includedToolsTitle: 'Outils PDF de base inclus',
     weekName: 'Pass Semaine',
     weekTag: 'Paiement unique, sans engagement',
+    weekNoSubscription: 'Paiement unique. Pas d’abonnement.',
     weekPrice: '1,99 $',
     weekPeriod: 'une fois',
-    weekPitch: 'Un dossier à rendre maintenant ? 7 jours Pro, puis c’est fini — sans prélèvement.',
+    weekPitch: 'Un dossier à rendre maintenant ? Accès payant 7 jours, puis c’est fini — sans prélèvement.',
     weekIncludes: [
       'Paiement unique : {weekPrice}, une seule fois',
       'Aucun renouvellement automatique',
       'Zéro publicité pendant 7 jours',
-      'Fichiers sans limite de taille pendant 7 jours',
-      'Fusion, compression, OCR et édition : illimités pendant le pass',
-      'Résumé et traduction : jusqu’à {aiLimit} utilisations pendant le pass'
+      'Fichiers jusqu’à {paidSize}',
+      'OCR inclus',
+      'Traitements PDF illimités pendant 7 jours',
+      'Traduction et résumé : {weekAi} crédits IA pour le pass (1 crédit par page)'
     ],
     weekCta: 'Débloquer 7 jours — {weekPrice}',
     weekMicro: 'Ça s’arrête tout seul. Rien à résilier.',
@@ -109,21 +117,26 @@ export const fr: Messages = {
     monthPitch: 'L’abonnement des indépendants : vous gardez la main, mois après mois.',
     monthIncludes: [
       'Zéro publicité',
-      'Fichiers sans limite de taille',
-      'Traitement par lots',
+      'Fichiers jusqu’à {paidSize}',
+      'OCR inclus',
+      'Traitements PDF illimités',
+      '{proAi} crédits IA par mois (traduction et résumé)',
       'Annulation en un clic, à tout moment'
     ],
     monthCta: 'Choisir Pro mensuel',
     monthMicro: 'Sans engagement. Résiliable quand vous voulez.',
+    proToggleMonthly: 'Mensuel',
+    proToggleYearly: 'Annuel',
     yearName: 'Pro annuel',
     yearPrice: '34,90 $',
     yearPeriod: '/ an',
     yearEquiv: 'soit {monthEquiv} / mois — {monthsFree} mois offerts vs le mensuel',
     yearPitch: 'Vous y revenez chaque semaine ? Un paiement par an, les mêmes droits Pro, zéro surprise mensuelle.',
     yearIncludes: [
-      'Tout Pro : zéro pub, fichiers illimités, traitement par lots',
+      'Tout le Pro mensuel',
+      'Fichiers jusqu’à {paidSize}, OCR, zéro pub',
+      '{proAi} crédits IA par mois — pas un stock annuel',
       'Vous payez {paidMonths} mois, vous en avez 12',
-      'Un seul paiement dans l’année, zéro surprise mensuelle',
       'Résiliation possible : vous gardez Pro jusqu’à la fin de la période payée'
     ],
     yearBadge: 'Meilleur choix',
@@ -142,11 +155,15 @@ export const fr: Messages = {
       },
       {
         question: 'Puis-je arrêter Pro quand je veux ?',
-        answer: 'Oui. Le mensuel ({monthPrice}) et l’annuel ({yearPrice}) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au plan Gratuit : 3 documents par jour, fichiers jusqu’à 20 Mo, publicités légères.'
+        answer: 'Oui. Le mensuel ({monthPrice}) et l’annuel ({yearPrice}) se résilient en un clic depuis le portail Stripe. Aucun frais de sortie. Après résiliation, vous revenez au Gratuit : {dailyJobs} documents par jour, fichiers jusqu’à {freeSize}, {freeAi} crédits IA par mois, publicités légères.'
       },
       {
         question: 'J’ai déjà payé — comment me connecter ?',
-        answer: 'Il n’y a pas de mot de passe. Ouvrez Connexion, entrez l’e-mail utilisé au paiement, et votre Pass Semaine ou Pro se réactive sur cet appareil. Dans Mon compte, vous voyez le temps restant et les documents déjà traités.'
+        answer: 'Ouvrez Connexion, puis connectez-vous à votre compte One2PDF avec l’e-mail et le mot de passe utilisés au paiement. Votre Pass 7 jours ou Pro se réactive alors sur cet appareil. Dans Mon compte, vous voyez le temps restant et les documents déjà traités.'
+      },
+      {
+        question: 'Comment fonctionnent les crédits IA ?',
+        answer: 'Traduction : 1 crédit par page traitée, jusqu’à {translateCap} pages. Résumé : 1 crédit par page, avec un maximum de {summarizeCap} crédits par fichier (le moteur tronque au-delà). Un échec technique ne consomme pas les crédits. Gratuit : {freeAi} / mois. Pass 7 jours : {weekAi} pour le pass. Pro mensuel et annuel : {proAi} par mois calendaire.'
       }
     ],
     paying: 'Redirection vers le paiement…',
@@ -162,12 +179,21 @@ export const fr: Messages = {
     successVerifying: 'Vérification du paiement…',
     successSeoTitle: 'Bienvenue dans One2PDF Pro',
     successSeoDescription: 'Votre paiement One2PDF Pro a été confirmé. Accédez à tous les outils PDF sans limite quotidienne.',
-    successBenefits: [
+    successBenefitsPass: [
       'Sans publicité',
-      'Fichiers au-delà de 20 Mo',
-      'Plusieurs fichiers à la fois',
-      'Sans limite quotidienne de documents',
-      'Annulation ou gestion à tout moment'
+      'Fichiers jusqu’à 100 Mo',
+      'OCR inclus',
+      'Pas de limite quotidienne de documents',
+      '100 crédits IA pour 7 jours',
+      'Résiliation ou gestion à tout moment'
+    ],
+    successBenefitsPro: [
+      'Sans publicité',
+      'Fichiers jusqu’à 100 Mo',
+      'OCR inclus',
+      'Pas de limite quotidienne de documents',
+      '500 crédits IA par mois',
+      'Résiliation ou gestion à tout moment'
     ],
     successPeriodWeek: '7 jours · paiement unique',
     successPeriodMonth: 'Mensuel',
@@ -185,7 +211,7 @@ export const fr: Messages = {
   upgrade: {
     kicker: 'Fichier trop volumineux',
     title: 'Ce fichier dépasse la limite gratuite',
-    text: '« {name} » pèse {size}. Le plan gratuit accepte jusqu’à {limit} — le fichier n’a pas été envoyé. Débloquez des fichiers sans limite :',
+    text: '« {name} » pèse {size}. Le plan gratuit accepte jusqu’à {limit} — le fichier n’a pas été envoyé. Pass et Pro acceptent jusqu’à 100 Mo par fichier :',
     limit: '20 Mo',
     dismiss: 'Fermer et choisir un fichier plus léger',
     batchKicker: 'Traitement par lots',
@@ -194,7 +220,10 @@ export const fr: Messages = {
     batchDismiss: 'Fermer et ajouter les fichiers un par un',
     premiumKicker: 'Fonctionnalité Pro',
     premiumTitle: '{feature} nécessite Pro',
-    premiumText: '{feature} consomme davantage de calcul serveur et d’IA. Les outils PDF de base (fusion, compression, conversion, édition…) restent gratuits. Passez Pro pour débloquer cet outil avancé :',
+    premiumText: 'L’OCR est disponible avec le Pass 7 jours ou Pro. Les outils PDF de base (fusion, compression, conversion, édition…) restent gratuits. Passez à une offre payante pour débloquer l’OCR :',
+    creditsTitle: '{feature} utilise des crédits IA',
+    creditsText: '{feature} utilise des crédits IA (1 crédit par page). Le plan gratuit inclut un volume mensuel ; le Pass 7 jours et Pro en incluent davantage. Cet outil n’est pas réservé à Pro :',
+    creditsKicker: 'Crédits IA',
     premiumDismiss: 'Retour aux outils gratuits',
     featureOcr: 'OCR',
     featureTranslate: 'Traduction IA',
@@ -223,6 +252,7 @@ export const fr: Messages = {
     remainingDocs: 'Documents restants aujourd’hui',
     unlimitedDocs: 'Illimité',
     freeLimit: '{used} / {limit} documents gratuits aujourd’hui',
+    aiCredits: 'Crédits IA',
     toolsCta: 'Utiliser les outils',
     loginTitle: 'Connexion à votre pass',
     loginLead: 'Entrez l’e-mail et le mot de passe de votre compte One2PDF.',
@@ -380,10 +410,11 @@ export const fr: Messages = {
     toolJpgToPdfDesc: 'Réunissez des images JPG, PNG ou WebP dans un PDF.',
     trustLine: 'Rapide · Sûr · Facile à utiliser',
     proBenefits: [
-      'Sans publicité',
-      'Fichiers de plus de 20 Mo',
-      'Plusieurs fichiers à la fois',
-      'Sans limite quotidienne de documents'
+      'Traitements PDF illimités',
+      'Jusqu’à 100 Mo par fichier',
+      'OCR inclus',
+      '500 crédits IA / mois pour Pro',
+      'Sans publicité'
     ],
     freeValueLabel: 'VOS OUTILS PDF, GRATUITEMENT',
     freeValueTitle: 'Tout ce qu’il vous faut pour vos PDF.',
@@ -451,13 +482,14 @@ export const fr: Messages = {
     plansKicker: 'Gratuit et Pro',
     plansTitle: 'Commencez gratuitement. Passez à Pro lorsque vous en avez besoin.',
     plansP1: 'One2PDF permet d’utiliser gratuitement ses outils essentiels sans créer de compte.',
-    plansP2: 'Pour les utilisateurs ayant des besoins plus importants, One2PDF Pro donne accès aux capacités prévues par l’offre payante.',
+    plansP2: 'Le Pass et Pro ajoutent des traitements PDF illimités, des fichiers jusqu’à 100 Mo, l’OCR, 500 crédits IA par mois pour Pro, et une expérience sans publicité.',
     plansP3: 'Un compte est nécessaire uniquement pour l’utilisation de l’offre Pro.',
     plansItems: [
-      'Sans publicité',
-      'Fichiers de plus de 20 Mo',
-      'Plusieurs fichiers à la fois',
-      'Sans limite quotidienne de documents'
+      'Traitements PDF illimités',
+      'Jusqu’à 100 Mo par fichier',
+      'OCR inclus',
+      '500 crédits IA / mois pour Pro',
+      'Sans publicité'
     ],
     plansCta: 'Découvrir One2PDF Pro',
     principlesKicker: 'Notre manière de faire',
@@ -601,7 +633,7 @@ export const fr: Messages = {
       },
       {
         question: 'Diviser un PDF est-il gratuit ?',
-        answer: 'Oui, sans créer de compte. Le plan gratuit est limité à 3 documents par jour et 20 Mo par fichier.'
+        answer: 'Oui, sans créer de compte. Le plan gratuit est limité à 5 documents par jour et 20 Mo par fichier. Traduction et résumé utilisent des crédits IA mensuels. L’OCR est sur les offres payantes.'
       },
       {
         question: 'One2PDF conserve-t-il l’original après la division ?',
@@ -995,8 +1027,8 @@ export const fr: Messages = {
   },
   ocrPdf: {
     title: 'PDF OCR',
-    subtitle: 'Reconnaissez le texte des pages scannées et obtenez un PDF exploitable.',
-    tip: 'L’OCR utilise Tesseract. La qualité dépend de la netteté du scan.',
+    subtitle: 'Reconnaissez le texte des pages scannées et obtenez un PDF exploitable. Disponible avec le Pass 7 jours ou Pro.',
+    tip: 'L’OCR utilise Tesseract. La qualité dépend de la netteté du scan. Disponible avec le Pass 7 jours ou Pro.',
     action: 'Lancer l’OCR',
     running: 'Reconnaissance…',
     fail: 'Impossible d’effectuer l’OCR.',
@@ -1012,8 +1044,8 @@ export const fr: Messages = {
   },
   summarizePdf: {
     title: 'Résumer un PDF',
-    subtitle: 'Obtenez un résumé clair à partir du texte du document.',
-    tip: 'Choisissez le style et la langue du résumé, puis lancez. Les scans nécessitent d’abord l’OCR.',
+    subtitle: 'Obtenez un résumé clair à partir du texte du document. Utilise des crédits IA (1 crédit par page).',
+    tip: 'Utilise des crédits IA (1 crédit par page, 20 crédits maximum par fichier). Choisissez le style et la langue du résumé, puis lancez. Les scans nécessitent d’abord l’OCR.',
     action: 'Résumer le PDF',
     running: 'Analyse de votre PDF…',
     fail: 'Impossible de résumer ce PDF.',
@@ -1051,8 +1083,8 @@ export const fr: Messages = {
   },
   translatePdf: {
     title: 'Traduire le PDF',
-    subtitle: 'Récupérez un PDF traduit qui conserve au maximum la mise en page d’origine.',
-    tip: 'Images, logos et tableaux restent. Le texte est traduit dans ses zones. La mise en page n’est pas identique au pixel près : une langue peut allonger ou raccourcir les phrases.',
+    subtitle: 'Récupérez un PDF traduit qui conserve au maximum la mise en page d’origine. Utilise des crédits IA (1 crédit par page traitée).',
+    tip: 'Utilise des crédits IA (1 crédit par page traitée). Images, logos et tableaux restent. Le texte est traduit dans ses zones. La mise en page n’est pas identique au pixel près : une langue peut allonger ou raccourcir les phrases.',
     action: 'Traduire le PDF',
     running: 'Traduction du document…',
     fail: 'Impossible de traduire ce PDF.',
@@ -1155,7 +1187,8 @@ export const fr: Messages = {
     browse: 'parcourir',
     hintPdf: 'Fichiers PDF',
     hintImages: 'JPG, PNG ou WebP',
-    hintMax: '20 Mo en gratuit · jusqu’à {count} fichiers',
+    hintMax: '{size} · jusqu’à {count} fichiers',
+    tooLarge: 'Le fichier dépasse la limite de {size}.',
     listTitle: '{count} fichier(s) — glissez pour réordonner',
     up: 'Monter',
     down: 'Descendre',
@@ -1174,7 +1207,7 @@ export const fr: Messages = {
     feat3Title: 'Traitement sécurisé',
     feat3Text: 'Le document temporaire est supprimé du serveur après son export.',
     needPdf: 'Veuillez sélectionner un fichier PDF.',
-    tooLarge: 'Le fichier dépasse la limite de 20 Mo du plan gratuit.',
+    tooLarge: 'Le fichier dépasse la limite de {size}.',
     cannotOpen: 'Ce PDF ne peut pas être ouvert ou il est protégé.',
     exportFail: 'Export impossible',
     generateFail: 'Impossible de générer le PDF. Vérifiez que le serveur est démarré.',

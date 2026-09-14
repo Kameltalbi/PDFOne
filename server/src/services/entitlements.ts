@@ -1,6 +1,13 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import {
+  AI_SCHEMA_VERSION,
+  calendarMonthKey,
+  limitsForPlan,
+  PLAN_LIMITS,
+  type AiPeriod
+} from '@mini-pdf-tools/shared';
 import { createJsonStoreLock, readJsonFile, writeJsonAtomic } from '../utils/jsonStore.js';
 
 export type PaidPlan = 'week' | 'month' | 'year';
@@ -16,15 +23,25 @@ export type Entitlement = {
   docsUsed?: number;
   docsByDay?: Record<string, number>;
   aiUsed?: number;
+  aiPeriodKey?: string;
+  aiSchemaVersion?: number;
   source?: 'stripe' | 'admin';
   note?: string;
 };
 
-export const WEEK_AI_LIMIT = 10;
+export type AiBalance = {
+  used: number;
+  limit: number;
+  remaining: number;
+  period: AiPeriod;
+};
 
 const dataDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../data');
 const dataFile = path.join(dataDir, 'entitlements.json');
 const withLock = createJsonStoreLock('entitlements');
+
+type MemoryAi = { used: number; periodKey: string; schemaVersion: number };
+const memoryAi = new Map<string, MemoryAi>();
 
 async function readAll(): Promise<Record<string, Entitlement>> {
   return readJsonFile(dataFile, { empty: {}, corruptCode: 'ENTITLEMENTS_CORRUPT' });
@@ -75,18 +92,71 @@ export function pickBestEntitlement(entries: Entitlement[], now = Date.now()): E
   return active[0];
 }
 
+function periodKeyFor(entry: Pick<Entitlement, 'plan' | 'expiresAt'>, now = Date.now()): string {
+  if (entry.plan === 'week') return entry.expiresAt || 'pass';
+  return calendarMonthKey(new Date(now));
+}
+
+/** Fresh 100 credits for every still-valid Pass that has not been migrated yet. */
+export function normalizeAiFields(entry: Entitlement, now = Date.now()): Entitlement {
+  const key = periodKeyFor(entry, now);
+  if (entry.plan === 'week') {
+    if ((entry.aiSchemaVersion || 0) < AI_SCHEMA_VERSION) {
+      return {
+        ...entry,
+        aiUsed: 0,
+        aiPeriodKey: key,
+        aiSchemaVersion: AI_SCHEMA_VERSION
+      };
+    }
+    return {
+      ...entry,
+      aiPeriodKey: entry.aiPeriodKey || key,
+      aiSchemaVersion: AI_SCHEMA_VERSION
+    };
+  }
+  if (entry.aiPeriodKey !== key) {
+    return {
+      ...entry,
+      aiUsed: 0,
+      aiPeriodKey: key,
+      aiSchemaVersion: AI_SCHEMA_VERSION
+    };
+  }
+  return { ...entry, aiSchemaVersion: AI_SCHEMA_VERSION };
+}
+
+export function aiSnapshot(entry: Entitlement | null | undefined, now = Date.now()): AiBalance {
+  if (!entry || !isEntitlementActive(entry, now)) {
+    const free = PLAN_LIMITS.free;
+    return { used: 0, limit: free.aiCredits, remaining: free.aiCredits, period: free.aiPeriod };
+  }
+  const normalized = normalizeAiFields(entry, now);
+  const limits = limitsForPlan(normalized.plan);
+  const used = normalized.aiUsed || 0;
+  return {
+    used,
+    limit: limits.aiCredits,
+    remaining: Math.max(0, limits.aiCredits - used),
+    period: limits.aiPeriod
+  };
+}
+
 export async function upsertEntitlement(entry: Entitlement): Promise<Entitlement> {
   return withLock(async () => {
     const data = await readAll();
     const previous = data[entry.customerId];
     const samePass = previous?.plan === entry.plan && previous?.expiresAt === entry.expiresAt;
-    const next: Entitlement = {
+    const merged: Entitlement = {
       ...previous,
       ...entry,
       docsUsed: previous?.docsUsed || 0,
       docsByDay: previous?.docsByDay || {},
-      aiUsed: samePass ? (previous?.aiUsed || 0) : 0
+      aiUsed: samePass ? (previous?.aiUsed || 0) : 0,
+      aiPeriodKey: samePass ? previous?.aiPeriodKey : undefined,
+      aiSchemaVersion: samePass ? previous?.aiSchemaVersion : undefined
     };
+    const next = normalizeAiFields(merged);
     data[entry.customerId] = next;
     await writeAll(data);
     return next;
@@ -154,7 +224,7 @@ export async function resetEntitlementUsage(customerId: string): Promise<Entitle
     const day = todayUtc();
     const docsByDay = { ...(entry.docsByDay || {}) };
     delete docsByDay[day];
-    const next: Entitlement = { ...entry, docsByDay, aiUsed: 0 };
+    const next = normalizeAiFields({ ...entry, docsByDay, aiUsed: 0 });
     data[customerId] = next;
     await writeAll(data);
     return next;
@@ -179,25 +249,92 @@ export async function incrementUsage(customerId: string | null | undefined): Pro
   });
 }
 
-const memoryAi = new Map<string, number>();
+function applyDelta(state: MemoryAi, plan: StoredPlan, delta: number, now = Date.now()): MemoryAi | null {
+  const fake: Entitlement = {
+    email: '',
+    customerId: '',
+    plan,
+    status: 'active',
+    expiresAt: plan === 'week' ? state.periodKey : null,
+    aiUsed: state.used,
+    aiPeriodKey: state.periodKey,
+    aiSchemaVersion: state.schemaVersion
+  };
+  const normalized = normalizeAiFields(fake, now);
+  const used = Math.max(0, (normalized.aiUsed || 0) + delta);
+  const limit = limitsForPlan(plan).aiCredits;
+  if (delta > 0 && used > limit) return null;
+  return {
+    used,
+    periodKey: normalized.aiPeriodKey || periodKeyFor(fake, now),
+    schemaVersion: AI_SCHEMA_VERSION
+  };
+}
 
-export async function consumeWeekAi(customerId: string, plan: StoredPlan): Promise<{ ok: boolean; used: number; limit: number }> {
-  if (plan !== 'week') return { ok: true, used: 0, limit: WEEK_AI_LIMIT };
+export async function reserveAiCredits(
+  customerId: string,
+  plan: StoredPlan,
+  amount: number
+): Promise<AiBalance & { ok: boolean }> {
+  const safeAmount = Math.max(0, Math.floor(amount));
+  const limits = limitsForPlan(plan);
+  if (safeAmount === 0) {
+    return { ok: true, used: 0, limit: limits.aiCredits, remaining: limits.aiCredits, period: limits.aiPeriod };
+  }
   return withLock(async () => {
     const data = await readAll();
-    const entry = data[customerId];
-    if (!entry || !isEntitlementActive(entry)) {
-      const used = memoryAi.get(customerId) || 0;
-      if (used >= WEEK_AI_LIMIT) return { ok: false, used, limit: WEEK_AI_LIMIT };
-      memoryAi.set(customerId, used + 1);
-      return { ok: true, used: used + 1, limit: WEEK_AI_LIMIT };
+    const stored = data[customerId];
+    if (!stored || !isEntitlementActive(stored)) {
+      const current = memoryAi.get(customerId) || { used: 0, periodKey: periodKeyFor({ plan, expiresAt: null }), schemaVersion: AI_SCHEMA_VERSION };
+      const next = applyDelta(current, plan, safeAmount);
+      if (!next) {
+        const snap = applyDelta(current, plan, 0)!;
+        return { ok: false, used: snap.used, limit: limits.aiCredits, remaining: Math.max(0, limits.aiCredits - snap.used), period: limits.aiPeriod };
+      }
+      memoryAi.set(customerId, next);
+      return { ok: true, used: next.used, limit: limits.aiCredits, remaining: Math.max(0, limits.aiCredits - next.used), period: limits.aiPeriod };
     }
-    if (entry.plan !== 'week') return { ok: true, used: 0, limit: WEEK_AI_LIMIT };
-    const used = entry.aiUsed || 0;
-    if (used >= WEEK_AI_LIMIT) return { ok: false, used, limit: WEEK_AI_LIMIT };
-    data[customerId] = { ...entry, aiUsed: used + 1 };
+    const normalized = normalizeAiFields(stored);
+    const used = (normalized.aiUsed || 0) + safeAmount;
+    if (used > limits.aiCredits) {
+      const current = normalized.aiUsed || 0;
+      return {
+        ok: false,
+        used: current,
+        limit: limits.aiCredits,
+        remaining: Math.max(0, limits.aiCredits - current),
+        period: limits.aiPeriod
+      };
+    }
+    const next = { ...normalized, aiUsed: used };
+    data[customerId] = next;
     await writeAll(data);
-    return { ok: true, used: used + 1, limit: WEEK_AI_LIMIT };
+    return {
+      ok: true,
+      used,
+      limit: limits.aiCredits,
+      remaining: Math.max(0, limits.aiCredits - used),
+      period: limits.aiPeriod
+    };
+  });
+}
+
+export async function releaseAiCredits(customerId: string, plan: StoredPlan, amount: number): Promise<void> {
+  const safeAmount = Math.max(0, Math.floor(amount));
+  if (!safeAmount) return;
+  await withLock(async () => {
+    const data = await readAll();
+    const stored = data[customerId];
+    if (!stored || !isEntitlementActive(stored)) {
+      const current = memoryAi.get(customerId);
+      if (!current) return;
+      const next = applyDelta(current, plan, -safeAmount);
+      if (next) memoryAi.set(customerId, next);
+      return;
+    }
+    const normalized = normalizeAiFields(stored);
+    data[customerId] = { ...normalized, aiUsed: Math.max(0, (normalized.aiUsed || 0) - safeAmount) };
+    await writeAll(data);
   });
 }
 

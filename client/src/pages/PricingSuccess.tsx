@@ -96,7 +96,7 @@ function PricingSuccess() {
 
             <h2 className="pricing-success-perks-title">{m.pricing.successBenefitsTitle}</h2>
             <ul className="pricing-success-perks">
-              {m.pricing.successBenefits.map((item) => (
+              {(access?.plan === 'week' ? m.pricing.successBenefitsPass : m.pricing.successBenefitsPro).map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>

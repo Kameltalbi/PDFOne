@@ -1,13 +1,15 @@
 import type { NextFunction, Request, Response } from 'express';
-import { getEntitlement, incrementUsage, isEntitlementActive, todayUtc } from '../services/entitlements.js';
+import { PLAN_LIMITS, calendarMonthKey } from '@mini-pdf-tools/shared';
+import { getEntitlement, incrementUsage, isEntitlementActive, todayUtc, type AiBalance } from '../services/entitlements.js';
 import { ACCESS_COOKIE, QUOTA_COOKIE, type AccessPayload } from '../services/billing.js';
-import { skipFreeDailyQuota } from '../config/monetization.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
-export const FREE_DAILY_DOCS = Math.max(1, Number(process.env.FREE_DAILY_DOCS || 3));
-const ipUsage = new Map<string, { day: string; count: number }>();
+export const FREE_DAILY_DOCS = PLAN_LIMITS.free.dailyJobs ?? 5;
+const FREE_AI_LIMIT = PLAN_LIMITS.free.aiCredits;
 
-type QuotaPayload = { day: string; count: number };
+const ipUsage = new Map<string, { day: string; count: number; aiMonth: string; aiUsed: number }>();
+
+type QuotaPayload = { day: string; count: number; aiMonth?: string; aiUsed?: number };
 
 function quotaMessage(req: Request): string {
   const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
@@ -24,7 +26,7 @@ function quotaMessage(req: Request): string {
 function pruneIpUsage(day: string) {
   if (ipUsage.size < 200) return;
   for (const [key, value] of ipUsage) {
-    if (value.day !== day) ipUsage.delete(key);
+    if (value.day !== day && value.aiMonth !== calendarMonthKey()) ipUsage.delete(key);
   }
 }
 
@@ -55,34 +57,90 @@ export async function isPaid(req: Request, res: Response): Promise<boolean> {
   return Boolean(await getPaidAccess(req, res));
 }
 
-export function getFreeUsage(req: Request) {
+function readQuota(req: Request): { day: string; count: number; aiMonth: string; aiUsed: number } {
   const day = todayUtc();
+  const month = calendarMonthKey();
   pruneIpUsage(day);
   const cookie = verifyValue<QuotaPayload>(readCookie(req, QUOTA_COOKIE));
   const ip = ipUsage.get(clientIp(req));
   const cookieCount = cookie?.day === day ? cookie.count : 0;
   const ipCount = ip?.day === day ? ip.count : 0;
-  const usedToday = Math.max(cookieCount, ipCount);
+  const cookieAi = cookie?.aiMonth === month ? (cookie.aiUsed || 0) : 0;
+  const ipAi = ip?.aiMonth === month ? ip.aiUsed : 0;
   return {
-    usedToday,
-    dailyLimit: FREE_DAILY_DOCS,
-    remainingToday: Math.max(0, FREE_DAILY_DOCS - usedToday)
+    day,
+    count: Math.max(cookieCount, ipCount),
+    aiMonth: month,
+    aiUsed: Math.max(cookieAi, ipAi)
   };
 }
 
+export function getFreeUsage(req: Request) {
+  const usage = readQuota(req);
+  return {
+    usedToday: usage.count,
+    dailyLimit: FREE_DAILY_DOCS,
+    remainingToday: Math.max(0, FREE_DAILY_DOCS - usage.count)
+  };
+}
+
+export function getFreeAiUsage(req: Request): AiBalance {
+  const usage = readQuota(req);
+  return {
+    used: usage.aiUsed,
+    limit: FREE_AI_LIMIT,
+    remaining: Math.max(0, FREE_AI_LIMIT - usage.aiUsed),
+    period: PLAN_LIMITS.free.aiPeriod
+  };
+}
+
+function writeQuota(req: Request, res: Response, next: { day: string; count: number; aiMonth: string; aiUsed: number }) {
+  ipUsage.set(clientIp(req), next);
+  setCookie(res, QUOTA_COOKIE, signValue({
+    day: next.day,
+    count: next.count,
+    aiMonth: next.aiMonth,
+    aiUsed: next.aiUsed
+  } satisfies QuotaPayload), 60 * 60 * 24 * 40);
+}
+
+export function reserveFreeAi(req: Request, res: Response, amount: number): AiBalance & { ok: boolean } {
+  const safe = Math.max(0, Math.floor(amount));
+  const current = readQuota(req);
+  if (current.aiUsed + safe > FREE_AI_LIMIT) {
+    return { ok: false, ...getFreeAiUsage(req) };
+  }
+  writeQuota(req, res, { ...current, aiUsed: current.aiUsed + safe });
+  return {
+    ok: true,
+    used: current.aiUsed + safe,
+    limit: FREE_AI_LIMIT,
+    remaining: Math.max(0, FREE_AI_LIMIT - current.aiUsed - safe),
+    period: PLAN_LIMITS.free.aiPeriod
+  };
+}
+
+export function releaseFreeAi(req: Request, res: Response, amount: number): void {
+  const safe = Math.max(0, Math.floor(amount));
+  if (!safe) return;
+  const current = readQuota(req);
+  writeQuota(req, res, { ...current, aiUsed: Math.max(0, current.aiUsed - safe) });
+}
+
 function commitFreeUsage(req: Request, res: Response, count: number, day: string) {
-  ipUsage.set(clientIp(req), { day, count });
-  setCookie(res, QUOTA_COOKIE, signValue({ day, count }), 60 * 60 * 36);
+  const current = readQuota(req);
+  writeQuota(req, res, { ...current, day, count });
 }
 
 function releaseFreeUsage(req: Request, res: Response, previous: number, day: string) {
   const restored = Math.max(0, previous);
-  if (restored === 0) {
+  const current = readQuota(req);
+  if (restored === 0 && current.aiUsed === 0) {
     ipUsage.delete(clientIp(req));
     clearCookie(res, QUOTA_COOKIE);
     return;
   }
-  commitFreeUsage(req, res, restored, day);
+  writeQuota(req, res, { ...current, day, count: restored });
 }
 
 /** Run once before response headers leave, so Set-Cookie can still be applied. */
@@ -136,12 +194,6 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
       return next();
     }
 
-    // Growth First: standard tools skip the free daily doc quota. Premium routes
-    // still enforce Pro via assertPremiumAccess (OCR / translate / summarize).
-    if (skipFreeDailyQuota()) {
-      return next();
-    }
-
     const day = todayUtc();
     const usage = getFreeUsage(req);
     if (usage.usedToday >= FREE_DAILY_DOCS) {
@@ -149,8 +201,8 @@ export async function quotaMiddleware(req: Request, res: Response, next: NextFun
     }
 
     const reserved = usage.usedToday + 1;
-    // Reserve in memory only; cookie is written on success so failures don't stick client-side.
-    ipUsage.set(clientIp(req), { day, count: reserved });
+    const current = readQuota(req);
+    ipUsage.set(clientIp(req), { ...current, day, count: reserved });
 
     let settled = false;
     const settleSuccessOrFailure = () => {

@@ -252,10 +252,15 @@
   text-decoration: none;
 }
 
-.header-plan em {
+.header-plan em,
+.header-quota {
   font-style: normal;
   font-weight: 650;
   color: #059669;
+}
+
+.header-quota {
+  white-space: nowrap;
 }
 
 .header-actions button.header-button {

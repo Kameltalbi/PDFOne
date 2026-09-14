@@ -9,7 +9,9 @@ import { renderTranslatedPdf } from './pdfRenderer.js';
 import { buildReport } from './compare.js';
 import type { FittedBlock, TranslateMode } from './types.js';
 
-const MAX_PAGES = 100;
+import { AI_BILLABLE_PAGE_CAP } from '@mini-pdf-tools/shared';
+
+const MAX_PAGES = AI_BILLABLE_PAGE_CAP.translate;
 const MAX_BLOCKS = 1200;
 const LANGS = new Set(['fr', 'en', 'es', 'pt', 'de', 'tr', 'ar', 'it']);
 

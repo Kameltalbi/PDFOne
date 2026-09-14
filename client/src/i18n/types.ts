@@ -44,6 +44,8 @@ export type Messages = {
     imagesOnly: string;
     maxFiles: string;
     quotaReached: string;
+    jobsLeft: string;
+    aiCreditsLeft: string;
     adLabel: string;
     doneShort: string;
     copyLink: string;
@@ -97,8 +99,12 @@ export type Messages = {
     freeIncludes: string[];
     freeCta: string;
     freeMicro: string;
+    seeIncludedTools: string;
+    hideIncludedTools: string;
+    includedToolsTitle: string;
     weekName: string;
     weekTag: string;
+    weekNoSubscription: string;
     weekPrice: string;
     weekPeriod: string;
     weekPitch: string;
@@ -113,6 +119,8 @@ export type Messages = {
     monthIncludes: string[];
     monthCta: string;
     monthMicro: string;
+    proToggleMonthly: string;
+    proToggleYearly: string;
     yearName: string;
     yearPrice: string;
     yearPeriod: string;
@@ -138,7 +146,8 @@ export type Messages = {
     successVerifying: string;
     successSeoTitle: string;
     successSeoDescription: string;
-    successBenefits: string[];
+    successBenefitsPass: string[];
+    successBenefitsPro: string[];
     successPeriodWeek: string;
     successPeriodMonth: string;
     successPeriodYear: string;
@@ -165,6 +174,9 @@ export type Messages = {
     premiumKicker: string;
     premiumTitle: string;
     premiumText: string;
+    creditsKicker: string;
+    creditsTitle: string;
+    creditsText: string;
     premiumDismiss: string;
     featureOcr: string;
     featureTranslate: string;
@@ -193,6 +205,7 @@ export type Messages = {
     remainingDocs: string;
     unlimitedDocs: string;
     freeLimit: string;
+    aiCredits: string;
     toolsCta: string;
     loginTitle: string;
     loginLead: string;
@@ -1068,6 +1081,7 @@ export type Messages = {
     hintPdf: string;
     hintImages: string;
     hintMax: string;
+    tooLarge: string;
     listTitle: string;
     up: string;
     down: string;

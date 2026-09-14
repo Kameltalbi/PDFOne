@@ -13,6 +13,7 @@ import {
   pickBestEntitlement,
   resetEntitlementUsage,
   usageSnapshot,
+  aiSnapshot,
   type Entitlement
 } from '../services/entitlements.js';
 import { deletePost, getStoredPost, listStoredPosts, postSummary, upsertPost } from '../services/blog.js';
@@ -98,6 +99,7 @@ function requireOps(req: express.Request, res: express.Response): boolean {
 
 function publicEntitlement(entry: Entitlement) {
   const usage = usageSnapshot(entry);
+  const ai = aiSnapshot(entry);
   const admin = entry.source === 'admin' || entry.customerId.startsWith('admin:');
   return {
     email: entry.email,
@@ -110,7 +112,8 @@ function publicEntitlement(entry: Entitlement) {
     note: entry.note || '',
     docsUsed: usage.docsUsed,
     usedToday: usage.usedToday,
-    aiUsed: entry.aiUsed || 0,
+    aiUsed: ai.used,
+    ai,
     canManageStripe: Boolean(entry.subscriptionId)
   };
 }

@@ -1,12 +1,18 @@
-export const FREE_MAX_FILE_BYTES = 20 * 1024 * 1024;
-export const PAID_MAX_FILE_BYTES = 1024 * 1024 * 1024;
+import {
+  FREE_MAX_FILE_BYTES,
+  PAID_MAX_FILE_BYTES,
+  formatFileSizeLabel,
+  limitsForPlan
+} from '@mini-pdf-tools/shared';
 
-export function maxFileBytes(paid: boolean): number {
-  return paid ? PAID_MAX_FILE_BYTES : FREE_MAX_FILE_BYTES;
+export { FREE_MAX_FILE_BYTES, PAID_MAX_FILE_BYTES };
+
+export function maxFileBytes(paid: boolean, plan?: string | null): number {
+  return paid ? limitsForPlan(plan || 'month').maxFileBytes : FREE_MAX_FILE_BYTES;
 }
 
-export function maxFileLabel(paid: boolean): string {
-  return paid ? '1 GB' : '20 MB';
+export function maxFileLabel(paid: boolean, plan?: string | null): string {
+  return formatFileSizeLabel(maxFileBytes(paid, plan));
 }
 
 export function isFreeOversized(size: number, paid: boolean): boolean {

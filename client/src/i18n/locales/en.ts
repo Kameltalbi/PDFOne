@@ -27,7 +27,9 @@ export const en: Messages = {
     pdfOnly: 'Only PDF files are allowed.',
     imagesOnly: 'Only JPG, PNG, WebP or HEIC images are allowed.',
     maxFiles: 'Maximum {count} files.',
-    quotaReached: 'The free plan is limited to 3 documents per day. Upgrade to continue.',
+    quotaReached: 'The free plan is limited to {count} documents per day. Upgrade to continue.',
+    jobsLeft: '{remaining} / {limit} jobs left today',
+    aiCreditsLeft: '{remaining} / {limit} AI credits',
     adLabel: 'Advertisement',
     doneShort: 'Done!',
     copyLink: 'Copy link',
@@ -76,29 +78,35 @@ export const en: Messages = {
     freeName: 'Free',
     freePrice: '$0',
     freePeriod: '/ month',
-    freePitch: 'Try every core tool — no credit card.',
-    freeNote: 'Large files, an ad-free experience, and batch processing are on paid plans.',
+    freePitch: 'Core PDF tools, with a fair daily cap — no credit card.',
+    freeNote: 'OCR, files over 20 MB, and extra AI credits are on paid plans.',
     freeIncludes: [
-      'All core tools',
-      '3 documents per day',
-      'Files up to 20 MB',
+      'All core PDF tools',
+      '{dailyJobs} documents per day',
+      'Files up to {freeSize}',
+      '{freeAi} AI credits per month (translate & summarize)',
       'Light, non-blocking ads',
       'Files processed, then deleted automatically'
     ],
     freeCta: 'Continue for free',
     freeMicro: 'No card required.',
+    seeIncludedTools: 'See included tools',
+    hideIncludedTools: 'Hide tool list',
+    includedToolsTitle: 'Core PDF tools included',
     weekName: '7-day pass',
     weekTag: 'One payment, no subscription',
+    weekNoSubscription: 'One payment. No subscription.',
     weekPrice: '$1.99',
     weekPeriod: 'once',
-    weekPitch: 'A file due today? Pro access for 7 days, then it stops — no follow-up charge.',
+    weekPitch: 'A file due today? Full paid access for 7 days, then it stops — no follow-up charge.',
     weekIncludes: [
       'One payment: {weekPrice}, billed once',
       'Never auto-renews',
       'No ads for 7 days',
-      'No file size limit for 7 days',
-      'Merge, compress, OCR, and edit: unlimited on this pass',
-      'Summarize and translate: up to {aiLimit} uses on this pass'
+      'Files up to {paidSize}',
+      'OCR included',
+      'Unlimited PDF jobs for 7 days',
+      'Translate & summarize: {weekAi} AI credits for the pass (1 credit per page)'
     ],
     weekCta: 'Unlock 7 days — {weekPrice}',
     weekMicro: 'It stops on its own. Nothing to cancel.',
@@ -109,21 +117,26 @@ export const en: Messages = {
     monthPitch: 'The flexible plan for independents: you stay in control, month after month.',
     monthIncludes: [
       'No ads',
-      'No file size limit',
-      'Batch processing',
+      'Files up to {paidSize}',
+      'OCR included',
+      'Unlimited PDF jobs',
+      '{proAi} AI credits per month (translate & summarize)',
       'Cancel in one click, anytime'
     ],
     monthCta: 'Choose Pro monthly',
     monthMicro: 'No lock-in. Cancel whenever you want.',
+    proToggleMonthly: 'Monthly',
+    proToggleYearly: 'Yearly',
     yearName: 'Pro annual',
     yearPrice: '$34.90',
     yearPeriod: '/ year',
     yearEquiv: 'that’s {monthEquiv} / month — {monthsFree} months free vs monthly',
     yearPitch: 'You come back every week? A yearly payment, the same Pro access, and no monthly surprise.',
     yearIncludes: [
-      'Everything in Pro: no ads, unlimited files, batch processing',
+      'Everything in monthly Pro',
+      'Files up to {paidSize}, OCR, no ads',
+      '{proAi} AI credits per month — not a yearly pile',
       'Pay for {paidMonths} months, get 12',
-      'One payment a year — no monthly surprise',
       'Cancel anytime: you keep Pro until the paid period ends'
     ],
     yearBadge: 'Best value',
@@ -142,11 +155,15 @@ export const en: Messages = {
       },
       {
         question: 'Can I stop Pro whenever I want?',
-        answer: 'Yes. Monthly ({monthPrice}) and annual ({yearPrice}) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to the Free plan: 3 documents per day, files up to 20 MB, light ads.'
+        answer: 'Yes. Monthly ({monthPrice}) and annual ({yearPrice}) plans cancel in one click from the Stripe portal. No exit fee. After canceling, you return to Free: {dailyJobs} documents per day, files up to {freeSize}, {freeAi} AI credits per month, light ads.'
       },
       {
         question: 'I already paid — how do I sign in?',
-        answer: 'There is no password. Open Sign in, enter the email you used at checkout, and your 7-day pass or Pro access is restored on that device. From My account you can see days left and how many documents you have processed.'
+        answer: 'Sign in to your One2PDF account with the email and password used at checkout. Your 7-day pass or Pro access is then restored on that device. From My account you can see days left and how many documents you have processed.'
+      },
+      {
+        question: 'How do AI credits work?',
+        answer: 'Translate costs 1 credit per treated page, up to {translateCap} pages. Summarize costs 1 credit per page, billed at most {summarizeCap} credits per file (longer PDFs are truncated before the model). A failed job does not keep the credits. Free: {freeAi} / month. 7-day pass: {weekAi} for the pass. Pro monthly and yearly: {proAi} per calendar month.'
       }
     ],
     paying: 'Redirecting to checkout…',
@@ -162,11 +179,20 @@ export const en: Messages = {
     successVerifying: 'Verifying payment…',
     successSeoTitle: 'Welcome to One2PDF Pro',
     successSeoDescription: 'Your One2PDF Pro payment is confirmed. Use every PDF tool without the daily limit.',
-    successBenefits: [
+    successBenefitsPass: [
       'No ads',
-      'No 20 MB file-size limit',
-      'Process several files at once',
+      'Files up to 100 MB',
+      'OCR included',
       'No daily document limit',
+      '100 AI credits for 7 days',
+      'Cancel or manage anytime'
+    ],
+    successBenefitsPro: [
+      'No ads',
+      'Files up to 100 MB',
+      'OCR included',
+      'No daily document limit',
+      '500 AI credits per month',
       'Cancel or manage anytime'
     ],
     successPeriodWeek: '7 days · one-time payment',
@@ -185,7 +211,7 @@ export const en: Messages = {
   upgrade: {
     kicker: 'File too large',
     title: 'This file exceeds the free limit',
-    text: '“{name}” is {size}. The free plan accepts up to {limit} — the file was not uploaded. Unlock unlimited file size:',
+    text: '“{name}” is {size}. The free plan accepts up to {limit} — the file was not uploaded. Pass and Pro accept files up to 100 MB:',
     limit: '20 MB',
     dismiss: 'Close and choose a smaller file',
     batchKicker: 'Batch processing',
@@ -194,7 +220,10 @@ export const en: Messages = {
     batchDismiss: 'Close and add files one by one',
     premiumKicker: 'Pro feature',
     premiumTitle: '{feature} requires Pro',
-    premiumText: '{feature} uses higher server and AI compute. Core PDF tools (merge, compress, convert, edit…) stay free. Upgrade to unlock this advanced tool:',
+    premiumText: 'OCR is available with a 7-day Pass or Pro. Core PDF tools (merge, compress, convert, edit…) stay free. Upgrade to unlock OCR:',
+    creditsTitle: '{feature} uses AI credits',
+    creditsText: '{feature} uses AI credits (1 credit per page). Free includes a monthly pool; the 7-day Pass and Pro include more. This is not a Pro-only tool:',
+    creditsKicker: 'AI credits',
     premiumDismiss: 'Back to free tools',
     featureOcr: 'OCR',
     featureTranslate: 'AI translation',
@@ -223,6 +252,7 @@ export const en: Messages = {
     remainingDocs: 'Documents left today',
     unlimitedDocs: 'Unlimited',
     freeLimit: '{used} / {limit} free documents today',
+    aiCredits: 'AI credits',
     toolsCta: 'Use the tools',
     loginTitle: 'Sign in to your pass',
     loginLead: 'Enter the email and password for your One2PDF account.',
@@ -380,10 +410,11 @@ export const en: Messages = {
     toolJpgToPdfDesc: 'Combine JPG, PNG or WebP images into one PDF.',
     trustLine: 'Fast · Secure · Easy to use',
     proBenefits: [
-      'No ads',
-      'Files larger than 20 MB',
-      'Process several files at once',
-      'No daily document limit'
+      'Unlimited PDF jobs',
+      'Files up to 100 MB',
+      'OCR included',
+      '500 AI credits / month on Pro',
+      'No ads'
     ],
     freeValueLabel: 'YOUR PDF TOOLS, FOR FREE',
     freeValueTitle: 'Everything you need for your PDFs.',
@@ -451,13 +482,14 @@ export const en: Messages = {
     plansKicker: 'Free and Pro',
     plansTitle: 'Start free. Move to Pro when you need it.',
     plansP1: 'One2PDF lets you use its essential tools for free, without creating an account.',
-    plansP2: 'If you need more capacity, One2PDF Pro unlocks the paid plan’s extra limits.',
+    plansP2: 'Pass and Pro add unlimited PDF jobs, files up to 100 MB, OCR, 500 AI credits per month on Pro, and an ad-free experience.',
     plansP3: 'An account is only required for Pro.',
     plansItems: [
-      'No ads',
-      'Files larger than 20 MB',
-      'Process several files at once',
-      'No daily document limit'
+      'Unlimited PDF jobs',
+      'Files up to 100 MB',
+      'OCR included',
+      '500 AI credits / month on Pro',
+      'No ads'
     ],
     plansCta: 'Discover One2PDF Pro',
     principlesKicker: 'How we build',
@@ -601,7 +633,7 @@ export const en: Messages = {
       },
       {
         question: 'Is splitting a PDF free?',
-        answer: 'Yes, without creating an account. The free plan is limited to 3 documents per day and 20 MB per file.'
+        answer: 'Yes, without creating an account. The free plan is limited to 5 documents per day and 20 MB per file. Translate and summarize use monthly AI credits. OCR is on paid plans.'
       },
       {
         question: 'Does One2PDF keep the original after a split?',
@@ -995,8 +1027,8 @@ export const en: Messages = {
   },
   ocrPdf: {
     title: 'PDF OCR',
-    subtitle: 'Recognize text on scanned pages and get a usable PDF.',
-    tip: 'OCR uses Tesseract. Quality depends on scan sharpness.',
+    subtitle: 'Recognize text on scanned pages and get a usable PDF. Available with a 7-day Pass or Pro.',
+    tip: 'OCR uses Tesseract. Quality depends on scan sharpness. Available with a 7-day Pass or Pro.',
     action: 'Run OCR',
     running: 'Recognizing…',
     fail: 'Unable to run OCR.',
@@ -1012,8 +1044,8 @@ export const en: Messages = {
   },
   summarizePdf: {
     title: 'Summarize a PDF',
-    subtitle: 'Get a clear summary from the document text.',
-    tip: 'Choose a summary style and language, then summarize. Scanned PDFs need OCR first.',
+    subtitle: 'Get a clear summary from the document text. Uses AI credits (1 credit per page).',
+    tip: 'Uses AI credits (1 credit per page, billed at most 20 per file). Choose a summary style and language, then summarize. Scanned PDFs need OCR first.',
     action: 'Summarize PDF',
     running: 'Analyzing your PDF…',
     fail: 'Unable to summarize this PDF.',
@@ -1051,8 +1083,8 @@ export const en: Messages = {
   },
   translatePdf: {
     title: 'Translate PDF',
-    subtitle: 'Get a translated PDF that keeps the original layout as much as possible.',
-    tip: 'Images, logos and tables stay. Text is translated in place. Layout will not be pixel-identical: some languages run longer or shorter.',
+    subtitle: 'Get a translated PDF that keeps the original layout as much as possible. Uses AI credits (1 credit per treated page).',
+    tip: 'Uses AI credits (1 credit per treated page). Images, logos and tables stay. Text is translated in place. Layout will not be pixel-identical: some languages run longer or shorter.',
     action: 'Translate PDF',
     running: 'Translating the document…',
     fail: 'Unable to translate this PDF.',
@@ -1155,7 +1187,8 @@ export const en: Messages = {
     browse: 'browse',
     hintPdf: 'PDF files',
     hintImages: 'JPG, PNG or WebP',
-    hintMax: '20 MB on free · up to {count} files',
+    hintMax: '{size} · up to {count} files',
+    tooLarge: 'The file exceeds the {size} limit.',
     listTitle: '{count} file(s) — drag to reorder',
     up: 'Move up',
     down: 'Move down',
@@ -1174,7 +1207,7 @@ export const en: Messages = {
     feat3Title: 'Secure processing',
     feat3Text: 'The temporary document is deleted from the server after export.',
     needPdf: 'Please select a PDF file.',
-    tooLarge: 'The file exceeds the 20 MB free-plan limit.',
+    tooLarge: 'The file exceeds the {size} limit.',
     cannotOpen: 'This PDF cannot be opened or is protected.',
     exportFail: 'Export failed',
     generateFail: 'Unable to generate the PDF. Check that the server is running.',

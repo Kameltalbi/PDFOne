@@ -9,13 +9,12 @@ export type MonetizationFlags = {
   freeBatchAllowed: boolean;
 };
 
-/** Defaults match server GROWTH_MODE=true until /me responds. */
 export const DEFAULT_MONETIZATION: MonetizationFlags = {
   growthMode: true,
   standardToolsFree: true,
   ocrRequiresPro: true,
-  translateRequiresPro: true,
-  aiSummaryRequiresPro: true,
+  translateRequiresPro: false,
+  aiSummaryRequiresPro: false,
   freeBatchAllowed: true
 };
 
@@ -24,14 +23,13 @@ export function parseMonetization(raw: unknown): MonetizationFlags {
   const value = raw as Record<string, unknown>;
   const flag = (key: keyof MonetizationFlags, fallback: boolean) =>
     typeof value[key] === 'boolean' ? (value[key] as boolean) : fallback;
-  const growthMode = flag('growthMode', DEFAULT_MONETIZATION.growthMode);
   return {
-    growthMode,
-    standardToolsFree: flag('standardToolsFree', growthMode),
-    ocrRequiresPro: flag('ocrRequiresPro', growthMode),
-    translateRequiresPro: flag('translateRequiresPro', growthMode),
-    aiSummaryRequiresPro: flag('aiSummaryRequiresPro', growthMode),
-    freeBatchAllowed: flag('freeBatchAllowed', growthMode)
+    growthMode: flag('growthMode', DEFAULT_MONETIZATION.growthMode),
+    standardToolsFree: flag('standardToolsFree', true),
+    ocrRequiresPro: flag('ocrRequiresPro', true),
+    translateRequiresPro: flag('translateRequiresPro', false),
+    aiSummaryRequiresPro: flag('aiSummaryRequiresPro', false),
+    freeBatchAllowed: flag('freeBatchAllowed', true)
   };
 }
 

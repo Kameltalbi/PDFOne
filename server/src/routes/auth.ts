@@ -1,7 +1,15 @@
 import express from 'express';
+import { formatFileSizeLabel, publicPlanSnapshot } from '@mini-pdf-tools/shared';
 import { isSuperAdminEmail } from '../services/admins.js';
-import { getActiveEntitlementByEmail, isEntitlementActive, usageSnapshot } from '../services/entitlements.js';
-import { getFreeUsage } from '../middleware/quota.js';
+import {
+  aiSnapshot,
+  getActiveEntitlementByEmail,
+  isEntitlementActive,
+  usageSnapshot,
+  type Entitlement
+} from '../services/entitlements.js';
+import { getFreeAiUsage, getFreeUsage } from '../middleware/quota.js';
+import { maxFileBytes } from '../utils/limits.js';
 import {
   ACCESS_COOKIE,
   cookieMaxAge,
@@ -104,9 +112,18 @@ async function sessionPayload(
 
   const superadmin = Boolean(user && isSuperAdminEmail(user.email));
   const monetization = publicMonetizationFlags();
+  const plans = publicPlanSnapshot();
 
   if (live) {
     const usage = usageSnapshot(stored);
+    const entry = (stored || {
+      email: live.email,
+      customerId: live.customerId,
+      plan: live.plan,
+      status: 'active' as const,
+      expiresAt: live.expiresAt
+    }) satisfies Entitlement;
+    const fileBytes = maxFileBytes(true, live.plan);
     return {
       user,
       superadmin,
@@ -118,16 +135,25 @@ async function sessionPayload(
       canManage: Boolean(stored?.subscriptionId) && isSubscriptionPlan(live.plan),
       docsUsed: usage.docsUsed,
       usedToday: usage.usedToday,
-      remainingMs: live.expiresAt ? Math.max(0, Date.parse(live.expiresAt) - Date.now()) : null
+      remainingMs: live.expiresAt ? Math.max(0, Date.parse(live.expiresAt) - Date.now()) : null,
+      maxFileBytes: fileBytes,
+      maxFileLabel: formatFileSizeLabel(fileBytes),
+      ai: aiSnapshot(entry),
+      plans
     };
   }
 
+  const fileBytes = maxFileBytes(false);
   return {
     user,
     superadmin,
     monetization,
     paid: false as const,
-    ...getFreeUsage(req)
+    ...getFreeUsage(req),
+    maxFileBytes: fileBytes,
+    maxFileLabel: formatFileSizeLabel(fileBytes),
+    ai: getFreeAiUsage(req),
+    plans
   };
 }
 

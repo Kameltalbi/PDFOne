@@ -1,5 +1,5 @@
 import express from 'express';
-import { getActiveEntitlementByEmail, getEntitlement, normalizeEmail, usageSnapshot } from '../services/entitlements.js';
+import { getActiveEntitlementByEmail, getEntitlement, normalizeEmail, usageSnapshot, aiSnapshot } from '../services/entitlements.js';
 import { currentSession, readUser } from './auth.js';
 import {
   authenticateUser,
@@ -21,6 +21,8 @@ import {
 import { amountsForZone, detectPricingZone } from '../services/pricingZones.js';
 import { clearCookie, clientIp, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 import { publicMonetizationFlags } from '../config/monetization.js';
+import { formatFileSizeLabel, publicPlanSnapshot } from '@mini-pdf-tools/shared';
+import { maxFileBytes } from '../utils/limits.js';
 
 const router = express.Router();
 const restoreAttempts = new Map<string, { window: number; count: number }>();
@@ -59,6 +61,7 @@ function allowRestore(ip: string) {
 async function publicStatus(access: AccessPayload) {
   const stored = await getEntitlement(access.customerId);
   const usage = usageSnapshot(stored);
+  const fileBytes = maxFileBytes(true, access.plan);
   return {
     paid: true as const,
     monetization: publicMonetizationFlags(),
@@ -68,7 +71,17 @@ async function publicStatus(access: AccessPayload) {
     canManage: isSubscriptionPlan(access.plan),
     docsUsed: usage.docsUsed,
     usedToday: usage.usedToday,
-    remainingMs: access.expiresAt ? Math.max(0, Date.parse(access.expiresAt) - Date.now()) : null
+    remainingMs: access.expiresAt ? Math.max(0, Date.parse(access.expiresAt) - Date.now()) : null,
+    maxFileBytes: fileBytes,
+    maxFileLabel: formatFileSizeLabel(fileBytes),
+    ai: aiSnapshot(stored || {
+      email: access.email,
+      customerId: access.customerId,
+      plan: access.plan,
+      status: 'active',
+      expiresAt: access.expiresAt
+    }),
+    plans: publicPlanSnapshot()
   };
 }
 

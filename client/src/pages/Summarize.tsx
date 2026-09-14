@@ -40,7 +40,7 @@ export default function Summarize() {
   const { m, t } = useI18n();
   const copy = m.summarizePdf;
   const pdf = useSinglePdf({ allPages: false });
-  const { status } = useBilling();
+  const { status, refresh } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
   usePageSeo(copy.seoTitle, copy.seoDescription);
   const faqJsonLd = useMemo(
@@ -136,6 +136,7 @@ export default function Summarize() {
       setProgress(0);
     } finally {
       setIsProcessing(false);
+      void refresh();
     }
   };
 
@@ -273,7 +274,7 @@ export default function Summarize() {
         />
         {needsPro && (
           <p className="studio-premium-note" style={{ textAlign: 'center', margin: '0.75rem auto 1.5rem', maxWidth: '36rem' }}>
-            {t(m.upgrade.premiumText, { feature: m.upgrade.featureSummarize })}{' '}
+            {t(m.upgrade.creditsText, { feature: m.upgrade.featureSummarize })}{' '}
             <Link to="/pricing" onClick={() => trackUpgradeClick('summarize')}>{m.common.getPro}</Link>
           </p>
         )}
@@ -296,7 +297,7 @@ export default function Summarize() {
       sidebar={(
         <StudioSidebarFrame
           title={copy.title}
-          tip={needsPro ? t(m.upgrade.premiumText, { feature: m.upgrade.featureSummarize }) : copy.tip}
+          tip={needsPro ? t(m.upgrade.creditsText, { feature: m.upgrade.featureSummarize }) : copy.tip}
           error={pdf.error}
           progress={progress}
           isProcessing={isProcessing}
@@ -310,6 +311,9 @@ export default function Summarize() {
           }}
           onChangeFile={reset}
         >
+          {status.ai && (
+            <p className="studio-count">{t(m.common.aiCreditsLeft, { remaining: status.ai.remaining, limit: status.ai.limit })}</p>
+          )}
           {optionsPanel}
         </StudioSidebarFrame>
       )}

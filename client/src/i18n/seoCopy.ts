@@ -22,7 +22,7 @@ export const seoFr = {
       },
       {
         question: 'La conversion Word vers PDF est-elle gratuite ?',
-        answer: 'Oui. Vous pouvez convertir sans créer de compte. Le plan gratuit permet 3 documents par jour et des fichiers jusqu’à 20 Mo. Pro retire ces limites.'
+        answer: 'Oui. Vous pouvez convertir sans créer de compte. Le plan gratuit permet 5 documents par jour et des fichiers jusqu’à 20 Mo. Pass / Pro : pas de limite quotidienne de traitements ; taille maximum : 100 Mo.'
       },
       {
         question: 'One2PDF conserve-t-il mon fichier Word ?',
@@ -153,7 +153,7 @@ export const seoFr = {
       },
       {
         question: 'L’outil de rotation PDF est-il gratuit ?',
-        answer: 'Oui, sans créer de compte. Le plan gratuit permet 3 documents par jour et des fichiers jusqu’à 20 Mo. Pro retire ces limites.'
+        answer: 'Oui, sans créer de compte. Le plan gratuit permet 5 documents par jour et des fichiers jusqu’à 20 Mo. Pass / Pro : pas de limite quotidienne de traitements ; taille maximum : 100 Mo.'
       }
     ]
   },
@@ -191,11 +191,11 @@ export const seoFr = {
   },
   ocr: {
     seoTitle: 'OCR PDF en ligne, texte scanné | One2PDF',
-    seoDescription: 'Reconnaissez le texte d’un scan et obtenez un PDF exploitable. Lancez l’OCR gratuitement — démarrez sur One2PDF.',
+    seoDescription: 'Reconnaissez le texte d’un scan et obtenez un PDF exploitable. L’OCR est disponible avec le Pass 7 jours ou Pro.',
     seoH2: 'Comment faire un OCR sur un PDF scanné facilement et en toute sécurité',
-    seoP1: 'Votre justificatif n’est qu’une photo, impossible à copier-coller ? One2PDF permet de lancer un OCR sur un PDF en ligne gratuitement, sans installer de logiciel. Importez le scan, lancez la reconnaissance, puis téléchargez un PDF dont le texte peut être sélectionné, recherché ou repris.',
+    seoP1: 'Votre justificatif n’est qu’une photo, impossible à copier-coller ? One2PDF permet de lancer un OCR sur un PDF en ligne avec le Pass 7 jours ou Pro, sans installer de logiciel. Importez le scan, lancez la reconnaissance, puis téléchargez un PDF dont le texte peut être sélectionné, recherché ou repris.',
     seoP2: 'Passer d’une image de document à du texte n’a pas à être réservé aux experts. La qualité dépend de la netteté du scan, mais le résultat sert ensuite à extraire, traduire ou résumer. C’est la méthode adaptée si vous cherchez comment reconnaître le texte d’un PDF scanné, rendre un scan interrogeable ou éviter de tout retaper.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. L’OCR est disponible avec le Pass 7 jours ou Pro. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
   translate: {
     seoTitle: 'Traduire un PDF en conservant la mise en page | One2PDF',
@@ -427,7 +427,7 @@ export const seoEn = {
       },
       {
         question: 'Is converting Word to PDF free?',
-        answer: 'Yes. You can convert without creating an account. The free plan allows 3 documents per day and files up to 20 MB. Pro removes those limits.'
+        answer: 'Yes. You can convert without creating an account. The free plan allows 5 documents per day and files up to 20 MB. Pass / Pro: no daily processing limit; maximum file size: 100 MB.'
       },
       {
         question: 'Does One2PDF keep my Word file?',
@@ -558,7 +558,7 @@ export const seoEn = {
       },
       {
         question: 'Is the PDF rotation tool free?',
-        answer: 'Yes, without creating an account. The free plan allows 3 documents per day and files up to 20 MB. Pro removes those limits.'
+        answer: 'Yes, without creating an account. The free plan allows 5 documents per day and files up to 20 MB. Pass / Pro: no daily processing limit; maximum file size: 100 MB.'
       }
     ]
   },
@@ -596,11 +596,11 @@ export const seoEn = {
   },
   ocr: {
     seoTitle: 'OCR a Scanned PDF Online | One2PDF',
-    seoDescription: 'Recognize text on a scan and get a usable PDF. Run OCR online for free — start now on One2PDF.',
+    seoDescription: 'Recognize text on a scan and get a usable PDF. OCR is available with a 7-day Pass or Pro.',
     seoH2: 'How to OCR a scanned PDF quickly and securely',
-    seoP1: 'Is your receipt only a photo, impossible to copy and paste? One2PDF lets you run OCR on a PDF online for free, with no software to install. Import the scan, start recognition, then download a PDF whose text can be selected, searched, or reused.',
+    seoP1: 'Is your receipt only a photo, impossible to copy and paste? One2PDF lets you run OCR on a PDF online with a 7-day Pass or Pro, with no software to install. Import the scan, start recognition, then download a PDF whose text can be selected, searched, or reused.',
     seoP2: 'Turning a document image into text does not have to be expert-only. Quality depends on scan sharpness, but the result can then be extracted, translated, or summarized. It is a practical way to recognize text in a scanned PDF, make a scan searchable, or avoid retyping everything.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the OCR PDF is available for download, then deleted. No account is required for occasional use. Run OCR now, check a few sentences, and come back to One2PDF whenever a scan must become real text again. The whole process takes only a few seconds, with no extra software on your computer.'
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the OCR PDF is available for download, then deleted. OCR is available with a 7-day Pass or Pro. Run OCR now, check a few sentences, and come back to One2PDF whenever a scan must become real text again. The whole process takes only a few seconds, with no extra software on your computer.'
   },
   translate: {
     seoTitle: 'Translate a PDF while keeping the layout | One2PDF',

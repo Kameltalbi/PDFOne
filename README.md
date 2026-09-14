@@ -43,8 +43,9 @@ Redis/BullMQ are **not** used by the current application code. Admission is in-m
 | Limit | Default | Env |
 |---|---|---|
 | Free upload | 20 MB / file | — |
-| Paid / absolute upload ceiling | 1 GB (or `MAX_FILE_SIZE` if lower) | `MAX_FILE_SIZE` |
-| Free daily docs | 3 | `FREE_DAILY_DOCS` |
+| Paid upload (commercial) | 100 MB | `shared/src/plans.ts` + `MAX_FILE_SIZE` |
+| Free daily docs | 5 | `shared/src/plans.ts` |
+| Free / Pass / Pro AI credits | 5 / month · 100 / pass · 500 / month | `shared/src/plans.ts` |
 | Request rate limit | 30 / minute / IP | `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_MS` |
 | Queue wait / run timeouts | 2 min wait; PDF 5 min; Office/OCR 10 min | `QUEUE_WAIT_TIMEOUT_MS`, `*_RUN_TIMEOUT_MS` |
 | Min free temp disk | 512 MB | `MIN_FREE_TEMP_BYTES` |

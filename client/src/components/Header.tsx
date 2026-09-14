@@ -129,6 +129,9 @@ function Header() {
       <Link to="/account" className="header-plan" onClick={closeMenu}>
         {status.paid ? m.pricing.accountPro : (status.user?.name || m.pricing.myAccount)}
         {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
+        {!status.paid && typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
+          <em>{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</em>
+        )}
       </Link>
       {status.paid && status.canManage && (
         <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
@@ -136,7 +139,12 @@ function Header() {
       <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
     </>
   ) : (
-    <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
+    <>
+      {typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
+        <span className="header-plan header-quota">{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</span>
+      )}
+      <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
+    </>
   );
 
   const renderItems = (items: NavItem[]) => items.map((item) => {

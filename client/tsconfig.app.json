@@ -9,6 +9,11 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@mini-pdf-tools/shared": ["../shared/src/index.ts"]
+    },
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,

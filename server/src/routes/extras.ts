@@ -9,13 +9,15 @@ import { unlockPdf } from '../services/unlock.js';
 import { ocrPdf } from '../services/ocr.js';
 import { parseSummaryLanguage, parseSummaryMode, summarizePdf, translatePdf } from '../services/nlp.js';
 import { convertOfficeFile } from '../services/office.js';
-import { consumeWeekAi, WEEK_AI_LIMIT } from '../services/entitlements.js';
-import { getPaidAccess } from '../middleware/quota.js';
+import { releaseAiCredits, reserveAiCredits } from '../services/entitlements.js';
+import { getPaidAccess, releaseFreeAi, reserveFreeAi } from '../middleware/quota.js';
 import { assertPremiumAccess } from '../middleware/premiumGate.js';
 import { cleanupUploads, unlinkQuiet } from '../utils/temp.js';
 import { publicToolResult } from '../utils/downloadGrant.js';
 import { publicErrorFromUnknown } from '../utils/publicError.js';
 import { requestSignal, runPdfJob } from '../utils/jobQueue.js';
+import { countPdfPages } from '../utils/pdf.js';
+import { AI_BILLABLE_PAGE_CAP, aiCreditCost, type AiTool } from '@mini-pdf-tools/shared';
 
 const router = express.Router();
 
@@ -34,28 +36,83 @@ function sendError(res: express.Response, error: unknown, fallback: string) {
   });
 }
 
-function aiCapMessage(req: express.Request): string {
+function aiPageCapMessage(req: express.Request, tool: AiTool, pages: number, cap: number): string {
   const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
+  if (tool !== 'translate') {
+    return lang === 'en'
+      ? `This document has ${pages} pages (maximum ${cap} billed).`
+      : `Ce document a ${pages} pages (maximum ${cap} facturées).`;
+  }
   const copy: Record<string, string> = {
-    en: `The 7-day pass includes up to ${WEEK_AI_LIMIT} summarize and translate uses. Merge, compress, OCR, and edit stay unlimited.`,
-    fr: `Le Pass Semaine inclut jusqu’à ${WEEK_AI_LIMIT} utilisations de résumé et de traduction. Fusion, compression, OCR et édition restent illimitées.`,
-    es: `El pase de 7 días incluye hasta ${WEEK_AI_LIMIT} usos de resumen y traducción. Combinar, comprimir, OCR y editar siguen ilimitados.`,
-    de: `Der 7-Tage-Pass umfasst bis zu ${WEEK_AI_LIMIT} Zusammenfassungs- und Übersetzungsnutzungen. Zusammenführen, Komprimieren, OCR und Bearbeiten bleiben unbegrenzt.`,
-    pt: `O passe de 7 dias inclui até ${WEEK_AI_LIMIT} usos de resumo e tradução. Unir, comprimir, OCR e editar continuam ilimitados.`,
-    tr: `7 günlük geçiş, en fazla ${WEEK_AI_LIMIT} özetleme ve çeviri kullanımı içerir. Birleştirme, sıkıştırma, OCR ve düzenleme sınırsız kalır.`,
-    ar: `يشمل تمرير الأيام السبعة حتى ${WEEK_AI_LIMIT} استخدامات للتلخيص والترجمة. الدمج والضغط والتعرف الضوئي والتحرير تبقى بلا حد.`,
-    it: `Il pass di 7 giorni include fino a ${WEEK_AI_LIMIT} utilizzi di riassunto e traduzione. Unione, compressione, OCR e modifica restano illimitati.`
+    en: `Translation keeps layout up to ${cap} pages. This PDF has ${pages} pages.`,
+    fr: `La traduction conserve la mise en page jusqu’à ${cap} pages. Ce PDF en a ${pages}.`,
+    es: `La traducción conserva la maquetación hasta ${cap} páginas. Este PDF tiene ${pages}.`,
+    de: `Die Übersetzung erhält das Layout bis ${cap} Seiten. Dieses PDF hat ${pages} Seiten.`,
+    pt: `A tradução mantém o layout até ${cap} páginas. Este PDF tem ${pages}.`,
+    tr: `Çeviri düzeni en fazla ${cap} sayfa korur. Bu PDF ${pages} sayfa.`,
+    ar: `تحتفظ الترجمة بالتخطيط حتى ${cap} صفحة. هذا الملف فيه ${pages} صفحة.`,
+    it: `La traduzione mantiene il layout fino a ${cap} pagine. Questo PDF ne ha ${pages}.`
   };
   return copy[lang] || copy.fr;
 }
 
-async function allowWeekAi(req: express.Request, res: express.Response): Promise<boolean> {
+function aiCapMessage(req: express.Request, needed: number, remaining: number, limit: number): string {
+  const lang = String(req.headers['accept-language'] || 'fr').slice(0, 2).toLowerCase();
+  const copy: Record<string, string> = {
+    en: `Not enough AI credits (${needed} needed, ${remaining} left of ${limit}). Translate costs 1 credit per page (max 100). Summarize costs 1 credit per page (max 20 per file).`,
+    fr: `Crédits IA insuffisants (${needed} nécessaires, ${remaining} restants sur ${limit}). Traduction : 1 crédit par page (max 100). Résumé : 1 crédit par page (max 20 par fichier).`,
+    es: `Créditos de IA insuficientes (${needed} necesarios, ${remaining} restantes de ${limit}).`,
+    de: `Nicht genug KI-Guthaben (${needed} nötig, ${remaining} von ${limit} übrig).`,
+    pt: `Créditos de IA insuficientes (${needed} necessários, ${remaining} restantes de ${limit}).`,
+    tr: `Yetersiz YZ kredisi (${needed} gerekli, ${limit} içinden ${remaining} kaldı).`,
+    ar: `رصيد الذكاء الاصطناعي غير كافٍ (${needed} مطلوب، تبقى ${remaining} من ${limit}).`,
+    it: `Crediti IA insufficienti (${needed} necessari, ${remaining} rimasti su ${limit}).`
+  };
+  return copy[lang] || copy.fr;
+}
+
+async function withAiCredits<T>(
+  req: express.Request,
+  res: express.Response,
+  tool: AiTool,
+  filePath: string,
+  run: () => Promise<T>
+): Promise<T | undefined> {
+  const pages = await countPdfPages(filePath);
+  const pageCap = AI_BILLABLE_PAGE_CAP[tool];
+  if (tool === 'translate' && pages > pageCap) {
+    res.status(400).json({
+      success: false,
+      code: 'AI_PAGE_CAP',
+      pages,
+      cap: pageCap,
+      error: aiPageCapMessage(req, tool, pages, pageCap)
+    });
+    return undefined;
+  }
+  const cost = aiCreditCost(tool, pages);
   const access = await getPaidAccess(req, res);
-  if (!access) return true;
-  const result = await consumeWeekAi(access.customerId, access.plan);
-  if (result.ok) return true;
-  res.status(402).json({ success: false, code: 'AI_CAP', error: aiCapMessage(req) });
-  return false;
+  const reserved = access
+    ? await reserveAiCredits(access.customerId, access.plan, cost)
+    : reserveFreeAi(req, res, cost);
+  if (!reserved.ok) {
+    res.status(402).json({
+      success: false,
+      code: 'AI_CAP',
+      needed: cost,
+      remaining: reserved.remaining,
+      limit: reserved.limit,
+      error: aiCapMessage(req, cost, reserved.remaining, reserved.limit)
+    });
+    return undefined;
+  }
+  try {
+    return await run();
+  } catch (error) {
+    if (access) await releaseAiCredits(access.customerId, access.plan, cost);
+    else releaseFreeAi(req, res, cost);
+    throw error;
+  }
 }
 
 router.post('/to-png', upload.single('file'), async (req, res) => {
@@ -138,8 +195,6 @@ router.post('/summarize', upload.single('file'), async (req, res) => {
   const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    if (!(await assertPremiumAccess(req, res, 'summarize'))) return;
-    if (!(await allowWeekAi(req, res))) return;
     const mode = parseSummaryMode(req.body.mode ?? req.body.length ?? 'detailed');
     if (!mode) {
       return res.status(400).json({
@@ -156,10 +211,11 @@ router.post('/summarize', upload.single('file'), async (req, res) => {
         error: 'Invalid summary language.'
       });
     }
-    const result = await runPdfJob(
+    const result = await withAiCredits(req, res, 'summarize', uploadedFile.path, () => runPdfJob(
       () => summarizePdf(uploadedFile.path, mode, language),
       { signal }
-    );
+    ));
+    if (result === undefined) return;
     return res.json({
       success: true,
       data: publicToolResult(req, res, result)
@@ -176,9 +232,7 @@ router.post('/translate', upload.single('file'), async (req, res) => {
   const signal = requestSignal(req);
   try {
     if (!uploadedFile) return res.status(400).json({ success: false, error: 'Aucun fichier PDF reçu.' });
-    if (!(await assertPremiumAccess(req, res, 'translate'))) return;
-    if (!(await allowWeekAi(req, res))) return;
-    const result = await runPdfJob(
+    const result = await withAiCredits(req, res, 'translate', uploadedFile.path, () => runPdfJob(
       () => translatePdf(
         uploadedFile.path,
         String(req.body.target || 'en'),
@@ -186,7 +240,8 @@ router.post('/translate', upload.single('file'), async (req, res) => {
         String(req.body.mode || 'layout') === 'text' ? 'text' : 'layout'
       ),
       { signal }
-    );
+    ));
+    if (result === undefined) return;
     return res.json({
       success: true,
       data: publicToolResult(req, res, result)

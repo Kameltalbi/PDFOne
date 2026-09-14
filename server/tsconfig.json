@@ -7,6 +7,10 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mini-pdf-tools/shared": ["../shared/src/index.ts"]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -18,5 +22,5 @@
     "noEmit": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }

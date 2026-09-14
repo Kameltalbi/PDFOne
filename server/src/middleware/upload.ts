@@ -4,7 +4,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
-import { isPaid } from './quota.js';
+import { getPaidAccess } from './quota.js';
 import {
   absoluteMaxFileBytes,
   maxFileBytes,
@@ -47,9 +47,10 @@ async function rejectOversized(req: Request, res: Response, next: NextFunction) 
   const files = collectedFiles(req);
   if (files.length === 0) return next();
 
-  const paid = await isPaid(req, res);
-  const max = maxFileBytes(paid);
-  const totalBudget = maxRequestBytes(paid, maxFilesPerRequest());
+  const access = await getPaidAccess(req, res);
+  const paid = Boolean(access);
+  const max = maxFileBytes(paid, access?.plan);
+  const totalBudget = maxRequestBytes(paid, maxFilesPerRequest(), access?.plan);
   const total = files.reduce((sum, file) => sum + (file.size || 0), 0);
 
   if (files.some((file) => file.size > max) || total > totalBudget) {
@@ -73,8 +74,9 @@ function withPaidLimits(
     void (async () => {
       try {
         await assertTempSpace();
-        const paid = await isPaid(req, res);
-        const fileSize = maxFileBytes(paid);
+        const access = await getPaidAccess(req, res);
+        const paid = Boolean(access);
+        const fileSize = maxFileBytes(paid, access?.plan);
         const files = maxFilesPerRequest();
         const handler = build({ fileSize, files });
         handler(req, res, (err?: unknown) => {

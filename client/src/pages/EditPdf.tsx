@@ -533,7 +533,7 @@ function EditPdf() {
     }
     if (!allowFile(selectedFile)) return;
     if (selectedFile.size > maxBytes) {
-      setError(t(m.common.fileTooLarge, { name: selectedFile.name, size: sizeLabel }));
+      setError(t(m.edit.tooLarge, { size: sizeLabel }));
       return;
     }
     try {

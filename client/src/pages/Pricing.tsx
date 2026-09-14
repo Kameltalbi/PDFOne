@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { STANDARD_TOOL_IDS } from '@mini-pdf-tools/shared';
 import { RestoreAccess } from '../components/RestoreAccess';
 import { useBilling, type CheckoutPlan } from '../lib/billing';
 import { usePageSeo } from '../lib/usePageSeo';
 import { usePricingCopy } from '../lib/pricing';
+import { useI18n } from '../i18n';
 import './Pricing.css';
 import './Account.css';
 
@@ -18,11 +20,14 @@ function PlanList({ items }: { items: string[] }) {
 }
 
 function Pricing() {
+  const { m } = useI18n();
   const pricing = usePricingCopy();
   usePageSeo(pricing.seoTitle, pricing.seoDescription);
   const { checkout, status } = useBilling();
   const [params] = useSearchParams();
   const [paying, setPaying] = useState<CheckoutPlan | null>(null);
+  const [proInterval, setProInterval] = useState<'month' | 'year'>('year');
+  const [showTools, setShowTools] = useState(false);
   const [error, setError] = useState<string | null>(
     params.get('canceled') === '1' ? pricing.canceled : null
   );
@@ -37,6 +42,13 @@ function Pricing() {
       setPaying(null);
     }
   };
+
+  const proPlan = proInterval === 'year' ? 'year' : 'month';
+  const proPrice = proInterval === 'year' ? pricing.yearPrice : pricing.monthPrice;
+  const proPeriod = proInterval === 'year' ? pricing.yearPeriod : pricing.monthPeriod;
+  const proIncludes = proInterval === 'year' ? pricing.yearIncludes : pricing.monthIncludes;
+  const proCta = proInterval === 'year' ? pricing.yearCta : pricing.monthCta;
+  const proMicro = proInterval === 'year' ? pricing.yearMicro : pricing.monthMicro;
 
   return (
     <main className="pricing-page">
@@ -56,7 +68,7 @@ function Pricing() {
           </div>
         )}
 
-        <div className="pricing-grid">
+        <div className="pricing-grid pricing-grid-3">
           <article className="pricing-card">
             <p className="pricing-tag">{pricing.discover}</p>
             <h2>{pricing.freeName}</h2>
@@ -66,6 +78,22 @@ function Pricing() {
             </div>
             <p className="pricing-pitch">{pricing.freePitch}</p>
             <PlanList items={pricing.freeIncludes} />
+            <button
+              type="button"
+              className="pricing-tools-toggle"
+              aria-expanded={showTools}
+              onClick={() => setShowTools((open) => !open)}
+            >
+              {showTools ? pricing.hideIncludedTools : pricing.seeIncludedTools}
+            </button>
+            {showTools && (
+              <ul className="pricing-tool-list" aria-label={pricing.includedToolsTitle}>
+                {STANDARD_TOOL_IDS.map((id) => {
+                  const label = m.tools[id as keyof typeof m.tools];
+                  return <li key={id}>{typeof label === 'string' ? label : id}</li>;
+                })}
+              </ul>
+            )}
             <p className="pricing-note">{pricing.freeNote}</p>
             <Link className="pricing-cta ghost" to="/tools">{pricing.freeCta}</Link>
             <p className="pricing-micro">{pricing.freeMicro}</p>
@@ -74,6 +102,7 @@ function Pricing() {
           <article className="pricing-card">
             <p className="pricing-tag">{pricing.urgent}</p>
             <h2>{pricing.weekName}</h2>
+            <p className="pricing-nosub">{pricing.weekNoSubscription}</p>
             <div className="pricing-price">
               <strong>{pricing.weekPrice}</strong>
               <em>{pricing.weekPeriod}</em>
@@ -90,44 +119,43 @@ function Pricing() {
             <p className="pricing-micro">{pricing.weekMicro}</p>
           </article>
 
-          <article className="pricing-card">
-            <p className="pricing-tag">{pricing.flexible}</p>
-            <h2>{pricing.monthName}</h2>
-            <div className="pricing-price">
-              <strong>{pricing.monthPrice}</strong>
-              <em>{pricing.monthPeriod}</em>
-            </div>
-            <p className="pricing-pitch">{pricing.monthPitch}</p>
-            <PlanList items={pricing.monthIncludes} />
-            {status.paid && (status.plan === 'month' || status.plan === 'year') ? (
-              <Link className="pricing-cta outline" to="/account">{pricing.alreadyActive}</Link>
-            ) : (
-              <button className="pricing-cta outline" type="button" disabled={Boolean(paying)} onClick={() => void pay('month')}>
-                {paying === 'month' ? pricing.paying : pricing.monthCta}
-              </button>
-            )}
-            <p className="pricing-micro">{pricing.monthMicro}</p>
-          </article>
-
           <article className="pricing-card featured">
-            <p className="pricing-badge">⭐ {pricing.yearBadge}</p>
+            <p className="pricing-badge">{pricing.yearBadge}</p>
             <p className="pricing-tag popular">{pricing.popular}</p>
-            <h2>{pricing.yearName}</h2>
-            <div className="pricing-price">
-              <strong>{pricing.yearPrice}</strong>
-              <em>{pricing.yearPeriod}</em>
-              <span>{pricing.yearEquiv}</span>
+            <h2>{pricing.accountPro}</h2>
+            <div className="pricing-interval" role="group" aria-label={pricing.accountPro}>
+              <button
+                type="button"
+                className={proInterval === 'month' ? 'is-active' : ''}
+                aria-pressed={proInterval === 'month'}
+                onClick={() => setProInterval('month')}
+              >
+                {pricing.proToggleMonthly}
+              </button>
+              <button
+                type="button"
+                className={proInterval === 'year' ? 'is-active' : ''}
+                aria-pressed={proInterval === 'year'}
+                onClick={() => setProInterval('year')}
+              >
+                {pricing.proToggleYearly}
+              </button>
             </div>
-            <p className="pricing-pitch">{pricing.yearPitch}</p>
-            <PlanList items={pricing.yearIncludes} />
-            {status.paid && status.plan === 'year' ? (
+            <div className="pricing-price">
+              <strong>{proPrice}</strong>
+              <em>{proPeriod}</em>
+              {proInterval === 'year' && <span>{pricing.yearEquiv}</span>}
+            </div>
+            <p className="pricing-pitch">{proInterval === 'year' ? pricing.yearPitch : pricing.monthPitch}</p>
+            <PlanList items={proIncludes} />
+            {status.paid && (status.plan === 'month' || status.plan === 'year') ? (
               <Link className="pricing-cta solid" to="/account">{pricing.alreadyActive}</Link>
             ) : (
-              <button className="pricing-cta solid" type="button" disabled={Boolean(paying)} onClick={() => void pay('year')}>
-                {paying === 'year' ? pricing.paying : pricing.yearCta}
+              <button className="pricing-cta solid" type="button" disabled={Boolean(paying)} onClick={() => void pay(proPlan)}>
+                {paying === proPlan ? pricing.paying : proCta}
               </button>
             )}
-            <p className="pricing-micro">{pricing.yearMicro}</p>
+            <p className="pricing-micro">{proMicro}</p>
           </article>
         </div>
 

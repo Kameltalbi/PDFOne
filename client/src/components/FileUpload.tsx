@@ -76,8 +76,9 @@ function FileUpload({
   const { m, t } = useI18n();
   const { status } = useBilling();
   const { allowFiles } = useUpgrade();
-  const maxBytes = maxFileBytes(status.paid);
-  const sizeLabel = maxFileLabel(status.paid);
+  const plan = status.paid ? status.plan : null;
+  const maxBytes = maxFileBytes(status.paid, plan);
+  const sizeLabel = status.maxFileLabel || maxFileLabel(status.paid, plan);
   const inputId = useId();
   const [files, setFiles] = useState<FileUploadType[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -102,7 +103,7 @@ function FileUpload({
     const next: FileUploadType[] = [];
     for (const file of accepted) {
       const validationError = file.size > maxBytes
-        ? t(m.common.fileTooLarge, { name: file.name, size: sizeLabel })
+        ? t(m.upload.tooLarge, { size: sizeLabel })
         : null;
       if (validationError) {
         setError(validationError);
@@ -183,7 +184,7 @@ function FileUpload({
             {m.upload.drop} <span className="browse-text">{m.upload.browse}</span>
           </p>
           <p className="upload-hint">
-            {imagesOnly ? m.upload.hintImages : m.upload.hintPdf} · {t(m.upload.hintMax, { count: maxFiles })}
+            {imagesOnly ? m.upload.hintImages : m.upload.hintPdf} · {t(m.upload.hintMax, { count: maxFiles, size: sizeLabel })}
           </p>
         </label>
       </div>
