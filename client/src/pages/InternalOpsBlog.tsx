@@ -72,13 +72,17 @@ function nowLocal() {
 }
 
 function slugify(value: string) {
-  return value
+  const slug = value
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 80);
+    .slice(0, 80)
+    .replace(/-+$/g, '');
+  if (slug.length >= 3) return slug;
+  const fallback = `article-${slug || 'post'}`.replace(/-+$/g, '');
+  return fallback.length >= 3 ? fallback.slice(0, 80) : 'article-post';
 }
 
 function statusLabel(status: BlogStatus) {
@@ -207,8 +211,16 @@ export default function InternalOpsBlog() {
     setSaved(null);
     void (async () => {
       try {
-        const nextSlug = slugLocked ? slug : (slug || slugify(locales.fr.title || locales.en.title));
+        const sourceTitle = locales.fr.title.trim() || locales.en.title.trim();
+        const nextSlug = slugify(slugLocked ? slug : (slug || sourceTitle));
         const publishedAt = publishedLocal ? new Date(publishedLocal) : new Date();
+        const packedLocales = {
+          ...(locales.fr.title.trim() ? { fr: locales.fr } : {}),
+          ...(locales.en.title.trim() ? { en: locales.en } : {})
+        };
+        if (!packedLocales.fr && !packedLocales.en) {
+          throw new Error('Ajoutez un titre et un contenu (FR ou EN).');
+        }
         const post = await opsRequest<StoredPost>('/api/admin/blog', {
           method: 'PUT',
           body: JSON.stringify({
@@ -217,7 +229,7 @@ export default function InternalOpsBlog() {
             publishedIso: Number.isNaN(publishedAt.getTime()) ? undefined : publishedAt.toISOString(),
             coverImage,
             internalLinks,
-            locales
+            locales: packedLocales
           })
         });
         setEditing(post.slug);

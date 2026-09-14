@@ -64,13 +64,17 @@ async function writeAll(posts: StoredBlogPost[]) {
 }
 
 export function slugify(value: string): string {
-  return value
+  const slug = value
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 80);
+    .slice(0, 80)
+    .replace(/-+$/g, '');
+  if (slug.length >= 3) return slug;
+  const fallback = `article-${slug || 'post'}`.replace(/-+$/g, '');
+  return fallback.length >= 3 ? fallback.slice(0, 80) : 'article-post';
 }
 
 export function isValidSlug(slug: string): boolean {
@@ -192,7 +196,7 @@ export function toPublicPost(post: StoredBlogPost, locale: string): PublicBlogPo
 function sanitizeCopy(raw: Partial<BlogLocaleCopy> | undefined): BlogLocaleCopy | null {
   if (!raw) return null;
   const title = clip(raw.title, 140);
-  const bodyMarkdown = clip(raw.bodyMarkdown, 80000);
+  const bodyMarkdown = clip(raw.bodyMarkdown, 80000) || clip(raw.excerpt, 400);
   if (!title || !bodyMarkdown) return null;
   const ctaTo = clip(raw.ctaTo, 120) || '/tools';
   return {
@@ -243,8 +247,9 @@ export async function upsertPost(input: {
 }): Promise<StoredBlogPost> {
   return withLock(async () => {
     const posts = await publishDuePosts(await readAll());
-    const title = input.locales?.fr?.title || input.locales?.en?.title || '';
-    const slug = isValidSlug(String(input.slug || '')) ? String(input.slug) : slugify(title);
+    const title = clip(input.locales?.fr?.title, 140) || clip(input.locales?.en?.title, 140);
+    const requestedSlug = String(input.slug || '').trim();
+    const slug = isValidSlug(requestedSlug) ? requestedSlug : slugify(requestedSlug || title);
     if (!isValidSlug(slug)) throw new Error('INVALID_SLUG');
 
     const locales: StoredBlogPost['locales'] = {};
