@@ -1,18 +1,23 @@
 import crypto from 'crypto';
 import express from 'express';
-import { authenticateUser, getUserByEmail, isValidEmail, USER_COOKIE, type UserPayload } from '../services/users.js';
+import { authenticateUser, getUserByEmail, isValidEmail, listUsersPublic, USER_COOKIE, type UserPayload } from '../services/users.js';
 import { isSuperAdminEmail } from '../services/admins.js';
 import {
   cancelEntitlement,
   grantComplimentary,
   isEntitlementActive,
+  listAllEntitlements,
   listEntitlementsByEmail,
   normalizeEmail,
+  pickBestEntitlement,
   resetEntitlementUsage,
   usageSnapshot,
   type Entitlement
 } from '../services/entitlements.js';
 import { deletePost, getStoredPost, listStoredPosts, postSummary, upsertPost } from '../services/blog.js';
+import { getStripe } from '../services/billing.js';
+import { amountsForZone, DEFAULT_ZONE } from '../services/pricingZones.js';
+import { pingConverters, runtimeHealthSnapshot } from '../utils/runtimeHealth.js';
 import { clientIp, clearCookie, readCookie, setCookie, signValue, verifyValue } from '../utils/cookies.js';
 
 const router = express.Router();
@@ -80,6 +85,7 @@ function publicEntitlement(entry: Entitlement) {
   const usage = usageSnapshot(entry);
   const admin = entry.source === 'admin' || entry.customerId.startsWith('admin:');
   return {
+    email: entry.email,
     customerId: entry.customerId,
     plan: entry.plan,
     status: entry.status,
@@ -94,6 +100,83 @@ function publicEntitlement(entry: Entitlement) {
   };
 }
 
+function planAmountCents(plan: string): number {
+  const amounts = amountsForZone(DEFAULT_ZONE);
+  if (plan === 'week') return amounts.week;
+  if (plan === 'month') return amounts.month;
+  if (plan === 'year') return amounts.year;
+  return 0;
+}
+
+function planBucket(entry: Entitlement | null): 'free' | 'pro' | 'week' | 'inactive' {
+  if (!entry) return 'free';
+  if (!isEntitlementActive(entry)) return 'inactive';
+  return entry.plan === 'week' ? 'week' : 'pro';
+}
+
+function dayStartUtc(offsetDays: number, now = new Date()): number {
+  const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  date.setUTCDate(date.getUTCDate() + offsetDays);
+  return date.getTime();
+}
+
+function countSince(timestamps: number[], from: number, to = Date.now()): number {
+  return timestamps.filter((value) => value >= from && value < to).length;
+}
+
+function percentDelta(current: number, previous: number): number | null {
+  if (previous <= 0) return current > 0 ? 100 : null;
+  return Math.round(((current - previous) / previous) * 100);
+}
+
+function signupSeries(createdAt: number[], days: number) {
+  const start = dayStartUtc(1 - days);
+  const points: number[] = [];
+  const labels: string[] = [];
+  for (let i = 0; i < days; i += 1) {
+    const from = start + i * 86_400_000;
+    const to = from + 86_400_000;
+    points.push(countSince(createdAt, from, to));
+    labels.push(new Date(from).toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' }));
+  }
+  return { points, labels, from: new Date(start).toISOString(), to: new Date(start + days * 86_400_000 - 1).toISOString() };
+}
+
+async function stripeMonthSnapshot() {
+  try {
+    const stripe = getStripe();
+    const start = new Date();
+    start.setUTCDate(1);
+    start.setUTCHours(0, 0, 0, 0);
+    const charges = await stripe.charges.list({
+      created: { gte: Math.floor(start.getTime() / 1000) },
+      limit: 100
+    });
+    let cents = 0;
+    const recent = charges.data.slice(0, 6).map((charge) => ({
+      email: charge.billing_details?.email || charge.receipt_email || '—',
+      plan: charge.description || '',
+      amountCents: charge.amount,
+      currency: charge.currency,
+      date: new Date(charge.created * 1000).toISOString(),
+      status: charge.paid && !charge.refunded ? 'Réussi' : (charge.refunded ? 'Remboursé' : charge.status)
+    }));
+    for (const charge of charges.data) {
+      if (charge.paid && !charge.refunded) cents += charge.amount;
+    }
+    return {
+      available: true,
+      cents,
+      currency: (charges.data[0]?.currency || 'usd').toUpperCase(),
+      recent
+    };
+  } catch {
+    return { available: false, cents: 0, currency: 'USD', recent: [] as Array<{
+      email: string; plan: string; amountCents: number; currency: string; date: string; status: string;
+    }> };
+  }
+}
+
 router.get('/session', (req, res) => {
   const user = superAdminUser(req);
   return res.json({
@@ -102,7 +185,8 @@ router.get('/session', (req, res) => {
       configured: true,
       authenticated: isOpsAuthenticated(req),
       secretLogin: secretConfigured(),
-      email: user?.email || null
+      email: user?.email || null,
+      name: user?.name || null
     }
   });
 });
@@ -268,6 +352,193 @@ router.post('/reset-usage', async (req, res) => {
   } catch (error) {
     console.error('Admin reset error:', error);
     return res.status(500).json({ success: false, error: 'Réinitialisation impossible.' });
+  }
+});
+
+router.get('/overview', async (req, res) => {
+  if (!requireOps(req, res)) return;
+  try {
+    const days = Number(req.query.days) === 30 || Number(req.query.days) === 90 ? Number(req.query.days) : 7;
+    const [users, entitlements, posts, revenue, health] = await Promise.all([
+      listUsersPublic(),
+      listAllEntitlements(),
+      listStoredPosts(),
+      stripeMonthSnapshot(),
+      runtimeHealthSnapshot()
+    ]);
+    const now = Date.now();
+    const bestByEmail = new Map<string, Entitlement[]>();
+    for (const entry of entitlements) {
+      const email = normalizeEmail(entry.email);
+      if (!email) continue;
+      const list = bestByEmail.get(email) || [];
+      list.push(entry);
+      bestByEmail.set(email, list);
+    }
+    const userEmails = new Set(users.map((user) => user.email));
+    let free = 0;
+    let pro = 0;
+    let week = 0;
+    let inactive = 0;
+    for (const user of users) {
+      const bucket = planBucket(pickBestEntitlement(bestByEmail.get(user.email) || [], now));
+      if (bucket === 'pro') pro += 1;
+      else if (bucket === 'week') week += 1;
+      else if (bucket === 'inactive') inactive += 1;
+      else free += 1;
+    }
+    for (const [email, list] of bestByEmail) {
+      if (userEmails.has(email)) continue;
+      const bucket = planBucket(pickBestEntitlement(list, now));
+      if (bucket === 'pro') pro += 1;
+      else if (bucket === 'week') week += 1;
+      else if (bucket === 'inactive') inactive += 1;
+    }
+    const createdAt = users.map((user) => Date.parse(user.createdAt)).filter((value) => Number.isFinite(value));
+    const weekAgo = dayStartUtc(-7);
+    const twoWeeksAgo = dayStartUtc(-14);
+    const usersWeekAgo = createdAt.filter((value) => value < weekAgo).length;
+    const newUsers = countSince(createdAt, weekAgo);
+    const prevNewUsers = countSince(createdAt, twoWeeksAgo, weekAgo);
+    const activeWeek = entitlements.filter((entry) => isEntitlementActive(entry) && entry.plan === 'week').length;
+    const activePro = entitlements.filter((entry) => isEntitlementActive(entry) && entry.plan !== 'week').length;
+    const signups = signupSeries(createdAt, days);
+    const recentUsers = users.slice(0, 6).map((user) => {
+      const best = pickBestEntitlement(bestByEmail.get(user.email) || [], now);
+      const bucket = planBucket(best);
+      return {
+        email: user.email,
+        name: user.name,
+        plan: bucket === 'week' ? 'week' : (best?.plan || 'free'),
+        bucket,
+        createdAt: user.createdAt,
+        status: bucket === 'inactive' ? 'Inactif' : 'Actif'
+      };
+    });
+    const fallbackPayments = entitlements
+      .filter((entry) => entry.source !== 'admin' && !entry.customerId.startsWith('admin:'))
+      .slice()
+      .sort((a, b) => String(b.expiresAt || '').localeCompare(String(a.expiresAt || '')))
+      .slice(0, 6)
+      .map((entry) => ({
+        email: entry.email,
+        plan: entry.plan,
+        amountCents: planAmountCents(entry.plan),
+        currency: 'USD',
+        date: entry.expiresAt || '',
+        status: isEntitlementActive(entry) ? 'Réussi' : entry.status
+      }));
+    return res.json({
+      success: true,
+      data: {
+        kpis: {
+          users: users.length,
+          usersDelta: percentDelta(users.length, usersWeekAgo),
+          pro: activePro,
+          week: activeWeek,
+          revenueCents: revenue.cents,
+          revenueCurrency: revenue.currency,
+          revenueAvailable: revenue.available,
+          newUsers,
+          newUsersDelta: percentDelta(newUsers, prevNewUsers)
+        },
+        mix: { free, pro, week, inactive, total: free + pro + week + inactive },
+        signups,
+        recentUsers,
+        recentPayments: revenue.recent.length > 0 ? revenue.recent : fallbackPayments,
+        recentPosts: posts.slice(0, 5).map(postSummary),
+        services: {
+          api: true,
+          stripe: revenue.available || Boolean(process.env.STRIPE_SECRET_KEY?.trim()),
+          tempDisk: health.tempDisk,
+          eventLoopLagMs: health.eventLoopLagMs,
+          memoryMb: Math.round((health.memory.rss || 0) / (1024 * 1024)),
+          checkedAt: new Date().toISOString()
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Admin overview error:', error);
+    return res.status(500).json({ success: false, error: 'Impossible de charger le tableau de bord.' });
+  }
+});
+
+router.get('/users', async (req, res) => {
+  if (!requireOps(req, res)) return;
+  try {
+    const q = normalizeEmail(typeof req.query.q === 'string' ? req.query.q : '');
+    const [users, entitlements] = await Promise.all([listUsersPublic(), listAllEntitlements()]);
+    const now = Date.now();
+    const byEmail = new Map<string, Entitlement[]>();
+    for (const entry of entitlements) {
+      const email = normalizeEmail(entry.email);
+      if (!email) continue;
+      const list = byEmail.get(email) || [];
+      list.push(entry);
+      byEmail.set(email, list);
+    }
+    const rows = users
+      .filter((user) => !q || user.email.includes(q) || user.name.toLowerCase().includes(q))
+      .slice(0, 400)
+      .map((user) => {
+        const best = pickBestEntitlement(byEmail.get(user.email) || [], now);
+        const bucket = planBucket(best);
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          createdAt: user.createdAt,
+          plan: best?.plan || 'free',
+          bucket,
+          active: bucket === 'pro' || bucket === 'week',
+          expiresAt: best?.expiresAt || null
+        };
+      });
+    return res.json({ success: true, data: { users: rows } });
+  } catch (error) {
+    console.error('Admin users error:', error);
+    return res.status(500).json({ success: false, error: 'Impossible de lister les utilisateurs.' });
+  }
+});
+
+router.get('/entitlements', async (req, res) => {
+  if (!requireOps(req, res)) return;
+  try {
+    const entries = await listAllEntitlements();
+    return res.json({
+      success: true,
+      data: {
+        entitlements: entries
+          .map(publicEntitlement)
+          .sort((a, b) => String(b.expiresAt || '').localeCompare(String(a.expiresAt || '')))
+      }
+    });
+  } catch (error) {
+    console.error('Admin entitlements error:', error);
+    return res.status(500).json({ success: false, error: 'Impossible de lister les abonnements.' });
+  }
+});
+
+router.get('/system', async (req, res) => {
+  if (!requireOps(req, res)) return;
+  try {
+    const ready = req.query.ready === '1';
+    const [health, converters] = await Promise.all([
+      runtimeHealthSnapshot(),
+      ready ? pingConverters() : Promise.resolve(null)
+    ]);
+    return res.json({
+      success: true,
+      data: {
+        health,
+        converters,
+        stripe: Boolean(process.env.STRIPE_SECRET_KEY?.trim()),
+        checkedAt: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Admin system error:', error);
+    return res.status(500).json({ success: false, error: 'Impossible de lire l’état système.' });
   }
 });
 

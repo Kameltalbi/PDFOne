@@ -64,7 +64,8 @@ function RedirectTo({ to }: { to: string }) {
 
 function AppShell() {
   const { pathname, search } = useLocation();
-  const bare = pathname === '/login' || pathname === '/signup' || pathname.startsWith('/internal');
+  const isAuth = pathname === '/login' || pathname === '/signup';
+  const isOps = pathname.startsWith('/internal');
   const lastPageView = useRef<string | null>(null);
 
   useEffect(() => {
@@ -99,8 +100,8 @@ function AppShell() {
   }, [pathname]);
 
   return (
-    <div className={bare ? 'app auth-app' : 'app'}>
-      {!bare && <Header />}
+    <div className={isAuth ? 'app auth-app' : 'app'}>
+      {!isAuth && !isOps && <Header />}
       <div className="app-body">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -157,8 +158,8 @@ function AppShell() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      {!bare && <Footer />}
-      {!bare && <PwaInstallBanner />}
+      {!isAuth && !isOps && <Footer />}
+      {!isAuth && !isOps && <PwaInstallBanner />}
     </div>
   );
 }

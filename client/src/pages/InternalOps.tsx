@@ -1,70 +1,58 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { opsRequest } from '../lib/ops';
 import { useBilling } from '../lib/billing';
+import { useRobotsMeta } from '../lib/usePageSeo';
+import InternalOpsDashboard from './InternalOpsDashboard';
+import InternalOpsUsers from './InternalOpsUsers';
+import InternalOpsSubscriptions from './InternalOpsSubscriptions';
 import InternalOpsBlog from './InternalOpsBlog';
+import InternalOpsSeo from './InternalOpsSeo';
+import InternalOpsSystem from './InternalOpsSystem';
+import {
+  formatBytes,
+  initials,
+  OPS_SECTIONS,
+  parseOpsSection,
+  type OpsSection,
+  type OpsSession
+} from './opsShared';
 import './InternalOps.css';
 
-type OpsSession = { configured: boolean; authenticated: boolean; secretLogin?: boolean; email?: string | null };
-type OpsTab = 'pass' | 'blog';
-
-type EntitlementRow = {
-  customerId: string;
-  plan: string;
-  status: string;
-  expiresAt: string | null;
-  active: boolean;
-  source: 'admin' | 'stripe';
-  note: string;
-  docsUsed: number;
-  usedToday: number;
-  aiUsed: number;
-  canManageStripe: boolean;
+const NAV_ICONS: Record<OpsSection, string> = {
+  dashboard: 'M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-9.5z',
+  users: 'M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM20 19v-1a3.5 3.5 0 0 0-2.5-3.3M16.5 7.2a2.5 2.5 0 0 1 0 4.6',
+  subscriptions: 'M4 7h16M4 12h16M4 17h10',
+  blog: 'M5 4h10l4 4v12H5V4zm10 0v4h4M8 12h8M8 16h6',
+  seo: 'M4 19V5h4l3 7 3-7h4v14h-3v-8l-4 8-4-8v8H4z',
+  system: 'M10.3 3.3h3.4l.6 2.4a7 7 0 0 1 1.6.9l2.3-.8 1.7 2.9-1.8 1.5a7 7 0 0 1 0 1.8l1.8 1.5-1.7 2.9-2.3-.8a7 7 0 0 1-1.6.9l-.6 2.4h-3.4l-.6-2.4a7 7 0 0 1-1.6-.9l-2.3.8L4 15.2l1.8-1.5a7 7 0 0 1 0-1.8L4 10.4 5.7 7.5l2.3.8a7 7 0 0 1 1.6-.9l.7-2.4zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'
 };
-
-type Lookup = {
-  email: string;
-  user: { name: string; createdAt: string } | null;
-  entitlements: EntitlementRow[];
-};
-
-function formatDate(value: string | null) {
-  if (!value) return 'Sans échéance';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString('fr-CA', { dateStyle: 'medium', timeStyle: 'short' });
-}
 
 export default function InternalOps() {
   const { refresh } = useBilling();
   const [session, setSession] = useState<OpsSession | null>(null);
-  const [tab, setTab] = useState<OpsTab>('pass');
+  const [section, setSection] = useState<OpsSection>(() => parseOpsSection(window.location.hash));
   const [loginEmail, setLoginEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secret, setSecret] = useState('');
-  const [email, setEmail] = useState('');
-  const [days, setDays] = useState(7);
-  const [note, setNote] = useState('');
-  const [lookup, setLookup] = useState<Lookup | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [userQuery, setUserQuery] = useState('');
+  const [focusEmail, setFocusEmail] = useState('');
+  const [disk, setDisk] = useState<{ used: number; total: number | null; pct: number } | null>(null);
+
+  useRobotsMeta('noindex, nofollow, noarchive');
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = 'Introuvable';
-    let robots = document.head.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-    const created = !robots;
-    if (!robots) {
-      robots = document.createElement('meta');
-      robots.setAttribute('name', 'robots');
-      document.head.appendChild(robots);
-    }
-    const previousRobots = robots.getAttribute('content');
-    robots.setAttribute('content', 'noindex, nofollow, noarchive');
-    return () => {
-      document.title = previousTitle;
-      if (created) robots?.remove();
-      else if (previousRobots) robots?.setAttribute('content', previousRobots);
-    };
+    document.title = 'One2PDF Admin';
+    return () => { document.title = previousTitle; };
+  }, []);
+
+  useEffect(() => {
+    const onHash = () => setSection(parseOpsSection(window.location.hash));
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
   const refreshSession = useCallback(async () => {
@@ -73,12 +61,42 @@ export default function InternalOps() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      if (!cancelled) setSession((current) => current || { configured: true, authenticated: false });
+    }, 8000);
     void refreshSession().catch(() => {
-      setSession({ configured: true, authenticated: false });
-    });
+      if (!cancelled) setSession({ configured: true, authenticated: false });
+    }).finally(() => window.clearTimeout(timer));
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
   }, [refreshSession]);
 
-  const run = async (fn: () => Promise<void>) => {
+  useEffect(() => {
+    if (!session?.authenticated) return;
+    void opsRequest<{ health: { tempDisk: { freeBytes: number | null; totalBytes: number | null } } }>('/api/admin/system')
+      .then((payload) => {
+        const total = payload.health.tempDisk.totalBytes;
+        const free = payload.health.tempDisk.freeBytes;
+        if (total == null || free == null) return;
+        setDisk({ used: total - free, total, pct: Math.round(((total - free) / total) * 100) });
+      })
+      .catch(() => undefined);
+  }, [session?.authenticated]);
+
+  const go = useCallback((next: OpsSection, email?: string) => {
+    setSection(next);
+    if (email) {
+      setFocusEmail(email);
+      setUserQuery(email);
+    }
+    const hash = `#${next}`;
+    if (window.location.hash !== hash) window.location.hash = hash;
+  }, []);
+
+  const run = useCallback(async (fn: () => Promise<void>) => {
     setBusy(true);
     setError(null);
     try {
@@ -88,7 +106,7 @@ export default function InternalOps() {
     } finally {
       setBusy(false);
     }
-  };
+  }, []);
 
   const login = (event: FormEvent) => {
     event.preventDefault();
@@ -122,70 +140,24 @@ export default function InternalOps() {
     });
   };
 
-  const search = (event: FormEvent) => {
+  const submitSearch = (event: FormEvent) => {
     event.preventDefault();
-    void run(async () => {
-      const data = await opsRequest<Lookup>('/api/admin/lookup', {
-        method: 'POST',
-        body: JSON.stringify({ email })
-      });
-      setLookup(data);
-      setEmail(data.email);
-    });
-  };
-
-  const reloadLookup = async (target = email) => {
-    if (!target) return;
-    const data = await opsRequest<Lookup>('/api/admin/lookup', {
-      method: 'POST',
-      body: JSON.stringify({ email: target })
-    });
-    setLookup(data);
-  };
-
-  const grant = (event: FormEvent) => {
-    event.preventDefault();
-    void run(async () => {
-      await opsRequest('/api/admin/grant', {
-        method: 'POST',
-        body: JSON.stringify({ email, days, note })
-      });
-      setNote('');
-      await reloadLookup();
-    });
-  };
-
-  const revoke = (row: EntitlementRow) => {
-    const stripeNote = row.source === 'stripe'
-      ? '\n\nCeci n’annule pas l’abonnement Stripe. Annulez-le aussi dans le Dashboard Stripe si besoin.'
-      : '';
-    if (!window.confirm(`Révoquer l’accès ${row.plan} (${row.customerId}) ?${stripeNote}`)) return;
-    void run(async () => {
-      await opsRequest('/api/admin/revoke', {
-        method: 'POST',
-        body: JSON.stringify({ customerId: row.customerId })
-      });
-      await reloadLookup();
-    });
-  };
-
-  const resetUsage = (row: EntitlementRow) => {
-    void run(async () => {
-      await opsRequest('/api/admin/reset-usage', {
-        method: 'POST',
-        body: JSON.stringify({ customerId: row.customerId })
-      });
-      await reloadLookup();
-    });
+    const q = search.trim();
+    if (!q) return;
+    if (q.includes('@')) go('users', q);
+    else {
+      setUserQuery(q);
+      go('users');
+    }
   };
 
   if (!session) {
-    return <main className="ops-page"><p className="ops-muted">Chargement…</p></main>;
+    return <main className="ops-gate"><p className="ops-muted">Chargement…</p></main>;
   }
 
   if (!session.configured) {
     return (
-      <main className="ops-page">
+      <main className="ops-gate">
         <section className="ops-card ops-narrow">
           <h1>Page introuvable</h1>
           <p className="ops-muted">Cette adresse n’existe pas.</p>
@@ -196,30 +168,22 @@ export default function InternalOps() {
 
   if (!session.authenticated) {
     return (
-      <main className="ops-page">
+      <main className="ops-gate">
         <section className="ops-card ops-narrow">
+          <div className="ops-login-brand">
+            <img src="/one2pdf-logo.png?v=2" alt="One2PDF" />
+            <span>Admin</span>
+          </div>
           <h1>Accès interne</h1>
-          <p className="ops-muted">Réservé aux superadmins. Ne pas indexer, ne pas partager l’URL.</p>
+          <p className="ops-muted">Réservé aux superadmins. Cette page n’est pas indexée.</p>
           <form className="ops-form" onSubmit={login}>
             <label>
               E-mail
-              <input
-                type="email"
-                autoComplete="username"
-                value={loginEmail}
-                onChange={(event) => setLoginEmail(event.target.value)}
-                required
-              />
+              <input type="email" autoComplete="username" value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} required />
             </label>
             <label>
               Mot de passe
-              <input
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
+              <input type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required />
             </label>
             {error && <p className="ops-error">{error}</p>}
             <button type="submit" disabled={busy}>{busy ? 'Vérification…' : 'Entrer'}</button>
@@ -228,13 +192,7 @@ export default function InternalOps() {
             <form className="ops-form" onSubmit={loginSecret}>
               <label>
                 Accès de secours
-                <input
-                  type="password"
-                  autoComplete="off"
-                  value={secret}
-                  onChange={(event) => setSecret(event.target.value)}
-                  placeholder="Secret serveur"
-                />
+                <input type="password" autoComplete="off" value={secret} onChange={(event) => setSecret(event.target.value)} placeholder="Secret serveur" />
               </label>
               <button type="submit" className="ops-ghost" disabled={busy}>Entrer avec le secret</button>
             </form>
@@ -244,150 +202,81 @@ export default function InternalOps() {
     );
   }
 
+  const displayName = session.name || session.email || 'Super Admin';
+
   return (
-    <main className="ops-page">
-      <section className="ops-card">
-        <header className="ops-head">
-          <div>
-            <p className="ops-kicker">Interne · non public</p>
-            <h1>Outil interne</h1>
+    <div className="ops-app">
+      <aside className="ops-side">
+        <a className="ops-side-brand" href="#dashboard" onClick={(event) => { event.preventDefault(); go('dashboard'); }}>
+          <img src="/one2pdf-logo.png?v=2" alt="One2PDF" />
+          <span>Admin</span>
+        </a>
+        <nav>
+          {OPS_SECTIONS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={section === item.id ? 'ops-nav-on' : ''}
+              onClick={() => go(item.id)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d={NAV_ICONS[item.id]} /></svg>
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <a className="ops-side-link" href="/" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-7 7M10 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-4" /></svg>
+          Voir le site
+        </a>
+        {disk && (
+          <div className="ops-side-disk">
+            <span>Stockage temporaire</span>
+            <div className="ops-disk-bar"><span style={{ width: `${Math.min(100, disk.pct)}%` }} /></div>
+            <p>{formatBytes(disk.used)} / {formatBytes(disk.total)} · {disk.pct}%</p>
           </div>
-          <button type="button" className="ops-ghost" onClick={logout} disabled={busy}>Sortir</button>
-        </header>
-
-        <div className="ops-tabs">
-          <button type="button" className={tab === 'pass' ? 'ops-tab-on' : ''} onClick={() => setTab('pass')}>
-            Abonnements
-          </button>
-          <button type="button" className={tab === 'blog' ? 'ops-tab-on' : ''} onClick={() => setTab('blog')}>
-            Blog
-          </button>
-        </div>
-
-        {tab === 'blog' ? <InternalOpsBlog /> : (
-          <>
-            <form className="ops-search" onSubmit={search}>
-              <label>
-                E-mail
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="client@exemple.com"
-                  required
-                />
-              </label>
-              <button type="submit" disabled={busy}>{busy ? 'Recherche…' : 'Chercher'}</button>
-            </form>
-
-            {error && <p className="ops-error">{error}</p>}
-
-            {lookup && (
-              <>
-                <div className="ops-facts">
-                  <article>
-                    <span>Compte One2PDF</span>
-                    <strong>{lookup.user ? lookup.user.name : 'Aucun compte mot de passe'}</strong>
-                    {lookup.user && <p>Créé le {formatDate(lookup.user.createdAt)}</p>}
-                  </article>
-                  <article>
-                    <span>Accès trouvés</span>
-                    <strong>{lookup.entitlements.length}</strong>
-                    <p>Le quota gratuit (cookie / IP) ne se réinitialise pas par e-mail.</p>
-                  </article>
-                </div>
-
-                {lookup.entitlements.length === 0 ? (
-                  <p className="ops-muted">Aucun pass enregistré pour cet e-mail.</p>
-                ) : (
-                  <div className="ops-table-wrap">
-                    <table className="ops-table">
-                      <thead>
-                        <tr>
-                          <th>Source</th>
-                          <th>Plan</th>
-                          <th>Statut</th>
-                          <th>Expiration</th>
-                          <th>Usage</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {lookup.entitlements.map((row) => (
-                          <tr key={row.customerId}>
-                            <td>
-                              <strong>{row.source === 'admin' ? 'Offert' : 'Stripe'}</strong>
-                              <p>{row.note || row.customerId}</p>
-                              {row.canManageStripe && <p>Abonnement Stripe encore actif côté facturation.</p>}
-                            </td>
-                            <td>{row.plan}</td>
-                            <td>
-                              <span className={row.active ? 'ops-ok' : 'ops-off'}>
-                                {row.active ? 'Actif' : row.status}
-                              </span>
-                            </td>
-                            <td>{formatDate(row.expiresAt)}</td>
-                            <td>
-                              {row.docsUsed} docs · {row.usedToday} aujourd’hui
-                              {row.aiUsed ? ` · IA ${row.aiUsed}` : ''}
-                            </td>
-                            <td className="ops-actions">
-                              <button type="button" onClick={() => resetUsage(row)} disabled={busy}>
-                                Reset quota
-                              </button>
-                              <button type="button" className="ops-danger" onClick={() => revoke(row)} disabled={busy}>
-                                Révoquer
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                <form className="ops-grant" onSubmit={grant}>
-                  <h2>Offrir un accès Pro</h2>
-                  <p className="ops-muted">
-                    Crée un pass local distinct. L’utilisateur doit se connecter ou restaurer son accès avec cet e-mail.
-                    Un abonnement Stripe payé reste à annuler dans Stripe.
-                  </p>
-                  <div className="ops-grant-row">
-                    <label>
-                      Jours
-                      <input
-                        type="number"
-                        min={1}
-                        max={730}
-                        value={days}
-                        onChange={(event) => setDays(Number(event.target.value))}
-                      />
-                    </label>
-                    <div className="ops-presets">
-                      {[7, 30, 365].map((value) => (
-                        <button key={value} type="button" onClick={() => setDays(value)}>
-                          {value} j
-                        </button>
-                      ))}
-                    </div>
-                    <label className="ops-note">
-                      Note
-                      <input
-                        type="text"
-                        maxLength={200}
-                        value={note}
-                        onChange={(event) => setNote(event.target.value)}
-                        placeholder="Support #123"
-                      />
-                    </label>
-                    <button type="submit" disabled={busy}>Accorder</button>
-                  </div>
-                </form>
-              </>
-            )}
-          </>
         )}
-      </section>
-    </main>
+      </aside>
+      <div className="ops-main">
+        <header className="ops-top">
+          <div>
+            <strong>One2PDF Admin</strong>
+            <p>Gérez votre plateforme en toute simplicité</p>
+          </div>
+          <form className="ops-top-search" onSubmit={submitSearch}>
+            <input
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Rechercher un utilisateur, un article…"
+            />
+          </form>
+          <div className="ops-top-user">
+            <span className="ops-avatar">{initials(displayName)}</span>
+            <span>
+              <strong>{displayName}</strong>
+              <p>Super Admin</p>
+            </span>
+            <button type="button" className="ops-exit" onClick={logout} disabled={busy}>Sortir</button>
+          </div>
+        </header>
+        <div className="ops-content">
+          {section === 'dashboard' && <InternalOpsDashboard onOpen={go} />}
+          {section === 'users' && (
+            <InternalOpsUsers initialQuery={userQuery} onOpenUser={(email) => go('subscriptions', email)} />
+          )}
+          {section === 'subscriptions' && (
+            <InternalOpsSubscriptions
+              initialEmail={focusEmail}
+              busy={busy}
+              error={error}
+              onBusy={run}
+            />
+          )}
+          {section === 'blog' && <InternalOpsBlog />}
+          {section === 'seo' && <InternalOpsSeo />}
+          {section === 'system' && <InternalOpsSystem />}
+        </div>
+      </div>
+    </div>
   );
 }

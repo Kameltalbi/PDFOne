@@ -1,7 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { opsRequest } from '../lib/ops';
+import { formatDate } from './opsShared';
 
 type BlogLocale = 'fr' | 'en';
+type BlogStatus = 'draft' | 'published' | 'scheduled';
+type BlogFilter = 'all' | 'draft' | 'scheduled' | 'published';
 
 type BlogCopy = {
   title: string;
@@ -16,20 +19,32 @@ type BlogCopy = {
 
 type StoredPost = {
   slug: string;
-  status: 'draft' | 'published';
+  status: BlogStatus;
   publishedIso: string;
+  coverImage?: string;
+  internalLinks?: string[];
   locales: Partial<Record<BlogLocale, BlogCopy>>;
   updatedAt: string;
 };
 
 type PostSummary = {
   slug: string;
-  status: 'draft' | 'published';
+  status: BlogStatus;
   publishedIso: string;
   updatedAt: string;
   title: string;
   locales: string[];
 };
+
+const TOOL_LINKS = [
+  { to: '/compress', label: 'Compresser un PDF' },
+  { to: '/merge', label: 'Fusionner des PDF' },
+  { to: '/split', label: 'Séparer un PDF' },
+  { to: '/jpg-to-pdf', label: 'JPG vers PDF' },
+  { to: '/pdf-to-word', label: 'PDF vers Word' },
+  { to: '/ocr', label: 'OCR PDF' },
+  { to: '/pricing', label: 'Tarifs Pro' }
+];
 
 const emptyCopy = (locale: BlogLocale): BlogCopy => ({
   title: '',
@@ -42,8 +57,18 @@ const emptyCopy = (locale: BlogLocale): BlogCopy => ({
   bodyMarkdown: ''
 });
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10);
+function pad(value: number) {
+  return String(value).padStart(2, '0');
+}
+
+function toLocalInput(iso: string) {
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(`${iso}T09:00:00`) : new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function nowLocal() {
+  return toLocalInput(new Date().toISOString());
 }
 
 function slugify(value: string) {
@@ -56,13 +81,22 @@ function slugify(value: string) {
     .slice(0, 80);
 }
 
+function statusLabel(status: BlogStatus) {
+  if (status === 'published') return 'Publié';
+  if (status === 'scheduled') return 'Programmé';
+  return 'Brouillon';
+}
+
 export default function InternalOpsBlog() {
   const [posts, setPosts] = useState<PostSummary[]>([]);
+  const [filter, setFilter] = useState<BlogFilter>('all');
   const [editing, setEditing] = useState<string | 'new' | null>(null);
   const [slug, setSlug] = useState('');
   const [slugLocked, setSlugLocked] = useState(false);
-  const [status, setStatus] = useState<'draft' | 'published'>('draft');
-  const [publishedIso, setPublishedIso] = useState(todayIso());
+  const [status, setStatus] = useState<BlogStatus>('draft');
+  const [publishedLocal, setPublishedLocal] = useState(nowLocal());
+  const [coverImage, setCoverImage] = useState('');
+  const [internalLinks, setInternalLinks] = useState<string[]>([]);
   const [locale, setLocale] = useState<BlogLocale>('fr');
   const [locales, setLocales] = useState<Record<BlogLocale, BlogCopy>>({
     fr: emptyCopy('fr'),
@@ -73,6 +107,10 @@ export default function InternalOpsBlog() {
   const [saved, setSaved] = useState<string | null>(null);
 
   const copy = locales[locale];
+  const visible = useMemo(
+    () => posts.filter((post) => filter === 'all' || post.status === filter),
+    [posts, filter]
+  );
 
   const loadList = async () => {
     const data = await opsRequest<{ posts: PostSummary[] }>('/api/admin/blog');
@@ -94,7 +132,9 @@ export default function InternalOpsBlog() {
     setSlug('');
     setSlugLocked(false);
     setStatus('draft');
-    setPublishedIso(todayIso());
+    setPublishedLocal(nowLocal());
+    setCoverImage('');
+    setInternalLinks([]);
     setLocale('fr');
     setLocales({ fr: emptyCopy('fr'), en: emptyCopy('en') });
     setSaved(null);
@@ -115,7 +155,9 @@ export default function InternalOpsBlog() {
       setSlug(post.slug);
       setSlugLocked(true);
       setStatus(post.status);
-      setPublishedIso(post.publishedIso.slice(0, 10));
+      setPublishedLocal(toLocalInput(post.publishedIso) || nowLocal());
+      setCoverImage(post.coverImage || '');
+      setInternalLinks(post.internalLinks || []);
       setLocales({
         fr: { ...emptyCopy('fr'), ...(post.locales.fr || {}) },
         en: { ...emptyCopy('en'), ...(post.locales.en || {}) }
@@ -128,6 +170,17 @@ export default function InternalOpsBlog() {
     }
   };
 
+  const toggleLink = (to: string) => {
+    setInternalLinks((current) => (
+      current.includes(to) ? current.filter((item) => item !== to) : [...current, to]
+    ));
+    if (!copy.bodyMarkdown.includes(`](${to})`)) {
+      patchCopy({
+        bodyMarkdown: `${copy.bodyMarkdown.trim()}\n\n[${TOOL_LINKS.find((item) => item.to === to)?.label || to}](${to})\n`
+      });
+    }
+  };
+
   const save = (event: FormEvent) => {
     event.preventDefault();
     setBusy(true);
@@ -136,19 +189,25 @@ export default function InternalOpsBlog() {
     void (async () => {
       try {
         const nextSlug = slugLocked ? slug : (slug || slugify(locales.fr.title || locales.en.title));
+        const publishedAt = publishedLocal ? new Date(publishedLocal) : new Date();
         const post = await opsRequest<StoredPost>('/api/admin/blog', {
           method: 'PUT',
           body: JSON.stringify({
             slug: nextSlug,
             status,
-            publishedIso,
+            publishedIso: Number.isNaN(publishedAt.getTime()) ? undefined : publishedAt.toISOString(),
+            coverImage,
+            internalLinks,
             locales
           })
         });
         setEditing(post.slug);
         setSlug(post.slug);
         setSlugLocked(true);
-        setSaved(status === 'published' ? 'Publié. Visible tout de suite sur /blog.' : 'Brouillon enregistré.');
+        setStatus(post.status);
+        if (post.status === 'scheduled') setSaved('Programmé. Il sera publié automatiquement à l’heure indiquée.');
+        else if (post.status === 'published') setSaved('Publié. Visible tout de suite sur /blog.');
+        else setSaved('Brouillon enregistré.');
         await loadList();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Enregistrement impossible.');
@@ -176,61 +235,83 @@ export default function InternalOpsBlog() {
   };
 
   return (
-    <div className="ops-blog">
-      <div className="ops-blog-head">
+    <div className="ops-pagebody">
+      <div className="ops-pagehead">
         <div>
-          <h2>Articles</h2>
-          <p className="ops-muted">
-            Markdown simple : ## titre, ### sous-titre, - liste, 1. étapes, [texte](/compress).
-            FR ou EN suffisent ; les autres langues reprennent l’anglais puis le français.
-            Les deux guides d’origine restent dans le code.
-          </p>
+          <h1>Blog / Articles</h1>
+          <p>Mini CMS : brouillons, programmation automatique et publication.</p>
         </div>
         <button type="button" onClick={startNew} disabled={busy}>Nouvel article</button>
       </div>
 
-      {error && <p className="ops-error">{error}</p>}
-      {saved && <p className="ops-ok-msg">{saved}</p>}
-
-      <div className="ops-table-wrap">
-        <table className="ops-table">
-          <thead>
-            <tr>
-              <th>Article</th>
-              <th>Statut</th>
-              <th>Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.length === 0 ? (
-              <tr><td colSpan={4}><p>Aucun article ajouté pour l’instant.</p></td></tr>
-            ) : posts.map((post) => (
-              <tr key={post.slug}>
-                <td>
-                  <strong>{post.title}</strong>
-                  <p>/blog/{post.slug} · {post.locales.join(', ') || '—'}</p>
-                </td>
-                <td>
-                  <span className={post.status === 'published' ? 'ops-ok' : 'ops-off'}>
-                    {post.status === 'published' ? 'Publié' : 'Brouillon'}
-                  </span>
-                </td>
-                <td>{post.publishedIso}</td>
-                <td className="ops-actions">
-                  <button type="button" onClick={() => void startEdit(post.slug)} disabled={busy}>Modifier</button>
-                  <button type="button" className="ops-danger" onClick={() => remove(post.slug)} disabled={busy}>Supprimer</button>
-                </td>
+      <section className="ops-panel">
+        <div className="ops-seg">
+          {([
+            ['all', 'Tous'],
+            ['draft', 'Brouillons'],
+            ['scheduled', 'Programmés'],
+            ['published', 'Publiés']
+          ] as const).map(([id, label]) => (
+            <button key={id} type="button" className={filter === id ? 'ops-tab-on' : ''} onClick={() => setFilter(id)}>
+              {label}
+              <em>{id === 'all' ? posts.length : posts.filter((post) => post.status === id).length}</em>
+            </button>
+          ))}
+        </div>
+        {error && <p className="ops-error">{error}</p>}
+        {saved && <p className="ops-ok-msg">{saved}</p>}
+        <div className="ops-table-wrap">
+          <table className="ops-table">
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th>Statut</th>
+                <th>Publication</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {visible.length === 0 ? (
+                <tr><td colSpan={4}><p>Aucun article dans ce filtre.</p></td></tr>
+              ) : visible.map((post) => (
+                <tr key={post.slug}>
+                  <td>
+                    <strong>{post.title}</strong>
+                    <p>/blog/{post.slug} · {post.locales.join(', ') || '—'}</p>
+                  </td>
+                  <td>
+                    <span className={post.status === 'published' ? 'ops-ok' : post.status === 'scheduled' ? 'ops-pill ops-pill-week' : 'ops-off'}>
+                      {statusLabel(post.status)}
+                    </span>
+                  </td>
+                  <td>{formatDate(post.publishedIso, true)}</td>
+                  <td className="ops-actions">
+                    <button type="button" onClick={() => void startEdit(post.slug)} disabled={busy}>Modifier</button>
+                    <button type="button" className="ops-danger" onClick={() => remove(post.slug)} disabled={busy}>Supprimer</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       {editing && (
-        <form className="ops-blog-form" onSubmit={save}>
+        <form className="ops-panel ops-blog-form" onSubmit={save}>
           <h2>{editing === 'new' ? 'Nouvel article' : `Modifier ${slug}`}</h2>
           <div className="ops-blog-meta">
+            <label>
+              Titre
+              <input
+                value={copy.title}
+                onChange={(event) => {
+                  const title = event.target.value;
+                  patchCopy({ title });
+                  if (!slugLocked && locale === 'fr') setSlug(slugify(title));
+                }}
+                required={locale === 'fr' || Boolean(locales.en.title)}
+              />
+            </label>
             <label>
               Slug
               <input
@@ -241,52 +322,49 @@ export default function InternalOpsBlog() {
               />
             </label>
             <label>
-              Date
-              <input type="date" value={publishedIso} onChange={(event) => setPublishedIso(event.target.value)} />
+              Mot-clé principal
+              <input value={copy.keywords} onChange={(event) => patchCopy({ keywords: event.target.value })} placeholder="compresser PDF" />
+            </label>
+          </div>
+          <div className="ops-blog-meta">
+            <label>
+              Titre SEO
+              <input value={copy.seoTitle} onChange={(event) => patchCopy({ seoTitle: event.target.value })} maxLength={70} />
+            </label>
+            <label>
+              Meta description
+              <input value={copy.seoDescription} onChange={(event) => patchCopy({ seoDescription: event.target.value })} maxLength={170} />
+            </label>
+          </div>
+          <div className="ops-blog-meta">
+            <label>
+              Date / heure de publication
+              <input type="datetime-local" value={publishedLocal} onChange={(event) => setPublishedLocal(event.target.value)} />
             </label>
             <label>
               Statut
-              <select value={status} onChange={(event) => setStatus(event.target.value as 'draft' | 'published')}>
+              <select value={status} onChange={(event) => setStatus(event.target.value as BlogStatus)}>
                 <option value="draft">Brouillon</option>
+                <option value="scheduled">Programmé</option>
                 <option value="published">Publié</option>
               </select>
             </label>
+            <label>
+              Image (URL)
+              <input value={coverImage} onChange={(event) => setCoverImage(event.target.value)} placeholder="https://… ou /image.jpg" />
+            </label>
           </div>
-
+          <p className="ops-muted">
+            Si le statut est « Publié » avec une date future, la publication est programmée automatiquement.
+            Markdown : ## titre, ### sous-titre, - liste, [texte](/compress).
+          </p>
           <div className="ops-presets">
             <button type="button" className={locale === 'fr' ? 'ops-tab-on' : ''} onClick={() => setLocale('fr')}>Français</button>
             <button type="button" className={locale === 'en' ? 'ops-tab-on' : ''} onClick={() => setLocale('en')}>English</button>
           </div>
-
-          <label>
-            Titre
-            <input
-              value={copy.title}
-              onChange={(event) => {
-                const title = event.target.value;
-                patchCopy({ title });
-                if (!slugLocked && locale === 'fr') setSlug(slugify(title));
-              }}
-              required={locale === 'fr' || Boolean(locales.en.title)}
-            />
-          </label>
           <label>
             Chapô
             <textarea rows={3} value={copy.excerpt} onChange={(event) => patchCopy({ excerpt: event.target.value })} />
-          </label>
-          <div className="ops-blog-meta">
-            <label>
-              Titre SEO
-              <input value={copy.seoTitle} onChange={(event) => patchCopy({ seoTitle: event.target.value })} />
-            </label>
-            <label>
-              Description SEO
-              <input value={copy.seoDescription} onChange={(event) => patchCopy({ seoDescription: event.target.value })} />
-            </label>
-          </div>
-          <label>
-            Mots-clés
-            <input value={copy.keywords} onChange={(event) => patchCopy({ keywords: event.target.value })} />
           </label>
           <div className="ops-blog-meta">
             <label>
@@ -298,6 +376,24 @@ export default function InternalOpsBlog() {
               <input value={copy.ctaTo} onChange={(event) => patchCopy({ ctaTo: event.target.value })} placeholder="/compress" />
             </label>
           </div>
+          <fieldset className="ops-links">
+            <legend>Liens internes</legend>
+            <div className="ops-presets">
+              {TOOL_LINKS.map((item) => (
+                <button
+                  key={item.to}
+                  type="button"
+                  className={internalLinks.includes(item.to) ? 'ops-tab-on' : ''}
+                  onClick={() => toggleLink(item.to)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          {coverImage && (
+            <img className="ops-cover" src={coverImage} alt="" />
+          )}
           <label>
             Contenu
             <textarea
@@ -305,12 +401,14 @@ export default function InternalOpsBlog() {
               rows={16}
               value={copy.bodyMarkdown}
               onChange={(event) => patchCopy({ bodyMarkdown: event.target.value })}
-              placeholder={'Premier paragraphe.\n\n## Titre\n\n- point\n- point\n\nAllez sur [Compresser un PDF](/compress).'}
+              placeholder={'Premier paragraphe.\n\n## Titre\n\n- point\n\nAllez sur [Compresser un PDF](/compress).'}
               required={locale === 'fr' || Boolean(locales.en.bodyMarkdown)}
             />
           </label>
           <div className="ops-blog-save">
-            <button type="submit" disabled={busy}>{busy ? 'Enregistrement…' : (status === 'published' ? 'Publier' : 'Enregistrer le brouillon')}</button>
+            <button type="submit" disabled={busy}>
+              {busy ? 'Enregistrement…' : (status === 'published' ? 'Publier' : status === 'scheduled' ? 'Programmer' : 'Enregistrer le brouillon')}
+            </button>
             <button type="button" className="ops-ghost" onClick={resetForm}>Fermer</button>
           </div>
         </form>

@@ -62,6 +62,20 @@ async function passwordsMatch(password: string, stored: string) {
   return timingSafeEqual(derived, expected);
 }
 
+export type PublicUserRecord = {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+};
+
+export async function listUsersPublic(): Promise<PublicUserRecord[]> {
+  const data = await readAll();
+  return Object.values(data)
+    .map((user) => ({ id: user.id, name: user.name, email: user.email, createdAt: user.createdAt }))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 export async function getUserByEmail(email: string | null | undefined): Promise<StoredUser | null> {
   const needle = normalizeEmail(email);
   if (!needle) return null;

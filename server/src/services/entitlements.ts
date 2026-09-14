@@ -108,6 +108,11 @@ export async function getActiveEntitlementByEmail(email: string | null | undefin
   );
 }
 
+export async function listAllEntitlements(): Promise<Entitlement[]> {
+  const data = await readAll();
+  return Object.values(data);
+}
+
 export async function listEntitlementsByEmail(email: string | null | undefined): Promise<Entitlement[]> {
   const needle = normalizeEmail(email);
   if (!needle) return [];
@@ -128,7 +133,7 @@ export function adminCustomerId(email: string): string {
 export async function grantComplimentary(email: string, days: number, note?: string): Promise<Entitlement> {
   const normalized = normalizeEmail(email);
   const safeDays = Math.min(730, Math.max(1, Math.floor(days)));
-  const plan: StoredPlan = safeDays <= 31 ? 'month' : 'year';
+  const plan: StoredPlan = safeDays <= 7 ? 'week' : safeDays <= 31 ? 'month' : 'year';
   const expiresAt = new Date(Date.now() + safeDays * 24 * 60 * 60 * 1000).toISOString();
   return upsertEntitlement({
     email: normalized,

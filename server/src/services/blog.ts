@@ -17,10 +17,14 @@ export type BlogLocaleCopy = {
   bodyMarkdown: string;
 };
 
+export type BlogStatus = 'draft' | 'published' | 'scheduled';
+
 export type StoredBlogPost = {
   slug: string;
-  status: 'draft' | 'published';
+  status: BlogStatus;
   publishedIso: string;
+  coverImage?: string;
+  internalLinks?: string[];
   locales: Partial<Record<BlogLocale, BlogLocaleCopy>>;
   updatedAt: string;
 };
@@ -80,6 +84,72 @@ function clip(value: unknown, max: number): string {
   return String(value || '').trim().slice(0, max);
 }
 
+function publishTime(iso: string): number {
+  const raw = String(iso || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return Date.parse(`${raw}T00:00:00`);
+  return Date.parse(raw);
+}
+
+function normalizePublishAt(value: unknown, fallback: string): string {
+  const raw = String(value || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+  const date = new Date(raw);
+  if (!Number.isNaN(date.getTime())) return date.toISOString();
+  return fallback;
+}
+
+function sanitizeCover(value: unknown): string {
+  const raw = clip(value, 400);
+  if (!raw) return '';
+  if (raw.startsWith('/') && !raw.startsWith('//') && isValidPath(raw)) return raw;
+  try {
+    const url = new URL(raw);
+    if (url.protocol === 'http:' || url.protocol === 'https:') return url.toString().slice(0, 400);
+  } catch {
+    /* ignore */
+  }
+  return '';
+}
+
+function sanitizeLinks(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  const links: string[] = [];
+  for (const item of value) {
+    const pathValue = clip(item, 120);
+    if (isValidPath(pathValue) && !links.includes(pathValue)) links.push(pathValue);
+    if (links.length >= 12) break;
+  }
+  return links;
+}
+
+export function isLivePost(post: StoredBlogPost, now = Date.now()): boolean {
+  if (post.status === 'draft') return false;
+  const at = publishTime(post.publishedIso);
+  if (Number.isNaN(at)) return post.status === 'published';
+  return at <= now;
+}
+
+function normalizeStatus(value: unknown, publishedIso: string, now = Date.now()): BlogStatus {
+  const at = publishTime(publishedIso);
+  const future = !Number.isNaN(at) && at > now;
+  if (value === 'draft') return 'draft';
+  if (value === 'scheduled' || (value === 'published' && future)) {
+    return future ? 'scheduled' : 'published';
+  }
+  return 'published';
+}
+
+async function publishDuePosts(posts: StoredBlogPost[], now = Date.now()): Promise<StoredBlogPost[]> {
+  let changed = false;
+  const next = posts.map((post) => {
+    if (post.status !== 'scheduled' || !isLivePost({ ...post, status: 'published' }, now)) return post;
+    changed = true;
+    return { ...post, status: 'published' as const, updatedAt: new Date().toISOString() };
+  });
+  if (changed) await writeAll(next);
+  return next;
+}
+
 function asLocale(value: string | undefined): BlogLocale {
   const lang = (value || 'en').slice(0, 2).toLowerCase();
   return (BLOG_LOCALES as readonly string[]).includes(lang) ? (lang as BlogLocale) : 'en';
@@ -136,26 +206,28 @@ function sanitizeCopy(raw: Partial<BlogLocaleCopy> | undefined): BlogLocaleCopy 
 }
 
 export async function listStoredPosts(): Promise<StoredBlogPost[]> {
-  const posts = await readAll();
-  return posts.sort((a, b) => b.publishedIso.localeCompare(a.publishedIso) || b.updatedAt.localeCompare(a.updatedAt));
+  return withLock(async () => {
+    const posts = await publishDuePosts(await readAll());
+    return posts.sort((a, b) => b.publishedIso.localeCompare(a.publishedIso) || b.updatedAt.localeCompare(a.updatedAt));
+  });
 }
 
 export async function listPublishedPosts(locale: string): Promise<PublicBlogPost[]> {
   const posts = await listStoredPosts();
   return posts
-    .filter((post) => post.status === 'published')
+    .filter((post) => isLivePost(post))
     .map((post) => toPublicPost(post, locale))
     .filter((post): post is PublicBlogPost => Boolean(post));
 }
 
 export async function getStoredPost(slug: string): Promise<StoredBlogPost | null> {
-  const posts = await readAll();
+  const posts = await listStoredPosts();
   return posts.find((post) => post.slug === slug) || null;
 }
 
 export async function getPublishedPost(slug: string, locale: string): Promise<PublicBlogPost | null> {
   const post = await getStoredPost(slug);
-  if (!post || post.status !== 'published') return null;
+  if (!post || !isLivePost(post)) return null;
   return toPublicPost(post, locale);
 }
 
@@ -163,10 +235,12 @@ export async function upsertPost(input: {
   slug?: string;
   status?: string;
   publishedIso?: string;
+  coverImage?: string;
+  internalLinks?: string[];
   locales?: Partial<Record<BlogLocale, Partial<BlogLocaleCopy>>>;
 }): Promise<StoredBlogPost> {
   return withLock(async () => {
-    const posts = await readAll();
+    const posts = await publishDuePosts(await readAll());
     const title = input.locales?.fr?.title || input.locales?.en?.title || '';
     const slug = isValidSlug(String(input.slug || '')) ? String(input.slug) : slugify(title);
     if (!isValidSlug(slug)) throw new Error('INVALID_SLUG');
@@ -181,16 +255,21 @@ export async function upsertPost(input: {
     const existing = posts.find((post) => post.slug === slug);
     if (!existing && posts.length >= MAX_POSTS) throw new Error('TOO_MANY');
 
-    const publishedIso = /^\d{4}-\d{2}-\d{2}$/.test(String(input.publishedIso || ''))
-      ? String(input.publishedIso)
-      : (existing?.publishedIso || new Date().toISOString().slice(0, 10));
-    const status = input.status === 'published' ? 'published' : 'draft';
+    const publishedIso = normalizePublishAt(
+      input.publishedIso,
+      existing?.publishedIso || new Date().toISOString().slice(0, 10)
+    );
+    const status = normalizeStatus(input.status, publishedIso);
+    const coverImage = sanitizeCover(input.coverImage ?? existing?.coverImage);
+    const internalLinks = sanitizeLinks(input.internalLinks ?? existing?.internalLinks);
     const next: StoredBlogPost = {
       slug,
       status,
       publishedIso,
       locales,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      ...(coverImage ? { coverImage } : {}),
+      ...(internalLinks.length ? { internalLinks } : {})
     };
     const without = posts.filter((post) => post.slug !== slug);
     without.push(next);
@@ -217,6 +296,8 @@ export function postSummary(post: StoredBlogPost) {
     publishedIso: post.publishedIso,
     updatedAt: post.updatedAt,
     title: copy?.title || post.slug,
-    locales: Object.keys(post.locales)
+    locales: Object.keys(post.locales),
+    coverImage: post.coverImage || '',
+    internalLinks: post.internalLinks || []
   };
 }
