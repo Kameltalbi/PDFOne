@@ -10,13 +10,15 @@ export type InlineMark = {
 
 export type InlinePart = string | InlineMark;
 
+export type BlockAlign = 'left' | 'center' | 'right';
+
 export type BlogBlock =
-  | { type: 'p'; text: string }
-  | { type: 'p'; parts: InlinePart[] }
-  | { type: 'h2'; text: string }
-  | { type: 'h3'; text: string }
-  | { type: 'ul'; items: Array<string | InlinePart[]> }
-  | { type: 'ol'; items: Array<string | InlinePart[]> };
+  | { type: 'p'; text: string; align?: BlockAlign }
+  | { type: 'p'; parts: InlinePart[]; align?: BlockAlign }
+  | { type: 'h2'; text: string; align?: BlockAlign }
+  | { type: 'h3'; text: string; align?: BlockAlign }
+  | { type: 'ul'; items: Array<string | InlinePart[]>; align?: BlockAlign }
+  | { type: 'ol'; items: Array<string | InlinePart[]>; align?: BlockAlign };
 
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const ALLOWED_SIZES = new Set(['14', '16', '18', '22', '28']);
@@ -57,6 +59,24 @@ export function sanitizeColor(value: string | null | undefined): string | undefi
     .map((part) => Math.max(0, Math.min(255, Number(part))).toString(16).padStart(2, '0'))
     .join('');
   return `#${hex}`;
+}
+
+export function sanitizeAlign(value: string | null | undefined): BlockAlign | undefined {
+  const raw = String(value || '').trim().toLowerCase();
+  if (raw === 'center' || raw === 'right' || raw === 'left') return raw;
+  if (raw === 'start' || raw === 'justify') return 'left';
+  if (raw === 'end') return 'right';
+  return undefined;
+}
+
+function alignFromAttrs(attrs: Record<string, string> | undefined): BlockAlign | undefined {
+  if (!attrs) return undefined;
+  const fromStyle = (attrs.style || '').match(/text-align\s*:\s*([^;]+)/i)?.[1];
+  return sanitizeAlign(attrs['data-align'] || attrs.align || fromStyle);
+}
+
+function withAlign<T extends object>(block: T, align?: BlockAlign): T {
+  return align && align !== 'left' ? { ...block, align } : block;
 }
 
 export function sanitizeSize(value: string | null | undefined): string | undefined {
@@ -117,11 +137,11 @@ function collapseParts(parts: InlinePart[]): string | InlinePart[] {
   return cleaned;
 }
 
-function paragraphFromParts(parts: InlinePart[]): BlogBlock | null {
+function paragraphFromParts(parts: InlinePart[], align?: BlockAlign): BlogBlock | null {
   const collapsed = collapseParts(parts);
   if (!collapsed || (typeof collapsed === 'string' && !collapsed.trim())) return null;
-  if (typeof collapsed === 'string') return { type: 'p', text: collapsed.trim() };
-  return { type: 'p', parts: collapsed };
+  if (typeof collapsed === 'string') return withAlign({ type: 'p', text: collapsed.trim() }, align);
+  return withAlign({ type: 'p', parts: collapsed }, align);
 }
 
 type Marks = {
@@ -190,11 +210,19 @@ function htmlToBlocks(html: string): BlogBlock[] {
   const blocks: BlogBlock[] = [];
   const stack: Array<{ tag: string; attrs: Record<string, string> }> = [];
   let inline: InlinePart[] = [];
-  let list: { type: 'ul' | 'ol'; items: Array<string | InlinePart[]> } | null = null;
+  let list: { type: 'ul' | 'ol'; items: Array<string | InlinePart[]>; align?: BlockAlign } | null = null;
   let inLi = false;
 
+  const currentAlign = () => {
+    for (let i = stack.length - 1; i >= 0; i -= 1) {
+      const align = alignFromAttrs(stack[i].attrs);
+      if (align) return align;
+    }
+    return undefined;
+  };
+
   const flushParagraph = () => {
-    const block = paragraphFromParts(inline);
+    const block = paragraphFromParts(inline, currentAlign());
     inline = [];
     if (block) blocks.push(block);
   };
@@ -204,7 +232,7 @@ function htmlToBlocks(html: string): BlogBlock[] {
       list = null;
       return;
     }
-    blocks.push({ type: list.type, items: list.items });
+    blocks.push(withAlign({ type: list.type, items: list.items }, list.align));
     list = null;
   };
 
@@ -245,8 +273,9 @@ function htmlToBlocks(html: string): BlogBlock[] {
         }
         if (name === 'h1' || name === 'h2' || name === 'h3') {
           flushList();
+          const align = currentAlign();
           const text = headingText();
-          if (text) blocks.push({ type: name === 'h3' ? 'h3' : 'h2', text });
+          if (text) blocks.push(withAlign({ type: name === 'h3' ? 'h3' : 'h2', text }, align));
           stack.pop();
           continue;
         }
@@ -281,7 +310,7 @@ function htmlToBlocks(html: string): BlogBlock[] {
       if (name === 'ul' || name === 'ol') {
         flushParagraph();
         if (list && list.type !== name) flushList();
-        if (!list) list = { type: name, items: [] };
+        if (!list) list = { type: name, items: [], align: alignFromAttrs(attrs) };
         continue;
       }
       if (name === 'li') {

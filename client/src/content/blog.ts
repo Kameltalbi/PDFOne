@@ -13,13 +13,15 @@ export type InlinePart = string | {
   fontSize?: string;
 };
 
+export type BlockAlign = 'left' | 'center' | 'right';
+
 export type BlogBlock =
-  | { type: 'p'; text: string }
-  | { type: 'p'; parts: InlinePart[] }
-  | { type: 'h2'; text: string }
-  | { type: 'h3'; text: string }
-  | { type: 'ul'; items: Array<string | InlinePart[]> }
-  | { type: 'ol'; items: Array<string | InlinePart[]> };
+  | { type: 'p'; text: string; align?: BlockAlign }
+  | { type: 'p'; parts: InlinePart[]; align?: BlockAlign }
+  | { type: 'h2'; text: string; align?: BlockAlign }
+  | { type: 'h3'; text: string; align?: BlockAlign }
+  | { type: 'ul'; items: Array<string | InlinePart[]>; align?: BlockAlign }
+  | { type: 'ol'; items: Array<string | InlinePart[]>; align?: BlockAlign };
 
 export type BlogPost = {
   slug: string;

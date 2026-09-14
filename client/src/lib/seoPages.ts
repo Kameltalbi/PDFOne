@@ -72,17 +72,22 @@ function renderInline(parts: InlinePart[]): string {
   }).join('');
 }
 
+function alignAttr(block: BlogBlock): string {
+  if (!block.align || block.align === 'left') return '';
+  return ` style="text-align:${block.align}"`;
+}
+
 function renderBlogBlock(block: BlogBlock): string {
-  if (block.type === 'h2') return `<h2>${escapeHtml(block.text)}</h2>`;
-  if (block.type === 'h3') return `<h3>${escapeHtml(block.text)}</h3>`;
+  if (block.type === 'h2') return `<h2${alignAttr(block)}>${escapeHtml(block.text)}</h2>`;
+  if (block.type === 'h3') return `<h3${alignAttr(block)}>${escapeHtml(block.text)}</h3>`;
   if (block.type === 'p') {
-    if ('parts' in block) return `<p>${renderInline(block.parts)}</p>`;
-    return `<p>${escapeHtml(block.text)}</p>`;
+    if ('parts' in block) return `<p${alignAttr(block)}>${renderInline(block.parts)}</p>`;
+    return `<p${alignAttr(block)}>${escapeHtml(block.text)}</p>`;
   }
   const items = block.items.map((item) => (
     `<li>${typeof item === 'string' ? escapeHtml(item) : renderInline(item)}</li>`
   )).join('');
-  return block.type === 'ul' ? `<ul>${items}</ul>` : `<ol>${items}</ol>`;
+  return block.type === 'ul' ? `<ul${alignAttr(block)}>${items}</ul>` : `<ol${alignAttr(block)}>${items}</ol>`;
 }
 
 function blogPage(post: BlogPost): SeoPrerenderPage {

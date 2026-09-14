@@ -23,18 +23,24 @@ function renderInline(parts: InlinePart[]): ReactNode {
   });
 }
 
+function blockStyle(block: BlogBlock) {
+  if (!block.align || block.align === 'left') return undefined;
+  return { textAlign: block.align };
+}
+
 function renderBlock(block: BlogBlock, index: number): ReactNode {
-  if (block.type === 'h2') return <h2 key={index}>{block.text}</h2>;
-  if (block.type === 'h3') return <h3 key={index}>{block.text}</h3>;
+  const style = blockStyle(block);
+  if (block.type === 'h2') return <h2 key={index} style={style}>{block.text}</h2>;
+  if (block.type === 'h3') return <h3 key={index} style={style}>{block.text}</h3>;
   if (block.type === 'p') {
     if ('parts' in block) {
-      return <p key={index}>{renderInline(block.parts)}</p>;
+      return <p key={index} style={style}>{renderInline(block.parts)}</p>;
     }
-    return <p key={index}>{block.text}</p>;
+    return <p key={index} style={style}>{block.text}</p>;
   }
   if (block.type === 'ul') {
     return (
-      <ul key={index}>
+      <ul key={index} style={style}>
         {block.items.map((item, itemIndex) => (
           <li key={itemIndex}>{typeof item === 'string' ? item : renderInline(item)}</li>
         ))}
@@ -42,7 +48,7 @@ function renderBlock(block: BlogBlock, index: number): ReactNode {
     );
   }
   return (
-    <ol key={index}>
+    <ol key={index} style={style}>
       {block.items.map((item, itemIndex) => (
         <li key={itemIndex}>{typeof item === 'string' ? item : renderInline(item)}</li>
       ))}

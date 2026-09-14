@@ -70,6 +70,27 @@ function rgbToHex(value: string): string | null {
     .join('')}`;
 }
 
+function readAlign(el: HTMLElement): 'left' | 'center' | 'right' | '' {
+  const raw = (
+    el.getAttribute('data-align')
+    || el.getAttribute('align')
+    || el.style.textAlign
+    || ''
+  ).toLowerCase();
+  if (raw === 'center' || raw === 'right' || raw === 'left') return raw;
+  if (raw === 'end') return 'right';
+  if (raw === 'start' || raw === 'justify') return 'left';
+  return '';
+}
+
+function applyAlign(html: string, align: 'left' | 'center' | 'right' | ''): string {
+  if (!html || !align) return html;
+  return html.replace(/<(p|h2|h3|ul|ol)(\s[^>]*)?>/gi, (full, tag: string, rest = '') => {
+    if (/data-align=/i.test(rest)) return full;
+    return `<${tag} data-align="${align}"${rest}>`;
+  });
+}
+
 function serializeNode(node: Node): string {
   if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.textContent || '');
   if (node.nodeType !== Node.ELEMENT_NODE) return '';
@@ -97,9 +118,16 @@ function serializeNode(node: Node): string {
     return out;
   }
   if (tag === 'h2' || tag === 'h3' || tag === 'p' || tag === 'ul' || tag === 'ol' || tag === 'li') {
-    return `<${tag}>${inner || (tag === 'p' ? '<br>' : '')}</${tag}>`;
+    const align = tag === 'li' ? '' : readAlign(el);
+    const attr = align ? ` data-align="${align}"` : '';
+    return `<${tag}${attr}>${inner || (tag === 'p' ? '<br>' : '')}</${tag}>`;
   }
-  if (tag === 'div') return inner ? `<p>${inner}</p>` : '';
+  if (tag === 'div') {
+    const aligned = applyAlign(inner, readAlign(el));
+    if (aligned) return aligned;
+    const align = readAlign(el);
+    return align ? `<p data-align="${align}"><br></p>` : '';
+  }
   return inner;
 }
 
@@ -179,6 +207,10 @@ export default function OpsRichTextEditor({
         <button type="button" onMouseDown={keepSelection} onClick={() => run('formatBlock', 'p')} title="Paragraphe">P</button>
         <button type="button" onMouseDown={keepSelection} onClick={() => run('formatBlock', 'h2')} title="Titre">H2</button>
         <button type="button" onMouseDown={keepSelection} onClick={() => run('formatBlock', 'h3')} title="Sous-titre">H3</button>
+        <span className="ops-editor-sep" />
+        <button type="button" className="ops-align ops-align-left" onMouseDown={keepSelection} onClick={() => run('justifyLeft')} title="Aligner à gauche" aria-label="Aligner à gauche"><span /><span /><span /></button>
+        <button type="button" className="ops-align ops-align-center" onMouseDown={keepSelection} onClick={() => run('justifyCenter')} title="Centrer" aria-label="Centrer"><span /><span /><span /></button>
+        <button type="button" className="ops-align ops-align-right" onMouseDown={keepSelection} onClick={() => run('justifyRight')} title="Aligner à droite" aria-label="Aligner à droite"><span /><span /><span /></button>
         <span className="ops-editor-sep" />
         <button type="button" onMouseDown={keepSelection} onClick={() => run('insertUnorderedList')} title="Liste">•</button>
         <button type="button" onMouseDown={keepSelection} onClick={() => run('insertOrderedList')} title="Liste numérotée">1.</button>

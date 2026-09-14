@@ -801,6 +801,30 @@
   border-radius: 999px !important;
 }
 
+.ops-align {
+  display: grid;
+  gap: 3px;
+  width: 32px;
+  padding: 0.45rem 0.4rem !important;
+}
+
+.ops-align span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+}
+
+.ops-align-left span:nth-child(2) { width: 70%; }
+.ops-align-left span:nth-child(3) { width: 85%; }
+
+.ops-align-center span { margin-inline: auto; }
+.ops-align-center span:nth-child(2) { width: 70%; }
+.ops-align-center span:nth-child(3) { width: 85%; }
+
+.ops-align-right span { margin-left: auto; }
+.ops-align-right span:nth-child(2) { width: 70%; }
+.ops-align-right span:nth-child(3) { width: 85%; }
+
 .ops-editor-area {
   min-height: 280px;
   padding: 0.9rem 1rem 1.1rem;
@@ -824,6 +848,10 @@
 .ops-editor-area p {
   margin: 0 0 0.7rem;
 }
+
+.ops-editor-area [data-align="left"] { text-align: left; }
+.ops-editor-area [data-align="center"] { text-align: center; }
+.ops-editor-area [data-align="right"] { text-align: right; }
 
 .ops-editor-area ul,
 .ops-editor-area ol {

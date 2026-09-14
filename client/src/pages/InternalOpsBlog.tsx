@@ -398,7 +398,7 @@ export default function InternalOpsBlog() {
           </div>
           <p className="ops-muted">
             Téléversez une image : elle est stockée sur One2PDF (JPG, PNG, WebP ou GIF, 4 Mo max).
-            Sélectionnez du texte puis utilisez la barre : gras, italique, souligné, titres, listes, taille et couleurs.
+            Sélectionnez du texte puis utilisez la barre : gras, italique, souligné, alignement, titres, listes, taille et couleurs.
           </p>
           <div className="ops-presets">
             <button type="button" className={locale === 'fr' ? 'ops-tab-on' : ''} onClick={() => setLocale('fr')}>Français</button>
