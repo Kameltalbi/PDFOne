@@ -88,7 +88,11 @@ export async function sampleBlockPaints(
         const viewport = page.getViewport({ scale: 1.4 });
         const canvas = createCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
         const ctx = canvas.getContext('2d');
-        await page.render({ canvasContext: ctx as never, viewport }).promise;
+        await page.render({
+          canvas,
+          canvasContext: ctx,
+          viewport
+        } as never).promise;
         const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const pixel = (x: number, y: number): RGB | null => {
           const px = Math.round(x);
@@ -98,7 +102,7 @@ export async function sampleBlockPaints(
           return { r: image.data[index], g: image.data[index + 1], b: image.data[index + 2] };
         };
         for (const block of pageBlocks) {
-          paints.set(paintKey(block), sampleOne(pixel, viewport, block));
+          paints.set(paintKey(block), sampleOne(pixel, viewport.convertToViewportPoint.bind(viewport), block));
         }
       } finally {
         page.cleanup();
@@ -116,7 +120,7 @@ export async function sampleBlockPaints(
 
 function sampleOne(
   pixel: (x: number, y: number) => RGB | null,
-  viewport: { convertToViewportPoint: (x: number, y: number) => [number, number] },
+  toViewport: (x: number, y: number) => number[],
   block: FittedBlock
 ): BlockPaint {
   const pad = 3;
@@ -133,7 +137,7 @@ function sampleOne(
     [block.x + block.w + pad, block.y + block.h / 2]
   ];
   for (const [x, y] of corners) {
-    const [vx, vy] = viewport.convertToViewportPoint(x, y);
+    const [vx, vy] = toViewport(x, y);
     const color = pixel(vx, vy);
     if (color) outside.push(color);
   }
@@ -141,7 +145,7 @@ function sampleOne(
     for (let col = 0; col < 10; col++) {
       const x = block.x + ((col + 0.5) / 10) * block.w;
       const y = block.y + ((row + 0.5) / 6) * block.h;
-      const [vx, vy] = viewport.convertToViewportPoint(x, y);
+      const [vx, vy] = toViewport(x, y);
       const color = pixel(vx, vy);
       if (color) inside.push(color);
     }
