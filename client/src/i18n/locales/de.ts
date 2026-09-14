@@ -43,7 +43,11 @@ export const de: Messages = {
     pwaText: 'Öffnen Sie Ihre PDF-Werkzeuge wie eine App, ohne den Browser.',
     pwaInstall: 'Installieren',
     pwaIosText: 'Tippen Sie auf Teilen, dann auf „Zum Home-Bildschirm“.',
-    pwaDismiss: 'Später'
+    pwaDismiss: 'Später',
+    notFoundTitle: 'Seite nicht gefunden | One2PDF',
+    notFoundHeading: 'Diese Seite gibt es nicht.',
+    notFoundText: 'Der Link ist vielleicht veraltet oder falsch. Die PDF-Tools sind weiterhin da.',
+    notFoundHome: 'Zur Startseite'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

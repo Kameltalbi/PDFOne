@@ -14,7 +14,7 @@ const RELATED: Record<string, string[]> = {
   '/ppt-to-pdf': ['/pdf-to-ppt', '/word-to-pdf', '/compress'],
   '/to-jpg': ['/jpg-to-pdf', '/compress', '/to-png'],
   '/jpg-to-pdf': ['/to-jpg', '/merge', '/compress'],
-  '/to-png': ['/to-jpg', '/png-to-pdf', '/compress'],
+  '/to-png': ['/to-jpg', '/jpg-to-pdf', '/compress'],
   '/png-to-pdf': ['/jpg-to-pdf', '/merge', '/compress'],
   '/protect': ['/unlock', '/compress', '/watermark'],
   '/unlock': ['/protect', '/compress', '/ocr'],

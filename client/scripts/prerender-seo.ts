@@ -56,18 +56,59 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   return html.replace('<div id="root"></div>', `<div id="root">${seoArticleHtml(page)}</div>`);
 }
 
+const SPA_SHELL_ROUTES = [
+  '/login',
+  '/signup',
+  '/account',
+  '/pricing/success',
+  '/edit-pdf/result',
+  '/internal/ops'
+];
+
+const ALIAS_PATHS = ['/png-to-pdf', '/pdf-to-pptx', '/pptx-to-pdf'];
+
+function applyNotFound(html: string) {
+  let page = replaceTitle(html, 'Page not found | One2PDF');
+  page = upsertMeta(page, 'name', 'description', 'This page does not exist.');
+  page = upsertMeta(page, 'name', 'robots', 'noindex, nofollow');
+  page = page.replace(/\s*<link rel="canonical" href="[^"]*"\s*\/?>/, '');
+  if (!page.includes('<div id="root"></div>')) {
+    throw new Error('SEO prerender: built index.html is missing <div id="root"></div>');
+  }
+  return page.replace(
+    '<div id="root"></div>',
+    '<div id="root"><article id="seo-prerender"><h1>This page does not exist.</h1><p>The link may be outdated or mistyped. The PDF tools are still here.</p><p><a href="/">Back to home</a></p></article></div>'
+  );
+}
+
+function writeHtml(relativePath: string, html: string) {
+  const target = join(outDir, relativePath);
+  mkdirSync(dirname(target), { recursive: true });
+  writeFileSync(target, html);
+}
+
 const shell = readFileSync(join(outDir, 'index.html'), 'utf8');
 const pages = indexableSeoPages();
 const required = ['/rotate', '/merge', '/compress', '/blog'];
 const titles = new Map<string, string>();
 
+for (const alias of ALIAS_PATHS) {
+  if (pages.some((page) => page.path === alias)) {
+    throw new Error(`SEO prerender must not emit alias route ${alias}`);
+  }
+}
+
+for (const route of SPA_SHELL_ROUTES) {
+  writeHtml(join(route.slice(1), 'index.html'), shell);
+}
+writeHtml('404.html', applyNotFound(shell));
+
 for (const page of pages) {
   const html = applyPage(shell, page);
   const target = page.path === '/'
-    ? join(outDir, 'index.html')
-    : join(outDir, page.path.slice(1), 'index.html');
-  mkdirSync(dirname(target), { recursive: true });
-  writeFileSync(target, html);
+    ? 'index.html'
+    : join(page.path.slice(1), 'index.html');
+  writeHtml(target, html);
   titles.set(page.path, page.title);
 }
 
@@ -79,4 +120,4 @@ if (unique.size !== required.length) {
   throw new Error('SEO prerender: /rotate, /merge, /compress and /blog must have distinct titles');
 }
 
-console.log(`SEO prerender: wrote ${pages.length} indexable HTML pages`);
+console.log(`SEO prerender: wrote ${pages.length} indexable HTML pages, ${SPA_SHELL_ROUTES.length} SPA shells, 404.html`);

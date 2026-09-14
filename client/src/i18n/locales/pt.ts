@@ -43,7 +43,11 @@ export const pt: Messages = {
     pwaText: 'Abra as suas ferramentas PDF como uma app, sem passar pelo browser.',
     pwaInstall: 'Instalar',
     pwaIosText: 'Toque em Partilhar e depois em « Adicionar ao ecrã principal ».',
-    pwaDismiss: 'Agora não'
+    pwaDismiss: 'Agora não',
+    notFoundTitle: 'Página não encontrada | One2PDF',
+    notFoundHeading: 'Esta página não existe.',
+    notFoundText: 'O link pode estar desatualizado ou incorreto. As ferramentas PDF continuam aqui.',
+    notFoundHome: 'Voltar ao início'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

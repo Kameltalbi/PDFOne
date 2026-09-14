@@ -42,7 +42,11 @@ export const fr: Messages = {
     pwaText: 'Ouvrez vos outils PDF comme une application, sans passer par le navigateur.',
     pwaInstall: 'Installer',
     pwaIosText: 'Appuyez sur Partager, puis sur « Sur l’écran d’accueil ».',
-    pwaDismiss: 'Plus tard'
+    pwaDismiss: 'Plus tard',
+    notFoundTitle: 'Page introuvable | One2PDF',
+    notFoundHeading: 'Cette page n’existe pas.',
+    notFoundText: 'Le lien est peut-être ancien ou mal saisi. Les outils PDF sont toujours là.',
+    notFoundHome: 'Retour à l’accueil'
   },
   units: { byte: 'o', kb: 'Ko', mb: 'Mo', gb: 'Go' },
   nav: {

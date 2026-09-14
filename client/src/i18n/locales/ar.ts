@@ -43,7 +43,11 @@ export const ar: Messages = {
     pwaText: 'افتح أدوات PDF كتطبيق، دون المرور بالمتصفح.',
     pwaInstall: 'تثبيت',
     pwaIosText: 'اضغط على مشاركة ثم « إضافة إلى الشاشة الرئيسية ».',
-    pwaDismiss: 'لاحقًا'
+    pwaDismiss: 'لاحقًا',
+    notFoundTitle: 'الصفحة غير موجودة | One2PDF',
+    notFoundHeading: 'هذه الصفحة غير موجودة.',
+    notFoundText: 'قد يكون الرابط قديماً أو مكتوبًا بشكل خاطئ. أدوات PDF ما زالت هنا.',
+    notFoundHome: 'العودة إلى الصفحة الرئيسية'
   },
   units: { byte: 'بايت', kb: 'ك.ب', mb: 'م.ب', gb: 'ج.ب' },
   nav: {

@@ -43,7 +43,11 @@ export const tr: Messages = {
     pwaText: 'PDF araçlarınızı tarayıcıya girmeden bir uygulama gibi açın.',
     pwaInstall: 'Yükle',
     pwaIosText: 'Paylaş’a, ardından « Ana Ekrana Ekle »ye dokunun.',
-    pwaDismiss: 'Şimdi değil'
+    pwaDismiss: 'Şimdi değil',
+    notFoundTitle: 'Sayfa bulunamadı | One2PDF',
+    notFoundHeading: 'Bu sayfa yok.',
+    notFoundText: 'Bağlantı eski veya hatalı olabilir. PDF araçları hâlâ burada.',
+    notFoundHome: 'Ana sayfaya dön'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

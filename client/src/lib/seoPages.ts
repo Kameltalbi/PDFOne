@@ -180,7 +180,6 @@ export function indexableSeoPages(): SeoPrerenderPage[] {
     toolNamed('/to-jpg', m.toJpg.title, m.toJpg.subtitle, m.toJpg),
     toolNamed('/jpg-to-pdf', m.jpgToPdf.title, m.jpgToPdf.subtitle, m.jpgToPdf, 'one2pdf-faq-jpg-to-pdf'),
     toolNamed('/to-png', m.toPng.title, m.toPng.subtitle, m.toPng, 'one2pdf-faq-/to-png'),
-    toolNamed('/png-to-pdf', m.jpgToPdf.title, m.jpgToPdf.subtitle, m.jpgToPdf, 'one2pdf-faq-jpg-to-pdf', '/jpg-to-pdf'),
     toolNamed('/unlock', m.unlockPdf.title, m.unlockPdf.subtitle, m.unlockPdf),
     toolNamed('/ocr', m.ocrPdf.title, m.ocrPdf.subtitle, m.ocrPdf),
     toolNamed('/sign', m.signPdf.title, m.signPdf.subtitle, m.signPdf),

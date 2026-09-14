@@ -42,7 +42,11 @@ export const en: Messages = {
     pwaText: 'Open your PDF tools like an app, without going through the browser.',
     pwaInstall: 'Install',
     pwaIosText: 'Tap Share, then “Add to Home Screen”.',
-    pwaDismiss: 'Not now'
+    pwaDismiss: 'Not now',
+    notFoundTitle: 'Page not found | One2PDF',
+    notFoundHeading: 'This page does not exist.',
+    notFoundText: 'The link may be outdated or mistyped. The PDF tools are still here.',
+    notFoundHome: 'Back to home'
   },
   units: { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
   nav: {

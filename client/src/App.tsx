@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -49,12 +49,18 @@ import About from './pages/About';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import InternalOps from './pages/InternalOps';
+import NotFound from './pages/NotFound';
 import { trackPageView, trackPricingView, trackToolOpen } from './lib/analytics';
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
 import { UpgradeModal } from './components/UpgradeModal';
 import PwaInstallBanner from './components/PwaInstallBanner';
 import './App.css';
+
+function RedirectTo({ to }: { to: string }) {
+  const { search } = useLocation();
+  return <Navigate to={`${to}${search}`} replace />;
+}
 
 function AppShell() {
   const { pathname, search } = useLocation();
@@ -104,9 +110,9 @@ function AppShell() {
           <Route path="/pdf-to-excel" element={<PdfToExcel />} />
           <Route path="/excel-to-pdf" element={<ExcelToPdf />} />
           <Route path="/pdf-to-ppt" element={<PdfToPpt />} />
-          <Route path="/pdf-to-pptx" element={<PdfToPpt />} />
+          <Route path="/pdf-to-pptx" element={<RedirectTo to="/pdf-to-ppt" />} />
           <Route path="/ppt-to-pdf" element={<PptToPdf />} />
-          <Route path="/pptx-to-pdf" element={<PptToPdf />} />
+          <Route path="/pptx-to-pdf" element={<RedirectTo to="/ppt-to-pdf" />} />
           <Route path="/compress" element={<Compress />} />
           <Route path="/protect" element={<Protect />} />
           <Route path="/to-jpg" element={<ToJpg />} />
@@ -138,7 +144,7 @@ function AppShell() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="/png-to-pdf" element={<JpgToPdf />} />
+          <Route path="/png-to-pdf" element={<RedirectTo to="/jpg-to-pdf" />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/edit-pdf" element={<EditPdf />} />
           <Route path="/edit-pdf/result" element={<EditResult />} />
@@ -148,6 +154,7 @@ function AppShell() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/internal/ops" element={<InternalOps />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
       {!bare && <Footer />}

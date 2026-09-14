@@ -59,6 +59,10 @@ export type Messages = {
     pwaInstall: string;
     pwaIosText: string;
     pwaDismiss: string;
+    notFoundTitle: string;
+    notFoundHeading: string;
+    notFoundText: string;
+    notFoundHome: string;
   };
   units: { byte: string; kb: string; mb: string; gb: string };
   nav: {
