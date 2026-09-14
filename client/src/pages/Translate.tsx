@@ -1,85 +1,86 @@
-import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useState } from 'react';
+import { PdfAction } from '../components/PdfAction';
 import { useI18n } from '../i18n';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
-import { landingSeoFrom, usePageSeo, useRobotsMeta } from '../lib/usePageSeo';
-import { RelatedTools } from '../components/RelatedTools';
-import '../components/Studio.css';
-import './Tools.css';
+import { useRobotsMeta } from '../lib/usePageSeo';
 
-/** Translate PDF is temporarily marked Soon — marketing SEO page kept for discovery. */
+const LANGS = ['fr', 'en', 'es', 'pt', 'de', 'it', 'tr', 'ar'] as const;
+type TranslateLang = typeof LANGS[number];
+type OutputMode = 'layout' | 'text';
+
 export default function Translate() {
-  const { m } = useI18n();
+  const { m, locale } = useI18n();
   const copy = m.translatePdf;
-  usePageSeo(copy.seoTitle, copy.seoDescription);
   useRobotsMeta('noindex, follow');
-  const seo = landingSeoFrom(copy);
-  const faqJsonLd = useMemo(
-    () => (seo.faq?.length ? faqPageJsonLd(seo.faq, pageUrl('/translate')) : null),
-    [seo.faq]
-  );
-  useJsonLd('one2pdf-faq-translate', faqJsonLd);
+  const [source, setSource] = useState<'auto' | TranslateLang>('auto');
+  const [target, setTarget] = useState<TranslateLang>(locale === 'en' ? 'fr' : 'en');
+  const [output, setOutput] = useState<OutputMode>('layout');
+
+  const langLabel = (code: TranslateLang) => {
+    if (code === 'fr') return copy.langFr;
+    if (code === 'en') return copy.langEn;
+    if (code === 'es') return copy.langEs;
+    if (code === 'pt') return copy.langPt;
+    if (code === 'de') return copy.langDe;
+    if (code === 'it') return copy.langIt;
+    if (code === 'tr') return copy.langTr;
+    return copy.langAr;
+  };
 
   return (
-    <main className="pdf-tools-page">
-      <div className="studio-landing">
-        <p className="pdf-tools-eyebrow">{m.tools.badgeSoon}</p>
-        <h1>
-          {copy.title}
-          <span className="studio-star" aria-hidden="true">☆</span>
-        </h1>
-        <p className="studio-subtitle">{copy.subtitle}</p>
-        <p className="studio-or" role="status">
-          <strong>{m.tools.badgeSoon}</strong>
-          {' — '}
-          <Link to="/tools">{m.home.seeAllTools}</Link>
-        </p>
-
-        <section className="studio-features">
-          {copy.features.map((feature) => (
-            <article key={feature.title}>
-              <span className={`studio-feature-icon ${feature.tone}`}>{feature.icon}</span>
-              <h3>{feature.title}</h3>
-              <p>{feature.text}</p>
-            </article>
-          ))}
-        </section>
-
-        {seo.howSteps && seo.howSteps.length > 0 && (
-          <section className="studio-how" aria-labelledby="studio-how-title">
-            <h2 id="studio-how-title">{seo.howTitle}</h2>
-            <ol>
-              {seo.howSteps.map((step, index) => (
-                <li key={step}>
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  {step}
-                </li>
+    <PdfAction
+      copy={copy}
+      endpoint="/api/translate"
+      premiumFeature="translate"
+      downloadName="traduction.pdf"
+      downloadLabel={copy.download}
+      extraDownloadLabel={copy.downloadTxt}
+      extraForm={(form) => {
+        form.append('source', source);
+        form.append('target', target);
+        form.append('mode', output);
+      }}
+      extra={(
+        <>
+          <div className="studio-field">
+            <label htmlFor="translate-from">{copy.source}</label>
+            <select id="translate-from" value={source} onChange={(event) => setSource(event.target.value as 'auto' | TranslateLang)}>
+              <option value="auto">{copy.autoDetect}</option>
+              {LANGS.map((code) => (
+                <option key={code} value={code}>{langLabel(code)}</option>
               ))}
-            </ol>
-          </section>
-        )}
-
-        <section className="studio-seo">
-          <h2>{seo.h2}</h2>
-          {seo.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
-        </section>
-
-        {seo.faq && seo.faq.length > 0 && (
-          <section className="studio-faq" aria-labelledby="studio-faq-title">
-            <h2 id="studio-faq-title">{seo.faqTitle}</h2>
-            {seo.faq.map((item) => (
-              <article key={item.question}>
-                <h3>{item.question}</h3>
-                <p>{item.answer}</p>
-              </article>
-            ))}
-          </section>
-        )}
-
-        <RelatedTools />
-      </div>
-    </main>
+            </select>
+          </div>
+          <div className="studio-field">
+            <label htmlFor="translate-to">{copy.target}</label>
+            <select id="translate-to" value={target} onChange={(event) => setTarget(event.target.value as TranslateLang)}>
+              {LANGS.map((code) => (
+                <option key={code} value={code}>{langLabel(code)}</option>
+              ))}
+            </select>
+          </div>
+          <div className="studio-field">
+            <p id="translate-output-label">{copy.output}</p>
+            <div className="summarize-mode-grid" role="radiogroup" aria-labelledby="translate-output-label">
+              {([
+                ['layout', copy.preserveLayout, copy.preserveLayoutHint],
+                ['text', copy.textOnly, copy.textOnlyHint]
+              ] as const).map(([value, label, hint]) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={output === value}
+                  className={`summarize-mode-card${output === value ? ' is-selected' : ''}`}
+                  onClick={() => setOutput(value)}
+                >
+                  <strong>{label}</strong>
+                  <span>{hint}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    />
   );
 }

@@ -967,7 +967,14 @@ export type Messages = {
     reset: string;
     download: string;
     downloadTxt: string;
+    source: string;
+    autoDetect: string;
     target: string;
+    output: string;
+    preserveLayout: string;
+    preserveLayoutHint: string;
+    textOnly: string;
+    textOnlyHint: string;
     langFr: string;
     langEn: string;
     langEs: string;

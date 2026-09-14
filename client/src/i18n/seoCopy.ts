@@ -198,31 +198,31 @@ export const seoFr = {
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
   translate: {
-    seoTitle: 'Traduire un PDF — bientôt disponible | One2PDF',
-    seoDescription: 'L’outil Traduire un PDF arrive bientôt sur One2PDF. Conservez la mise en page autant que possible. En attendant, explorez les autres outils PDF gratuits.',
-    seoH2: 'Traduire un PDF en ligne en gardant la mise en page — bientôt sur One2PDF',
-    seoP1: 'Vous devez envoyer une facture, un contrat ou un dossier dans une autre langue, sans tout recréer ? One2PDF prépare un outil pour traduire un PDF en ligne tout en conservant images, logos et tableaux. L’outil n’est pas encore ouvert : il est marqué bientôt disponible.',
-    seoP2: 'L’objectif n’est pas d’extraire tout le texte dans un fichier .txt, mais de remplacer le texte dans ses zones pour un PDF encore lisible. La mise en page ne sera pas identique au pixel près — une langue peut allonger ou raccourcir les phrases — mais le document restera proche de l’original. Un scan peu textuel passera par l’OCR avant traduction.',
-    seoP3: 'Dès la mise en service, le parcours restera centré sur la sécurité : fichier d’origine non conservé, PDF traduit téléchargeable puis supprimé. En attendant, utilisez les autres outils One2PDF (OCR, PDF en texte, résumé) et revenez sur cette page lorsque la traduction sera disponible.',
-    howTitle: 'Comment ça marchera',
+    seoTitle: 'Traduire un PDF en conservant la mise en page | One2PDF',
+    seoDescription: 'Traduisez un PDF en ligne tout en gardant images, logos et tableaux. Deux modes : mise en page conservée, ou texte seulement.',
+    seoH2: 'Comment traduire un PDF en ligne en gardant la mise en page',
+    seoP1: 'Vous devez envoyer une facture, un contrat ou un dossier dans une autre langue, sans tout recréer ? One2PDF traduit le texte du PDF et le replace dans ses zones d’origine. Images, logos et tableaux restent. Choisissez la langue source (ou la détection auto), la langue cible, puis Conserve la mise en page ou Texte seulement.',
+    seoP2: 'L’objectif n’est pas d’extraire tout le texte dans un fichier .txt, mais de remplacer le texte dans ses zones pour un PDF encore lisible. La mise en page n’est pas identique au pixel près — une langue peut allonger ou raccourcir les phrases — mais le document reste proche de l’original. Un scan peu textuel passe par l’OCR avant traduction.',
+    seoP3: 'Le parcours reste centré sur la sécurité : fichier d’origine non conservé, PDF traduit téléchargeable puis supprimé. La traduction linguistique passe par un fournisseur d’IA uniquement si vous lancez cet outil. Importez votre PDF, choisissez les langues, et téléchargez le résultat.',
+    howTitle: 'Comment traduire un PDF',
     howSteps: [
       'Importez le PDF à traduire',
-      'Choisissez la langue cible',
+      'Choisissez la langue source, la langue cible et le mode de sortie',
       'Téléchargez le PDF traduit'
     ],
     faqTitle: 'Questions fréquentes sur la traduction de PDF',
     faq: [
       {
-        question: 'L’outil est-il disponible maintenant ?',
-        answer: 'Non. La traduction de PDF est bientôt disponible sur One2PDF. Cette page présente le futur outil ; vous pouvez déjà utiliser OCR, PDF en texte ou résumé.'
+        question: 'La mise en page est-elle identique ?',
+        answer: 'Elle est conservée autant que possible : images, logos et zones de texte restent. Une traduction plus longue peut légèrement réduire la taille de police dans sa zone, sans descendre à une police minuscule.'
       },
       {
-        question: 'Est-ce que je récupérerai un PDF ou un fichier texte ?',
-        answer: 'Le résultat principal sera un PDF traduit. Un fichier .txt pourra aussi être proposé si vous n’avez besoin que du contenu.'
+        question: 'Est-ce que je récupère un PDF ou un fichier texte ?',
+        answer: 'Le résultat principal est un PDF traduit. Un fichier .txt est aussi proposé. Le mode Texte seulement produit un PDF de contenu, sans reconstruire la page d’origine.'
       },
       {
-        question: 'La mise en page sera-t-elle identique ?',
-        answer: 'Elle sera conservée autant que possible : images, logos et zones de texte restent. Une traduction plus longue ou plus courte pourra adapter la taille de police. Ce ne sera pas une copie pixel-perfect.'
+        question: 'Les scans fonctionnent-ils ?',
+        answer: 'Oui. S’il y a trop peu de texte sélectionnable, One2PDF lance l’OCR (Tesseract) puis traduit les blocs détectés.'
       }
     ]
   },
@@ -603,31 +603,31 @@ export const seoEn = {
     seoP3: 'Security stays at the center of the flow: the original is not kept, the OCR PDF is available for download, then deleted. No account is required for occasional use. Run OCR now, check a few sentences, and come back to One2PDF whenever a scan must become real text again. The whole process takes only a few seconds, with no extra software on your computer.'
   },
   translate: {
-    seoTitle: 'Translate a PDF — Coming Soon | One2PDF',
-    seoDescription: 'PDF Translate is coming soon on One2PDF. Keep the layout as far as possible. Meanwhile, explore the other free PDF tools.',
-    seoH2: 'Translate a PDF online while keeping the layout — coming soon on One2PDF',
-    seoP1: 'Need to send an invoice, a contract, or a pack in another language without rebuilding it? One2PDF is preparing a tool to translate a PDF online while keeping images, logos, and tables. The tool is not open yet: it is marked coming soon.',
-    seoP2: 'The goal is not to dump everything into a .txt file, but to replace text in its zones so the PDF stays readable. Layout will not be pixel-identical — some languages run longer or shorter — but the document should stay close to the original. A scan with little selectable text will go through OCR first.',
-    seoP3: 'When it launches, the flow will stay privacy-first: the original is not kept, the translated PDF is downloadable then deleted. Until then, use other One2PDF tools (OCR, PDF to text, summarize) and return to this page when translation is available.',
-    howTitle: 'How it will work',
+    seoTitle: 'Translate a PDF while keeping the layout | One2PDF',
+    seoDescription: 'Translate a PDF online and keep images, logos and tables. Two modes: preserve layout, or text only.',
+    seoH2: 'How to translate a PDF online while keeping the layout',
+    seoP1: 'Need to send an invoice, a contract, or a pack in another language without rebuilding it? One2PDF translates the PDF text and puts it back in its original zones. Images, logos and tables stay. Choose the source language (or auto detect), the target language, then Preserve layout or Text only.',
+    seoP2: 'The goal is not to dump everything into a .txt file, but to replace text in its zones so the PDF stays readable. Layout will not be pixel-identical — some languages run longer or shorter — but the document should stay close to the original. A scan with little selectable text goes through OCR first.',
+    seoP3: 'The flow stays privacy-first: the original is not kept, the translated PDF is downloadable then deleted. Linguistic translation uses an AI provider only if you run this tool. Import your PDF, pick the languages, and download the result.',
+    howTitle: 'How to translate a PDF',
     howSteps: [
       'Import the PDF to translate',
-      'Choose the target language',
+      'Choose source language, target language and output mode',
       'Download the translated PDF'
     ],
     faqTitle: 'Frequently asked questions about PDF translation',
     faq: [
       {
-        question: 'Is the tool available now?',
-        answer: 'No. PDF translation is coming soon on One2PDF. This page describes the upcoming tool; you can already use OCR, PDF to text, or summarize.'
+        question: 'Will the layout be identical?',
+        answer: 'It is kept as far as possible: images, logos, and text zones stay. A longer translation may shrink the font slightly inside its box, never down to a tiny unreadable size.'
       },
       {
         question: 'Will I get a PDF or a text file?',
-        answer: 'The main result will be a translated PDF. A .txt file may also be offered if you only need the wording.'
+        answer: 'The main result is a translated PDF. A .txt file is also offered. Text only produces a content PDF without rebuilding the original page design.'
       },
       {
-        question: 'Will the layout be identical?',
-        answer: 'It will be kept as far as possible: images, logos, and text zones stay. A longer or shorter translation may shrink the font. It will not be a pixel-perfect copy.'
+        question: 'Do scans work?',
+        answer: 'Yes. If there is too little selectable text, One2PDF runs OCR (Tesseract) then translates the detected blocks.'
       }
     ]
   },

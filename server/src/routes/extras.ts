@@ -179,7 +179,12 @@ router.post('/translate', upload.single('file'), async (req, res) => {
     if (!(await assertPremiumAccess(req, res, 'translate'))) return;
     if (!(await allowWeekAi(req, res))) return;
     const result = await runPdfJob(
-      () => translatePdf(uploadedFile.path, String(req.body.target || 'en'), String(req.body.source || 'en')),
+      () => translatePdf(
+        uploadedFile.path,
+        String(req.body.target || 'en'),
+        String(req.body.source || 'auto'),
+        String(req.body.mode || 'layout') === 'text' ? 'text' : 'layout'
+      ),
       { signal }
     );
     return res.json({

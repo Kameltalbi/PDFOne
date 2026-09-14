@@ -55,7 +55,7 @@ function Tools() {
     { id: 'reorderPages', name: m.tools.reorderPages, path: '/reorder', icon: '▦', color: '#f59e0b' },
     { id: 'ocr', name: m.tools.ocr, path: '/ocr', icon: 'OCR', color: '#374151', keywords: 'ocr scan texte tesseract' },
     { id: 'summarize', name: m.tools.summarize, path: '/summarize', icon: '☷', color: '#54b92f', keywords: 'résumer summary resume' },
-    { id: 'translate', name: m.tools.translate, icon: 'A文', color: '#ef5b45', keywords: 'traduire translate traduction', soon: true },
+    { id: 'translate', name: m.tools.translate, path: '/translate', icon: 'A文', color: '#ef5b45', keywords: 'traduire translate traduction' },
     { id: 'pngToPdf', name: m.tools.pngToPdf, path: '/png-to-pdf', icon: 'PNG', color: '#27b51c' },
     { id: 'pdfToPng', name: m.tools.pdfToPng, path: '/to-png', icon: '⇩', color: '#27b51c', keywords: 'png image' },
     { id: 'unlock', name: m.tools.unlock, path: '/unlock', icon: '🔓', color: '#333333', keywords: 'password mot de passe déverrouiller' },

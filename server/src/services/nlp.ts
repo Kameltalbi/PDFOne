@@ -132,9 +132,14 @@ export async function translateFragments(texts: string[], target: string, source
   return out;
 }
 
-export async function translatePdf(filePath: string, target: string, source = 'auto') {
+export async function translatePdf(
+  filePath: string,
+  target: string,
+  source = 'auto',
+  mode: 'layout' | 'text' = 'layout'
+) {
   const { translatePdfDocument } = await import('./translateLayout.js');
-  return translatePdfDocument(filePath, target, source);
+  return translatePdfDocument(filePath, target, source, mode);
 }
 
 const LANGUAGE_INSTRUCTION: Record<SummaryLanguage, string> = {

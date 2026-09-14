@@ -58,6 +58,9 @@ function clusterItems(items: Array<{ str?: string; transform?: number[]; width?:
   });
 }
 
+export type BlockKind = 'heading' | 'paragraph' | 'list' | 'table-cell' | 'caption';
+export type BlockAlign = 'left' | 'center' | 'right';
+
 export type LayoutBlock = {
   pageIndex: number;
   x: number;
@@ -67,6 +70,16 @@ export type LayoutBlock = {
   fontSize: number;
   text: string;
   rtl?: boolean;
+  fontName?: string;
+  color?: string;
+  align?: BlockAlign;
+  rotation?: number;
+  kind?: BlockKind;
+};
+
+export type LayoutPage = {
+  width: number;
+  height: number;
 };
 
 type RawItem = {
@@ -77,12 +90,13 @@ type RawItem = {
   h: number;
   fontSize: number;
   rtl: boolean;
+  fontName?: string;
+  rotation: number;
 };
 
 function openPdf(pdfBytes: Uint8Array, password = '') {
-  const data = pdfBytes instanceof Uint8Array && !Buffer.isBuffer(pdfBytes)
-    ? pdfBytes
-    : Uint8Array.from(pdfBytes);
+  const source = pdfBytes instanceof Uint8Array ? pdfBytes : Uint8Array.from(pdfBytes);
+  const data = Uint8Array.from(source);
   return getDocument({
     data,
     password,
@@ -93,6 +107,10 @@ function openPdf(pdfBytes: Uint8Array, password = '') {
     isEvalSupported: false,
     useSystemFonts: true
   } as never);
+}
+
+function itemRotation(transform: number[]) {
+  return Math.atan2(transform[1], transform[0]);
 }
 
 function isRotated(transform: number[]) {
@@ -113,12 +131,61 @@ function groupLines(items: RawItem[]): RawItem[][] {
   return lines;
 }
 
-function lineBox(line: RawItem[]): LayoutBlock {
+function splitLineClusters(line: RawItem[]): RawItem[][] {
+  if (line.length <= 1) return [line];
+  const gapTol = Math.max(16, median(line.map((item) => item.h)) * 1.85);
+  const clusters: RawItem[][] = [];
+  let current = [line[0]];
+  let endX = line[0].x + line[0].w;
+  for (let index = 1; index < line.length; index++) {
+    const item = line[index];
+    if (item.x <= endX + gapTol) {
+      current.push(item);
+      endX = Math.max(endX, item.x + item.w);
+    } else {
+      clusters.push(current);
+      current = [item];
+      endX = item.x + item.w;
+    }
+  }
+  clusters.push(current);
+  return clusters;
+}
+
+function inferAlign(x: number, w: number, pageWidth: number): BlockAlign {
+  const left = x;
+  const right = pageWidth - (x + w);
+  if (w >= pageWidth * 0.58) return 'left';
+  if (left > pageWidth * 0.16 && Math.abs(left - right) < Math.max(14, w * 0.35)) return 'center';
+  if (right < Math.min(24, left * 0.4) && left > right * 2) return 'right';
+  return 'left';
+}
+
+function isListMarker(text: string) {
+  return /^\s*(?:[•●▪◦\-–]|[0-9]{1,2}[.)])\s+/.test(text);
+}
+
+function isAllCapsTitle(text: string) {
+  const letters = text.replace(/[^\p{L}]/gu, '');
+  if (letters.length < 8 || text.length > 80) return false;
+  return letters === letters.toLocaleUpperCase() && /[\p{Lu}]{4,}/u.test(letters);
+}
+
+function inferKind(text: string, fontSize: number, medianSize: number, tableCell: boolean): BlockKind {
+  if (tableCell) return 'table-cell';
+  if (isListMarker(text)) return 'list';
+  if (isAllCapsTitle(text) || (fontSize >= medianSize * 1.28 && text.length < 140)) return 'heading';
+  if (fontSize <= medianSize * 0.86 && text.length < 90) return 'caption';
+  return 'paragraph';
+}
+
+function lineBox(line: RawItem[], pageWidth: number, tableCell = false): LayoutBlock {
   const x = Math.min(...line.map((item) => item.x));
   const y = Math.min(...line.map((item) => item.y - item.h * 0.2));
   const right = Math.max(...line.map((item) => item.x + item.w));
   const top = Math.max(...line.map((item) => item.y + item.h * 0.8));
   const fontSize = median(line.map((item) => item.fontSize)) || 10;
+  const text = line.map((item) => item.str).join(' ').replace(/\s+/g, ' ').trim();
   return {
     pageIndex: 0,
     x,
@@ -126,22 +193,32 @@ function lineBox(line: RawItem[]): LayoutBlock {
     w: Math.max(8, right - x),
     h: Math.max(fontSize * 0.9, top - y),
     fontSize,
-    text: line.map((item) => item.str).join(' ').replace(/\s+/g, ' ').trim(),
-    rtl: line.some((item) => item.rtl)
+    text,
+    rtl: line.some((item) => item.rtl),
+    fontName: line[0]?.fontName,
+    rotation: line[0]?.rotation || 0,
+    align: inferAlign(x, Math.max(8, right - x), pageWidth),
+    kind: tableCell ? 'table-cell' : 'paragraph'
   };
 }
 
-function mergeParagraphs(lines: LayoutBlock[]): LayoutBlock[] {
+function canWrapInto(prev: LayoutBlock, line: LayoutBlock) {
+  if (prev.kind === 'table-cell' || line.kind === 'table-cell') return false;
+  if (prev.kind === 'heading' || line.kind === 'heading' || prev.kind === 'caption') return false;
+  if (isListMarker(line.text)) return false;
+  if (Math.abs(prev.fontSize - line.fontSize) > Math.max(0.75, prev.fontSize * 0.12)) return false;
+  if (Math.abs(prev.x - line.x) >= Math.max(8, prev.fontSize * 1.1)) return false;
+  if (line.w > prev.w * 1.15) return false;
+  const gap = prev.y - (line.y + line.h);
+  return gap >= -2 && gap <= prev.fontSize * 0.62;
+}
+
+export function mergeParagraphs(lines: LayoutBlock[]): LayoutBlock[] {
   if (!lines.length) return [];
   const blocks: LayoutBlock[] = [];
   for (const line of lines) {
     const prev = blocks[blocks.length - 1];
-    const gap = prev ? prev.y - (line.y + line.h) : 999;
-    const sameColumn = prev
-      ? Math.abs(prev.x - line.x) < Math.max(10, prev.fontSize * 1.2)
-        && Math.abs(prev.w - line.w) < Math.max(prev.w, line.w) * 0.55
-      : false;
-    if (prev && sameColumn && gap >= -2 && gap <= prev.fontSize * 1.35) {
+    if (prev && canWrapInto(prev, line)) {
       const x = Math.min(prev.x, line.x);
       const y = Math.min(prev.y, line.y);
       const right = Math.max(prev.x + prev.w, line.x + line.w);
@@ -151,7 +228,7 @@ function mergeParagraphs(lines: LayoutBlock[]): LayoutBlock[] {
       prev.w = right - x;
       prev.h = top - y;
       prev.text = `${prev.text} ${line.text}`.replace(/\s+/g, ' ').trim();
-      prev.fontSize = Math.min(prev.fontSize, line.fontSize);
+      prev.fontSize = Math.max(prev.fontSize, line.fontSize);
       prev.rtl = prev.rtl || line.rtl;
     } else {
       blocks.push({ ...line });
@@ -160,18 +237,32 @@ function mergeParagraphs(lines: LayoutBlock[]): LayoutBlock[] {
   return blocks;
 }
 
+function classifyPageBlocks(blocks: LayoutBlock[], pageWidth: number): LayoutBlock[] {
+  const sizes = blocks.map((block) => block.fontSize);
+  const medianSize = median(sizes) || 10;
+  return blocks.map((block) => ({
+    ...block,
+    align: block.align || inferAlign(block.x, block.w, pageWidth),
+    kind: inferKind(block.text, block.fontSize, medianSize, block.kind === 'table-cell')
+  }));
+}
+
 export async function extractPdfLayout(pdfBytes: Uint8Array, password = ''): Promise<{
   pageCount: number;
   blocks: LayoutBlock[];
+  pages: LayoutPage[];
 }> {
   const loadingTask = openPdf(pdfBytes, password);
   const pdf = await loadingTask.promise;
   const pageCount = pdf.numPages;
   const blocks: LayoutBlock[] = [];
+  const pages: LayoutPage[] = [];
   try {
     for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
       const page = await pdf.getPage(pageNumber);
       try {
+        const viewport = page.getViewport({ scale: 1 });
+        pages.push({ width: viewport.width, height: viewport.height });
         const content = await page.getTextContent();
         const raw: RawItem[] = [];
         for (const rawItem of content.items as Array<{
@@ -180,6 +271,7 @@ export async function extractPdfLayout(pdfBytes: Uint8Array, password = ''): Pro
           height?: number;
           transform?: number[];
           dir?: string;
+          fontName?: string;
         }>) {
           if (typeof rawItem.str !== 'string' || !rawItem.str.trim() || !Array.isArray(rawItem.transform)) continue;
           if (isRotated(rawItem.transform)) continue;
@@ -191,12 +283,25 @@ export async function extractPdfLayout(pdfBytes: Uint8Array, password = ''): Pro
             w: rawItem.width ?? fontSize,
             h: rawItem.height ?? fontSize,
             fontSize,
-            rtl: rawItem.dir === 'rtl'
+            rtl: rawItem.dir === 'rtl',
+            fontName: rawItem.fontName,
+            rotation: itemRotation(rawItem.transform)
           });
         }
-        const pageBlocks = mergeParagraphs(groupLines(raw).map(lineBox));
+        const lineBlocks: LayoutBlock[] = [];
+        for (const line of groupLines(raw)) {
+          const clusters = splitLineClusters(line);
+          const tableRow = clusters.length >= 2;
+          for (const cluster of clusters) {
+            const box = lineBox(cluster, viewport.width, tableRow);
+            if (box.text) lineBlocks.push(box);
+          }
+        }
+        const pageBlocks = classifyPageBlocks(
+          mergeParagraphs(classifyPageBlocks(lineBlocks, viewport.width)),
+          viewport.width
+        );
         for (const block of pageBlocks) {
-          if (!block.text) continue;
           blocks.push({ ...block, pageIndex: pageNumber - 1 });
         }
       } finally {
@@ -210,7 +315,7 @@ export async function extractPdfLayout(pdfBytes: Uint8Array, password = ''): Pro
       /* ignore */
     }
   }
-  return { pageCount, blocks };
+  return { pageCount, blocks, pages };
 }
 
 export async function extractPdfRows(pdfBytes: Uint8Array, password = ''): Promise<string[][]> {

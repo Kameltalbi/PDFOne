@@ -5,7 +5,7 @@ const NOINDEX = [
   { path: '/login', robots: 'noindex, follow', note: 'Auth' },
   { path: '/signup', robots: 'noindex, follow', note: 'Auth' },
   { path: '/account', robots: 'noindex, follow', note: 'Compte' },
-  { path: '/translate', robots: 'noindex, follow', note: 'Coming soon' }
+  { path: '/translate', robots: 'noindex, follow', note: 'Translate PDF — keep noindex until layout QA' }
 ];
 
 export default function InternalOpsSeo() {
