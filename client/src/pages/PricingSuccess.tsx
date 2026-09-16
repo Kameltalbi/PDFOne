@@ -4,7 +4,7 @@ import { useBilling, type BillingState, type PaidPlan } from '../lib/billing';
 import { trackPurchase } from '../lib/analytics';
 import { useI18n } from '../i18n';
 import type { Messages } from '../i18n/types';
-import { usePageSeo } from '../lib/usePageSeo';
+import { usePageSeo, useRobotsMeta } from '../lib/usePageSeo';
 import './Pricing.css';
 
 function planCopy(plan: PaidPlan, pricing: Messages['pricing']) {
@@ -29,6 +29,7 @@ function PricingSuccess() {
     verified ? m.pricing.successSeoTitle : error ? m.pricing.successFailTitle : m.pricing.successVerifying,
     verified ? m.pricing.successSeoDescription : error ? m.pricing.successUnverified : m.pricing.successVerifying
   );
+  useRobotsMeta('noindex, nofollow');
 
   useEffect(() => {
     if (!sessionId) return;

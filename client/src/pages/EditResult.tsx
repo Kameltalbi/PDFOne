@@ -1,6 +1,7 @@
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { StudioResult } from '../components/PdfStudio';
 import { useI18n } from '../i18n';
+import { useRobotsMeta } from '../lib/usePageSeo';
 
 type ResultState = {
   downloadUrl: string;
@@ -14,6 +15,7 @@ function EditResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as ResultState | null;
+  useRobotsMeta('noindex, nofollow');
 
   if (!state?.downloadUrl) return <Navigate to="/edit-pdf" replace />;
 

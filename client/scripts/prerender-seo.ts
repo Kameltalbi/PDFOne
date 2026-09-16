@@ -50,7 +50,7 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   html = upsertMeta(html, 'name', 'twitter:title', page.title);
   html = upsertMeta(html, 'name', 'twitter:description', page.description);
   if (page.jsonLd && page.jsonLdId) html = upsertJsonLd(html, page.jsonLdId, page.jsonLd);
-  if (page.robots) html = upsertMeta(html, 'name', 'robots', page.robots);
+  html = upsertMeta(html, 'name', 'robots', page.robots ?? 'index, follow');
   if (!html.includes('<div id="root"></div>')) {
     throw new Error('SEO prerender: built index.html is missing <div id="root"></div>');
   }
@@ -65,7 +65,14 @@ const SPA_SHELL_ROUTES = [
   '/edit-pdf/result',
   '/internal/ops'
 ];
-const SPA_NOINDEX_ROUTES = new Set(['/login', '/signup', '/account']);
+const SPA_ROBOTS: Record<string, string> = {
+  '/login': 'noindex, follow',
+  '/signup': 'noindex, follow',
+  '/account': 'noindex, follow',
+  '/pricing/success': 'noindex, nofollow',
+  '/edit-pdf/result': 'noindex, nofollow',
+  '/internal/ops': 'noindex, nofollow, noarchive'
+};
 
 const ALIAS_PATHS = ['/png-to-pdf', '/pdf-to-pptx', '/pptx-to-pdf'];
 
@@ -101,10 +108,9 @@ for (const alias of ALIAS_PATHS) {
 }
 
 for (const route of SPA_SHELL_ROUTES) {
-  const html = SPA_NOINDEX_ROUTES.has(route)
-    ? upsertMeta(shell, 'name', 'robots', 'noindex, follow')
-    : shell;
-  writeHtml(join(route.slice(1), 'index.html'), html);
+  const robots = SPA_ROBOTS[route];
+  if (!robots) throw new Error(`SEO prerender missing robots directive for SPA shell ${route}`);
+  writeHtml(join(route.slice(1), 'index.html'), upsertMeta(shell, 'name', 'robots', robots));
 }
 writeHtml('404.html', applyNotFound(shell));
 

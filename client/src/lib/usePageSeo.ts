@@ -55,7 +55,9 @@ export function usePageSeo(title: string | null | undefined, description: string
     document.title = title;
 
     const prevDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') ?? '';
+    const prevRobots = document.querySelector('meta[name="robots"]')?.getAttribute('content') ?? '';
     setNamedMeta('name', 'description', description);
+    setNamedMeta('name', 'robots', 'index, follow');
     setNamedMeta('property', 'og:title', title);
     setNamedMeta('property', 'og:description', description);
     setNamedMeta('property', 'og:type', 'website');
@@ -81,6 +83,9 @@ export function usePageSeo(title: string | null | undefined, description: string
       else delete root.dataset.pageSeo;
       document.title = previousTitle;
       document.querySelector('meta[name="description"]')?.setAttribute('content', prevDescription);
+      const robots = document.querySelector('meta[name="robots"]');
+      if (prevRobots && !/\bnoindex\b/i.test(prevRobots)) robots?.setAttribute('content', prevRobots);
+      else robots?.setAttribute('content', 'index, follow');
       if (previousCanonical) canonical?.setAttribute('href', previousCanonical);
     };
   }, [title, description, url, ogLocale]);
@@ -98,9 +103,15 @@ export function useRobotsMeta(content: string) {
     }
     robots.setAttribute('content', content);
     return () => {
-      if (created) robots?.remove();
-      else if (previous) robots?.setAttribute('content', previous);
-      else robots?.remove();
+      if (created) {
+        robots?.remove();
+        return;
+      }
+      if (previous && !/\bnoindex\b/i.test(previous)) {
+        robots?.setAttribute('content', previous);
+        return;
+      }
+      robots?.setAttribute('content', 'index, follow');
     };
   }, [content]);
 }
