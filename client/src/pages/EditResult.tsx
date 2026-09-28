@@ -1,4 +1,5 @@
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Navigate, useLocaleNavigate } from '../components/LocaleLink';
 import { StudioResult } from '../components/PdfStudio';
 import { useI18n } from '../i18n';
 import { useRobotsMeta } from '../lib/usePageSeo';
@@ -13,7 +14,7 @@ type ResultState = {
 function EditResult() {
   const { m, t } = useI18n();
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useLocaleNavigate();
   const state = location.state as ResultState | null;
   useRobotsMeta('noindex, nofollow');
 

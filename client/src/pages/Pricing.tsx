@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import { STANDARD_TOOL_IDS } from '@mini-pdf-tools/shared';
 import { RestoreAccess } from '../components/RestoreAccess';
 import { useBilling, type CheckoutPlan } from '../lib/billing';

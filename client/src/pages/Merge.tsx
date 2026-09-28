@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import { postForm } from '../lib/api';
 import { useBilling } from '../lib/billing';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';

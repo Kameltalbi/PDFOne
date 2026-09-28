@@ -1,8 +1,11 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
+import { stripLocalePrefix } from '../i18n/localePath';
 import { remainingLabel } from '../lib/account';
 import { useBilling } from '../lib/billing';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { Link, NavLink } from './LocaleLink';
 import './Header.css';
 
 type MenuId = 'tools' | 'convert';
@@ -13,7 +16,8 @@ function isDesktopNav() {
 }
 
 function pathIsActive(pathname: string, path: string) {
-  return pathname === path || pathname.startsWith(`${path}/`);
+  const bare = stripLocalePrefix(pathname);
+  return bare === path || bare.startsWith(`${path}/`);
 }
 
 function Header() {
@@ -287,7 +291,9 @@ function Header() {
           </div>
         </nav>
 
-        <div className="header-actions">
+        <div className="header-end">
+          <LanguageSwitcher />
+          <div className="header-actions">
           {status.user || status.paid ? (
             <>
               <Link to="/account" className="header-plan">
@@ -302,6 +308,7 @@ function Header() {
           ) : (
             <Link to="/login" className="header-button login">{m.common.login}</Link>
           )}
+          </div>
         </div>
       </div>
     </header>

@@ -1,7 +1,9 @@
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate } from '../components/LocaleLink';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { getBlogPost, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
 import { useI18n } from '../i18n';
+import { urlLocaleFromPath } from '../i18n/localePath';
 import { pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Legal.css';
@@ -58,7 +60,9 @@ function renderBlock(block: BlogBlock, index: number): ReactNode {
 
 function BlogPostPage() {
   const { slug } = useParams();
+  const { pathname } = useLocation();
   const { locale, m, t } = useI18n();
+  const urlLocale = urlLocaleFromPath(pathname);
   const builtin = slug ? getBlogPost(locale, slug) : undefined;
   const [remote, setRemote] = useState<BlogPost | null>(null);
   const [ready, setReady] = useState(!slug);
@@ -93,9 +97,9 @@ function BlogPostPage() {
     headline: post.title,
     description: post.seoDescription,
     datePublished: post.publishedIso,
-    inLanguage: locale === 'fr' ? 'fr-CA' : 'en',
+    inLanguage: urlLocale === 'fr' ? 'fr' : 'en',
     keywords: post.keywords,
-    url: pageUrl(`/blog/${post.slug}`),
+    url: pageUrl(pathname),
     author: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' },
     publisher: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' }
   } : null);

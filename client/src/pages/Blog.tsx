@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import { mergeBlogPosts, blogCardLead, type BlogPost } from '../content/blog';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';

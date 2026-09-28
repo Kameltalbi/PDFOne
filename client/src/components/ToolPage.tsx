@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from './LocaleLink';
 import type { ReactNode } from 'react';
 import { useI18n } from '../i18n';
 import './ToolPage.css';

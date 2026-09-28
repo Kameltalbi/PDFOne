@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from '../i18n/localePath';
+
 export const GA_MEASUREMENT_ID = 'G-J905E602MX';
 
 /** The destination is configured once in index.html; page views are sent by AppShell. */
@@ -140,7 +142,7 @@ function isBrowser(): boolean {
 }
 
 export function toolNameFromPath(pathname: string): ToolName | null {
-  const path = pathname.replace(/\/+$/, '') || '/';
+  const path = stripLocalePrefix(pathname).replace(/\/+$/, '') || '/';
   return TOOL_BY_PATH[path] ?? null;
 }
 
@@ -210,7 +212,7 @@ export function trackEvent(eventName: string, parameters?: AnalyticsParams, onDo
 }
 
 export function trackPageView(pathname: string, search = ''): void {
-  if (!isBrowser() || pathname.startsWith('/internal')) return;
+  if (!isBrowser() || stripLocalePrefix(pathname).startsWith('/internal')) return;
   const pagePath = `${pathname}${search}`;
   trackEvent('page_view', {
     page_path: pagePath,
@@ -288,7 +290,7 @@ export function trackSignup(): void {
 }
 
 export function trackPricingView(pathname: string): void {
-  if (pathname !== '/pricing') {
+  if (stripLocalePrefix(pathname) !== '/pricing') {
     lastPricingViewPath = pathname;
     return;
   }

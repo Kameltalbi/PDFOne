@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from './LocaleLink';
 import { useI18n } from '../i18n';
 import './Footer.css';
 

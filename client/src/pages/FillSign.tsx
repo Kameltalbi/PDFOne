@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy, PageViewport } from 'pdfjs-dist';
 import { StudioLanding, StudioProcessing, StudioResult } from '../components/PdfStudio';

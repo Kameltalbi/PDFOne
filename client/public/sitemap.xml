@@ -1,45 +1,591 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://one2pdf.com/</loc><lastmod>2026-09-01</lastmod></url>
-  <url><loc>https://one2pdf.com/tools</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/pricing</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/privacy</loc><lastmod>2026-09-01</lastmod></url>
-  <url><loc>https://one2pdf.com/about</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/contact</loc><lastmod>2026-09-01</lastmod></url>
-  <url><loc>https://one2pdf.com/blog</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/blog/confidentialite-pdf-en-ligne</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/blog/reduire-taille-pdf-email</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/compress</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/merge</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/split</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/protect</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/edit-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/pdf-to-word</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/word-to-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/pdf-to-excel</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/excel-to-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/pdf-to-ppt</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/ppt-to-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/to-jpg</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/jpg-to-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/to-png</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/unlock</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/ocr</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/sign</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/watermark</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/page-numbers</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/rotate</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/crop</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/delete-pages</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/reorder</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/pdf-to-text</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/html-to-pdf</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/summarize</loc><lastmod>2026-08-28</lastmod></url>
-  <url><loc>https://one2pdf.com/extract-pages</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/extract-images</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/flatten</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/header-footer</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/fill-form</loc><lastmod>2026-09-02</lastmod></url>
-  <url><loc>https://one2pdf.com/fill-sign-pdf</loc><lastmod>2026-09-04</lastmod></url>
-  <url><loc>https://one2pdf.com/heic-to-pdf</loc><lastmod>2026-09-02</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://one2pdf.com/</loc>
+    <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/tools</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/pricing</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/privacy</loc>
+    <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/privacy" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/about</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/contact</loc>
+    <lastmod>2026-09-01</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/blog</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/blog/confidentialite-pdf-en-ligne</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/blog/reduire-taille-pdf-email</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/compress</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/merge</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/split</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/protect</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/edit-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/pdf-to-word</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/word-to-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/pdf-to-excel</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/excel-to-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/pdf-to-ppt</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/ppt-to-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/to-jpg</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/jpg-to-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/to-png</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/unlock</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/ocr</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/sign</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/watermark</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/page-numbers</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/rotate</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/crop</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/delete-pages</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/reorder</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/pdf-to-text</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/html-to-pdf</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/summarize</loc>
+    <lastmod>2026-08-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/extract-pages</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/extract-images</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/flatten</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/header-footer</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fill-form</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fill-sign-pdf</loc>
+    <lastmod>2026-09-04</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/heic-to-pdf</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/tools</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/pricing</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/privacy</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/privacy" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/about</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/contact</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/blog</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/blog/reduire-taille-pdf-email</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/compress</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/merge</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/split</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/protect</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/edit-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/pdf-to-word</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/word-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/pdf-to-excel</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/excel-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/pdf-to-ppt</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/ppt-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/to-jpg</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/jpg-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/to-png</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/unlock</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/ocr</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/sign</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/watermark</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/page-numbers</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/rotate</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/crop</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/delete-pages</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/reorder</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/pdf-to-text</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/html-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/summarize</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/extract-pages</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/extract-images</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/flatten</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/header-footer</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/fill-form</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/fill-sign-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/fr/heic-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
+  </url>
 </urlset>

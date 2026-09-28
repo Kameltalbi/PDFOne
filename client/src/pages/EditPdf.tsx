@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocaleNavigate } from '../components/LocaleLink';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { useI18n } from '../i18n';
@@ -458,7 +458,7 @@ function EditPdf() {
   const { allowFile } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
-  const navigate = useNavigate();
+  const navigate = useLocaleNavigate();
   const pickerId = useId();
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);

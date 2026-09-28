@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import { useBilling, type BillingState, type PaidPlan } from '../lib/billing';
 import { trackPurchase } from '../lib/analytics';
 import { useI18n } from '../i18n';

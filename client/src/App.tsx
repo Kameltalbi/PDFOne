@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { localizedPath, stripLocalePrefix, urlLocaleFromPath } from './i18n/localePath';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -58,14 +59,73 @@ import PwaInstallBanner from './components/PwaInstallBanner';
 import './App.css';
 
 function RedirectTo({ to }: { to: string }) {
-  const { search } = useLocation();
-  return <Navigate to={`${to}${search}`} replace />;
+  const { pathname, search } = useLocation();
+  return <Navigate to={`${localizedPath(to, urlLocaleFromPath(pathname))}${search}`} replace />;
+}
+
+function localeRoutes(prefix: '' | '/fr') {
+  const p = (path: string) => (prefix ? (path === '/' ? prefix : `${prefix}${path}`) : path);
+  return [
+    <Route key={p('/')} path={p('/')} element={<Home />} />,
+    <Route key={p('/merge')} path={p('/merge')} element={<Merge />} />,
+    <Route key={p('/pdf-to-word')} path={p('/pdf-to-word')} element={<PdfToWord />} />,
+    <Route key={p('/word-to-pdf')} path={p('/word-to-pdf')} element={<WordToPdf />} />,
+    <Route key={p('/pdf-to-excel')} path={p('/pdf-to-excel')} element={<PdfToExcel />} />,
+    <Route key={p('/excel-to-pdf')} path={p('/excel-to-pdf')} element={<ExcelToPdf />} />,
+    <Route key={p('/pdf-to-ppt')} path={p('/pdf-to-ppt')} element={<PdfToPpt />} />,
+    <Route key={p('/pdf-to-pptx')} path={p('/pdf-to-pptx')} element={<RedirectTo to="/pdf-to-ppt" />} />,
+    <Route key={p('/ppt-to-pdf')} path={p('/ppt-to-pdf')} element={<PptToPdf />} />,
+    <Route key={p('/pptx-to-pdf')} path={p('/pptx-to-pdf')} element={<RedirectTo to="/ppt-to-pdf" />} />,
+    <Route key={p('/compress')} path={p('/compress')} element={<Compress />} />,
+    <Route key={p('/protect')} path={p('/protect')} element={<Protect />} />,
+    <Route key={p('/to-jpg')} path={p('/to-jpg')} element={<ToJpg />} />,
+    <Route key={p('/to-png')} path={p('/to-png')} element={<ToPng />} />,
+    <Route key={p('/pdf-to-text')} path={p('/pdf-to-text')} element={<PdfToText />} />,
+    <Route key={p('/unlock')} path={p('/unlock')} element={<Unlock />} />,
+    <Route key={p('/ocr')} path={p('/ocr')} element={<Ocr />} />,
+    <Route key={p('/summarize')} path={p('/summarize')} element={<Summarize />} />,
+    <Route key={p('/translate')} path={p('/translate')} element={<Translate />} />,
+    <Route key={p('/html-to-pdf')} path={p('/html-to-pdf')} element={<HtmlToPdf />} />,
+    <Route key={p('/jpg-to-pdf')} path={p('/jpg-to-pdf')} element={<JpgToPdf />} />,
+    <Route key={p('/split')} path={p('/split')} element={<Split />} />,
+    <Route key={p('/delete-pages')} path={p('/delete-pages')} element={<DeletePages />} />,
+    <Route key={p('/reorder')} path={p('/reorder')} element={<ReorderPages />} />,
+    <Route key={p('/rotate')} path={p('/rotate')} element={<Rotate />} />,
+    <Route key={p('/watermark')} path={p('/watermark')} element={<Watermark />} />,
+    <Route key={p('/page-numbers')} path={p('/page-numbers')} element={<PageNumbers />} />,
+    <Route key={p('/crop')} path={p('/crop')} element={<Crop />} />,
+    <Route key={p('/sign')} path={p('/sign')} element={<Sign />} />,
+    <Route key={p('/extract-pages')} path={p('/extract-pages')} element={<ExtractPages />} />,
+    <Route key={p('/extract-images')} path={p('/extract-images')} element={<ExtractImages />} />,
+    <Route key={p('/flatten')} path={p('/flatten')} element={<Flatten />} />,
+    <Route key={p('/header-footer')} path={p('/header-footer')} element={<HeaderFooter />} />,
+    <Route key={p('/fill-form')} path={p('/fill-form')} element={<FillForm />} />,
+    <Route key={p('/fill-sign-pdf')} path={p('/fill-sign-pdf')} element={<FillSign />} />,
+    <Route key={p('/heic-to-pdf')} path={p('/heic-to-pdf')} element={<HeicToPdf />} />,
+    <Route key={p('/pricing')} path={p('/pricing')} element={<Pricing />} />,
+    <Route key={p('/pricing/success')} path={p('/pricing/success')} element={<PricingSuccess />} />,
+    <Route key={p('/login')} path={p('/login')} element={<LoginPage />} />,
+    <Route key={p('/signup')} path={p('/signup')} element={<SignupPage />} />,
+    <Route key={p('/account')} path={p('/account')} element={<AccountPage />} />,
+    <Route key={p('/png-to-pdf')} path={p('/png-to-pdf')} element={<RedirectTo to="/jpg-to-pdf" />} />,
+    <Route key={p('/tools')} path={p('/tools')} element={<Tools />} />,
+    <Route key={p('/edit-pdf')} path={p('/edit-pdf')} element={<EditPdf />} />,
+    <Route key={p('/edit-pdf/result')} path={p('/edit-pdf/result')} element={<EditResult />} />,
+    <Route key={p('/privacy')} path={p('/privacy')} element={<Privacy />} />,
+    <Route key={p('/about')} path={p('/about')} element={<About />} />,
+    <Route key={p('/contact')} path={p('/contact')} element={<Contact />} />,
+    <Route key={p('/blog/:slug')} path={p('/blog/:slug')} element={<BlogPost />} />,
+    <Route key={p('/blog')} path={p('/blog')} element={<Blog />} />,
+    <Route key={p('/internal/ops')} path={p('/internal/ops')} element={<InternalOps />} />,
+    ...(prefix === '' ? [<Route key="*" path="*" element={<NotFound />} />] : [])
+  ];
 }
 
 function AppShell() {
   const { pathname, search } = useLocation();
-  const isAuth = pathname === '/login' || pathname === '/signup';
-  const isOps = pathname.startsWith('/internal');
+  const barePath = stripLocalePrefix(pathname);
+  const isAuth = barePath === '/login' || barePath === '/signup';
+  const isOps = barePath.startsWith('/internal');
   const lastPageView = useRef<string | null>(null);
 
   useEffect(() => {
@@ -80,12 +140,12 @@ function AppShell() {
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname.startsWith('/internal')) return;
+    if (barePath.startsWith('/internal')) return;
     const location = `${pathname}${search}`;
     if (lastPageView.current === location) return;
     lastPageView.current = location;
     trackPageView(pathname, search);
-  }, [pathname, search]);
+  }, [barePath, pathname, search]);
 
   useEffect(() => {
     if (window.location.hash) return;
@@ -104,58 +164,8 @@ function AppShell() {
       {!isAuth && !isOps && <Header />}
       <div className="app-body">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/merge" element={<Merge />} />
-          <Route path="/pdf-to-word" element={<PdfToWord />} />
-          <Route path="/word-to-pdf" element={<WordToPdf />} />
-          <Route path="/pdf-to-excel" element={<PdfToExcel />} />
-          <Route path="/excel-to-pdf" element={<ExcelToPdf />} />
-          <Route path="/pdf-to-ppt" element={<PdfToPpt />} />
-          <Route path="/pdf-to-pptx" element={<RedirectTo to="/pdf-to-ppt" />} />
-          <Route path="/ppt-to-pdf" element={<PptToPdf />} />
-          <Route path="/pptx-to-pdf" element={<RedirectTo to="/ppt-to-pdf" />} />
-          <Route path="/compress" element={<Compress />} />
-          <Route path="/protect" element={<Protect />} />
-          <Route path="/to-jpg" element={<ToJpg />} />
-          <Route path="/to-png" element={<ToPng />} />
-          <Route path="/pdf-to-text" element={<PdfToText />} />
-          <Route path="/unlock" element={<Unlock />} />
-          <Route path="/ocr" element={<Ocr />} />
-          <Route path="/summarize" element={<Summarize />} />
-          <Route path="/translate" element={<Translate />} />
-          <Route path="/html-to-pdf" element={<HtmlToPdf />} />
-          <Route path="/jpg-to-pdf" element={<JpgToPdf />} />
-          <Route path="/split" element={<Split />} />
-          <Route path="/delete-pages" element={<DeletePages />} />
-          <Route path="/reorder" element={<ReorderPages />} />
-          <Route path="/rotate" element={<Rotate />} />
-          <Route path="/watermark" element={<Watermark />} />
-          <Route path="/page-numbers" element={<PageNumbers />} />
-          <Route path="/crop" element={<Crop />} />
-          <Route path="/sign" element={<Sign />} />
-          <Route path="/extract-pages" element={<ExtractPages />} />
-          <Route path="/extract-images" element={<ExtractImages />} />
-          <Route path="/flatten" element={<Flatten />} />
-          <Route path="/header-footer" element={<HeaderFooter />} />
-          <Route path="/fill-form" element={<FillForm />} />
-          <Route path="/fill-sign-pdf" element={<FillSign />} />
-          <Route path="/heic-to-pdf" element={<HeicToPdf />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/pricing/success" element={<PricingSuccess />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/png-to-pdf" element={<RedirectTo to="/jpg-to-pdf" />} />
-          <Route path="/tools" element={<Tools />} />
-          <Route path="/edit-pdf" element={<EditPdf />} />
-          <Route path="/edit-pdf/result" element={<EditResult />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/internal/ops" element={<InternalOps />} />
-          <Route path="*" element={<NotFound />} />
+          {localeRoutes('')}
+          {localeRoutes('/fr')}
         </Routes>
       </div>
       {!isAuth && !isOps && <Footer />}
@@ -166,14 +176,12 @@ function AppShell() {
 
 function App() {
   return (
-    <Router>
-      <BillingProvider>
-      <UpgradeProvider>
-      <AppShell />
-      <UpgradeModal />
-      </UpgradeProvider>
-      </BillingProvider>
-    </Router>
+    <BillingProvider>
+    <UpgradeProvider>
+    <AppShell />
+    <UpgradeModal />
+    </UpgradeProvider>
+    </BillingProvider>
   );
 }
 

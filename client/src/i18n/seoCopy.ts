@@ -2,7 +2,7 @@ import type { PageSeoCopy } from './types';
 
 export const seoFr = {
   wordToPdf: {
-    seoTitle: 'Convertir Word en PDF facilement | One2PDF',
+    seoTitle: 'Convertir un Word en PDF gratuitement | One2PDF',
     seoDescription: 'Passez d’un fichier Word (.doc, .docx) à un PDF en quelques secondes, sans installer Word. Convertissez gratuitement — lancez-vous sur One2PDF.',
     seoH2: 'Comment convertir un fichier Word en PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez envoyer un CV, un contrat ou un rapport que le destinataire pourra ouvrir partout ? One2PDF permet de convertir un fichier Word en PDF en ligne gratuitement, sans installer Microsoft Word. Importez un document .doc, .docx, .odt ou .rtf, lancez la conversion, puis téléchargez un PDF prêt à partager.',
@@ -31,7 +31,7 @@ export const seoFr = {
     ]
   },
   pdfToWord: {
-    seoTitle: 'Convertir PDF en Word, éditable | One2PDF',
+    seoTitle: 'Convertir un PDF en Word gratuitement | One2PDF',
     seoDescription: 'Passez d’un PDF à un document Word modifiable en quelques secondes. Convertissez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment convertir un PDF en Word en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez reprendre un contrat, un rapport ou un formulaire figé dans un PDF ? One2PDF permet de convertir un PDF en Word en ligne gratuitement, sans installer Microsoft Word. Importez le fichier, lancez la conversion, puis ouvrez un document DOC ou DOCX prêt à être modifié.',
@@ -92,7 +92,7 @@ export const seoFr = {
     seoP3: 'La sécurité reste au centre du parcours : le PDF d’origine n’est pas conservé, les images se téléchargent, puis sont supprimées. Aucune inscription n’est exigée pour un usage ponctuel. Convertissez votre PDF en JPG maintenant, vérifiez les pages, et revenez sur One2PDF dès qu’un document doit circuler en image.'
   },
   jpgToPdf: {
-    seoTitle: 'Convertir JPG en PDF facilement | One2PDF',
+    seoTitle: 'Convertir JPG en PDF gratuitement | One2PDF',
     seoDescription: 'Réunissez vos JPG, PNG ou WebP dans un seul PDF, dans l’ordre choisi. Créez-le gratuitement — démarrez sur One2PDF.',
     seoH2: 'Comment convertir des images JPG en PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous avez des photos de pièces, un scan de téléphone ou des captures à classer ? One2PDF permet de convertir des JPG en PDF en ligne gratuitement, sans installer de logiciel. Importez vos images JPG, PNG ou WebP, glissez les miniatures pour l’ordre, puis créez un document unique prêt à envoyer.',
@@ -129,7 +129,7 @@ export const seoFr = {
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF modifié se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Modifiez votre PDF maintenant, contrôlez l’aperçu, et revenez sur One2PDF dès qu’un document doit être ajusté sans être recréé. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
   rotate: {
-    seoTitle: 'Tourner un PDF en ligne, pages | One2PDF',
+    seoTitle: 'Tourner un PDF en ligne gratuitement | One2PDF',
     seoDescription: 'Redressez une page à l’envers ou un scan de téléphone en quelques secondes. Tournez gratuitement — démarrez sur One2PDF.',
     seoH2: 'Comment tourner les pages d’un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Une page de scan est à l’envers, un justificatif a été photographié en travers ? One2PDF permet de tourner un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, pivotez la page concernée — ou toutes les pages — de 90° en 90°, puis téléchargez le document redressé.',
@@ -190,12 +190,33 @@ export const seoFr = {
     seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF déverrouillé se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Déverrouillez votre PDF maintenant, vérifiez qu’il s’ouvre, et revenez sur One2PDF dès qu’un document dont vous avez la clé doit circuler plus simplement. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
   },
   ocr: {
-    seoTitle: 'OCR PDF en ligne, texte scanné | One2PDF',
+    seoTitle: 'OCR PDF en ligne : texte d’un scan | One2PDF',
     seoDescription: 'Reconnaissez le texte d’un scan et obtenez un PDF exploitable. L’OCR est disponible avec le Pass 7 jours ou Pro.',
     seoH2: 'Comment faire un OCR sur un PDF scanné facilement et en toute sécurité',
     seoP1: 'Votre justificatif n’est qu’une photo, impossible à copier-coller ? One2PDF permet de lancer un OCR sur un PDF en ligne avec le Pass 7 jours ou Pro, sans installer de logiciel. Importez le scan, lancez la reconnaissance, puis téléchargez un PDF dont le texte peut être sélectionné, recherché ou repris.',
     seoP2: 'Passer d’une image de document à du texte n’a pas à être réservé aux experts. La qualité dépend de la netteté du scan, mais le résultat sert ensuite à extraire, traduire ou résumer. C’est la méthode adaptée si vous cherchez comment reconnaître le texte d’un PDF scanné, rendre un scan interrogeable ou éviter de tout retaper.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. L’OCR est disponible avec le Pass 7 jours ou Pro. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.'
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le PDF OCR se télécharge, puis est supprimé. L’OCR est disponible avec le Pass 7 jours ou Pro. Lancez l’OCR maintenant, vérifiez quelques phrases, et revenez sur One2PDF dès qu’un scan doit redevenir du texte. Le traitement ne prend que quelques secondes, sans logiciel à installer.',
+    howTitle: 'Comment faire un OCR sur un PDF',
+    howSteps: [
+      'Importez le PDF scanné',
+      'Lancez la reconnaissance de texte',
+      'Téléchargez le PDF dont le texte est sélectionnable'
+    ],
+    faqTitle: 'Questions fréquentes sur l’OCR PDF',
+    faq: [
+      {
+        question: 'À quoi sert l’OCR sur un PDF ?',
+        answer: 'L’OCR reconnaît le texte d’un scan ou d’une photo de document. Vous pouvez ensuite le sélectionner, le rechercher ou le reprendre, au lieu de tout retaper.'
+      },
+      {
+        question: 'L’OCR PDF est-il inclus dans l’offre gratuite ?',
+        answer: 'Non. La reconnaissance de texte est disponible avec le Pass 7 jours ou Pro. Les outils comme compresser, fusionner ou tourner un PDF restent accessibles sans cet achat.'
+      },
+      {
+        question: 'One2PDF conserve-t-il le scan après l’OCR ?',
+        answer: 'Non. Le fichier est traité le temps de la reconnaissance, puis supprimé. Le PDF généré se télécharge une fois et n’est pas conservé.'
+      }
+    ]
   },
   translate: {
     seoTitle: 'Traduire un PDF en conservant la mise en page | One2PDF',

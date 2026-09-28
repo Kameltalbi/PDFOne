@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../components/LocaleLink';
 import { getPrivacyPolicy, privacyOfficerEmail } from '../content/privacyPolicy';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';

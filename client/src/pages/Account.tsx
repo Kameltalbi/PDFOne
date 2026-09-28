@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate } from '../components/LocaleLink';
 import { useBilling, type PaidPlan } from '../lib/billing';
 import { remainingLabel } from '../lib/account';
 import { useI18n } from '../i18n';

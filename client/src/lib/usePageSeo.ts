@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { stripLocalePrefix, urlLocaleFromPath } from '../i18n/localePath';
 import type { PageSeoCopy } from '../i18n/types';
+import { hreflangForPath } from './hreflang';
 import { pageUrl, SITE_ORIGIN } from './jsonLd';
 
 const OG_IMAGE = `${SITE_ORIGIN}/one2pdf-logo.png`;
@@ -40,11 +42,17 @@ export function landingSeoFrom(copy: PageSeoCopy) {
   };
 }
 
+const HREFLANG_SKIP = ['/login', '/signup', '/account', '/pricing/success', '/edit-pdf/result', '/translate', '/internal'];
+
+function emitHreflang(pathname: string) {
+  const bare = stripLocalePrefix(pathname);
+  return !HREFLANG_SKIP.some((path) => bare === path || bare.startsWith(`${path}/`));
+}
+
 export function usePageSeo(title: string | null | undefined, description: string | null | undefined) {
   const { pathname } = useLocation();
   const url = pageUrl(pathname);
-  const lang = document.documentElement.lang || 'en';
-  const ogLocale = OG_LOCALES[lang] || 'en_US';
+  const ogLocale = OG_LOCALES[urlLocaleFromPath(pathname)] || 'en_US';
 
   useEffect(() => {
     if (!title || !description) return;
@@ -78,6 +86,17 @@ export function usePageSeo(title: string | null | undefined, description: string
     }
     canonical.setAttribute('href', url);
 
+    document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((node) => node.remove());
+    if (emitHreflang(pathname)) {
+      for (const alt of hreflangForPath(pathname)) {
+        const link = document.createElement('link');
+        link.rel = 'alternate';
+        link.hreflang = alt.hreflang;
+        link.href = alt.href;
+        document.head.appendChild(link);
+      }
+    }
+
     return () => {
       if (previousFlag) root.dataset.pageSeo = previousFlag;
       else delete root.dataset.pageSeo;
@@ -87,8 +106,9 @@ export function usePageSeo(title: string | null | undefined, description: string
       if (prevRobots && !/\bnoindex\b/i.test(prevRobots)) robots?.setAttribute('content', prevRobots);
       else robots?.setAttribute('content', 'index, follow');
       if (previousCanonical) canonical?.setAttribute('href', previousCanonical);
+      document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((node) => node.remove());
     };
-  }, [title, description, url, ogLocale]);
+  }, [title, description, url, ogLocale, pathname]);
 }
 
 export function useRobotsMeta(content: string) {

@@ -518,7 +518,7 @@ export const fr: Messages = {
     finalContact: 'Nous contacter'
   },
   merge: {
-    title: 'Fusionner PDF',
+    title: 'Fusionner des PDF en ligne',
     subtitle: 'Combiner vos fichiers PDF en un seul document, dans l’ordre que vous voulez.',
     selectFiles: 'Sélectionner le(s) fichier(s)',
     orDrop: 'ou glisser-déposer',
@@ -550,7 +550,7 @@ export const fr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Un résultat immédiat', text: 'Le traitement se fait en quelques secondes, prêt à être partagé.' },
       { icon: '✧', tone: 'teal', title: 'Interface visuelle', text: 'Glissez-déposez vos PDF, voyez les miniatures et fusionnez d’un clic.' }
     ],
-    seoTitle: 'Fusionner des PDF en un fichier | One2PDF',
+    seoTitle: 'Fusionner des PDF en ligne gratuitement | One2PDF',
     seoDescription: 'Combinez plusieurs PDF en un seul document, dans l’ordre que vous choisissez. Fusionnez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment fusionner des PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis lancez la fusion : en quelques secondes, vous obtenez un document unique, prêt à télécharger.',
@@ -579,7 +579,7 @@ export const fr: Messages = {
     ]
   },
   split: {
-    title: 'Diviser PDF',
+    title: 'Diviser un PDF en ligne',
     subtitle: 'Extrayez des pages ou séparez un PDF en plusieurs fichiers.',
     extract: 'Extraire',
     extractDesc: 'Un seul PDF avec les pages choisies',
@@ -613,7 +613,7 @@ export const fr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'La division prend quelques secondes, prêt à télécharger.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Votre document est supprimé automatiquement après le téléchargement.' }
     ],
-    seoTitle: 'Diviser un PDF en plusieurs fichiers | One2PDF',
+    seoTitle: 'Diviser un PDF en ligne gratuitement | One2PDF',
     seoDescription: 'Extrayez des pages ou séparez un PDF en fichiers distincts, en quelques secondes. Divisez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment diviser un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous n’avez besoin que de quelques pages d’un dossier, d’un contrat ou d’un scan trop long ? One2PDF permet de diviser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, sélectionnez les pages à conserver — au clic ou via une plage du type 1-3, 5, 8 — puis lancez le traitement.',
@@ -684,7 +684,7 @@ export const fr: Messages = {
     ...seoFr.reorder
   },
   rotatePdf: {
-    title: 'Pivoter PDF',
+    title: 'Tourner un PDF en ligne',
     subtitle: 'Redressez les pages de travers ou à l’envers, puis téléchargez le PDF corrigé.',
     tip: 'Utilisez les boutons pour tourner la page affichée, ou toutes les pages, de 90°.',
     clickToRotate: 'Choisissez une page, puis tournez-la avec les boutons.',
@@ -845,7 +845,7 @@ export const fr: Messages = {
     ...seoFr.crop
   },
   compress: {
-    title: 'Compresser PDF',
+    title: 'Compresser un PDF en ligne',
     subtitle: 'Réduisez le poids de votre PDF tout en gardant un document lisible.',
     addFile: 'Ajoutez un fichier PDF à compresser.',
     fail: 'Une erreur est survenue pendant la compression.',
@@ -872,7 +872,7 @@ export const fr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Résultat rapide', text: 'La compression prend quelques secondes.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF traité est supprimé automatiquement après usage.' }
     ],
-    seoTitle: 'Compresser un PDF en ligne, plus léger | One2PDF',
+    seoTitle: 'Compresser un PDF en ligne gratuitement | One2PDF',
     seoDescription: 'Réduisez le poids de votre PDF en quelques secondes, sans perdre en lisibilité. Compressez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment compresser un PDF en ligne facilement et en toute sécurité',
     seoP1: 'Vous devez envoyer un dossier trop lourd, le déposer sur un formulaire ou le partager sans dégrader la lisibilité ? One2PDF permet de compresser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, choisissez le niveau de compression (élevée, moyenne ou forte), puis lancez le traitement : en quelques secondes, vous obtenez un PDF plus léger, prêt à télécharger.',
@@ -950,7 +950,7 @@ export const fr: Messages = {
     ...seoFr.toJpg
   },
   jpgToPdf: {
-    title: 'JPG / PNG en PDF',
+    title: 'Convertir JPG en PDF',
     subtitle: 'Réunissez vos images JPG, PNG ou WebP dans un seul PDF.',
     addFile: 'Ajoutez au moins une image.',
     fail: 'Une erreur est survenue pendant la conversion.',
@@ -1026,7 +1026,7 @@ export const fr: Messages = {
     ...seoFr.unlock
   },
   ocrPdf: {
-    title: 'PDF OCR',
+    title: 'OCR PDF en ligne',
     subtitle: 'Reconnaissez le texte des pages scannées et obtenez un PDF exploitable. Disponible avec le Pass 7 jours ou Pro.',
     tip: 'L’OCR utilise Tesseract. La qualité dépend de la netteté du scan. Disponible avec le Pass 7 jours ou Pro.',
     action: 'Lancer l’OCR',
@@ -1137,9 +1137,9 @@ export const fr: Messages = {
     ...seoFr.htmlPdf
   },
   convert: {
-    pdfToWordTitle: 'PDF en Word',
+    pdfToWordTitle: 'Convertir un PDF en Word',
     pdfToWordDesc: 'Convertissez vos fichiers PDF en documents Word éditables',
-    wordToPdfTitle: 'Word en PDF',
+    wordToPdfTitle: 'Convertir Word en PDF',
     wordToPdfDesc: 'Convertissez vos documents Word en fichiers PDF',
     pdfToExcelTitle: 'PDF en Excel',
     pdfToExcelDesc: 'Convertissez vos fichiers PDF en classeurs Excel',

@@ -1,5 +1,5 @@
 import { useId, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './LocaleLink';
 import { rememberedEmail, useBilling } from '../lib/billing';
 import { useI18n } from '../i18n';
 

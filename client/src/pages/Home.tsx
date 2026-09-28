@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocaleNavigate } from '../components/LocaleLink';
 import { AdBanner } from '../components/AdBanner';
 import { useI18n } from '../i18n';
 import { useJsonLd, websiteJsonLd } from '../lib/jsonLd';
@@ -56,7 +56,7 @@ function Home() {
   const { m, t } = useI18n();
   usePageSeo(m.home.seoTitle, m.home.seoDescription);
   useJsonLd('one2pdf-website', websiteJsonLd());
-  const navigate = useNavigate();
+  const navigate = useLocaleNavigate();
   const { status } = useBilling();
   const { allowFile } = useUpgrade();
   const pickerId = useId();

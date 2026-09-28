@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate } from '../components/LocaleLink';
 import { rememberedEmail, useBilling } from '../lib/billing';
 import { useI18n } from '../i18n';
 import { usePageSeo, useRobotsMeta } from '../lib/usePageSeo';

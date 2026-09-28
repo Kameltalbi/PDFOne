@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './LocaleLink';
 import { useI18n } from '../i18n';
 import type { FeatureCopy } from '../i18n/types';
 import { trackFileDownload } from '../lib/analytics';

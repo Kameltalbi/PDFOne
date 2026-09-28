@@ -1,21 +1,49 @@
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { detectLocale, isRtl } from './detect';
 import { dictionaries } from './dictionaries';
+import { routeLocale } from './localePath';
 import { setRuntimeLocale } from './runtime';
 import { interpolate, type Locale, type Messages } from './types';
+
+const LOCALE_CHOICE_KEY = 'one2pdf.locale';
 
 type I18nContextValue = {
   locale: Locale;
   m: Messages;
   t: (template: string, vars?: Record<string, string | number>) => string;
+  preferLocale: (locale: 'en' | 'fr') => void;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
+function readEnglishChoice() {
+  try {
+    return localStorage.getItem(LOCALE_CHOICE_KEY) === 'en';
+  } catch {
+    return false;
+  }
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const locale = useMemo(() => detectLocale(), []);
+  const { pathname } = useLocation();
+  const [englishChoice, setEnglishChoice] = useState(readEnglishChoice);
+  const browserLocale = useMemo(() => detectLocale(), []);
+  const forced = routeLocale(pathname);
+  // /fr/ forces French. Unprefixed URLs stay on browser detection unless the visitor explicitly chose English.
+  const locale: Locale = forced ?? (englishChoice ? 'en' : browserLocale);
   const m = dictionaries[locale];
   setRuntimeLocale(locale);
+
+  const preferLocale = useCallback((next: 'en' | 'fr') => {
+    try {
+      if (next === 'en') localStorage.setItem(LOCALE_CHOICE_KEY, 'en');
+      else localStorage.removeItem(LOCALE_CHOICE_KEY);
+    } catch {
+      /* storage unavailable */
+    }
+    setEnglishChoice(next === 'en');
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -27,8 +55,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const value = useMemo<I18nContextValue>(() => ({
     locale,
     m,
-    t: (template, vars) => interpolate(template, vars)
-  }), [locale, m]);
+    t: (template, vars) => interpolate(template, vars),
+    preferLocale
+  }), [locale, m, preferLocale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
