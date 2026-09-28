@@ -8,11 +8,11 @@ import type { Locale } from '../i18n/types';
  * Public languages in the header. Append a locale here when its pages go live.
  * Portuguese, Italian, Turkish and Arabic stay out until they have real routes.
  */
-const PUBLIC_LANGUAGES: { locale: 'en' | 'fr' | 'es' | 'de'; label: string }[] = [
-  { locale: 'en', label: 'English' },
-  { locale: 'fr', label: 'Français' },
-  { locale: 'es', label: 'Español' },
-  { locale: 'de', label: 'Deutsch' }
+const PUBLIC_LANGUAGES: { locale: 'en' | 'fr' | 'es' | 'de'; code: string; flag: string; label: string }[] = [
+  { locale: 'en', code: 'EN', flag: '🇬🇧', label: 'English' },
+  { locale: 'fr', code: 'FR', flag: '🇫🇷', label: 'Français' },
+  { locale: 'es', code: 'ES', flag: '🇪🇸', label: 'Español' },
+  { locale: 'de', code: 'DE', flag: '🇩🇪', label: 'Deutsch' }
 ];
 
 const MENU_LABEL: Partial<Record<Locale, string>> = {
@@ -62,14 +62,11 @@ export function LanguageSwitcher() {
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-controls={menuId}
-        aria-label={MENU_LABEL[locale] ?? 'Language'}
+        aria-label={`${MENU_LABEL[locale] ?? 'Language'}, ${current.label}`}
         onClick={() => setOpen((value) => !value)}
       >
-        <svg className="lang-switch-globe" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
-          <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M3.75 12h16.5M12 3.75c2.2 2.55 3.35 5.35 3.35 8.25s-1.15 5.7-3.35 8.25c-2.2-2.55-3.35-5.35-3.35-8.25s1.15-5.7 3.35-8.25z" fill="none" stroke="currentColor" strokeWidth="1.7" />
-        </svg>
-        <span className="lang-switch-current">{current.label}</span>
+        <span className="lang-switch-flag" aria-hidden="true">{current.flag}</span>
+        <span className="lang-switch-current">{current.code}</span>
         <svg className="lang-switch-chevron" viewBox="0 0 12 8" width="10" height="7" aria-hidden="true">
           <path d="M1.5 1.75 6 6.25 10.5 1.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -86,10 +83,14 @@ export function LanguageSwitcher() {
                   to={switchLocalePath(pathname, choice.locale)}
                   hrefLang={choice.locale}
                   lang={choice.locale}
+                  aria-label={choice.label}
                   className={active ? 'active' : undefined}
                   onClick={() => preferLocale(choice.locale)}
                 >
-                  <span>{choice.label}</span>
+                  <span className="lang-switch-option">
+                    <span className="lang-switch-flag" aria-hidden="true">{choice.flag}</span>
+                    <span>{choice.code}</span>
+                  </span>
                   {active && (
                     <svg className="lang-switch-check" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
                       <path d="M3.2 8.3 6.3 11.4 12.8 4.6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

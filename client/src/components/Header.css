@@ -225,9 +225,20 @@
   color: #0f172a;
 }
 
-.lang-switch-globe {
+.lang-switch-flag {
   flex: 0 0 auto;
-  color: #64748b;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.lang-switch-current {
+  letter-spacing: 0.02em;
+}
+
+.lang-switch-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .lang-switch-chevron {
@@ -245,7 +256,7 @@
   top: calc(100% + 6px);
   inset-inline-end: 0;
   z-index: 1200;
-  min-width: 168px;
+  min-width: 132px;
   max-height: min(18rem, 70vh);
   margin: 0;
   padding: 0.35rem;
