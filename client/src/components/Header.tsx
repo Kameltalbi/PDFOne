@@ -138,7 +138,7 @@ function Header() {
         )}
       </Link>
       {status.paid && status.canManage && (
-        <button type="button" className="header-button login" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
+        <button type="button" className="header-button manage" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
       )}
       <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
     </>
@@ -301,7 +301,7 @@ function Header() {
                 {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
               </Link>
               {status.paid && status.canManage && (
-                <button type="button" className="header-button login" onClick={() => void portal()}>{m.pricing.manage}</button>
+                <button type="button" className="header-button manage" onClick={() => void portal()}>{m.pricing.manage}</button>
               )}
               <button type="button" className="header-button logout" onClick={() => void logout()}>{m.pricing.logout}</button>
             </>
