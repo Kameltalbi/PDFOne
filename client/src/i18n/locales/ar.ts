@@ -1,6 +1,26 @@
 import type { Messages } from '../types';
-import { en } from './en';
-import { seoEn } from '../seoCopy';
+import { compressSeoAr, mergeSeoAr, seoAr, splitSeoAr } from './arSeo';
+import {
+  arAccount,
+  arBlogPage,
+  arExtractImages,
+  arExtractPages,
+  arFillForm,
+  arFillSign,
+  arFlatten,
+  arHeaderFooter,
+  arHeic,
+  arHtml,
+  arLegal,
+  arOcr,
+  arPricing,
+  arSummarize,
+  arToPng,
+  arToText,
+  arTranslate,
+  arUnlock,
+  arUpgrade
+} from './arRest';
 
 export const ar: Messages = {
   htmlTitle: 'One2PDF — أدوات PDF',
@@ -15,7 +35,7 @@ export const ar: Messages = {
     privacy: 'الخصوصية',
     contact: 'اتصل بنا',
     blog: 'المدونة',
-    relatedTools: 'These PDF tools are often used together',
+    relatedTools: 'أدوات PDF تُستخدم غالبًا معًا',
     seeAll: 'عرض الكل',
     pricing: 'الأسعار',
     menu: 'فتح القائمة',
@@ -32,10 +52,10 @@ export const ar: Messages = {
     jobsLeft: '{remaining} / {limit} عمليات متبقية اليوم',
     aiCreditsLeft: '{remaining} / {limit} رصيد ذكاء اصطناعي',
     adLabel: 'إعلان',
-    doneShort: 'Done!',
-    copyLink: 'Copy link',
-    linkCopied: 'Link copied',
-    deleteResult: 'Delete',
+    doneShort: 'تم!',
+    copyLink: 'نسخ الرابط',
+    linkCopied: 'تم نسخ الرابط',
+    deleteResult: 'حذف',
     about: 'من نحن',
     getPro: 'احصل على Pro',
     footerTools: 'الأدوات',
@@ -65,9 +85,9 @@ export const ar: Messages = {
     compress: 'ضغط',
     protect: 'حماية'
   },
-  pricing: { ...en.pricing },
-  upgrade: en.upgrade,
-  account: en.account,
+  pricing: arPricing,
+  upgrade: arUpgrade,
+  account: arAccount,
   tools: {
     edit: 'تعديل PDF',
     merge: 'دمج PDF',
@@ -333,16 +353,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'تكتمل المعالجة في ثوانٍ، جاهزة للمشاركة.' },
       { icon: '✧', tone: 'teal', title: 'واجهة مرئية', text: 'اسحب ملفات PDF وأفلتها، شاهد المصغرات وادمج بنقرة.' }
     ],
-    seoTitle: en.merge.seoTitle,
-    seoDescription: en.merge.seoDescription,
-    seoH2: en.merge.seoH2,
-    seoP1: en.merge.seoP1,
-    seoP2: en.merge.seoP2,
-    seoP3: en.merge.seoP3,
-    howTitle: en.merge.howTitle,
-    howSteps: en.merge.howSteps,
-    faqTitle: en.merge.faqTitle,
-    faq: en.merge.faq
+    ...mergeSeoAr
   },
   split: {
     title: 'تقسيم PDF',
@@ -379,16 +390,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'يستغرق التقسيم ثوانٍ، والمستند جاهز للتنزيل.' },
       { icon: '✧', tone: 'teal', title: 'معالجة آمنة', text: 'يُحذف مستندك تلقائيًا بعد التنزيل.' }
     ],
-    seoTitle: en.split.seoTitle,
-    seoDescription: en.split.seoDescription,
-    seoH2: en.split.seoH2,
-    seoP1: en.split.seoP1,
-    seoP2: en.split.seoP2,
-    seoP3: en.split.seoP3,
-    howTitle: en.split.howTitle,
-    howSteps: en.split.howSteps,
-    faqTitle: en.split.faqTitle,
-    faq: en.split.faq
+    ...splitSeoAr
   },
   deletePages: {
     title: 'حذف صفحات',
@@ -410,7 +412,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF أخف، جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُعالَج الأصل مؤقتًا ثم يُحذف.' }
     ],
-    ...seoEn.deletePages
+    ...seoAr.deletePages
   },
   reorderPages: {
     title: 'إعادة ترتيب الصفحات',
@@ -430,7 +432,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'تصدير سريع', text: 'ملف PDF الجديد جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'معالجة آمنة', text: 'تبقى الملفات مؤقتة وتُحذف بعد المعالجة.' }
     ],
-    ...seoEn.reorder
+    ...seoAr.reorder
   },
   rotatePdf: {
     title: 'تدوير PDF',
@@ -457,7 +459,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF المصحّح جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُحذف مستندك تلقائيًا بعد المعالجة.' }
     ],
-    ...seoEn.rotate
+    ...seoAr.rotate
   },
   watermark: {
     title: 'علامة مائية لـ PDF',
@@ -488,7 +490,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'كل الصفحات', text: 'تُطبَّق العلامة المائية دفعة واحدة على الملف بأكمله.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
     ],
-    ...seoEn.watermark
+    ...seoAr.watermark
   },
   signPdf: {
     title: 'توقيع رقمي',
@@ -526,7 +528,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'الأخيرة أو الكل', text: 'ضع التوقيع حيث تتوقعه العقود، في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ الأصل على الخادم.' }
     ],
-    ...seoEn.sign
+    ...seoAr.sign
   },
   numberPages: {
     title: 'ترقيم الصفحات',
@@ -560,7 +562,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'كل الصفحات', text: 'تُطبَّق الأرقام دفعة واحدة على الملف بأكمله.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
     ],
-    ...seoEn.pageNumbers
+    ...seoAr.pageNumbers
   },
   cropPdf: {
     title: 'قص PDF',
@@ -591,7 +593,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'ملف PDF المقصوص جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ ملف PDF الأصلي على الخادم.' }
     ],
-    ...seoEn.crop
+    ...seoAr.crop
   },
   compress: {
     title: 'ضغط PDF',
@@ -621,16 +623,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة سريعة', text: 'يستغرق الضغط ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُحذف ملف PDF المعالَج تلقائيًا بعد الاستخدام.' }
     ],
-    seoTitle: en.compress.seoTitle,
-    seoDescription: en.compress.seoDescription,
-    seoH2: en.compress.seoH2,
-    seoP1: en.compress.seoP1,
-    seoP2: en.compress.seoP2,
-    seoP3: en.compress.seoP3,
-    howTitle: en.compress.howTitle,
-    howSteps: en.compress.howSteps,
-    faqTitle: en.compress.faqTitle,
-    faq: en.compress.faq
+    ...compressSeoAr
   },
   protect: {
     title: 'حماية PDF',
@@ -657,7 +650,7 @@ export const ar: Messages = {
       { icon: '✧', tone: 'purple', title: 'للاستخدام اليومي', text: 'عقود وملفات ووثائق هوية: أبقها خاصة.' },
       { icon: '⇄', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا يُحفظ الأصل على الخادم.' }
     ],
-    ...seoEn.protect
+    ...seoAr.protect
   },
   toJpg: {
     title: 'PDF إلى JPG',
@@ -679,7 +672,7 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'نتيجة فورية', text: 'يستغرق التحويل ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'يُعالَج ملف PDF المصدر ثم يُحذف.' }
     ],
-    ...seoEn.toJpg
+    ...seoAr.toJpg
   },
   jpgToPdf: {
     title: 'JPG / PNG إلى PDF',
@@ -700,15 +693,15 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'إنشاء سريع', text: 'المستند جاهز في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'ملفات مؤقتة', text: 'لا تبقى الصور المُرسلة على الخادم.' }
     ],
-    ...seoEn.jpgToPdf
+    ...seoAr.jpgToPdf
   },
-  toPng: { ...en.toPng, title: 'PDF إلى PNG', action: 'تحويل إلى PNG' },
-  toText: { ...en.toText, title: 'PDF إلى نص', action: 'استخراج النص' },
-  unlockPdf: { ...en.unlockPdf, title: 'إلغاء قفل PDF', action: 'إلغاء القفل' },
-  ocrPdf: { ...en.ocrPdf, title: 'OCR لـ PDF', action: 'تشغيل OCR' },
-  summarizePdf: { ...en.summarizePdf, title: 'تلخيص PDF', action: 'تلخيص' },
-  translatePdf: { ...en.translatePdf, title: 'ترجمة PDF', action: 'ترجمة' },
-  htmlPdf: { ...en.htmlPdf, title: 'HTML إلى PDF', action: 'إنشاء PDF' },
+  toPng: arToPng,
+  toText: arToText,
+  unlockPdf: arUnlock,
+  ocrPdf: arOcr,
+  summarizePdf: arSummarize,
+  translatePdf: arTranslate,
+  htmlPdf: arHtml,
   convert: {
     pdfToWordTitle: 'PDF إلى Word',
     pdfToWordDesc: 'حوّل ملفات PDF إلى مستندات Word قابلة للتحرير',
@@ -748,19 +741,19 @@ export const ar: Messages = {
       { icon: 'W', tone: 'teal', title: 'Word وExcel وPowerPoint', text: 'DOC وDOCX وXLS وXLSX وPPT وPPTX وتنسيقات OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'تخطيط متغيّر', text: 'ملفات PDF الممسوحة والجداول المعقدة تُحوَّل بدقة أقل.' }
     ],
-    wordToPdfSeo: en.convert.wordToPdfSeo,
-    pdfToWordSeo: en.convert.pdfToWordSeo,
-    excelToPdfSeo: en.convert.excelToPdfSeo,
-    pptToPdfSeo: en.convert.pptToPdfSeo,
-    pdfToExcelSeo: en.convert.pdfToExcelSeo,
-    pdfToPptSeo: en.convert.pdfToPptSeo
+    wordToPdfSeo: seoAr.wordToPdf,
+    pdfToWordSeo: seoAr.pdfToWord,
+    excelToPdfSeo: seoAr.excelToPdf,
+    pptToPdfSeo: seoAr.pptToPdf,
+    pdfToExcelSeo: seoAr.pdfToExcel,
+    pdfToPptSeo: seoAr.pdfToPpt
   },
   upload: {
     drop: 'اسحب ملفاتك هنا أو',
     browse: 'تصفح',
     hintPdf: 'ملفات PDF',
     hintImages: 'JPG أو PNG أو WebP',
-    hintMax: '100 ميغابايت كحد أقصى · حتى {count} ملفات',
+    hintMax: '{size} · حتى {count} ملفات',
     tooLarge: 'يتجاوز الملف حد {size}.',
     listTitle: '{count} ملف — اسحب لإعادة الترتيب',
     up: 'أعلى',
@@ -837,15 +830,15 @@ export const ar: Messages = {
       { icon: '⏱', tone: 'purple', title: 'تصدير سريع', text: 'نزّل الملف المعدَّل في ثوانٍ.' },
       { icon: '✧', tone: 'teal', title: 'معالجة آمنة', text: 'يُحذف المستند المؤقت بعد التصدير.' }
     ],
-    ...seoEn.edit
+    ...seoAr.edit
   },
-  extractPages: { ...en.extractPages, title: 'استخراج صفحات' },
-  extractImages: { ...en.extractImages, title: 'استخراج الصور' },
-  flattenPdf: { ...en.flattenPdf, title: 'تسطيح PDF' },
-  headerFooter: { ...en.headerFooter, title: 'ترويسة وتذييل' },
-  fillForm: { ...en.fillForm, title: 'تعبئة نموذج' },
-  fillSign: { ...en.fillSign, title: 'املأ ملفات PDF ووقّعها عبر الإنترنت' },
-  heicToPdf: { ...en.heicToPdf, title: 'HEIC إلى PDF' },
-  blogPage: en.blogPage,
-  legal: en.legal
+  extractPages: arExtractPages,
+  extractImages: arExtractImages,
+  flattenPdf: arFlatten,
+  headerFooter: arHeaderFooter,
+  fillForm: arFillForm,
+  fillSign: arFillSign,
+  heicToPdf: arHeic,
+  blogPage: arBlogPage,
+  legal: arLegal
 };

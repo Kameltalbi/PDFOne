@@ -46,12 +46,11 @@ function coverage(pattern: RegExp) {
 
 describe('German content without SEO activation', () => {
   it('activates German URLs without other languages or a German privacy policy', () => {
-    assert.deepEqual([...URL_LOCALE_PREFIXES], ['fr', 'es', 'de']);
+    assert.deepEqual([...URL_LOCALE_PREFIXES], ['fr', 'es', 'de', 'pt', 'it', 'tr', 'ar']);
     assert.equal(hreflangForPath('/compress').some((link) => link.hreflang === 'de'), true);
     assert.equal(hreflangForPath('/privacy').some((link) => link.hreflang === 'de'), false);
     assert.equal(pages.some((page) => page.path === '/de/compress'), true);
     assert.equal(pages.some((page) => page.path === '/de/privacy'), false);
-    assert.equal(pages.some((page) => /^\/(pt|it|ar|tr)\//.test(page.path)), false);
     const xml = buildSitemap(pages);
     assert.match(xml, /\/de\/compress/);
     assert.doesNotMatch(xml, /\/de\/privacy/);

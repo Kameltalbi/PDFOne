@@ -1,6 +1,26 @@
 import type { Messages } from '../types';
-import { en } from './en';
-import { seoEn } from '../seoCopy';
+import { compressSeoPt, mergeSeoPt, seoPt, splitSeoPt } from './ptSeo';
+import {
+  ptAccount,
+  ptBlogPage,
+  ptExtractImages,
+  ptExtractPages,
+  ptFillForm,
+  ptFillSign,
+  ptFlatten,
+  ptHeaderFooter,
+  ptHeic,
+  ptHtml,
+  ptLegal,
+  ptOcr,
+  ptPricing,
+  ptSummarize,
+  ptToPng,
+  ptToText,
+  ptTranslate,
+  ptUnlock,
+  ptUpgrade
+} from './ptRest';
 
 export const pt: Messages = {
   htmlTitle: 'One2PDF — Ferramentas PDF',
@@ -15,7 +35,7 @@ export const pt: Messages = {
     privacy: 'Privacidade',
     contact: 'Contacto',
     blog: 'Blog',
-    relatedTools: 'These PDF tools are often used together',
+    relatedTools: 'Estas ferramentas PDF costumam usar-se juntas',
     seeAll: 'Ver tudo',
     pricing: 'Preços',
     menu: 'Abrir o menu',
@@ -32,15 +52,15 @@ export const pt: Messages = {
     jobsLeft: '{remaining} / {limit} processamentos restantes hoje',
     aiCreditsLeft: '{remaining} / {limit} créditos de IA',
     adLabel: 'Publicidade',
-    doneShort: 'Done!',
-    copyLink: 'Copy link',
-    linkCopied: 'Link copied',
-    deleteResult: 'Delete',
+    doneShort: 'Concluído!',
+    copyLink: 'Copiar ligação',
+    linkCopied: 'Ligação copiada',
+    deleteResult: 'Eliminar',
     about: 'Sobre',
     getPro: 'Obter Pro',
     footerTools: 'Ferramentas',
     footerCompany: 'One2PDF',
-    footerLegal: 'Legal',
+    footerLegal: 'Informação legal',
     pwaTitle: 'Instalar o One2PDF',
     pwaText: 'Abra as suas ferramentas PDF como uma app, sem passar pelo browser.',
     pwaInstall: 'Instalar',
@@ -65,9 +85,9 @@ export const pt: Messages = {
     compress: 'Comprimir',
     protect: 'Proteger'
   },
-  pricing: { ...en.pricing },
-  upgrade: en.upgrade,
-  account: en.account,
+  pricing: ptPricing,
+  upgrade: ptUpgrade,
+  account: ptAccount,
   tools: {
     edit: 'Editar PDF',
     merge: 'Juntar PDF',
@@ -84,11 +104,11 @@ export const pt: Messages = {
     excelToPdf: 'Excel para PDF',
     pdfToPng: 'PDF para PNG',
     pngToPdf: 'PNG para PDF',
-    rotate: 'Rodar PDF',
+    rotate: 'Girar PDF',
     sign: 'Assinatura digital',
     deletePages: 'Eliminar páginas',
     reorderPages: 'Reorganizar as páginas',
-    ocr: 'PDF OCR',
+    ocr: 'OCR de PDF',
     summarize: 'Resumir um PDF',
     translate: 'Traduzir o PDF',
     unlock: 'Desbloquear PDF',
@@ -195,10 +215,11 @@ export const pt: Messages = {
     toolJpgToPdfDesc: 'Reúna imagens JPG, PNG ou WebP num único PDF.',
     trustLine: 'Rápido · Seguro · Fácil de usar',
     proBenefits: [
-      'Sem anúncios',
-      'Ficheiros com mais de 20 MB',
-      'Vários ficheiros de uma vez',
-      'Sem limite diário de documentos'
+      'Processamentos PDF sem limite',
+      'Ficheiros até 100 MB',
+      'OCR incluído',
+      '500 créditos de IA por mês no Pro',
+      'Sem publicidade'
     ],
     freeValueLabel: 'AS SUAS FERRAMENTAS PDF, GRÁTIS',
     freeValueTitle: 'Tudo o que precisa para os seus PDF.',
@@ -238,7 +259,7 @@ export const pt: Messages = {
     catSplit: 'Separar',
     catSplitText: 'Dividir um documento ou extrair páginas.',
     catOrganize: 'Organizar',
-    catOrganizeText: 'Reordenar, rodar ou eliminar páginas.',
+    catOrganizeText: 'Reordenar, girar ou eliminar páginas.',
     catOcr: 'OCR',
     catOcrText: 'Extrair texto de um documento digitalizado.',
     howKicker: 'Como funciona',
@@ -269,10 +290,11 @@ export const pt: Messages = {
     plansP2: 'Se precisar de mais capacidade, o One2PDF Pro dá acesso aos limites da oferta paga.',
     plansP3: 'A conta só é necessária para usar o Pro.',
     plansItems: [
-      'Sem anúncios',
-      'Ficheiros com mais de 20 MB',
-      'Vários ficheiros de uma vez',
-      'Sem limite diário de documentos'
+      'Processamentos PDF sem limite',
+      'Ficheiros até 100 MB',
+      'OCR incluído',
+      '500 créditos de IA por mês no Pro',
+      'Sem publicidade'
     ],
     plansCta: 'Descobrir o One2PDF Pro',
     principlesKicker: 'A nossa forma de construir',
@@ -333,16 +355,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Um resultado imediato', text: 'O processamento faz-se em poucos segundos, pronto a partilhar.' },
       { icon: '✧', tone: 'teal', title: 'Interface visual', text: 'Arraste e largue os seus PDF, veja as miniaturas e junte com um clique.' }
     ],
-    seoTitle: en.merge.seoTitle,
-    seoDescription: en.merge.seoDescription,
-    seoH2: en.merge.seoH2,
-    seoP1: en.merge.seoP1,
-    seoP2: en.merge.seoP2,
-    seoP3: en.merge.seoP3,
-    howTitle: en.merge.howTitle,
-    howSteps: en.merge.howSteps,
-    faqTitle: en.merge.faqTitle,
-    faq: en.merge.faq
+    ...mergeSeoPt
   },
   split: {
     title: 'Dividir PDF',
@@ -379,16 +392,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Resultado imediato', text: 'A divisão demora poucos segundos, pronto a transferir.' },
       { icon: '✧', tone: 'teal', title: 'Processamento seguro', text: 'O seu documento é eliminado automaticamente após a transferência.' }
     ],
-    seoTitle: en.split.seoTitle,
-    seoDescription: en.split.seoDescription,
-    seoH2: en.split.seoH2,
-    seoP1: en.split.seoP1,
-    seoP2: en.split.seoP2,
-    seoP3: en.split.seoP3,
-    howTitle: en.split.howTitle,
-    howSteps: en.split.howSteps,
-    faqTitle: en.split.faqTitle,
-    faq: en.split.faq
+    ...splitSeoPt
   },
   deletePages: {
     title: 'Eliminar páginas',
@@ -410,7 +414,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Resultado imediato', text: 'Um PDF mais leve, pronto em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O original é processado temporariamente e depois eliminado.' }
     ],
-    ...seoEn.deletePages
+    ...seoPt.deletePages
   },
   reorderPages: {
     title: 'Reorganizar as páginas',
@@ -430,34 +434,34 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Exportação rápida', text: 'O novo PDF fica pronto em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Processamento seguro', text: 'Os ficheiros permanecem temporários e são eliminados após o processamento.' }
     ],
-    ...seoEn.reorder
+    ...seoPt.reorder
   },
   rotatePdf: {
-    title: 'Rodar PDF',
+    title: 'Girar PDF',
     subtitle: 'Endireite as páginas de lado ou invertidas e transfira o PDF corrigido.',
-    tip: 'Use os botões para rodar a página mostrada, ou todas as páginas, 90°.',
-    clickToRotate: 'Escolha uma página e rode-a com os botões.',
+    tip: 'Use os botões para girar a página mostrada, ou todas as páginas, 90°.',
+    clickToRotate: 'Escolha uma página e gire-a com os botões.',
     rotateLeft: '90° esquerda',
     rotateRight: '90° direita',
     rotateAllLeft: 'Tudo à esquerda',
     rotateAllRight: 'Tudo à direita',
     pageOf: 'Página {page} / {count}',
-    rotating: 'A rodar…',
+    rotating: 'A girar…',
     action: 'Aplicar a rotação',
-    doneTitle: 'PDF rodado',
-    doneText: 'As páginas selecionadas foram rodadas.',
-    reset: 'Rodar outro ficheiro',
-    fail: 'Não foi possível rodar este PDF.',
+    doneTitle: 'PDF girado',
+    doneText: 'As páginas selecionadas foram giradas.',
+    reset: 'Girar outro ficheiro',
+    fail: 'Não foi possível girar este PDF.',
     rotated: '{deg}°',
     features: [
-      { icon: '↻', tone: 'green', title: 'Página a página', text: 'Rode apenas as páginas que precisam, de 90° em 90°.' },
+      { icon: '↻', tone: 'green', title: 'Página a página', text: 'Gire apenas as páginas que precisam, de 90° em 90°.' },
       { icon: '✓', tone: 'blue', title: 'Pré-visualização instantânea', text: 'Veja a nova orientação antes de transferir.' },
       { icon: '★', tone: 'orange', title: 'Digitalizações e fotografias', text: 'Corrija uma digitalização do telemóvel sem voltar a imprimir.' },
       { icon: '◆', tone: 'gold', title: 'Sem instalação', text: 'Tudo se faz no navegador.' },
       { icon: '⏱', tone: 'purple', title: 'Resultado imediato', text: 'O PDF corrigido fica pronto em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O seu documento é eliminado automaticamente após o processamento.' }
     ],
-    ...seoEn.rotate
+    ...seoPt.rotate
   },
   watermark: {
     title: 'Marca de água PDF',
@@ -488,7 +492,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Todas as páginas', text: 'A marca de água é aplicada de uma só vez em todo o ficheiro.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O PDF original não é conservado no servidor.' }
     ],
-    ...seoEn.watermark
+    ...seoPt.watermark
   },
   signPdf: {
     title: 'Assinatura digital',
@@ -526,7 +530,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Última página ou todas', text: 'Coloque a assinatura onde os contratos a esperam, em segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O original não é conservado no servidor.' }
     ],
-    ...seoEn.sign
+    ...seoPt.sign
   },
   numberPages: {
     title: 'Numerar as páginas',
@@ -560,7 +564,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Todas as páginas', text: 'Os números são aplicados de uma só vez em todo o ficheiro.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O PDF original não é conservado no servidor.' }
     ],
-    ...seoEn.pageNumbers
+    ...seoPt.pageNumbers
   },
   cropPdf: {
     title: 'Recortar PDF',
@@ -591,7 +595,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Resultado imediato', text: 'O PDF recortado fica pronto em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O PDF original não é conservado no servidor.' }
     ],
-    ...seoEn.crop
+    ...seoPt.crop
   },
   compress: {
     title: 'Comprimir PDF',
@@ -621,16 +625,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Resultado rápido', text: 'A compressão demora poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O PDF processado é eliminado automaticamente após a utilização.' }
     ],
-    seoTitle: en.compress.seoTitle,
-    seoDescription: en.compress.seoDescription,
-    seoH2: en.compress.seoH2,
-    seoP1: en.compress.seoP1,
-    seoP2: en.compress.seoP2,
-    seoP3: en.compress.seoP3,
-    howTitle: en.compress.howTitle,
-    howSteps: en.compress.howSteps,
-    faqTitle: en.compress.faqTitle,
-    faq: en.compress.faq
+    ...compressSeoPt
   },
   protect: {
     title: 'Proteger PDF',
@@ -657,7 +652,7 @@ export const pt: Messages = {
       { icon: '✧', tone: 'purple', title: 'Uso quotidiano', text: 'Contratos, dossiers, documentos de identidade: mantenha-os privados.' },
       { icon: '⇄', tone: 'teal', title: 'Ficheiros temporários', text: 'O original não é conservado no servidor.' }
     ],
-    ...seoEn.protect
+    ...seoPt.protect
   },
   toJpg: {
     title: 'PDF para JPG',
@@ -679,7 +674,7 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Resultado imediato', text: 'A conversão demora poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'O PDF de origem é processado e depois eliminado.' }
     ],
-    ...seoEn.toJpg
+    ...seoPt.toJpg
   },
   jpgToPdf: {
     title: 'JPG / PNG para PDF',
@@ -700,15 +695,15 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Criação rápida', text: 'O documento fica pronto em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Ficheiros temporários', text: 'As imagens enviadas não permanecem no servidor.' }
     ],
-    ...seoEn.jpgToPdf
+    ...seoPt.jpgToPdf
   },
-  toPng: { ...en.toPng, title: 'PDF para PNG' },
-  toText: { ...en.toText, title: 'PDF para texto' },
-  unlockPdf: { ...en.unlockPdf, title: 'Desbloquear PDF' },
-  ocrPdf: { ...en.ocrPdf, title: 'PDF OCR' },
-  summarizePdf: { ...en.summarizePdf, title: 'Resumir um PDF' },
-  translatePdf: { ...en.translatePdf, title: 'Traduzir o PDF' },
-  htmlPdf: { ...en.htmlPdf, title: 'HTML para PDF' },
+  toPng: ptToPng,
+  toText: ptToText,
+  unlockPdf: ptUnlock,
+  ocrPdf: ptOcr,
+  summarizePdf: ptSummarize,
+  translatePdf: ptTranslate,
+  htmlPdf: ptHtml,
   convert: {
     pdfToWordTitle: 'PDF para Word',
     pdfToWordDesc: 'Converta os seus ficheiros PDF em documentos Word editáveis',
@@ -748,19 +743,19 @@ export const pt: Messages = {
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX e formatos OpenDocument.' },
       { icon: '✧', tone: 'purple', title: 'Layout variável', text: 'PDFs digitalizados e tabelas complexas convertem-se pior.' }
     ],
-    wordToPdfSeo: en.convert.wordToPdfSeo,
-    pdfToWordSeo: en.convert.pdfToWordSeo,
-    excelToPdfSeo: en.convert.excelToPdfSeo,
-    pptToPdfSeo: en.convert.pptToPdfSeo,
-    pdfToExcelSeo: en.convert.pdfToExcelSeo,
-    pdfToPptSeo: en.convert.pdfToPptSeo
+    wordToPdfSeo: seoPt.wordToPdf,
+    pdfToWordSeo: seoPt.pdfToWord,
+    excelToPdfSeo: seoPt.excelToPdf,
+    pptToPdfSeo: seoPt.pptToPdf,
+    pdfToExcelSeo: seoPt.pdfToExcel,
+    pdfToPptSeo: seoPt.pdfToPpt
   },
   upload: {
     drop: 'Arraste os ficheiros para aqui ou',
     browse: 'procurar',
     hintPdf: 'Ficheiros PDF',
     hintImages: 'JPG, PNG ou WebP',
-    hintMax: '100 MB máx. · até {count} ficheiros',
+    hintMax: '{size} · até {count} ficheiros',
     tooLarge: 'O ficheiro excede o limite de {size}.',
     listTitle: '{count} ficheiro(s) — arraste para reordenar',
     up: 'Subir',
@@ -837,15 +832,15 @@ export const pt: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Exportação rápida', text: 'Transfira o ficheiro modificado em poucos segundos.' },
       { icon: '✧', tone: 'teal', title: 'Processamento seguro', text: 'O documento temporário é eliminado após a exportação.' }
     ],
-    ...seoEn.edit
+    ...seoPt.edit
   },
-  extractPages: { ...en.extractPages, title: 'Extrair páginas' },
-  extractImages: { ...en.extractImages, title: 'Extrair imagens' },
-  flattenPdf: { ...en.flattenPdf, title: 'Achatar PDF' },
-  headerFooter: { ...en.headerFooter, title: 'Cabeçalho e rodapé' },
-  fillForm: { ...en.fillForm, title: 'Preencher formulário' },
-  fillSign: { ...en.fillSign, title: 'Preencha e assine os seus PDF online' },
-  heicToPdf: { ...en.heicToPdf, title: 'HEIC para PDF' },
-  blogPage: en.blogPage,
-  legal: en.legal
+  extractPages: ptExtractPages,
+  extractImages: ptExtractImages,
+  flattenPdf: ptFlatten,
+  headerFooter: ptHeaderFooter,
+  fillForm: ptFillForm,
+  fillSign: ptFillSign,
+  heicToPdf: ptHeic,
+  blogPage: ptBlogPage,
+  legal: ptLegal
 };

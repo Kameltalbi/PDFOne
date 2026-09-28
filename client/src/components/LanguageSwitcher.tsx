@@ -6,13 +6,16 @@ import type { Locale } from '../i18n/types';
 
 /**
  * Public languages in the header. Append a locale here when its pages go live.
- * Portuguese, Italian, Turkish and Arabic stay out until they have real routes.
  */
-const PUBLIC_LANGUAGES: { locale: 'en' | 'fr' | 'es' | 'de'; code: string; flag: string; label: string }[] = [
+const PUBLIC_LANGUAGES: { locale: 'en' | 'fr' | 'es' | 'de' | 'pt' | 'it' | 'tr' | 'ar'; code: string; flag: string; label: string }[] = [
   { locale: 'en', code: 'EN', flag: '🇬🇧', label: 'English' },
   { locale: 'fr', code: 'FR', flag: '🇫🇷', label: 'Français' },
   { locale: 'es', code: 'ES', flag: '🇪🇸', label: 'Español' },
-  { locale: 'de', code: 'DE', flag: '🇩🇪', label: 'Deutsch' }
+  { locale: 'de', code: 'DE', flag: '🇩🇪', label: 'Deutsch' },
+  { locale: 'pt', code: 'PT', flag: '🇵🇹', label: 'Português' },
+  { locale: 'it', code: 'IT', flag: '🇮🇹', label: 'Italiano' },
+  { locale: 'tr', code: 'TR', flag: '🇹🇷', label: 'Türkçe' },
+  { locale: 'ar', code: 'AR', flag: '🇸🇦', label: 'العربية' }
 ];
 
 const MENU_LABEL: Partial<Record<Locale, string>> = {

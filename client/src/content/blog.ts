@@ -1,5 +1,9 @@
 import type { Locale } from '../i18n/types';
+import { ARABIC_BLOG_DRAFTS } from './blogArDrafts';
 import { GERMAN_BLOG_DRAFTS } from './blogDeDrafts';
+import { ITALIAN_BLOG_DRAFTS } from './blogItDrafts';
+import { TURKISH_BLOG_DRAFTS } from './blogTrDrafts';
+import { PORTUGUESE_BLOG_DRAFTS } from './blogPtDrafts';
 import { SPANISH_BLOG_DRAFTS } from './blogEsDrafts';
 
 export const COMPRESS_EMAIL_SLUG = 'reduire-taille-pdf-email';
@@ -286,6 +290,10 @@ function postsFor(locale: Locale): BlogPost[] {
   if (locale === 'fr') return [privacyFr, compressFr];
   if (locale === 'es') return SPANISH_BLOG_DRAFTS;
   if (locale === 'de') return GERMAN_BLOG_DRAFTS;
+  if (locale === 'pt') return PORTUGUESE_BLOG_DRAFTS;
+  if (locale === 'it') return ITALIAN_BLOG_DRAFTS;
+  if (locale === 'tr') return TURKISH_BLOG_DRAFTS;
+  if (locale === 'ar') return ARABIC_BLOG_DRAFTS;
   return [privacyEn, compressEn];
 }
 

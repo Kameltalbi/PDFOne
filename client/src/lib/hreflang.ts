@@ -8,8 +8,8 @@ const PUBLIC_LOCALES: UrlLocale[] = [...SEO_LOCALES];
 
 /** Same article, different slugs. A locale is listed only when that slug really exists. */
 const BLOG_EQUIVALENTS: Array<Partial<Record<UrlLocale, string>>> = [
-  { en: COMPRESS_EMAIL_SLUG, fr: COMPRESS_EMAIL_SLUG, es: 'comprimir-pdf-correo', de: 'pdf-fuer-e-mail-verkleinern' },
-  { en: PRIVACY_PDF_SLUG, fr: PRIVACY_PDF_SLUG, es: 'privacidad-pdf-en-linea', de: 'datenschutz-pdf-online' }
+  { en: COMPRESS_EMAIL_SLUG, fr: COMPRESS_EMAIL_SLUG, es: 'comprimir-pdf-correo', de: 'pdf-fuer-e-mail-verkleinern', pt: 'comprimir-pdf-email', it: 'comprimere-pdf-email', tr: 'pdf-eposta-sikistir', ar: 'daght-pdf-barid' },
+  { en: PRIVACY_PDF_SLUG, fr: PRIVACY_PDF_SLUG, es: 'privacidad-pdf-en-linea', de: 'datenschutz-pdf-online', pt: 'privacidade-pdf-online', it: 'privacy-pdf-online', tr: 'gizlilik-pdf-online', ar: 'khususiyat-pdf' }
 ];
 
 function localesForBare(bare: string): UrlLocale[] {

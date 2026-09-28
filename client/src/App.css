@@ -66,7 +66,4 @@ a {
   color: inherit;
 }
 
-html[dir='rtl'] .header-container,
-html[dir='rtl'] .header-actions {
-  flex-direction: row-reverse;
-}
+/* RTL flex already places the logo at the start edge. Do not reverse it again. */

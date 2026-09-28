@@ -1,0 +1,50 @@
+/* Arabic layout. Direction comes from <html dir="rtl">.
+   Text and chrome follow the reading direction.
+   PDF page geometry, filenames, and technical values stay left-to-right. */
+
+html[dir='rtl'] .pro-home,
+html[dir='rtl'] .tool-page,
+html[dir='rtl'] .merge-page,
+html[dir='rtl'] .studio-landing,
+html[dir='rtl'] .studio-workspace,
+html[dir='rtl'] .studio-modes button,
+html[dir='rtl'] .result-page,
+html[dir='rtl'] .result-heading,
+html[dir='rtl'] .pricing-grid,
+html[dir='rtl'] .pricing-faq,
+html[dir='rtl'] .pricing-tools-toggle,
+html[dir='rtl'] .pricing-success-perks,
+html[dir='rtl'] .pricing-success-perks-title,
+html[dir='rtl'] .account-stats,
+html[dir='rtl'] .restore-form,
+html[dir='rtl'] .upgrade-plans,
+html[dir='rtl'] .choice-card,
+html[dir='rtl'] .summarize-mode-card,
+html[dir='rtl'] .editor-sidebar,
+html[dir='rtl'] .dropdown-menu,
+html[dir='rtl'] .account-panel,
+html[dir='rtl'] .app-launcher-panel,
+html[dir='rtl'] .nav-mobile {
+  text-align: start;
+}
+
+html[dir='rtl'] input,
+html[dir='rtl'] textarea,
+html[dir='rtl'] select {
+  text-align: start;
+}
+
+html[dir='rtl'] input[type='email'],
+html[dir='rtl'] input[type='url'],
+html[dir='rtl'] input[type='password'],
+html[dir='rtl'] input[type='number'],
+html[dir='rtl'] .file-name,
+html[dir='rtl'] .studio-preview-name,
+html[dir='rtl'] .fs-filename,
+html[dir='rtl'] .studio-done-sheet strong,
+html[dir='rtl'] .page-pos,
+html[dir='rtl'] .pagenum-preview,
+html[dir='rtl'] .sign-preview {
+  direction: ltr;
+  unicode-bidi: isolate;
+}

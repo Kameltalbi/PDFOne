@@ -6,9 +6,17 @@ Disallow: /internal/
 Disallow: /fr/internal/
 Disallow: /es/internal/
 Disallow: /de/internal/
+Disallow: /pt/internal/
+Disallow: /it/internal/
+Disallow: /tr/internal/
+Disallow: /ar/internal/
 Disallow: /pricing/success
 Disallow: /fr/pricing/success
 Disallow: /es/pricing/success
 Disallow: /de/pricing/success
+Disallow: /pt/pricing/success
+Disallow: /it/pricing/success
+Disallow: /tr/pricing/success
+Disallow: /ar/pricing/success
 
 Sitemap: https://one2pdf.com/sitemap.xml

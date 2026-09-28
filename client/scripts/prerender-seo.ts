@@ -58,10 +58,10 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   html = upsertMeta(html, 'property', 'og:type', 'website');
   html = upsertMeta(html, 'property', 'og:url', url);
   html = upsertMeta(html, 'property', 'og:image', OG_IMAGE);
-  const ogLocale = page.locale === 'fr' ? 'fr_FR' : page.locale === 'es' ? 'es_ES' : page.locale === 'de' ? 'de_DE' : 'en_US';
+  const ogLocale = page.locale === 'fr' ? 'fr_FR' : page.locale === 'es' ? 'es_ES' : page.locale === 'de' ? 'de_DE' : page.locale === 'pt' ? 'pt_PT' : page.locale === 'it' ? 'it_IT' : page.locale === 'tr' ? 'tr_TR' : page.locale === 'ar' ? 'ar_AR' : 'en_US';
   html = upsertMeta(html, 'property', 'og:locale', ogLocale);
   html = upsertHreflang(html, page.alternates);
-  html = html.replace(/<html lang="[^"]*">/, `<html lang="${page.locale}">`);
+  html = html.replace(HTML_OPEN, htmlOpen(page.locale));
   html = upsertMeta(html, 'property', 'og:site_name', 'One2PDF');
   html = upsertMeta(html, 'name', 'twitter:card', 'summary');
   html = upsertMeta(html, 'name', 'twitter:title', page.title);
@@ -115,7 +115,7 @@ function writeHtml(relativePath: string, html: string) {
 
 const shell = readFileSync(join(outDir, 'index.html'), 'utf8');
 const pages = indexableSeoPages();
-const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog', '/es/compress', '/es/rotate', '/es/merge', '/es/blog', '/de/compress', '/de/rotate', '/de/merge', '/de/blog'];
+const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog', '/es/compress', '/es/rotate', '/es/merge', '/es/blog', '/de/compress', '/de/rotate', '/de/merge', '/de/blog', '/pt/compress', '/pt/rotate', '/pt/merge', '/pt/blog', '/it/compress', '/it/rotate', '/it/merge', '/it/blog', '/tr/compress', '/tr/rotate', '/tr/merge', '/tr/blog', '/ar/compress', '/ar/rotate', '/ar/merge', '/ar/blog', '/ar/blog/daght-pdf-barid', '/ar/blog/khususiyat-pdf'];
 const titles = new Map<string, string>();
 
 for (const alias of ALIAS_PATHS) {
@@ -124,8 +124,14 @@ for (const alias of ALIAS_PATHS) {
   }
 }
 
+const HTML_OPEN = /<html lang="[^"]*"(?: dir="[^"]*")?>/;
+
+function htmlOpen(locale: string) {
+  return locale === 'ar' ? '<html lang="ar" dir="rtl">' : `<html lang="${locale}">`;
+}
+
 function shellDocument(locale: UrlLocale, robots: string) {
-  return upsertMeta(shell, 'name', 'robots', robots).replace(/<html lang="[^"]*">/, `<html lang="${locale}">`);
+  return upsertMeta(shell, 'name', 'robots', robots).replace(HTML_OPEN, htmlOpen(locale));
 }
 
 for (const route of SPA_SHELL_ROUTES) {
@@ -175,10 +181,20 @@ if (/^disallow:\s*\/es\/?\s*$/im.test(robots)) {
 if (/^disallow:\s*\/de\/?\s*$/im.test(robots)) {
   throw new Error('robots.txt must not block /de/');
 }
-for (const blocked of ['/pt/', '/it/', '/ar/', '/tr/']) {
-  if (pages.some((page) => page.path.startsWith(blocked))) {
-    throw new Error(`SEO prerender must not emit ${blocked}`);
-  }
+if (/^disallow:\s*\/pt\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /pt/');
+}
+if (/^disallow:\s*\/it\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /it/');
+}
+if (/^disallow:\s*\/tr\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /tr/');
+}
+if (/^disallow:\s*\/ar\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /ar/');
+}
+if (pages.some((page) => page.path === '/ar/privacy')) {
+  throw new Error('SEO prerender must not emit /ar/privacy');
 }
 
 await verifyPrerender(outDir, pages);
@@ -186,8 +202,11 @@ await verifyPrerender(outDir, pages);
 console.log(`SEO prerender: wrote ${pages.length} indexable HTML pages, ${SPA_SHELL_ROUTES.length * SEO_LOCALES.length} SPA shells, 404.html`);
 
 function assertPageHtml(page: SeoPrerenderPage, html: string) {
-  if (!html.includes(`<html lang="${page.locale}"`)) {
+  if (!html.includes(page.locale === 'ar' ? '<html lang="ar" dir="rtl">' : `<html lang="${page.locale}"`)) {
     throw new Error(`${page.path} html lang must be ${page.locale}`);
+  }
+  if (page.locale !== 'ar' && html.includes('dir="rtl"')) {
+    throw new Error(`${page.path} must stay left to right`);
   }
   if (!html.includes(`<title>${escapeHtmlAttr(page.title)}</title>`)) {
     throw new Error(`${page.path} title mismatch`);
@@ -222,13 +241,29 @@ function assertPageHtml(page: SeoPrerenderPage, html: string) {
     if (!article.includes('href="/de/')) throw new Error(`${page.path} is missing German internal links`);
     if (/href="\/(?!de\/)/.test(article)) throw new Error(`${page.path} links outside /de/`);
   }
-  if (page.locale === 'en' && (article.includes('href="/fr/') || article.includes('href="/es/') || article.includes('href="/de/'))) {
+  if (page.locale === 'pt' && page.related?.length) {
+    if (!article.includes('href="/pt/')) throw new Error(`${page.path} is missing Portuguese internal links`);
+    if (/href="\/(?!pt\/)/.test(article)) throw new Error(`${page.path} links outside /pt/`);
+  }
+  if (page.locale === 'it' && page.related?.length) {
+    if (!article.includes('href="/it/')) throw new Error(`${page.path} is missing Italian internal links`);
+    if (/href="\/(?!it\/)/.test(article)) throw new Error(`${page.path} links outside /it/`);
+  }
+  if (page.locale === 'tr' && page.related?.length) {
+    if (!article.includes('href="/tr/')) throw new Error(`${page.path} is missing Turkish internal links`);
+    if (/href="\/(?!tr\/)/.test(article)) throw new Error(`${page.path} links outside /tr/`);
+  }
+  if (page.locale === 'ar' && page.related?.length) {
+    if (!article.includes('href="/ar/')) throw new Error(`${page.path} is missing Arabic internal links`);
+    if (/href="\/(?!ar\/)/.test(article)) throw new Error(`${page.path} links outside /ar/`);
+  }
+  if (page.locale === 'en' && (article.includes('href="/fr/') || article.includes('href="/es/') || article.includes('href="/de/') || article.includes('href="/pt/') || article.includes('href="/it/') || article.includes('href="/tr/') || article.includes('href="/ar/'))) {
     throw new Error(`${page.path} English article must not link to another locale`);
   }
 }
 
 async function verifyPrerender(root: string, built: SeoPrerenderPage[]) {
-  const checks = ['/compress', '/fr/compress', '/es/compress', '/de/compress', '/rotate', '/fr/rotate', '/es/rotate', '/de/rotate', '/de/merge', '/de/pdf-to-word', '/de/jpg-to-pdf'];
+  const checks = ['/compress', '/fr/compress', '/es/compress', '/de/compress', '/pt/compress', '/it/compress', '/tr/compress', '/ar/compress', '/rotate', '/fr/rotate', '/es/rotate', '/de/rotate', '/pt/rotate', '/it/rotate', '/tr/rotate', '/ar/rotate', '/de/merge', '/pt/merge', '/it/merge', '/tr/merge', '/ar/merge', '/de/pdf-to-word', '/pt/pdf-to-word', '/it/pdf-to-word', '/tr/pdf-to-word', '/ar/pdf-to-word', '/de/jpg-to-pdf', '/pt/jpg-to-pdf', '/it/jpg-to-pdf', '/tr/jpg-to-pdf', '/ar/jpg-to-pdf', '/ar/blog/daght-pdf-barid', '/ar/blog/khususiyat-pdf'];
   if (existsSync(join(root, 'en', 'compress', 'index.html'))) {
     throw new Error('unexpected /en/compress output');
   }

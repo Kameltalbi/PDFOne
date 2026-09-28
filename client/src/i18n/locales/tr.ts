@@ -1,6 +1,26 @@
 import type { Messages } from '../types';
-import { en } from './en';
-import { seoEn } from '../seoCopy';
+import { compressSeoTr, mergeSeoTr, seoTr, splitSeoTr } from './trSeo';
+import {
+  trAccount,
+  trBlogPage,
+  trExtractImages,
+  trExtractPages,
+  trFillForm,
+  trFillSign,
+  trFlatten,
+  trHeaderFooter,
+  trHeic,
+  trHtml,
+  trLegal,
+  trOcr,
+  trPricing,
+  trSummarize,
+  trToPng,
+  trToText,
+  trTranslate,
+  trUnlock,
+  trUpgrade
+} from './trRest';
 
 export const tr: Messages = {
   htmlTitle: 'One2PDF — PDF araçları',
@@ -15,7 +35,7 @@ export const tr: Messages = {
     privacy: 'Gizlilik',
     contact: 'İletişim',
     blog: 'Blog',
-    relatedTools: 'These PDF tools are often used together',
+    relatedTools: 'Bu PDF araçları sık birlikte kullanılır',
     seeAll: 'Tümünü gör',
     pricing: 'Fiyatlar',
     menu: 'Menüyü aç',
@@ -32,10 +52,10 @@ export const tr: Messages = {
     jobsLeft: 'Bugün {remaining} / {limit} işlem kaldı',
     aiCreditsLeft: '{remaining} / {limit} YZ kredisi',
     adLabel: 'Reklam',
-    doneShort: 'Done!',
-    copyLink: 'Copy link',
-    linkCopied: 'Link copied',
-    deleteResult: 'Delete',
+    doneShort: 'Tamam',
+    copyLink: 'Bağlantıyı kopyala',
+    linkCopied: 'Bağlantı kopyalandı',
+    deleteResult: 'Sil',
     about: 'Hakkında',
     getPro: 'Pro’ya geç',
     footerTools: 'Araçlar',
@@ -60,20 +80,20 @@ export const tr: Messages = {
     toPdf: 'PDF’ye dönüştür',
     allTools: 'Tüm araçları gör',
     edit: 'PDF düzenle',
-    merge: 'PDF birleştir',
-    split: 'Böl',
-    compress: 'Sıkıştır',
-    protect: 'Koru'
+    merge: 'PDF Birleştir',
+    split: 'PDF Böl',
+    compress: 'PDF Sıkıştır',
+    protect: 'PDF Koru'
   },
-  pricing: { ...en.pricing },
-  upgrade: en.upgrade,
-  account: en.account,
+  pricing: trPricing,
+  upgrade: trUpgrade,
+  account: trAccount,
   tools: {
     edit: 'PDF düzenle',
-    merge: 'PDF birleştir',
-    split: 'PDF böl',
-    compress: 'PDF sıkıştır',
-    protect: 'PDF koru',
+    merge: 'PDF Birleştir',
+    split: 'PDF Böl',
+    compress: 'PDF Sıkıştır',
+    protect: 'PDF Koru',
     pdfToWord: 'PDF’den Word’e',
     wordToPdf: 'Word’den PDF’ye',
     pdfToJpg: 'PDF’den JPG’ye',
@@ -84,14 +104,14 @@ export const tr: Messages = {
     excelToPdf: 'Excel’den PDF’ye',
     pdfToPng: 'PDF’den PNG’ye',
     pngToPdf: 'PNG’den PDF’ye',
-    rotate: 'PDF döndür',
+    rotate: 'PDF Döndür',
     sign: 'Dijital imza',
     deletePages: 'Sayfa sil',
     reorderPages: 'Sayfaları yeniden düzenle',
     ocr: 'PDF OCR',
     summarize: 'PDF özetle',
     translate: 'PDF çevir',
-    unlock: 'PDF kilidini aç',
+    unlock: 'PDF Kilidini Aç',
     crop: 'PDF kırp',
     watermark: 'Filigran ekle',
     pageNumbers: 'Sayfa numaraları',
@@ -195,10 +215,11 @@ export const tr: Messages = {
     toolJpgToPdfDesc: 'JPG, PNG veya WebP görsellerini tek bir PDF’te birleştirin.',
     trustLine: 'Hızlı · Güvenli · Kolay kullanım',
     proBenefits: [
-      'Reklamsız',
-      '20 MB’tan büyük dosyalar',
-      'Birden fazla dosyayı aynı anda',
-      'Günlük belge limiti yok'
+      'Sınırsız PDF işlemi',
+      '100 MB’a kadar dosyalar',
+      'OCR dahil',
+      'Pro’da ayda 500 YZ kredisi',
+      'Reklamsız'
     ],
     freeValueLabel: 'PDF ARAÇLARINIZ, ÜCRETSİZ',
     freeValueTitle: 'PDF’leriniz için ihtiyacınız olan her şey.',
@@ -269,10 +290,11 @@ export const tr: Messages = {
     plansP2: 'Daha fazla kapasiteye ihtiyacınız varsa One2PDF Pro, ücretli teklifin sağladığı imkânlara erişim verir.',
     plansP3: 'Hesap yalnızca Pro kullanımı için gerekir.',
     plansItems: [
-      'Reklamsız',
-      '20 MB’den büyük dosyalar',
-      'Birden fazla dosyayı aynı anda işleme',
-      'Günlük belge limiti yok'
+      'Sınırsız PDF işlemi',
+      '100 MB’a kadar dosyalar',
+      'OCR dahil',
+      'Pro’da ayda 500 YZ kredisi',
+      'Reklamsız'
     ],
     plansCta: 'One2PDF Pro’yu keşfet',
     principlesKicker: 'Yaklaşımımız',
@@ -301,7 +323,7 @@ export const tr: Messages = {
     finalContact: 'Bize ulaşın'
   },
   merge: {
-    title: 'PDF birleştir',
+    title: 'PDF Birleştir',
     subtitle: 'PDF dosyalarınızı istediğiniz sırada tek bir belgede birleştirin.',
     selectFiles: 'Dosya seçin',
     orDrop: 'veya sürükleyip bırakın',
@@ -333,19 +355,10 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'İşlem birkaç saniye sürer, paylaşmaya hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Görsel arayüz', text: 'PDF’lerinizi sürükleyip bırakın, küçük resimleri görün ve tek tıkla birleştirin.' }
     ],
-    seoTitle: en.merge.seoTitle,
-    seoDescription: en.merge.seoDescription,
-    seoH2: en.merge.seoH2,
-    seoP1: en.merge.seoP1,
-    seoP2: en.merge.seoP2,
-    seoP3: en.merge.seoP3,
-    howTitle: en.merge.howTitle,
-    howSteps: en.merge.howSteps,
-    faqTitle: en.merge.faqTitle,
-    faq: en.merge.faq
+    ...mergeSeoTr
   },
   split: {
-    title: 'PDF böl',
+    title: 'PDF Böl',
     subtitle: 'Sayfaları çıkarın veya bir PDF’i birkaç dosyaya ayırın.',
     extract: 'Çıkar',
     extractDesc: 'Seçilen sayfaları içeren tek bir PDF',
@@ -379,16 +392,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'Bölme birkaç saniye sürer, indirmeye hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Güvenli işleme', text: 'Belgeniz indirmeden sonra otomatik olarak silinir.' }
     ],
-    seoTitle: en.split.seoTitle,
-    seoDescription: en.split.seoDescription,
-    seoH2: en.split.seoH2,
-    seoP1: en.split.seoP1,
-    seoP2: en.split.seoP2,
-    seoP3: en.split.seoP3,
-    howTitle: en.split.howTitle,
-    howSteps: en.split.howSteps,
-    faqTitle: en.split.faqTitle,
-    faq: en.split.faq
+    ...splitSeoTr
   },
   deletePages: {
     title: 'Sayfa sil',
@@ -410,7 +414,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'Daha hafif bir PDF, birkaç saniye içinde hazır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal dosya geçici olarak işlenir, ardından silinir.' }
     ],
-    ...seoEn.deletePages
+    ...seoTr.deletePages
   },
   reorderPages: {
     title: 'Sayfaları yeniden düzenle',
@@ -430,10 +434,10 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Hızlı dışa aktarma', text: 'Yeni PDF birkaç saniye içinde hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Güvenli işleme', text: 'Dosyalar geçici kalır ve işlemden sonra silinir.' }
     ],
-    ...seoEn.reorder
+    ...seoTr.reorder
   },
   rotatePdf: {
-    title: 'PDF döndür',
+    title: 'PDF Döndür',
     subtitle: 'Yatay veya ters duran sayfaları düzeltin, ardından düzeltilmiş PDF’i indirin.',
     tip: 'Görünen sayfayı veya tüm sayfaları düğmelerle 90° döndürün.',
     clickToRotate: 'Bir sayfa seçin, ardından düğmelerle döndürün.',
@@ -457,7 +461,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'Düzeltilmiş PDF birkaç saniye içinde hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Belgeniz işlemden sonra otomatik olarak silinir.' }
     ],
-    ...seoEn.rotate
+    ...seoTr.rotate
   },
   watermark: {
     title: 'PDF filigranı',
@@ -488,7 +492,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Tüm sayfalar', text: 'Filigran dosyanın tamamına bir seferde uygulanır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal PDF sunucuda tutulmaz.' }
     ],
-    ...seoEn.watermark
+    ...seoTr.watermark
   },
   signPdf: {
     title: 'Dijital imza',
@@ -526,7 +530,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Son sayfa veya tümü', text: 'İmzayı sözleşmelerin beklediği yere saniyeler içinde koyun.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal sunucuda tutulmaz.' }
     ],
-    ...seoEn.sign
+    ...seoTr.sign
   },
   numberPages: {
     title: 'Sayfa numaraları',
@@ -560,7 +564,7 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Tüm sayfalar', text: 'Numaralar dosyanın tamamına bir seferde uygulanır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal PDF sunucuda tutulmaz.' }
     ],
-    ...seoEn.pageNumbers
+    ...seoTr.pageNumbers
   },
   cropPdf: {
     title: 'PDF kırp',
@@ -591,10 +595,10 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'Kırpılmış PDF birkaç saniye içinde hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal PDF sunucuda tutulmaz.' }
     ],
-    ...seoEn.crop
+    ...seoTr.crop
   },
   compress: {
-    title: 'PDF sıkıştır',
+    title: 'PDF Sıkıştır',
     subtitle: 'PDF’inizin boyutunu, belgenin okunabilirliğini koruyarak küçültün.',
     addFile: 'Sıkıştırılacak bir PDF dosyası ekleyin.',
     fail: 'Sıkıştırma sırasında bir hata oluştu.',
@@ -621,19 +625,10 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Hızlı sonuç', text: 'Sıkıştırma birkaç saniye sürer.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'İşlenen PDF kullanımdan sonra otomatik olarak silinir.' }
     ],
-    seoTitle: en.compress.seoTitle,
-    seoDescription: en.compress.seoDescription,
-    seoH2: en.compress.seoH2,
-    seoP1: en.compress.seoP1,
-    seoP2: en.compress.seoP2,
-    seoP3: en.compress.seoP3,
-    howTitle: en.compress.howTitle,
-    howSteps: en.compress.howSteps,
-    faqTitle: en.compress.faqTitle,
-    faq: en.compress.faq
+    ...compressSeoTr
   },
   protect: {
-    title: 'PDF koru',
+    title: 'PDF Koru',
     subtitle: 'Yetkisiz açılışı engellemek için PDF’inizi bir parola ile kilitleyin.',
     addFile: 'Korunacak bir PDF dosyası ekleyin.',
     shortPassword: 'Parola en az 4 karakter içermelidir.',
@@ -657,7 +652,7 @@ export const tr: Messages = {
       { icon: '✧', tone: 'purple', title: 'Günlük kullanım', text: 'Sözleşmeler, dosyalar, kimlik belgeleri: bunları gizli tutun.' },
       { icon: '⇄', tone: 'teal', title: 'Geçici dosyalar', text: 'Orijinal dosya sunucuda tutulmaz.' }
     ],
-    ...seoEn.protect
+    ...seoTr.protect
   },
   toJpg: {
     title: 'PDF’den JPG’ye',
@@ -679,10 +674,10 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Anında sonuç', text: 'Dönüştürme birkaç saniye sürer.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Kaynak PDF işlenir, ardından silinir.' }
     ],
-    ...seoEn.toJpg
+    ...seoTr.toJpg
   },
   jpgToPdf: {
-    title: 'JPG / PNG’den PDF’ye',
+    title: 'JPG’den PDF’ye',
     subtitle: 'JPG, PNG veya WebP görsellerinizi tek bir PDF’te birleştirin.',
     addFile: 'En az bir görsel ekleyin.',
     fail: 'Dönüştürme sırasında bir hata oluştu.',
@@ -700,15 +695,15 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Hızlı oluşturma', text: 'Belge birkaç saniye içinde hazırdır.' },
       { icon: '✧', tone: 'teal', title: 'Geçici dosyalar', text: 'Gönderilen görseller sunucuda kalmaz.' }
     ],
-    ...seoEn.jpgToPdf
+    ...seoTr.jpgToPdf
   },
-  toPng: { ...en.toPng, title: 'PDF’den PNG’ye' },
-  toText: { ...en.toText, title: 'PDF’den metne' },
-  unlockPdf: { ...en.unlockPdf, title: 'PDF kilidini aç' },
-  ocrPdf: { ...en.ocrPdf, title: 'PDF OCR' },
-  summarizePdf: { ...en.summarizePdf, title: 'PDF özetle' },
-  translatePdf: { ...en.translatePdf, title: 'PDF çevir' },
-  htmlPdf: { ...en.htmlPdf, title: 'HTML’den PDF’ye' },
+  toPng: trToPng,
+  toText: trToText,
+  unlockPdf: trUnlock,
+  ocrPdf: trOcr,
+  summarizePdf: trSummarize,
+  translatePdf: trTranslate,
+  htmlPdf: trHtml,
   convert: {
     pdfToWordTitle: 'PDF’den Word’e',
     pdfToWordDesc: 'PDF dosyalarınızı düzenlenebilir Word belgelerine dönüştürün',
@@ -748,19 +743,19 @@ export const tr: Messages = {
       { icon: 'W', tone: 'teal', title: 'Word, Excel, PowerPoint', text: 'DOC, DOCX, XLS, XLSX, PPT, PPTX ve OpenDocument biçimleri.' },
       { icon: '✧', tone: 'purple', title: 'Değişken düzen', text: 'Taranmış PDF’ler ve karmaşık tablolar daha az doğru dönüşür.' }
     ],
-    wordToPdfSeo: en.convert.wordToPdfSeo,
-    pdfToWordSeo: en.convert.pdfToWordSeo,
-    excelToPdfSeo: en.convert.excelToPdfSeo,
-    pptToPdfSeo: en.convert.pptToPdfSeo,
-    pdfToExcelSeo: en.convert.pdfToExcelSeo,
-    pdfToPptSeo: en.convert.pdfToPptSeo
+    wordToPdfSeo: seoTr.wordToPdf,
+    pdfToWordSeo: seoTr.pdfToWord,
+    excelToPdfSeo: seoTr.excelToPdf,
+    pptToPdfSeo: seoTr.pptToPdf,
+    pdfToExcelSeo: seoTr.pdfToExcel,
+    pdfToPptSeo: seoTr.pdfToPpt
   },
   upload: {
     drop: 'Dosyalarınızı buraya sürükleyin veya',
     browse: 'göz atın',
     hintPdf: 'PDF dosyaları',
     hintImages: 'JPG, PNG veya WebP',
-    hintMax: 'En fazla 100 MB · {count} dosyaya kadar',
+    hintMax: '{size} · en fazla {count} dosya',
     tooLarge: 'Dosya {size} sınırını aşıyor.',
     listTitle: '{count} dosya — sırayı değiştirmek için sürükleyin',
     up: 'Yukarı',
@@ -837,15 +832,15 @@ export const tr: Messages = {
       { icon: '⏱', tone: 'purple', title: 'Hızlı dışa aktarma', text: 'Düzenlenen dosyayı birkaç saniye içinde indirin.' },
       { icon: '✧', tone: 'teal', title: 'Güvenli işleme', text: 'Geçici belge dışa aktarmadan sonra silinir.' }
     ],
-    ...seoEn.edit
+    ...seoTr.edit
   },
-  extractPages: { ...en.extractPages, title: 'Sayfaları çıkar' },
-  extractImages: { ...en.extractImages, title: 'Görselleri çıkar' },
-  flattenPdf: { ...en.flattenPdf, title: 'PDF’i düzleştir' },
-  headerFooter: { ...en.headerFooter, title: 'Üstbilgi ve altbilgi' },
-  fillForm: { ...en.fillForm, title: 'Form doldur' },
-  fillSign: { ...en.fillSign, title: 'PDF’lerinizi çevrimiçi doldurun ve imzalayın' },
-  heicToPdf: { ...en.heicToPdf, title: 'HEIC’ten PDF’ye' },
-  blogPage: en.blogPage,
-  legal: en.legal
+  extractPages: trExtractPages,
+  extractImages: trExtractImages,
+  flattenPdf: trFlatten,
+  headerFooter: trHeaderFooter,
+  fillForm: trFillForm,
+  fillSign: trFillSign,
+  heicToPdf: trHeic,
+  blogPage: trBlogPage,
+  legal: trLegal
 };

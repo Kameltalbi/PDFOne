@@ -61,12 +61,11 @@ describe('Spanish content without SEO activation', () => {
   });
 
   it('activates Spanish URLs without other languages or a Spanish privacy policy', () => {
-    assert.deepEqual([...URL_LOCALE_PREFIXES], ['fr', 'es', 'de']);
+    assert.deepEqual([...URL_LOCALE_PREFIXES], ['fr', 'es', 'de', 'pt', 'it', 'tr', 'ar']);
     assert.equal(hreflangForPath('/compress').some((link) => link.hreflang === 'es'), true);
     assert.equal(hreflangForPath('/privacy').some((link) => link.hreflang === 'es'), false);
     assert.equal(pages.some((page) => page.path === '/es/compress'), true);
     assert.equal(pages.some((page) => page.path === '/es/privacy'), false);
-    assert.equal(pages.some((page) => /^\/(pt|it|ar|tr)\//.test(page.path)), false);
     const xml = buildSitemap(pages);
     assert.match(xml, /\/es\/compress/);
     assert.doesNotMatch(xml, /\/es\/privacy/);
