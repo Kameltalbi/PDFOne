@@ -3,11 +3,13 @@ import type { Locale } from './types';
 /**
  * Locales that get their own URL prefix.
  * English stays unprefixed so existing rankings are preserved.
- * Add es, de, it or pt here only when that language has real localized pages.
+ * Add de, it, pt, ar or tr here only when that language has real localized pages.
  */
-export const URL_LOCALE_PREFIXES = ['fr'] as const;
+export const URL_LOCALE_PREFIXES = ['fr', 'es'] as const;
 
-export type UrlLocale = 'en' | (typeof URL_LOCALE_PREFIXES)[number];
+export const SEO_LOCALES = ['en', ...URL_LOCALE_PREFIXES] as const;
+
+export type UrlLocale = (typeof SEO_LOCALES)[number];
 
 const PREFIXES = new Set<string>(URL_LOCALE_PREFIXES);
 
@@ -37,7 +39,7 @@ export function stripLocalePrefix(pathname: string): string {
   return pathOnly.replace(/\/+$/, '') || '/';
 }
 
-/** English keeps `/compress`. French becomes `/fr/compress`. Other locales stay unprefixed until they are launched. */
+/** English keeps `/compress`. French becomes `/fr/compress`. Spanish becomes `/es/compress`. */
 export function localizedPath(to: string, locale: Locale): string {
   if (!to || to.startsWith('#') || /^(https?:|mailto:|tel:)/i.test(to)) return to;
   const cut = to.search(/[?#]/);
@@ -45,6 +47,8 @@ export function localizedPath(to: string, locale: Locale): string {
   const path = cut === -1 ? to : to.slice(0, cut);
   if (!path.startsWith('/')) return to;
   const bare = stripLocalePrefix(path);
+  // The full privacy policy is English or French only. Spanish links stay on the English canonical.
+  if (locale === 'es' && bare === '/privacy') return `${bare}${suffix}`;
   if (!isUrlLocalePrefix(locale)) return `${bare}${suffix}`;
   if (bare === '/') return `/${locale}${suffix}`;
   return `/${locale}${bare}${suffix}`;

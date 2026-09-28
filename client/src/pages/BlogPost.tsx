@@ -97,7 +97,7 @@ function BlogPostPage() {
     headline: post.title,
     description: post.seoDescription,
     datePublished: post.publishedIso,
-    inLanguage: urlLocale === 'fr' ? 'fr' : 'en',
+    inLanguage: urlLocale,
     keywords: post.keywords,
     url: pageUrl(pathname),
     author: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' },

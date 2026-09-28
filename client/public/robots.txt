@@ -4,7 +4,9 @@ Disallow: /api/
 Disallow: /temp/
 Disallow: /internal/
 Disallow: /fr/internal/
+Disallow: /es/internal/
 Disallow: /pricing/success
 Disallow: /fr/pricing/success
+Disallow: /es/pricing/success
 
 Sitemap: https://one2pdf.com/sitemap.xml

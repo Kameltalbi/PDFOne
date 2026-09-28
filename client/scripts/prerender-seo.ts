@@ -5,6 +5,7 @@ import type { AddressInfo } from 'node:net';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { SEO_LOCALES, type UrlLocale } from '../src/i18n/localePath';
 import { pageUrl, SITE_ORIGIN } from '../src/lib/jsonLd';
 import { buildSitemap } from '../src/lib/sitemap';
 import { escapeHtmlAttr, indexableSeoPages, seoArticleHtml, type SeoPrerenderPage } from '../src/lib/seoPages';
@@ -57,7 +58,8 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   html = upsertMeta(html, 'property', 'og:type', 'website');
   html = upsertMeta(html, 'property', 'og:url', url);
   html = upsertMeta(html, 'property', 'og:image', OG_IMAGE);
-  html = upsertMeta(html, 'property', 'og:locale', page.locale === 'fr' ? 'fr_FR' : 'en_US');
+  const ogLocale = page.locale === 'fr' ? 'fr_FR' : page.locale === 'es' ? 'es_ES' : 'en_US';
+  html = upsertMeta(html, 'property', 'og:locale', ogLocale);
   html = upsertHreflang(html, page.alternates);
   html = html.replace(/<html lang="[^"]*">/, `<html lang="${page.locale}">`);
   html = upsertMeta(html, 'property', 'og:site_name', 'One2PDF');
@@ -113,7 +115,7 @@ function writeHtml(relativePath: string, html: string) {
 
 const shell = readFileSync(join(outDir, 'index.html'), 'utf8');
 const pages = indexableSeoPages();
-const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog'];
+const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog', '/es/compress', '/es/rotate', '/es/merge', '/es/blog'];
 const titles = new Map<string, string>();
 
 for (const alias of ALIAS_PATHS) {
@@ -122,15 +124,19 @@ for (const alias of ALIAS_PATHS) {
   }
 }
 
-function shellDocument(locale: 'en' | 'fr', robots: string) {
+function shellDocument(locale: UrlLocale, robots: string) {
   return upsertMeta(shell, 'name', 'robots', robots).replace(/<html lang="[^"]*">/, `<html lang="${locale}">`);
 }
 
 for (const route of SPA_SHELL_ROUTES) {
   const robots = SPA_ROBOTS[route];
   if (!robots) throw new Error(`SEO prerender missing robots directive for SPA shell ${route}`);
-  writeHtml(join(route.slice(1), 'index.html'), shellDocument('en', robots));
-  writeHtml(join('fr', route.slice(1), 'index.html'), shellDocument('fr', robots));
+  for (const locale of SEO_LOCALES) {
+    const target = locale === 'en'
+      ? join(route.slice(1), 'index.html')
+      : join(locale, route.slice(1), 'index.html');
+    writeHtml(target, shellDocument(locale, robots));
+  }
 }
 writeHtml('404.html', applyNotFound(shell));
 
@@ -163,10 +169,18 @@ const robots = readFileSync(join(outDir, 'robots.txt'), 'utf8');
 if (/^disallow:\s*\/fr\/?\s*$/im.test(robots)) {
   throw new Error('robots.txt must not block /fr/');
 }
+if (/^disallow:\s*\/es\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /es/');
+}
+for (const blocked of ['/de/', '/pt/', '/it/', '/ar/', '/tr/']) {
+  if (pages.some((page) => page.path.startsWith(blocked))) {
+    throw new Error(`SEO prerender must not emit ${blocked}`);
+  }
+}
 
 await verifyPrerender(outDir, pages);
 
-console.log(`SEO prerender: wrote ${pages.length} indexable HTML pages, ${SPA_SHELL_ROUTES.length * 2} SPA shells, 404.html`);
+console.log(`SEO prerender: wrote ${pages.length} indexable HTML pages, ${SPA_SHELL_ROUTES.length * SEO_LOCALES.length} SPA shells, 404.html`);
 
 function assertPageHtml(page: SeoPrerenderPage, html: string) {
   if (!html.includes(`<html lang="${page.locale}"`)) {
@@ -181,6 +195,13 @@ function assertPageHtml(page: SeoPrerenderPage, html: string) {
   if (!html.includes(`<h1>${escapeHtmlAttr(page.h1)}</h1>`)) {
     throw new Error(`${page.path} H1 mismatch`);
   }
+  if (!html.includes(`<meta name="description" content="${escapeHtmlAttr(page.description)}" />`)) {
+    throw new Error(`${page.path} description mismatch`);
+  }
+  const firstQuestion = page.copy?.faq?.[0]?.question;
+  if (firstQuestion && !html.includes(escapeHtmlAttr(firstQuestion))) {
+    throw new Error(`${page.path} missing FAQ`);
+  }
   for (const alt of page.alternates) {
     const tag = `<link rel="alternate" hreflang="${alt.hreflang}" href="${alt.href}" />`;
     if (!html.includes(tag)) throw new Error(`${page.path} missing hreflang ${alt.hreflang}`);
@@ -190,13 +211,17 @@ function assertPageHtml(page: SeoPrerenderPage, html: string) {
     if (!article.includes('href="/fr/')) throw new Error(`${page.path} is missing French internal links`);
     if (/href="\/(?!fr\/)/.test(article)) throw new Error(`${page.path} links outside /fr/`);
   }
-  if (page.locale === 'en' && article.includes('href="/fr/')) {
-    throw new Error(`${page.path} English article must not link to /fr/`);
+  if (page.locale === 'es' && page.related?.length) {
+    if (!article.includes('href="/es/')) throw new Error(`${page.path} is missing Spanish internal links`);
+    if (/href="\/(?!es\/)/.test(article)) throw new Error(`${page.path} links outside /es/`);
+  }
+  if (page.locale === 'en' && (article.includes('href="/fr/') || article.includes('href="/es/'))) {
+    throw new Error(`${page.path} English article must not link to another locale`);
   }
 }
 
 async function verifyPrerender(root: string, built: SeoPrerenderPage[]) {
-  const checks = ['/compress', '/fr/compress', '/rotate', '/fr/rotate'];
+  const checks = ['/compress', '/fr/compress', '/es/compress', '/rotate', '/fr/rotate', '/es/rotate', '/es/merge', '/es/pdf-to-word', '/es/jpg-to-pdf'];
   if (existsSync(join(root, 'en', 'compress', 'index.html'))) {
     throw new Error('unexpected /en/compress output');
   }

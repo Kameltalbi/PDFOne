@@ -1,7 +1,7 @@
 import { getBlogPosts, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
 import { getPrivacyPolicy } from '../content/privacyPolicy';
 import { dictionaries } from '../i18n/dictionaries';
-import { localizedPath, stripLocalePrefix, type UrlLocale } from '../i18n/localePath';
+import { localizedPath, SEO_LOCALES, stripLocalePrefix, type UrlLocale } from '../i18n/localePath';
 import { interpolate, type Messages, type PageSeoCopy } from '../i18n/types';
 import { hreflangForPath, type HreflangLink } from './hreflang';
 import { faqPageJsonLd, pageUrl, websiteJsonLd } from './jsonLd';
@@ -26,7 +26,7 @@ export type SeoPrerenderPage = {
   related?: { href: string; label: string }[];
 };
 
-const PUBLIC_LOCALES: UrlLocale[] = ['en', 'fr'];
+const PUBLIC_LOCALES: UrlLocale[] = [...SEO_LOCALES];
 
 function usd(cents: number) {
   return `$${(Math.max(0, cents) / 100).toFixed(2)}`;
@@ -117,7 +117,7 @@ function blogPage(post: BlogPost, locale: UrlLocale): SeoDraft {
       headline: post.title,
       description: post.seoDescription,
       datePublished: post.publishedIso,
-      inLanguage: locale === 'fr' ? 'fr' : 'en',
+      inLanguage: locale,
       keywords: post.keywords,
       url: pageUrl(path),
       author: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' },
@@ -178,7 +178,11 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
     alternates: noindex ? [] : hreflangForPath(page.path),
     ...(features?.length ? {
       features,
-      featuresTitle: page.locale === 'fr' ? 'Ce que permet cet outil' : 'What this tool does'
+      featuresTitle: page.locale === 'fr'
+        ? 'Ce que permet cet outil'
+        : page.locale === 'es'
+          ? 'Qué permite esta herramienta'
+          : 'What this tool does'
     } : {}),
     ...(related.length ? { related, relatedTitle: m.common.relatedTools } : {})
   };
@@ -284,7 +288,9 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
     toolNamed(locale, '/heic-to-pdf', m.heicToPdf.title, m.heicToPdf.subtitle, m.heicToPdf)
   ];
 
-  return drafts.map((draft) => finalize({ ...draft, locale }, m));
+  return drafts
+    .filter((draft) => !(locale === 'es' && draft.path === '/privacy'))
+    .map((draft) => finalize({ ...draft, locale }, m));
 }
 
 export function indexableSeoPages(): SeoPrerenderPage[] {

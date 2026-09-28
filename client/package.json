@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && tsx scripts/prerender-seo.ts",
     "lint": "oxlint",
-    "test:seo": "tsx --test scripts/locale-seo.test.ts",
+    "test:seo": "tsx --test scripts/locale-seo.test.ts scripts/es-content.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
