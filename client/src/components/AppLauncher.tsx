@@ -2,37 +2,98 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { useI18n } from '../i18n';
 import type { Locale } from '../i18n/types';
 
-export type One2AppIcon = 'pdf' | 'image' | 'video';
+export type LauncherIcon = 'image' | 'video' | 'wordpress';
+
+type Copy = { products: string; extensions: string; one2image: string; one2video: string; wordpress: string };
 
 /**
- * One2 products shown in the header launcher.
- * Append an entry when another application goes live. Leave `href` empty for the app the visitor is already using.
+ * Header launcher sections. Append a product or an extension here when it has a real public page.
  */
-export type One2App = {
-  id: string;
+export type LauncherItem = {
+  id: keyof Pick<Copy, 'one2image' | 'one2video' | 'wordpress'>;
   name: string;
-  href?: string;
-  current?: boolean;
-  icon: One2AppIcon;
+  href: string;
+  icon: LauncherIcon;
 };
 
-export const ONE2_APPS: One2App[] = [
-  { id: 'one2pdf', name: 'One2PDF', current: true, icon: 'pdf' },
-  { id: 'one2image', name: 'One2Image', href: 'https://www.one2image.com', icon: 'image' },
-  { id: 'one2video', name: 'One2Video', href: 'https://one2video.com', icon: 'video' }
+export type LauncherSection = {
+  id: 'products' | 'extensions';
+  items: LauncherItem[];
+};
+
+export const LAUNCHER_SECTIONS: LauncherSection[] = [
+  {
+    id: 'products',
+    items: [
+      { id: 'one2image', name: 'One2Image', href: 'https://www.one2image.com', icon: 'image' },
+      { id: 'one2video', name: 'One2Video', href: 'https://one2video.com', icon: 'video' }
+    ]
+  },
+  {
+    id: 'extensions',
+    items: [
+      { id: 'wordpress', name: 'WordPress', href: 'https://wordpress.org/plugins/one2image/', icon: 'wordpress' }
+    ]
+  }
 ];
 
-const PANEL_TITLE = 'Applications One2';
-
-const APP_COPY: Record<Locale, { current: string; pdf: string; image: string; video: string }> = {
-  en: { current: 'Current application', pdf: 'PDF tools', image: 'Image tools', video: 'Video tools' },
-  fr: { current: 'Application actuelle', pdf: 'Outils PDF', image: 'Outils image', video: 'Outils vidéo' },
-  es: { current: 'Aplicación actual', pdf: 'Herramientas PDF', image: 'Herramientas de imagen', video: 'Herramientas de vídeo' },
-  de: { current: 'Aktuelle Anwendung', pdf: 'PDF-Werkzeuge', image: 'Bildwerkzeuge', video: 'Videowerkzeuge' },
-  pt: { current: 'Aplicação atual', pdf: 'Ferramentas PDF', image: 'Ferramentas de imagem', video: 'Ferramentas de vídeo' },
-  it: { current: 'Applicazione attuale', pdf: 'Strumenti PDF', image: 'Strumenti immagine', video: 'Strumenti video' },
-  tr: { current: 'Geçerli uygulama', pdf: 'PDF araçları', image: 'Görsel araçları', video: 'Video araçları' },
-  ar: { current: 'التطبيق الحالي', pdf: 'أدوات PDF', image: 'أدوات الصور', video: 'أدوات الفيديو' }
+const COPY: Record<Locale, Copy> = {
+  fr: {
+    products: 'Autres produits',
+    extensions: 'Extensions',
+    one2image: 'Optimiser, convertir et redimensionner vos images',
+    one2video: 'Convertir, compresser et modifier vos vidéos',
+    wordpress: 'Optimisez vos médias avec les outils One2'
+  },
+  en: {
+    products: 'Other products',
+    extensions: 'Extensions',
+    one2image: 'Optimize, convert and resize your images',
+    one2video: 'Convert, compress and edit your videos',
+    wordpress: 'Optimize your media with One2 tools'
+  },
+  es: {
+    products: 'Otros productos',
+    extensions: 'Extensiones',
+    one2image: 'Optimiza, convierte y redimensiona tus imágenes',
+    one2video: 'Convierte, comprime y edita tus vídeos',
+    wordpress: 'Optimiza tus medios con las herramientas One2'
+  },
+  de: {
+    products: 'Weitere Produkte',
+    extensions: 'Erweiterungen',
+    one2image: 'Bilder optimieren, konvertieren und skalieren',
+    one2video: 'Videos konvertieren, komprimieren und bearbeiten',
+    wordpress: 'Medien mit den One2-Werkzeugen optimieren'
+  },
+  pt: {
+    products: 'Outros produtos',
+    extensions: 'Extensões',
+    one2image: 'Otimizar, converter e redimensionar as suas imagens',
+    one2video: 'Converter, comprimir e editar os seus vídeos',
+    wordpress: 'Otimize os seus média com as ferramentas One2'
+  },
+  it: {
+    products: 'Altri prodotti',
+    extensions: 'Estensioni',
+    one2image: 'Ottimizza, converti e ridimensiona le tue immagini',
+    one2video: 'Converti, comprimi e modifica i tuoi video',
+    wordpress: 'Ottimizza i media con gli strumenti One2'
+  },
+  tr: {
+    products: 'Diğer ürünler',
+    extensions: 'Eklentiler',
+    one2image: 'Görselleri optimize edin, dönüştürün ve yeniden boyutlandırın',
+    one2video: 'Videoları dönüştürün, sıkıştırın ve düzenleyin',
+    wordpress: 'Ortam dosyalarınızı One2 araçlarıyla optimize edin'
+  },
+  ar: {
+    products: 'منتجات أخرى',
+    extensions: 'الإضافات',
+    one2image: 'حسّن الصور وحوّلها وغيّر مقاسها',
+    one2video: 'حوّل الفيديو واضغطه وعدّله',
+    wordpress: 'حسّن الوسائط بأدوات One2'
+  }
 };
 
 function DotsIcon() {
@@ -46,15 +107,9 @@ function DotsIcon() {
   );
 }
 
-function AppMark({ icon }: { icon: One2AppIcon }) {
+function AppMark({ icon }: { icon: LauncherIcon }) {
   return (
     <span className={`app-mark app-mark-${icon}`} aria-hidden="true">
-      {icon === 'pdf' && (
-        <svg viewBox="0 0 24 24" width="16" height="16">
-          <path d="M7.2 3.5h6.4L18.5 8.2V19.2a1.6 1.6 0 0 1-1.6 1.6H7.2a1.6 1.6 0 0 1-1.6-1.6V5.1a1.6 1.6 0 0 1 1.6-1.6Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="M13.4 3.7V8.2h4.6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      )}
       {icon === 'image' && (
         <svg viewBox="0 0 24 24" width="16" height="16">
           <rect x="3.5" y="4.5" width="17" height="15" rx="2" fill="none" stroke="currentColor" strokeWidth="1.7" />
@@ -68,13 +123,18 @@ function AppMark({ icon }: { icon: One2AppIcon }) {
           <path d="M10.2 9.2v5.6l4.8-2.8-4.8-2.8Z" fill="currentColor" />
         </svg>
       )}
+      {icon === 'wordpress' && (
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path d="M5.2 6.2 8.6 17.8 12 8.4l3.4 9.4 3.4-11.6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
     </span>
   );
 }
 
 export function AppLauncher() {
   const { locale } = useI18n();
-  const copy = APP_COPY[locale];
+  const copy = COPY[locale];
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
@@ -103,39 +163,38 @@ export function AppLauncher() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={panelId}
-        aria-label={PANEL_TITLE}
+        aria-label={copy.products}
         onClick={() => setOpen((value) => !value)}
       >
         <DotsIcon />
       </button>
       {open && (
-        <div id={panelId} className="app-launcher-panel" role="region" aria-label={PANEL_TITLE}>
-          <p className="app-launcher-title">{PANEL_TITLE}</p>
-          <ul className="app-launcher-list">
-            {ONE2_APPS.map((app) => {
-              const body = (
-                <>
-                  <AppMark icon={app.icon} />
-                  <span className="app-launcher-copy">
-                    <strong>{app.name}</strong>
-                    <span>{copy[app.icon]}</span>
-                    {app.current && <em>{copy.current}</em>}
-                  </span>
-                </>
-              );
-              return (
-                <li key={app.id}>
-                  {app.current || !app.href ? (
-                    <div className="app-launcher-item current" aria-current="page">{body}</div>
-                  ) : (
-                    <a className="app-launcher-item" href={app.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
-                      {body}
+        <div id={panelId} className="app-launcher-panel" role="region" aria-label={copy.products}>
+          {LAUNCHER_SECTIONS.map((section, index) => (
+            <section key={section.id} className="app-launcher-section">
+              {index > 0 && <hr className="app-launcher-sep" />}
+              <p className="app-launcher-label">{copy[section.id]}</p>
+              <ul className="app-launcher-list">
+                {section.items.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      className="app-launcher-item"
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                    >
+                      <AppMark icon={item.icon} />
+                      <span className="app-launcher-copy">
+                        <strong>{item.name}</strong>
+                        <span>{copy[item.id]}</span>
+                      </span>
                     </a>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </div>
       )}
     </div>
