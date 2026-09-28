@@ -5,7 +5,8 @@ import { switchLocalePath } from '../i18n/localePath';
 const CHOICES = [
   { locale: 'en' as const, label: 'English' },
   { locale: 'fr' as const, label: 'Français' },
-  { locale: 'es' as const, label: 'Español' }
+  { locale: 'es' as const, label: 'Español' },
+  { locale: 'de' as const, label: 'Deutsch' }
 ];
 
 export function LanguageSwitcher() {
@@ -13,7 +14,7 @@ export function LanguageSwitcher() {
   const { locale, preferLocale } = useI18n();
 
   return (
-    <nav className="lang-switch" aria-label={locale === 'fr' ? 'Langue' : locale === 'es' ? 'Idioma' : 'Language'}>
+    <nav className="lang-switch" aria-label={locale === 'fr' ? 'Langue' : locale === 'es' ? 'Idioma' : locale === 'de' ? 'Sprache' : 'Language'}>
       {CHOICES.map((choice, index) => (
         <span key={choice.locale}>
           {index > 0 && <span className="lang-switch-sep" aria-hidden="true">|</span>}

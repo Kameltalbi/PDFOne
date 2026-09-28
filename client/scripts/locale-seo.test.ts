@@ -28,6 +28,11 @@ describe('locale paths', () => {
     assert.equal(switchLocalePath('/es/compress', 'fr'), '/fr/compress');
     assert.equal(switchLocalePath('/fr/compress', 'es'), '/es/compress');
     assert.equal(urlLocaleFromPath('/es/png-to-pdf'), 'es');
+    assert.equal(localizedPath('/compress', 'de'), '/de/compress');
+    assert.equal(localizedPath('/privacy', 'de'), '/privacy');
+    assert.equal(switchLocalePath('/de/compress', 'en'), '/compress');
+    assert.equal(switchLocalePath('/fr/compress', 'de'), '/de/compress');
+    assert.equal(switchLocalePath('/es/merge', 'de'), '/de/merge');
     assert.equal(switchLocalePath('/fr/rotate', 'en'), '/rotate');
     assert.equal(switchLocalePath('/rotate', 'fr'), '/fr/rotate');
     assert.equal(urlLocaleFromPath('/fr/compress'), 'fr');
@@ -48,15 +53,18 @@ describe('indexable EN/FR pages', () => {
       assert.equal(item.alternates.find((alt) => alt.hreflang === 'en')?.href, 'https://one2pdf.com' + stripLocalePrefix(path));
       assert.equal(item.alternates.find((alt) => alt.hreflang === 'fr')?.href, 'https://one2pdf.com/fr' + stripLocalePrefix(path));
       assert.equal(item.alternates.find((alt) => alt.hreflang === 'es')?.href, 'https://one2pdf.com/es' + stripLocalePrefix(path));
+      assert.equal(item.alternates.find((alt) => alt.hreflang === 'de')?.href, 'https://one2pdf.com/de' + stripLocalePrefix(path));
       assert.equal(item.alternates.find((alt) => alt.hreflang === 'x-default')?.href, 'https://one2pdf.com' + stripLocalePrefix(path));
     }
     assert.deepEqual(page('/compress').alternates, page('/fr/compress').alternates);
     assert.deepEqual(page('/compress').alternates, page('/es/compress').alternates);
+    assert.deepEqual(page('/compress').alternates, page('/de/compress').alternates);
     assert.deepEqual(page('/rotate').alternates, page('/fr/rotate').alternates);
     assert.deepEqual(page('/rotate').alternates, page('/es/rotate').alternates);
     assert.equal(page('/es/compress').locale, 'es');
     assert.equal(pageUrl(page('/es/compress').path), 'https://one2pdf.com/es/compress');
     assert.equal(page('/privacy').alternates.some((alt) => alt.hreflang === 'es'), false);
+    assert.equal(page('/privacy').alternates.some((alt) => alt.hreflang === 'de'), false);
   });
 
   it('keeps the existing English metadata and uses French search wording', () => {
@@ -84,6 +92,7 @@ describe('indexable EN/FR pages', () => {
     assert.match(english, /href="\/merge"/);
     assert.doesNotMatch(english, /href="\/fr\//);
     assert.doesNotMatch(english, /href="\/es\//);
+    assert.doesNotMatch(english, /href="\/de\//);
     assert.match(french, /href="\/fr\/merge"/);
     assert.match(french, /href="\/fr\/split"/);
     assert.doesNotMatch(french, /href="\/merge"/);
@@ -124,8 +133,11 @@ describe('sitemap', () => {
     assert.match(xml, /hreflang="x-default" href="https:\/\/one2pdf.com\/compress"/);
     assert.match(xml, /<loc>https:\/\/one2pdf.com\/es\/blog\/comprimir-pdf-correo<\/loc>/);
     assert.doesNotMatch(xml, /\/es\/privacy/);
+    assert.match(xml, /<loc>https:\/\/one2pdf.com\/de\/compress<\/loc>/);
+    assert.match(xml, /hreflang="de" href="https:\/\/one2pdf.com\/de\/compress"/);
+    assert.match(xml, /<loc>https:\/\/one2pdf.com\/de\/blog\/pdf-fuer-e-mail-verkleinern<\/loc>/);
+    assert.doesNotMatch(xml, /\/de\/privacy/);
     assert.doesNotMatch(xml, /\/en\/compress/);
-    assert.doesNotMatch(xml, /\/de\//);
     assert.doesNotMatch(xml, /\/pt\//);
     assert.doesNotMatch(xml, /\/it\//);
     assert.doesNotMatch(xml, /\/ar\//);

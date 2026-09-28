@@ -182,7 +182,9 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
         ? 'Ce que permet cet outil'
         : page.locale === 'es'
           ? 'Qué permite esta herramienta'
-          : 'What this tool does'
+          : page.locale === 'de'
+            ? 'Was dieses Werkzeug kann'
+            : 'What this tool does'
     } : {}),
     ...(related.length ? { related, relatedTitle: m.common.relatedTools } : {})
   };
@@ -289,7 +291,7 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
   ];
 
   return drafts
-    .filter((draft) => !(locale === 'es' && draft.path === '/privacy'))
+    .filter((draft) => !((locale === 'es' || locale === 'de') && draft.path === '/privacy'))
     .map((draft) => finalize({ ...draft, locale }, m));
 }
 

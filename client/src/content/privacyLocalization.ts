@@ -5,6 +5,11 @@
  * before it replaces the English text.
  */
 export const privacyLocalization = {
+  de: {
+    status: 'flagged' as const,
+    reason:
+      'The full privacy policy stays in English for German visitors. The short interface strings in legal.* are localized. Do not publish a German legal body until it has been reviewed against the English policy.'
+  },
   es: {
     status: 'flagged' as const,
     reason:

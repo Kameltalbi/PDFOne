@@ -1,4 +1,5 @@
 import type { Locale } from '../i18n/types';
+import { GERMAN_BLOG_DRAFTS } from './blogDeDrafts';
 import { SPANISH_BLOG_DRAFTS } from './blogEsDrafts';
 
 export const COMPRESS_EMAIL_SLUG = 'reduire-taille-pdf-email';
@@ -284,6 +285,7 @@ const privacyEn: BlogPost = {
 function postsFor(locale: Locale): BlogPost[] {
   if (locale === 'fr') return [privacyFr, compressFr];
   if (locale === 'es') return SPANISH_BLOG_DRAFTS;
+  if (locale === 'de') return GERMAN_BLOG_DRAFTS;
   return [privacyEn, compressEn];
 }
 

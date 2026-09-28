@@ -12,7 +12,7 @@ type I18nContextValue = {
   locale: Locale;
   m: Messages;
   t: (template: string, vars?: Record<string, string | number>) => string;
-  preferLocale: (locale: 'en' | 'fr' | 'es') => void;
+  preferLocale: (locale: 'en' | 'fr' | 'es' | 'de') => void;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
@@ -30,12 +30,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [englishChoice, setEnglishChoice] = useState(readEnglishChoice);
   const browserLocale = useMemo(() => detectLocale(), []);
   const forced = routeLocale(pathname);
-  // /fr/ forces French and /es/ forces Spanish. Unprefixed URLs stay on browser detection unless the visitor explicitly chose English.
+  // /fr/, /es/ and /de/ force that language. Unprefixed URLs stay on browser detection unless the visitor explicitly chose English.
   const locale: Locale = forced ?? (englishChoice ? 'en' : browserLocale);
   const m = dictionaries[locale];
   setRuntimeLocale(locale);
 
-  const preferLocale = useCallback((next: 'en' | 'fr' | 'es') => {
+  const preferLocale = useCallback((next: 'en' | 'fr' | 'es' | 'de') => {
     try {
       if (next === 'en') localStorage.setItem(LOCALE_CHOICE_KEY, 'en');
       else localStorage.removeItem(LOCALE_CHOICE_KEY);

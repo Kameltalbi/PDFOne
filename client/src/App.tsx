@@ -63,7 +63,7 @@ function RedirectTo({ to }: { to: string }) {
   return <Navigate to={`${localizedPath(to, urlLocaleFromPath(pathname))}${search}`} replace />;
 }
 
-function localeRoutes(prefix: '' | '/fr' | '/es') {
+function localeRoutes(prefix: '' | '/fr' | '/es' | '/de') {
   const p = (path: string) => (prefix ? (path === '/' ? prefix : `${prefix}${path}`) : path);
   return [
     <Route key={p('/')} path={p('/')} element={<Home />} />,
@@ -111,7 +111,7 @@ function localeRoutes(prefix: '' | '/fr' | '/es') {
     <Route key={p('/tools')} path={p('/tools')} element={<Tools />} />,
     <Route key={p('/edit-pdf')} path={p('/edit-pdf')} element={<EditPdf />} />,
     <Route key={p('/edit-pdf/result')} path={p('/edit-pdf/result')} element={<EditResult />} />,
-    <Route key={p('/privacy')} path={p('/privacy')} element={prefix === '/es' ? <Navigate to="/privacy" replace /> : <Privacy />} />,
+    <Route key={p('/privacy')} path={p('/privacy')} element={prefix === '/es' || prefix === '/de' ? <Navigate to="/privacy" replace /> : <Privacy />} />,
     <Route key={p('/about')} path={p('/about')} element={<About />} />,
     <Route key={p('/contact')} path={p('/contact')} element={<Contact />} />,
     <Route key={p('/blog/:slug')} path={p('/blog/:slug')} element={<BlogPost />} />,
@@ -167,6 +167,7 @@ function AppShell() {
           {localeRoutes('')}
           {localeRoutes('/fr')}
           {localeRoutes('/es')}
+          {localeRoutes('/de')}
         </Routes>
       </div>
       {!isAuth && !isOps && <Footer />}

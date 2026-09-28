@@ -6,6 +6,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
   </url>
   <url>
@@ -14,6 +15,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/tools" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/tools" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
   </url>
   <url>
@@ -22,6 +24,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pricing" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
   </url>
   <url>
@@ -37,6 +40,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/about" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/about" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
   </url>
   <url>
@@ -45,6 +49,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/contact" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
   </url>
   <url>
@@ -53,6 +58,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
   </url>
   <url>
@@ -61,6 +67,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/privacidad-pdf-en-linea" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/datenschutz-pdf-online" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
   </url>
   <url>
@@ -69,6 +76,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/comprimir-pdf-correo" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/pdf-fuer-e-mail-verkleinern" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
   </url>
   <url>
@@ -77,6 +85,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/compress" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/compress" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
   </url>
   <url>
@@ -85,6 +94,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/merge" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/merge" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
   </url>
   <url>
@@ -93,6 +103,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/split" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/split" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
   </url>
   <url>
@@ -101,6 +112,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/protect" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/protect" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
   </url>
   <url>
@@ -109,6 +121,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
   </url>
   <url>
@@ -117,6 +130,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
   </url>
   <url>
@@ -125,6 +139,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
   </url>
   <url>
@@ -133,6 +148,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
   </url>
   <url>
@@ -141,6 +157,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
   </url>
   <url>
@@ -149,6 +166,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
   </url>
   <url>
@@ -157,6 +175,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
   </url>
   <url>
@@ -165,6 +184,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-jpg" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
   </url>
   <url>
@@ -173,6 +193,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
   </url>
   <url>
@@ -181,6 +202,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-png" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-png" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
   </url>
   <url>
@@ -189,6 +211,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/unlock" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/unlock" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
   </url>
   <url>
@@ -197,6 +220,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ocr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ocr" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
   </url>
   <url>
@@ -205,6 +229,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/sign" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/sign" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
   </url>
   <url>
@@ -213,6 +238,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/watermark" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/watermark" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
   </url>
   <url>
@@ -221,6 +247,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/page-numbers" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
   </url>
   <url>
@@ -229,6 +256,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/rotate" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/rotate" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
   </url>
   <url>
@@ -237,6 +265,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/crop" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/crop" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
   </url>
   <url>
@@ -245,6 +274,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/delete-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
   </url>
   <url>
@@ -253,6 +283,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/reorder" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/reorder" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
   </url>
   <url>
@@ -261,6 +292,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
   </url>
   <url>
@@ -269,6 +301,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
   </url>
   <url>
@@ -277,6 +310,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/summarize" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/summarize" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
   </url>
   <url>
@@ -285,6 +319,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
   </url>
   <url>
@@ -293,6 +328,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-images" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
   </url>
   <url>
@@ -301,6 +337,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/flatten" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/flatten" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
   </url>
   <url>
@@ -309,6 +346,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/header-footer" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/header-footer" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
   </url>
   <url>
@@ -317,6 +355,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-form" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-form" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
   </url>
   <url>
@@ -325,6 +364,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
   </url>
   <url>
@@ -333,6 +373,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
   </url>
   <url>
@@ -341,6 +382,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
   </url>
   <url>
@@ -349,6 +391,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/tools" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/tools" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
   </url>
   <url>
@@ -357,6 +400,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pricing" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
   </url>
   <url>
@@ -372,6 +416,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/about" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/about" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
   </url>
   <url>
@@ -380,6 +425,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/contact" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
   </url>
   <url>
@@ -388,6 +434,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
   </url>
   <url>
@@ -396,6 +443,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/privacidad-pdf-en-linea" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/datenschutz-pdf-online" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
   </url>
   <url>
@@ -404,6 +452,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/comprimir-pdf-correo" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/pdf-fuer-e-mail-verkleinern" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
   </url>
   <url>
@@ -412,6 +461,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/compress" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/compress" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
   </url>
   <url>
@@ -420,6 +470,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/merge" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/merge" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
   </url>
   <url>
@@ -428,6 +479,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/split" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/split" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
   </url>
   <url>
@@ -436,6 +488,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/protect" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/protect" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
   </url>
   <url>
@@ -444,6 +497,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
   </url>
   <url>
@@ -452,6 +506,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
   </url>
   <url>
@@ -460,6 +515,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
   </url>
   <url>
@@ -468,6 +524,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
   </url>
   <url>
@@ -476,6 +533,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
   </url>
   <url>
@@ -484,6 +542,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
   </url>
   <url>
@@ -492,6 +551,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
   </url>
   <url>
@@ -500,6 +560,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-jpg" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
   </url>
   <url>
@@ -508,6 +569,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
   </url>
   <url>
@@ -516,6 +578,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-png" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-png" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
   </url>
   <url>
@@ -524,6 +587,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/unlock" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/unlock" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
   </url>
   <url>
@@ -532,6 +596,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ocr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ocr" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
   </url>
   <url>
@@ -540,6 +605,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/sign" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/sign" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
   </url>
   <url>
@@ -548,6 +614,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/watermark" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/watermark" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
   </url>
   <url>
@@ -556,6 +623,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/page-numbers" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
   </url>
   <url>
@@ -564,6 +632,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/rotate" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/rotate" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
   </url>
   <url>
@@ -572,6 +641,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/crop" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/crop" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
   </url>
   <url>
@@ -580,6 +650,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/delete-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
   </url>
   <url>
@@ -588,6 +659,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/reorder" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/reorder" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
   </url>
   <url>
@@ -596,6 +668,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
   </url>
   <url>
@@ -604,6 +677,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
   </url>
   <url>
@@ -612,6 +686,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/summarize" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/summarize" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
   </url>
   <url>
@@ -620,6 +695,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
   </url>
   <url>
@@ -628,6 +704,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-images" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
   </url>
   <url>
@@ -636,6 +713,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/flatten" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/flatten" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
   </url>
   <url>
@@ -644,6 +722,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/header-footer" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/header-footer" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
   </url>
   <url>
@@ -652,6 +731,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-form" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-form" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
   </url>
   <url>
@@ -660,6 +740,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
   </url>
   <url>
@@ -668,6 +749,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
   </url>
   <url>
@@ -676,6 +758,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
   </url>
   <url>
@@ -684,6 +767,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/tools" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/tools" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
   </url>
   <url>
@@ -692,6 +776,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pricing" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
   </url>
   <url>
@@ -700,6 +785,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/about" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/about" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
   </url>
   <url>
@@ -708,6 +794,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/contact" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
   </url>
   <url>
@@ -716,6 +803,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
   </url>
   <url>
@@ -724,6 +812,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/comprimir-pdf-correo" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/pdf-fuer-e-mail-verkleinern" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
   </url>
   <url>
@@ -732,6 +821,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/privacidad-pdf-en-linea" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/datenschutz-pdf-online" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
   </url>
   <url>
@@ -740,6 +830,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/compress" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/compress" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
   </url>
   <url>
@@ -748,6 +839,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/merge" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/merge" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
   </url>
   <url>
@@ -756,6 +848,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/split" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/split" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
   </url>
   <url>
@@ -764,6 +857,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/protect" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/protect" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
   </url>
   <url>
@@ -772,6 +866,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/edit-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
   </url>
   <url>
@@ -780,6 +875,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-word" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
   </url>
   <url>
@@ -788,6 +884,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/word-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
   </url>
   <url>
@@ -796,6 +893,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-excel" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
   </url>
   <url>
@@ -804,6 +902,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/excel-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
   </url>
   <url>
@@ -812,6 +911,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-ppt" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
   </url>
   <url>
@@ -820,6 +920,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ppt-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
   </url>
   <url>
@@ -828,6 +929,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-jpg" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
   </url>
   <url>
@@ -836,6 +938,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/jpg-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
   </url>
   <url>
@@ -844,6 +947,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-png" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-png" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
   </url>
   <url>
@@ -852,6 +956,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/unlock" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/unlock" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
   </url>
   <url>
@@ -860,6 +965,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ocr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ocr" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
   </url>
   <url>
@@ -868,6 +974,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/sign" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/sign" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
   </url>
   <url>
@@ -876,6 +983,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/watermark" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/watermark" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
   </url>
   <url>
@@ -884,6 +992,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/page-numbers" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
   </url>
   <url>
@@ -892,6 +1001,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/rotate" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/rotate" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
   </url>
   <url>
@@ -900,6 +1010,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/crop" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/crop" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
   </url>
   <url>
@@ -908,6 +1019,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/delete-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
   </url>
   <url>
@@ -916,6 +1028,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/reorder" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/reorder" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
   </url>
   <url>
@@ -924,6 +1037,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-text" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
   </url>
   <url>
@@ -932,6 +1046,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/html-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
   </url>
   <url>
@@ -940,6 +1055,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/summarize" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/summarize" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
   </url>
   <url>
@@ -948,6 +1064,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-pages" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
   </url>
   <url>
@@ -956,6 +1073,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-images" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
   </url>
   <url>
@@ -964,6 +1082,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/flatten" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/flatten" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
   </url>
   <url>
@@ -972,6 +1091,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/header-footer" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/header-footer" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
   </url>
   <url>
@@ -980,6 +1100,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-form" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-form" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
   </url>
   <url>
@@ -988,6 +1109,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-sign-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
   </url>
   <url>
@@ -996,6 +1118,376 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/tools</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/tools" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/tools" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/tools" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/tools" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/tools" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/pricing</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pricing" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/about</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/about" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/about" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/about" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/contact</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/contact" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/contact" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/contact" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/contact" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/blog</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/blog/pdf-fuer-e-mail-verkleinern</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/reduire-taille-pdf-email" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/comprimir-pdf-correo" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/pdf-fuer-e-mail-verkleinern" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/reduire-taille-pdf-email" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/blog/datenschutz-pdf-online</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/blog/confidentialite-pdf-en-ligne" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/blog/privacidad-pdf-en-linea" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/blog/datenschutz-pdf-online" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/blog/confidentialite-pdf-en-ligne" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/compress</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/compress" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/compress" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/compress" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/compress" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/compress" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/merge</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/merge" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/merge" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/merge" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/merge" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/merge" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/split</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/split" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/split" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/split" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/split" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/split" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/protect</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/protect" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/protect" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/protect" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/protect" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/protect" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/edit-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/edit-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/edit-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/pdf-to-word</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-word" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-word" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/word-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/word-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/word-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/pdf-to-excel</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-excel" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-excel" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/excel-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/excel-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/excel-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/pdf-to-ppt</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-ppt" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-ppt" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/ppt-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ppt-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ppt-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/to-jpg</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-jpg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-jpg" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/jpg-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/jpg-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/jpg-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/to-png</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/to-png" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/to-png" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/to-png" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/to-png" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/to-png" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/unlock</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/unlock" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/unlock" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/unlock" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/unlock" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/unlock" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/ocr</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/ocr" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/ocr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/ocr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/ocr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/ocr" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/sign</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/sign" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/sign" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/sign" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/sign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/sign" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/watermark</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/watermark" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/watermark" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/watermark" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/watermark" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/watermark" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/page-numbers</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/page-numbers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/page-numbers" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/rotate</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/rotate" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/rotate" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/rotate" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/rotate" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/rotate" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/crop</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/crop" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/crop" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/crop" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/crop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/crop" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/delete-pages</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/delete-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/delete-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/reorder</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/reorder" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/reorder" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/reorder" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/reorder" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/reorder" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/pdf-to-text</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/pdf-to-text" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/pdf-to-text" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/html-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/html-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/html-to-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/summarize</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/summarize" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/summarize" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/summarize" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/summarize" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/summarize" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/extract-pages</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-pages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-pages" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/extract-images</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/extract-images" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/extract-images" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/extract-images" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/extract-images" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/extract-images" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/flatten</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/flatten" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/flatten" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/flatten" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/flatten" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/flatten" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/header-footer</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/header-footer" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/header-footer" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/header-footer" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/header-footer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/header-footer" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/fill-form</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-form" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-form" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-form" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-form" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-form" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/fill-sign-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/fill-sign-pdf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/fill-sign-pdf" />
+  </url>
+  <url>
+    <loc>https://one2pdf.com/de/heic-to-pdf</loc>
+    <lastmod>2026-09-28</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://one2pdf.com/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://one2pdf.com/fr/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://one2pdf.com/es/heic-to-pdf" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://one2pdf.com/de/heic-to-pdf" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://one2pdf.com/heic-to-pdf" />
   </url>
 </urlset>

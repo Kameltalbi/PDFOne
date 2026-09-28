@@ -58,7 +58,7 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   html = upsertMeta(html, 'property', 'og:type', 'website');
   html = upsertMeta(html, 'property', 'og:url', url);
   html = upsertMeta(html, 'property', 'og:image', OG_IMAGE);
-  const ogLocale = page.locale === 'fr' ? 'fr_FR' : page.locale === 'es' ? 'es_ES' : 'en_US';
+  const ogLocale = page.locale === 'fr' ? 'fr_FR' : page.locale === 'es' ? 'es_ES' : page.locale === 'de' ? 'de_DE' : 'en_US';
   html = upsertMeta(html, 'property', 'og:locale', ogLocale);
   html = upsertHreflang(html, page.alternates);
   html = html.replace(/<html lang="[^"]*">/, `<html lang="${page.locale}">`);
@@ -115,7 +115,7 @@ function writeHtml(relativePath: string, html: string) {
 
 const shell = readFileSync(join(outDir, 'index.html'), 'utf8');
 const pages = indexableSeoPages();
-const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog', '/es/compress', '/es/rotate', '/es/merge', '/es/blog'];
+const required = ['/rotate', '/merge', '/compress', '/blog', '/fr/rotate', '/fr/compress', '/fr/blog', '/es/compress', '/es/rotate', '/es/merge', '/es/blog', '/de/compress', '/de/rotate', '/de/merge', '/de/blog'];
 const titles = new Map<string, string>();
 
 for (const alias of ALIAS_PATHS) {
@@ -172,7 +172,10 @@ if (/^disallow:\s*\/fr\/?\s*$/im.test(robots)) {
 if (/^disallow:\s*\/es\/?\s*$/im.test(robots)) {
   throw new Error('robots.txt must not block /es/');
 }
-for (const blocked of ['/de/', '/pt/', '/it/', '/ar/', '/tr/']) {
+if (/^disallow:\s*\/de\/?\s*$/im.test(robots)) {
+  throw new Error('robots.txt must not block /de/');
+}
+for (const blocked of ['/pt/', '/it/', '/ar/', '/tr/']) {
   if (pages.some((page) => page.path.startsWith(blocked))) {
     throw new Error(`SEO prerender must not emit ${blocked}`);
   }
@@ -215,13 +218,17 @@ function assertPageHtml(page: SeoPrerenderPage, html: string) {
     if (!article.includes('href="/es/')) throw new Error(`${page.path} is missing Spanish internal links`);
     if (/href="\/(?!es\/)/.test(article)) throw new Error(`${page.path} links outside /es/`);
   }
-  if (page.locale === 'en' && (article.includes('href="/fr/') || article.includes('href="/es/'))) {
+  if (page.locale === 'de' && page.related?.length) {
+    if (!article.includes('href="/de/')) throw new Error(`${page.path} is missing German internal links`);
+    if (/href="\/(?!de\/)/.test(article)) throw new Error(`${page.path} links outside /de/`);
+  }
+  if (page.locale === 'en' && (article.includes('href="/fr/') || article.includes('href="/es/') || article.includes('href="/de/'))) {
     throw new Error(`${page.path} English article must not link to another locale`);
   }
 }
 
 async function verifyPrerender(root: string, built: SeoPrerenderPage[]) {
-  const checks = ['/compress', '/fr/compress', '/es/compress', '/rotate', '/fr/rotate', '/es/rotate', '/es/merge', '/es/pdf-to-word', '/es/jpg-to-pdf'];
+  const checks = ['/compress', '/fr/compress', '/es/compress', '/de/compress', '/rotate', '/fr/rotate', '/es/rotate', '/de/rotate', '/de/merge', '/de/pdf-to-word', '/de/jpg-to-pdf'];
   if (existsSync(join(root, 'en', 'compress', 'index.html'))) {
     throw new Error('unexpected /en/compress output');
   }
