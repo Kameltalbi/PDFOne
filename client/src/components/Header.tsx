@@ -364,6 +364,9 @@ function Header() {
                   <div id={accountMenuId} className="account-panel" role="menu" aria-label={m.pricing.myAccount}>
                     <AccountStatus status={status} />
                     <Link to="/account" className="account-item" role="menuitem" onClick={closeMenu}>{m.pricing.myAccount}</Link>
+                    {status.superadmin && (
+                      <Link to="/internal/ops" className="account-item" role="menuitem" onClick={closeMenu}>Outil interne</Link>
+                    )}
                     {status.paid && status.canManage && (
                       <button type="button" className="account-item" role="menuitem" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
                     )}
