@@ -32,7 +32,7 @@ export const LAUNCHER_SECTIONS: LauncherSection[] = [
   {
     id: 'extensions',
     items: [
-      { id: 'wordpress', name: 'WordPress', href: 'https://wordpress.org/plugins/one2image/', icon: 'wordpress' }
+      { id: 'wordpress', name: 'One2Image', href: 'https://wordpress.org/plugins/one2image/', icon: 'wordpress' }
     ]
   }
 ];
