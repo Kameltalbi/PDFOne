@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
+import type { Messages } from '../i18n/types';
 import { stripLocalePrefix } from '../i18n/localePath';
 import { remainingLabel } from '../lib/account';
-import { useBilling } from '../lib/billing';
+import { useBilling, type BillingState, type PaidPlan } from '../lib/billing';
+import { AppLauncher } from './AppLauncher';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Link, NavLink } from './LocaleLink';
 import './Header.css';
@@ -20,18 +22,63 @@ function pathIsActive(pathname: string, path: string) {
   return bare === path || bare.startsWith(`${path}/`);
 }
 
+function planTitle(plan: PaidPlan, pricing: Messages['pricing']) {
+  if (plan === 'week') return pricing.weekName;
+  if (plan === 'month') return pricing.monthName;
+  if (plan === 'year') return pricing.yearName;
+  return pricing.accountPro;
+}
+
+function AccountStatus({ status }: { status: BillingState }) {
+  const { m, t } = useI18n();
+  if (!status.user && !status.paid) return null;
+  const title = status.paid ? planTitle(status.plan, m.pricing) : (status.user?.name || m.pricing.freeName);
+  const detail = status.paid
+    ? remainingLabel(status.expiresAt, t, m)
+    : typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number'
+      ? t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })
+      : null;
+  return (
+    <div className="account-status">
+      <strong>{title}</strong>
+      {detail && <span>{detail}</span>}
+    </div>
+  );
+}
+
+function AccountChevron() {
+  return (
+    <svg className="account-chevron" viewBox="0 0 12 8" width="10" height="7" aria-hidden="true">
+      <path d="M1.5 1.75 6 6.25 10.5 1.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function AccountIcon() {
+  return (
+    <svg className="account-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.15" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M5.4 19.25c1.45-3.05 3.75-4.45 6.6-4.45s5.15 1.4 6.6 4.45" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function Header() {
   const { m, t } = useI18n();
   const { status, logout, portal } = useBilling();
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+  const accountMenuId = useId();
   const closeTimer = useRef(0);
 
   useEffect(() => {
     setMenuOpen(false);
     setOpenMenu(null);
+    setAccountOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -52,12 +99,15 @@ function Header() {
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setOpenMenu(null);
-      }
+      const target = event.target as Node;
+      if (navRef.current && !navRef.current.contains(target)) setOpenMenu(null);
+      if (accountRef.current && !accountRef.current.contains(target)) setAccountOpen(false);
     };
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpenMenu(null);
+      if (event.key === 'Escape') {
+        setOpenMenu(null);
+        setAccountOpen(false);
+      }
     };
     document.addEventListener('mousedown', handlePointerDown);
     window.addEventListener('keydown', handleKey);
@@ -71,7 +121,10 @@ function Header() {
   const closeMenu = () => {
     setMenuOpen(false);
     setOpenMenu(null);
+    setAccountOpen(false);
   };
+
+  const signedIn = Boolean(status.user || status.paid);
 
   const openNow = (id: MenuId) => {
     window.clearTimeout(closeTimer.current);
@@ -128,24 +181,20 @@ function Header() {
   const editActive = pathIsActive(location.pathname, '/edit-pdf');
   const signActive = pathIsActive(location.pathname, '/fill-sign-pdf') || pathIsActive(location.pathname, '/sign');
 
-  const accountActions = status.user || status.paid ? (
+  const accountActions = signedIn ? (
     <>
-      <Link to="/account" className="header-plan" onClick={closeMenu}>
-        {status.paid ? m.pricing.accountPro : (status.user?.name || m.pricing.myAccount)}
-        {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
-        {!status.paid && typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
-          <em>{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</em>
-        )}
-      </Link>
+      <AccountStatus status={status} />
+      <Link to="/account" className="header-button account-link" onClick={closeMenu}>{m.pricing.myAccount}</Link>
       {status.paid && status.canManage && (
         <button type="button" className="header-button manage" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
       )}
+      <hr className="account-menu-sep" />
       <button type="button" className="header-button logout" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
     </>
   ) : (
     <>
-      {typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
-        <span className="header-plan header-quota">{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</span>
+      {!status.paid && typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
+        <span className="header-quota">{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</span>
       )}
       <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
     </>
@@ -294,21 +343,43 @@ function Header() {
         <div className="header-end">
           <LanguageSwitcher />
           <div className="header-actions">
-          {status.user || status.paid ? (
-            <>
-              <Link to="/account" className="header-plan">
-                {status.paid ? m.pricing.accountPro : (status.user?.name || m.pricing.myAccount)}
-                {status.paid && status.expiresAt && <em>{remainingLabel(status.expiresAt, t, m)}</em>}
+            {signedIn ? (
+              <div className="account-menu" ref={accountRef}>
+                <button
+                  type="button"
+                  className="account-trigger"
+                  aria-expanded={accountOpen}
+                  aria-haspopup="menu"
+                  aria-controls={accountMenuId}
+                  onClick={() => {
+                    setOpenMenu(null);
+                    setAccountOpen((open) => !open);
+                  }}
+                >
+                  <AccountIcon />
+                  <span>{m.pricing.myAccount}</span>
+                  <AccountChevron />
+                </button>
+                {accountOpen && (
+                  <div id={accountMenuId} className="account-panel" role="menu" aria-label={m.pricing.myAccount}>
+                    <AccountStatus status={status} />
+                    <Link to="/account" className="account-item" role="menuitem" onClick={closeMenu}>{m.pricing.myAccount}</Link>
+                    {status.paid && status.canManage && (
+                      <button type="button" className="account-item" role="menuitem" onClick={() => { closeMenu(); void portal(); }}>{m.pricing.manage}</button>
+                    )}
+                    <hr className="account-menu-sep" />
+                    <button type="button" className="account-item" role="menuitem" onClick={() => { closeMenu(); void logout(); }}>{m.pricing.logout}</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="header-button login">
+                <AccountIcon />
+                <span>{m.common.login}</span>
               </Link>
-              {status.paid && status.canManage && (
-                <button type="button" className="header-button manage" onClick={() => void portal()}>{m.pricing.manage}</button>
-              )}
-              <button type="button" className="header-button logout" onClick={() => void logout()}>{m.pricing.logout}</button>
-            </>
-          ) : (
-            <Link to="/login" className="header-button login">{m.common.login}</Link>
-          )}
+            )}
           </div>
+          <AppLauncher />
         </div>
       </div>
     </header>
