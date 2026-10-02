@@ -31,6 +31,21 @@ function blogCluster(slug: string): Array<{ locale: UrlLocale; slug: string }> {
   });
 }
 
+/**
+ * Blog language follows the URL. A real translation opens that article.
+ * An English-only article opens the blog index of the chosen language.
+ */
+export function switchBlogLocalePath(pathname: string, locale: UrlLocale): string | null {
+  const bare = stripLocalePrefix(pathname.split(/[?#]/)[0] ?? pathname);
+  if (bare !== '/blog' && !bare.startsWith('/blog/')) return null;
+  if (bare === '/blog') return localizedPath('/blog', locale);
+  const slug = decodeURIComponent(bare.slice('/blog/'.length).replace(/\/+$/, ''));
+  if (!slug || slug.includes('/')) return localizedPath('/blog', locale);
+  const translated = blogCluster(slug).find((item) => item.locale === locale);
+  if (!translated) return localizedPath('/blog', locale);
+  return localizedPath(`/blog/${translated.slug}`, locale);
+}
+
 /** Reciprocal alternates for the current route. Blog posts only list locales that actually have a translation. */
 export function hreflangForPath(pathname: string): HreflangLink[] {
   const bare = stripLocalePrefix(pathname);

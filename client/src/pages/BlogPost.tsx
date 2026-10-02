@@ -1,10 +1,11 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
 import { Link, Navigate } from '../components/LocaleLink';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { getBlogPost, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
 import { ENGLISH_CMS_SLUGS } from '../content/blogCmsEn';
 import { useI18n } from '../i18n';
-import { urlLocaleFromPath } from '../i18n/localePath';
+import { dictionaries } from '../i18n/dictionaries';
+import { localizedPath, urlLocaleFromPath } from '../i18n/localePath';
 import { pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Legal.css';
@@ -62,8 +63,9 @@ function renderBlock(block: BlogBlock, index: number): ReactNode {
 function BlogPostPage() {
   const { slug } = useParams();
   const { pathname } = useLocation();
-  const { locale, m, t } = useI18n();
+  const { locale, t } = useI18n();
   const urlLocale = urlLocaleFromPath(pathname);
+  const page = dictionaries[urlLocale].blogPage;
   const builtin = slug ? getBlogPost(urlLocale, slug) : undefined;
   const [remote, setRemote] = useState<BlogPost | null>(null);
   const [ready, setReady] = useState(!slug || Boolean(builtin));
@@ -130,10 +132,10 @@ function BlogPostPage() {
   return (
     <main className="blog-page">
       <article className="blog-wrap blog-article">
-        <Link className="blog-back" to="/blog">{m.blogPage.back}</Link>
-        <p className="legal-eyebrow">{m.common.blog}</p>
+        <RouterLink className="blog-back" to={localizedPath('/blog', urlLocale)}>{page.back}</RouterLink>
+        <p className="legal-eyebrow">{dictionaries[urlLocale].common.blog}</p>
         <h1>{post.title}</h1>
-        <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
+        <time dateTime={post.publishedIso}>{t(page.publishedOn, { date: post.publishedLabel })}</time>
         {post.coverImage ? <img className="blog-cover" src={post.coverImage} alt="" /> : null}
         {post.body.map(renderBlock)}
         <Link className="blog-cta" to={post.ctaTo}>{post.cta}</Link>

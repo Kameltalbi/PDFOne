@@ -1,30 +1,25 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from '../components/LocaleLink';
-import { mergeBlogPosts, getBlogPosts, type BlogPost } from '../content/blog';
-import { ENGLISH_CMS_SLUGS } from '../content/blogCmsEn';
+import { Link, useLocation } from 'react-router-dom';
+import { mergeBlogPosts, type BlogPost } from '../content/blog';
 import { useI18n } from '../i18n';
-import { urlLocaleFromPath } from '../i18n/localePath';
+import { dictionaries } from '../i18n/dictionaries';
+import { localizedPath, urlLocaleFromPath } from '../i18n/localePath';
 import { usePageSeo } from '../lib/usePageSeo';
 import './Legal.css';
 import './Blog.css';
 
 function Blog() {
   const { pathname } = useLocation();
-  const { locale, m, t } = useI18n();
-  usePageSeo(m.blogPage.seoTitle, m.blogPage.seoDescription);
+  const { t } = useI18n();
+  const urlLocale = urlLocaleFromPath(pathname);
+  const page = dictionaries[urlLocale].blogPage;
+  usePageSeo(page.seoTitle, page.seoDescription);
   const [remote, setRemote] = useState<BlogPost[]>([]);
-  const posts = mergeBlogPosts(locale, remote);
-  const listed = urlLocaleFromPath(pathname) === 'en' && locale !== 'en'
-    ? [
-      ...posts,
-      ...getBlogPosts('en').filter((post) => ENGLISH_CMS_SLUGS.has(post.slug) && !posts.some((item) => item.slug === post.slug))
-    ]
-    : posts;
+  const posts = mergeBlogPosts(urlLocale, remote);
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/blog?lang=${locale}`)
+    fetch(`/api/blog?lang=${urlLocale}`)
       .then((response) => response.json())
       .then((payload) => {
         if (!cancelled && payload.success) setRemote(payload.data?.posts || []);
@@ -35,24 +30,24 @@ function Blog() {
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [urlLocale]);
 
   return (
     <main className="blog-page">
       <div className="blog-wrap blog-index">
-        <p className="legal-eyebrow">{m.common.blog}</p>
-        <h1>{m.blogPage.title}</h1>
-        <p className="blog-lead">{m.blogPage.subtitle}</p>
+        <p className="legal-eyebrow">{dictionaries[urlLocale].common.blog}</p>
+        <h1>{page.title}</h1>
+        <p className="blog-lead">{page.subtitle}</p>
         <div className="blog-list">
-          {listed.map((post) => (
-            <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
+          {posts.map((post) => (
+            <Link key={post.slug} className="blog-card" to={localizedPath(`/blog/${post.slug}`, urlLocale)}>
               {post.coverImage ? (
                 <img className="blog-card-cover" src={post.coverImage} alt="" />
               ) : null}
               <div className="blog-card-body">
                 <h2>{post.title}</h2>
-                <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
-                <span>{m.blogPage.readMore}</span>
+                <time dateTime={post.publishedIso}>{t(page.publishedOn, { date: post.publishedLabel })}</time>
+                <span>{page.readMore}</span>
               </div>
             </Link>
           ))}

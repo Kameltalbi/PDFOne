@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { switchLocalePath } from '../i18n/localePath';
+import { switchBlogLocalePath } from '../lib/hreflang';
 import type { Locale } from '../i18n/types';
 
 /**
@@ -83,7 +84,7 @@ export function LanguageSwitcher() {
                 <Link
                   role="option"
                   aria-selected={active}
-                  to={switchLocalePath(pathname, choice.locale)}
+                  to={switchBlogLocalePath(pathname, choice.locale) ?? switchLocalePath(pathname, choice.locale)}
                   hrefLang={choice.locale}
                   lang={choice.locale}
                   aria-label={choice.label}

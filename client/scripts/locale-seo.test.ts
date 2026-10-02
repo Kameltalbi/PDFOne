@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
+import { getBlogPosts } from '../src/content/blog.ts';
 import { ENGLISH_CMS_SLUGS } from '../src/content/blogCmsEn.ts';
 import { localizedPath, stripLocalePrefix, switchLocalePath, urlLocaleFromPath } from '../src/i18n/localePath.ts';
-import { hreflangForPath } from '../src/lib/hreflang.ts';
+import { hreflangForPath, switchBlogLocalePath } from '../src/lib/hreflang.ts';
 import { pageUrl } from '../src/lib/jsonLd.ts';
 import { seoArticleHtml, indexableSeoPages } from '../src/lib/seoPages.ts';
 import { buildSitemap } from '../src/lib/sitemap.ts';
@@ -246,5 +247,28 @@ describe('sitemap', () => {
       const html = seoArticleHtml(page(`/blog/${slug}`));
       assert.equal(html.match(/href="\/rotate"/g)?.length, 2);
     }
+  });
+
+  it('keeps each blog index in its own language and switches only to a real translation', () => {
+    for (const locale of ['fr', 'es', 'de', 'pt', 'it', 'tr', 'ar'] as const) {
+      for (const slug of ENGLISH_CMS_SLUGS) {
+        assert.equal(getBlogPosts(locale).some((post) => post.slug === slug), false);
+      }
+    }
+    assert.match(seoArticleHtml(page('/blog')), /how-to-rotate-a-pdf-permanently-online/);
+    for (const path of ['/fr/blog', '/es/blog', '/de/blog']) {
+      assert.doesNotMatch(seoArticleHtml(page(path)), /how-to-rotate-a-pdf-permanently-online/);
+    }
+    assert.equal(switchBlogLocalePath('/blog', 'en'), '/blog');
+    assert.equal(switchBlogLocalePath('/blog', 'fr'), '/fr/blog');
+    assert.equal(switchBlogLocalePath('/blog', 'es'), '/es/blog');
+    assert.equal(switchBlogLocalePath('/blog', 'de'), '/de/blog');
+    assert.equal(switchBlogLocalePath('/blog/how-to-rotate-a-pdf-permanently-online', 'fr'), '/fr/blog');
+    assert.equal(switchBlogLocalePath('/blog/how-to-rotate-a-pdf-permanently-online', 'es'), '/es/blog');
+    assert.equal(switchBlogLocalePath('/blog/how-to-rotate-a-pdf-permanently-online', 'de'), '/de/blog');
+    assert.equal(switchBlogLocalePath('/blog/reduire-taille-pdf-email', 'es'), '/es/blog/comprimir-pdf-correo');
+    assert.equal(switchBlogLocalePath('/es/blog/comprimir-pdf-correo', 'fr'), '/fr/blog/reduire-taille-pdf-email');
+    assert.equal(switchBlogLocalePath('/blog/reduire-taille-pdf-email', 'de'), '/de/blog/pdf-fuer-e-mail-verkleinern');
+    assert.equal(switchBlogLocalePath('/rotate', 'fr'), null);
   });
 });
