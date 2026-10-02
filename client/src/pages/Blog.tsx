@@ -39,7 +39,7 @@ function Blog() {
 
   return (
     <main className="blog-page">
-      <div className="blog-wrap">
+      <div className="blog-wrap blog-index">
         <p className="legal-eyebrow">{m.common.blog}</p>
         <h1>{m.blogPage.title}</h1>
         <p className="blog-lead">{m.blogPage.subtitle}</p>
