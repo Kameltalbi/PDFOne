@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
+import { ROTATE_GUIDES } from '../content/rotateGuides';
 import { postForm } from '../lib/api';
 import { rotateImageDataUrl } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useI18n } from '../i18n';
+import { urlLocaleFromPath } from '../i18n/localePath';
 
 function turn(value: number, delta: number) {
   return ((value + delta) % 360 + 360) % 360;
 }
 
 function Rotate() {
+  const { pathname } = useLocation();
   const { m, t } = useI18n();
+  const rotateGuides = urlLocaleFromPath(pathname) === 'en' ? [...ROTATE_GUIDES] : undefined;
   usePageSeo(m.rotatePdf.seoTitle, m.rotatePdf.seoDescription);
   const faqJsonLd = useMemo(
     () => (m.rotatePdf.faq?.length ? faqPageJsonLd(m.rotatePdf.faq, pageUrl('/rotate')) : null),
@@ -97,6 +102,7 @@ function Rotate() {
         error={pdf.error}
         features={m.rotatePdf.features}
         seo={landingSeoFrom(m.rotatePdf)}
+        guides={rotateGuides}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}

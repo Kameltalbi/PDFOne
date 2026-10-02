@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
+import { ENGLISH_CMS_SLUGS } from '../src/content/blogCmsEn.ts';
 import { localizedPath, stripLocalePrefix, switchLocalePath, urlLocaleFromPath } from '../src/i18n/localePath.ts';
 import { hreflangForPath } from '../src/lib/hreflang.ts';
 import { pageUrl } from '../src/lib/jsonLd.ts';
@@ -197,5 +198,53 @@ describe('sitemap', () => {
     assert.doesNotMatch(xml, /\/translate</);
     assert.doesNotMatch(xml, /png-to-pdf/);
     assert.doesNotMatch(xml, /\/login</);
+  });
+
+  it('adds the seven English CMS articles and no translated copies', () => {
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+    assert.equal(locs.length, 337);
+    for (const slug of ENGLISH_CMS_SLUGS) {
+      const url = `https://one2pdf.com/blog/${slug}`;
+      assert.equal(locs.filter((loc) => loc === url).length, 1);
+      for (const prefix of ['fr', 'es', 'de', 'pt', 'it', 'tr', 'ar']) {
+        assert.equal(locs.some((loc) => loc === `https://one2pdf.com/${prefix}/blog/${slug}`), false);
+      }
+      const article = page(`/blog/${slug}`);
+      assert.equal(article.alternates.some((alt) => alt.hreflang === 'fr'), false);
+      assert.equal(article.alternates.find((alt) => alt.hreflang === 'en')?.href, url);
+      assert.equal(article.robots ?? 'index, follow', 'index, follow');
+      const html = seoArticleHtml(article);
+      assert.ok(html.includes(`<h1>${article.h1.replaceAll('&', '&amp;')}</h1>`));
+      assert.doesNotMatch(html, /Suggested slug/i);
+      assert.doesNotMatch(html, /how-to-rotate-pdf-permanently(?!-online)/);
+    }
+    const blog = seoArticleHtml(page('/blog'));
+    for (const slug of ENGLISH_CMS_SLUGS) {
+      assert.match(blog, new RegExp(`href="/blog/${slug}"`));
+    }
+    assert.match(blog, /href="\/blog\/confidentialite-pdf-en-ligne"/);
+    assert.match(blog, /href="\/blog\/reduire-taille-pdf-email"/);
+    const rotate = seoArticleHtml(page('/rotate'));
+    assert.match(rotate, /<h1>Rotate PDF<\/h1>/);
+    assert.match(rotate, /<h2>Related guides<\/h2>/);
+    for (const slug of [
+      'how-to-rotate-a-pdf-permanently-online',
+      'rotate-scanned-pdf-save-permanently',
+      'pdf-opens-sideways-how-to-fix-page-orientation-permanently',
+      'how-to-rotate-one-page-in-a-pdf-one2pdf'
+    ]) {
+      assert.match(rotate, new RegExp(`href="/blog/${slug}"`));
+    }
+    assert.doesNotMatch(seoArticleHtml(page('/fr/rotate')), /Related guides/);
+    const rotateArticles = [
+      'how-to-rotate-a-pdf-permanently-online',
+      'rotate-scanned-pdf-save-permanently',
+      'pdf-opens-sideways-how-to-fix-page-orientation-permanently',
+      'how-to-rotate-one-page-in-a-pdf-one2pdf'
+    ];
+    for (const slug of rotateArticles) {
+      const html = seoArticleHtml(page(`/blog/${slug}`));
+      assert.equal(html.match(/href="\/rotate"/g)?.length, 2);
+    }
   });
 });

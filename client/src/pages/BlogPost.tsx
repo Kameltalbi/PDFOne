@@ -2,6 +2,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Link, Navigate } from '../components/LocaleLink';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { getBlogPost, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
+import { ENGLISH_CMS_SLUGS } from '../content/blogCmsEn';
 import { useI18n } from '../i18n';
 import { urlLocaleFromPath } from '../i18n/localePath';
 import { pageUrl, useJsonLd } from '../lib/jsonLd';
@@ -63,13 +64,18 @@ function BlogPostPage() {
   const { pathname } = useLocation();
   const { locale, m, t } = useI18n();
   const urlLocale = urlLocaleFromPath(pathname);
-  const builtin = slug ? getBlogPost(locale, slug) : undefined;
+  const builtin = slug ? getBlogPost(urlLocale, slug) : undefined;
   const [remote, setRemote] = useState<BlogPost | null>(null);
-  const [ready, setReady] = useState(!slug);
-  const post = remote || builtin;
+  const [ready, setReady] = useState(!slug || Boolean(builtin));
+  const post = builtin || remote;
+  const englishOnlyElsewhere = Boolean(slug && ENGLISH_CMS_SLUGS.has(slug) && urlLocale !== 'en');
 
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || builtin || englishOnlyElsewhere) {
+      setRemote(null);
+      setReady(true);
+      return;
+    }
     let cancelled = false;
     setReady(false);
     setRemote(null);
@@ -88,7 +94,7 @@ function BlogPostPage() {
     return () => {
       cancelled = true;
     };
-  }, [slug, locale]);
+  }, [slug, locale, builtin, englishOnlyElsewhere]);
 
   usePageSeo(post?.seoTitle, post?.seoDescription);
   useJsonLd(post ? `blog-${post.slug}` : 'blog-none', post ? {
@@ -103,6 +109,10 @@ function BlogPostPage() {
     author: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' },
     publisher: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' }
   } : null);
+
+  if (englishOnlyElsewhere) {
+    return <Navigate to="/blog" replace />;
+  }
 
   if (!post) {
     if (!ready) {

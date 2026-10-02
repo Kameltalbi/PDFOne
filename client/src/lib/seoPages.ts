@@ -1,4 +1,5 @@
 import { getBlogPosts, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
+import { ROTATE_GUIDES } from '../content/rotateGuides';
 import { getPrivacyPolicy } from '../content/privacyPolicy';
 import { dictionaries } from '../i18n/dictionaries';
 import { localizedPath, SEO_LOCALES, stripLocalePrefix, type UrlLocale } from '../i18n/localePath';
@@ -24,6 +25,8 @@ export type SeoPrerenderPage = {
   features?: { title: string; text: string }[];
   relatedTitle?: string;
   related?: { href: string; label: string }[];
+  guidesTitle?: string;
+  guides?: { href: string; label: string }[];
 };
 
 const PUBLIC_LOCALES: UrlLocale[] = [...SEO_LOCALES];
@@ -194,7 +197,11 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
                     ? 'ما تتيحه هذه الأداة'
                     : 'What this tool does'
     } : {}),
-    ...(related.length ? { related, relatedTitle: m.common.relatedTools } : {})
+    ...(related.length ? { related, relatedTitle: m.common.relatedTools } : {}),
+    ...(bare === '/rotate' && page.locale === 'en' ? {
+      guides: ROTATE_GUIDES.map((guide) => ({ href: guide.href, label: guide.label })),
+      guidesTitle: 'Related guides'
+    } : {})
   };
 }
 
@@ -335,6 +342,10 @@ export function seoArticleHtml(page: SeoPrerenderPage): string {
   if (page.related?.length) {
     if (page.relatedTitle) parts.push(`<h2>${escapeHtml(page.relatedTitle)}</h2>`);
     parts.push(`<ul>${page.related.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('')}</ul>`);
+  }
+  if (page.guides?.length) {
+    if (page.guidesTitle) parts.push(`<h2>${escapeHtml(page.guidesTitle)}</h2>`);
+    parts.push(`<ul>${page.guides.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('')}</ul>`);
   }
   if (page.articleHtml) parts.push(page.articleHtml);
   return `<article id="seo-prerender">${parts.join('\n')}</article>`;

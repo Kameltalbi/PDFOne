@@ -1,5 +1,6 @@
 import type { Locale } from '../i18n/types';
 import { ARABIC_BLOG_DRAFTS } from './blogArDrafts';
+import { ENGLISH_CMS_POSTS, ENGLISH_CMS_SLUGS } from './blogCmsEn';
 import { GERMAN_BLOG_DRAFTS } from './blogDeDrafts';
 import { ITALIAN_BLOG_DRAFTS } from './blogItDrafts';
 import { TURKISH_BLOG_DRAFTS } from './blogTrDrafts';
@@ -294,7 +295,7 @@ function postsFor(locale: Locale): BlogPost[] {
   if (locale === 'it') return ITALIAN_BLOG_DRAFTS;
   if (locale === 'tr') return TURKISH_BLOG_DRAFTS;
   if (locale === 'ar') return ARABIC_BLOG_DRAFTS;
-  return [privacyEn, compressEn];
+  return [privacyEn, compressEn, ...ENGLISH_CMS_POSTS];
 }
 
 export function getBlogPosts(locale: Locale): BlogPost[] {
@@ -330,7 +331,10 @@ export function blogCardLead(post: BlogPost, sentences = 3): string {
 
 export function mergeBlogPosts(locale: Locale, remote: BlogPost[]): BlogPost[] {
   const bySlug = new Map<string, BlogPost>();
+  for (const post of remote) {
+    if (locale !== 'en' && ENGLISH_CMS_SLUGS.has(post.slug)) continue;
+    bySlug.set(post.slug, post);
+  }
   for (const post of postsFor(locale)) bySlug.set(post.slug, post);
-  for (const post of remote) bySlug.set(post.slug, post);
   return [...bySlug.values()].sort((a, b) => b.publishedIso.localeCompare(a.publishedIso));
 }
