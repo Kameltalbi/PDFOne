@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from '../components/LocaleLink';
-import { mergeBlogPosts, blogCardLead, getBlogPosts, type BlogPost } from '../content/blog';
+import { mergeBlogPosts, getBlogPosts, type BlogPost } from '../content/blog';
 import { ENGLISH_CMS_SLUGS } from '../content/blogCmsEn';
 import { useI18n } from '../i18n';
 import { urlLocaleFromPath } from '../i18n/localePath';
@@ -44,22 +44,18 @@ function Blog() {
         <h1>{m.blogPage.title}</h1>
         <p className="blog-lead">{m.blogPage.subtitle}</p>
         <div className="blog-list">
-          {listed.map((post) => {
-            const lead = blogCardLead(post);
-            return (
-              <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
-                {post.coverImage ? (
-                  <img className="blog-card-cover" src={post.coverImage} alt="" />
-                ) : null}
-                <div className="blog-card-body">
-                  <h2>{post.title}</h2>
-                  <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
-                  {lead ? <p>{lead}</p> : null}
-                  <span>{m.blogPage.readMore}</span>
-                </div>
-              </Link>
-            );
-          })}
+          {listed.map((post) => (
+            <Link key={post.slug} className="blog-card" to={`/blog/${post.slug}`}>
+              {post.coverImage ? (
+                <img className="blog-card-cover" src={post.coverImage} alt="" />
+              ) : null}
+              <div className="blog-card-body">
+                <h2>{post.title}</h2>
+                <time dateTime={post.publishedIso}>{t(m.blogPage.publishedOn, { date: post.publishedLabel })}</time>
+                <span>{m.blogPage.readMore}</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </main>
