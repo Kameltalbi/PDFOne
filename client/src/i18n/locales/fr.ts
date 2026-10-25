@@ -402,7 +402,7 @@ export const fr: Messages = {
     toolEditDesc: 'Texte, images, signature et annotations.',
     toolMergeDesc: 'Réunissez plusieurs PDF dans le bon ordre.',
     toolSplitDesc: 'Extrayez ou séparez les pages d’un document.',
-    toolCompressDesc: 'Réduisez le poids sans sacrifier la qualité.',
+    toolCompressDesc: 'Réduisez le poids. Le résultat dépend du PDF.',
     toolJpgDesc: 'Convertissez chaque page en image.',
     toolProtectDesc: 'Sécurisez vos fichiers et vos informations.',
     toolPdfToWordDesc: 'Transformez un PDF en fichier Word éditable.',
@@ -547,26 +547,30 @@ export const fr: Messages = {
       { icon: '✓', tone: 'blue', title: 'Fichiers traités en sécurité', text: 'Vos documents restent temporaires et sont supprimés automatiquement après traitement.' },
       { icon: '★', tone: 'green', title: 'Sur tous vos appareils', text: 'Ordinateur, tablette ou mobile : fusionnez directement depuis le navigateur.' },
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Importez vos fichiers, réordonnez-les, puis téléchargez le document final.' },
-      { icon: '⏱', tone: 'purple', title: 'Un résultat immédiat', text: 'Le traitement se fait en quelques secondes, prêt à être partagé.' },
+      { icon: '⏱', tone: 'purple', title: 'Téléchargement', text: 'Le PDF fusionné se télécharge quand le traitement est terminé.' },
       { icon: '✧', tone: 'teal', title: 'Interface visuelle', text: 'Glissez-déposez vos PDF, voyez les miniatures et fusionnez d’un clic.' }
     ],
     seoTitle: 'Fusionner des PDF en ligne gratuitement | One2PDF',
     seoDescription: 'Combinez plusieurs PDF en un seul document, dans l’ordre que vous choisissez. Fusionnez gratuitement en ligne — démarrez sur One2PDF.',
     seoH2: 'Comment fusionner des PDF en ligne facilement et en toute sécurité',
-    seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis lancez la fusion : en quelques secondes, vous obtenez un document unique, prêt à télécharger.',
-    seoP2: 'Assembler plusieurs PDF n’a pas à être technique. L’outil conserve les pages telles quelles, sans filigrane, et peut ajouter des numéros de page si vous en avez besoin. C’est la méthode adaptée si vous cherchez comment combiner des PDF en un seul fichier pour un dossier de candidature, un envoi par e-mail ou un archivage plus simple.',
+    seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis téléchargez le document unique.',
+    seoP2: 'La fusion copie les pages dans un nouveau PDF, sans ajouter de filigrane. Une case permet d’ajouter des numéros « 1 / N ». Les signets, les champs de formulaire interactifs et une signature déjà présente ne sont pas garantis dans le fichier fusionné.',
     seoP3: 'La sécurité reste au centre du parcours : les fichiers d’origine ne sont pas conservés, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Fusionnez vos PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que plusieurs documents doivent n’en former plus qu’un.',
     howTitle: 'Comment fusionner des PDF',
     howSteps: [
       'Choisissez les fichiers PDF à réunir',
-      'Placez-les dans l’ordre souhaité',
+      'Glissez les miniatures pour choisir l’ordre, et cochez les numéros de page si vous les voulez',
       'Téléchargez le PDF fusionné'
     ],
     faqTitle: 'Questions fréquentes sur la fusion de PDF',
     faq: [
       {
         question: 'Combien de PDF puis-je fusionner ?',
-        answer: 'Vous pouvez ajouter plusieurs PDF et les réordonner. Le plan gratuit a une limite quotidienne et un plafond de 20 Mo par fichier. Pro débloque le traitement de plusieurs fichiers et les fichiers plus lourds.'
+        answer: 'Ajoutez au moins deux PDF et réordonnez-les avec les miniatures. Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro : pas de limite quotidienne de traitements, et 100 Mo par fichier.'
+      },
+      {
+        question: 'Les signets, formulaires et signatures sont-ils conservés ?',
+        answer: 'Les pages sont copiées dans un nouveau PDF. Les numéros « 1 / N » ne sont ajoutés que si vous cochez la case. Les signets, les champs interactifs et une signature déjà présente ne sont pas garantis.'
       },
       {
         question: 'Faut-il un compte pour fusionner des PDF ?',
@@ -846,16 +850,16 @@ export const fr: Messages = {
   },
   compress: {
     title: 'Compresser un PDF en ligne',
-    subtitle: 'Réduisez le poids de votre PDF tout en gardant un document lisible.',
+    subtitle: 'Réduisez le poids. Le résultat dépend du PDF et du niveau choisi.',
     addFile: 'Ajoutez un fichier PDF à compresser.',
     fail: 'Une erreur est survenue pendant la compression.',
     level: 'Niveau de compression',
     high: 'Élevée',
-    highDesc: 'Optimisation sans perte de texte',
+    highDesc: 'Le texte reste sélectionnable. Le gain peut être modeste.',
     medium: 'Moyenne',
-    mediumDesc: 'Bon compromis taille / qualité',
+    mediumDesc: 'Chaque page devient une image. Le texte n’est plus sélectionnable.',
     low: 'Forte',
-    lowDesc: 'Fichier le plus léger possible',
+    lowDesc: 'Images plus compressées. Le texte n’est plus sélectionnable et le rendu peut baisser.',
     lossyHint: 'Les niveaux moyenne et forte convertissent les pages en images : le texte ne restera plus sélectionnable.',
     running: 'Compression en cours…',
     action: 'Compresser le PDF',

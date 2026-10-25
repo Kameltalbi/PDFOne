@@ -402,7 +402,7 @@ export const en: Messages = {
     toolEditDesc: 'Text, images, signature and annotations.',
     toolMergeDesc: 'Combine several PDFs in the right order.',
     toolSplitDesc: 'Extract or separate pages from a document.',
-    toolCompressDesc: 'Reduce size without sacrificing quality.',
+    toolCompressDesc: 'Reduce file size. The result depends on the PDF.',
     toolJpgDesc: 'Convert each page into an image.',
     toolProtectDesc: 'Secure your files and information.',
     toolPdfToWordDesc: 'Turn a PDF into an editable Word file.',
@@ -547,26 +547,30 @@ export const en: Messages = {
       { icon: '✓', tone: 'blue', title: 'Files processed securely', text: 'Your documents stay temporary and are deleted automatically after processing.' },
       { icon: '★', tone: 'green', title: 'On every device', text: 'Computer, tablet or phone: merge directly in your browser.' },
       { icon: '◆', tone: 'gold', title: 'No installation', text: 'Import your files, reorder them, then download the final document.' },
-      { icon: '⏱', tone: 'purple', title: 'Immediate result', text: 'Processing takes a few seconds and is ready to share.' },
+      { icon: '⏱', tone: 'purple', title: 'Download', text: 'The merged PDF is ready to download when processing finishes.' },
       { icon: '✧', tone: 'teal', title: 'Visual interface', text: 'Drag and drop your PDFs, see thumbnails and merge in one click.' }
     ],
     seoTitle: 'Merge PDF Files Online — One File | One2PDF',
     seoDescription: 'Combine several PDFs into one document, in the order you choose. Merge PDF files online for free, then download — start now on One2PDF.',
     seoH2: 'How to merge PDFs online quickly and securely',
-    seoP1: 'Need to send a contract, attachments, and a scan as a single file? One2PDF lets you merge PDF files online for free, with no software to install. Import at least two files, drag the thumbnails to set the order, then start the merge: in a few seconds you get one document, ready to download.',
-    seoP2: 'Combining several PDFs does not have to be technical. The tool keeps pages as they are, with no watermark, and can add page numbers if you need them. It is a practical way to combine PDFs into one file for a job application, an email attachment, or simpler archiving.',
+    seoP1: 'Need to send a contract, attachments, and a scan as a single file? One2PDF lets you merge PDF files online for free, with no software to install. Import at least two files, drag the thumbnails to set the order, then download the single document.',
+    seoP2: 'Merge copies the pages into a new PDF and does not add a watermark. A checkbox can add “1 / N” page numbers. Bookmarks, interactive form fields, and an existing signature are not guaranteed in the merged file.',
     seoP3: 'Security stays at the center of the flow: the originals are not kept, the result is available for download, then deleted. No account is required for occasional use. Merge your PDFs now, check the page order before you share, and come back to One2PDF whenever several documents should become one.',
     howTitle: 'How to merge PDF files',
     howSteps: [
       'Choose the PDF files you want to combine',
-      'Put them in the order you need',
+      'Drag the thumbnails into order, and tick page numbers if you want them',
       'Download the merged PDF'
     ],
     faqTitle: 'Frequently asked questions about merging PDFs',
     faq: [
       {
         question: 'How many PDFs can I merge at once?',
-        answer: 'You can add several PDFs and reorder them with the thumbnails. The free plan has a daily document limit and a 20 MB file limit. Pro unlocks batch processing and larger files.'
+        answer: 'Add at least two PDFs and reorder them with the thumbnails. The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily processing cap, and the file limit is 100 MB.'
+      },
+      {
+        question: 'Are bookmarks, forms, and signatures kept?',
+        answer: 'Pages are copied into a new PDF. “1 / N” numbers are added only if you tick the checkbox. Bookmarks, interactive fields, and an existing signature are not guaranteed.'
       },
       {
         question: 'Do I need an account to merge PDFs?',
@@ -846,16 +850,16 @@ export const en: Messages = {
   },
   compress: {
     title: 'Compress PDF',
-    subtitle: 'Reduce your PDF size while keeping it readable.',
+    subtitle: 'Reduce the file size. The result depends on the PDF and the level you choose.',
     addFile: 'Add a PDF file to compress.',
     fail: 'An error occurred while compressing.',
     level: 'Compression level',
     high: 'High',
-    highDesc: 'Optimization without losing text',
+    highDesc: 'Text stays selectable. The size drop can be modest.',
     medium: 'Medium',
-    mediumDesc: 'Good size / quality balance',
+    mediumDesc: 'Each page becomes an image. Text is no longer selectable.',
     low: 'Strong',
-    lowDesc: 'Smallest possible file',
+    lowDesc: 'Images are compressed further. Text is no longer selectable and the picture can look worse.',
     lossyHint: 'Medium and strong levels convert pages to images: text will no longer be selectable.',
     running: 'Compressing…',
     action: 'Compress PDF',

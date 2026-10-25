@@ -207,7 +207,7 @@ export const de: Messages = {
     toolEditDesc: 'Text, Bilder, Signatur und Anmerkungen.',
     toolMergeDesc: 'Mehrere PDFs in der richtigen Reihenfolge verbinden.',
     toolSplitDesc: 'Seiten extrahieren oder trennen.',
-    toolCompressDesc: 'Größe reduzieren, ohne die Qualität zu opfern.',
+    toolCompressDesc: 'Dateigröße verringern. Das Ergebnis hängt vom PDF ab.',
     toolJpgDesc: 'Jede Seite in ein Bild umwandeln.',
     toolProtectDesc: 'Dateien und Informationen schützen.',
     toolPdfToWordDesc: 'Wandeln Sie ein PDF in eine bearbeitbare Word-Datei um.',

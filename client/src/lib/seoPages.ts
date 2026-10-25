@@ -6,7 +6,8 @@ import { localizedPath, SEO_LOCALES, stripLocalePrefix, type UrlLocale } from '.
 import { interpolate, type Messages, type PageSeoCopy } from '../i18n/types';
 import { hreflangForPath, type HreflangLink } from './hreflang';
 import { faqPageJsonLd, pageUrl, websiteJsonLd } from './jsonLd';
-import { indexableToolLinks, relatedToolLinks, toolLabel } from './relatedTools';
+import { relatedToolLinks, toolLabel } from './relatedTools';
+import { catalogLinks } from './toolCatalog';
 
 export type SeoPrerenderPage = {
   path: string;
@@ -24,7 +25,7 @@ export type SeoPrerenderPage = {
   featuresTitle?: string;
   features?: { title: string; text: string }[];
   relatedTitle?: string;
-  related?: { href: string; label: string }[];
+  related?: { href: string; label: string; description?: string }[];
   guidesTitle?: string;
   guides?: { href: string; label: string }[];
 };
@@ -185,7 +186,7 @@ const EN_COMPRESS_GUIDE_SLUGS = [
   'how-to-compress-pdf-without-losing-quality'
 ];
 
-function guideHeading(locale: UrlLocale) {
+export function guideHeading(locale: UrlLocale) {
   const titles: Record<UrlLocale, string> = {
     en: 'Related guides',
     fr: 'Guides associés',
@@ -199,7 +200,7 @@ function guideHeading(locale: UrlLocale) {
   return titles[locale];
 }
 
-function compressGuideLinks(locale: UrlLocale) {
+export function compressPageGuides(locale: UrlLocale) {
   const slugs = locale === 'en'
     ? EN_COMPRESS_GUIDE_SLUGS
     : getBlogPosts(locale).filter((post) => COMPRESS_EMAIL_SLUGS.has(post.slug)).map((post) => post.slug);
@@ -220,7 +221,7 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
     ?? (bare === '/rotate' && page.locale === 'en'
       ? ROTATE_GUIDES.map((guide) => ({ href: guide.href, label: guide.label }))
       : bare === '/compress'
-        ? compressGuideLinks(page.locale)
+        ? compressPageGuides(page.locale)
         : undefined);
   return {
     ...page,
@@ -245,7 +246,10 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
                     ? 'ما تتيحه هذه الأداة'
                     : 'What this tool does'
     } : {}),
-    ...(related.length ? { related, relatedTitle: page.relatedTitle ?? m.common.relatedTools } : {}),
+    ...(related.length ? {
+      related,
+      relatedTitle: page.relatedTitle !== undefined ? page.relatedTitle : m.common.relatedTools
+    } : {}),
     ...(guides?.length ? { guides, guidesTitle: page.guidesTitle ?? guideHeading(page.locale) } : {})
   };
 }
@@ -268,9 +272,11 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
       jsonLdId: 'one2pdf-website',
       jsonLd: websiteJsonLd(),
       related: [
-        ...indexableToolLinks(locale, m),
+        ...catalogLinks(locale, m),
         { href: localizedPath('/tools', locale), label: toolLabel('/tools', m) }
-      ]
+      ],
+      relatedTitle: m.tools.catalogTitle,
+      articleHtml: `<p>${escapeHtml(m.home.privacyText)}</p><p>${escapeHtml(m.home.privacyAutoDelete)}</p>`
     },
     {
       path: '/tools',
@@ -278,7 +284,8 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
       description: m.tools.catalogSubtitle,
       h1: m.tools.catalogTitle,
       lead: m.tools.catalogSubtitle,
-      related: indexableToolLinks(locale, m)
+      related: catalogLinks(locale, m),
+      relatedTitle: ''
     },
     {
       path: '/pricing',
@@ -391,7 +398,7 @@ export function seoArticleHtml(page: SeoPrerenderPage): string {
   }
   if (page.related?.length) {
     if (page.relatedTitle) parts.push(`<h2>${escapeHtml(page.relatedTitle)}</h2>`);
-    parts.push(`<ul>${page.related.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('')}</ul>`);
+    parts.push(`<ul>${page.related.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>${link.description ? ` — ${escapeHtml(link.description)}` : ''}</li>`).join('')}</ul>`);
   }
   if (page.guides?.length) {
     if (page.guidesTitle) parts.push(`<h2>${escapeHtml(page.guidesTitle)}</h2>`);

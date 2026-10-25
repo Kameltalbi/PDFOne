@@ -30,6 +30,7 @@ type LandingProps = {
     faq?: { question: string; answer: string }[];
   };
   guides?: { href: string; label: string }[];
+  guidesTitle?: string;
   onDragOver: () => void;
   onDragLeave: () => void;
   onDrop: (event: React.DragEvent) => void;
@@ -51,6 +52,7 @@ export function StudioLanding({
   children,
   seo,
   guides,
+  guidesTitle,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -131,8 +133,8 @@ export function StudioLanding({
         </section>
       )}
       {guides && guides.length > 0 && (
-        <nav className="studio-related" aria-label="Related guides">
-          <h2>Related guides</h2>
+        <nav className="studio-related" aria-label={guidesTitle || 'Related guides'}>
+          <h2>{guidesTitle || 'Related guides'}</h2>
           <ul>
             {guides.map((guide) => (
               <li key={guide.href}>

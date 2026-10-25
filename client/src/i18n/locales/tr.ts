@@ -207,7 +207,7 @@ export const tr: Messages = {
     toolEditDesc: 'Metin, görseller, imza ve açıklamalar.',
     toolMergeDesc: 'Birden fazla PDF’i doğru sırada birleştirin.',
     toolSplitDesc: 'Bir belgeden sayfa çıkarın veya ayırın.',
-    toolCompressDesc: 'Kaliteden ödün vermeden boyutu küçültün.',
+    toolCompressDesc: 'Boyutu küçültün. Sonuç PDF’ye bağlıdır.',
     toolJpgDesc: 'Her sayfayı görsele dönüştürün.',
     toolProtectDesc: 'Dosyalarınızı ve bilgilerinizi güvenceye alın.',
     toolPdfToWordDesc: 'PDF’yi düzenlenebilir bir Word dosyasına dönüştürün.',

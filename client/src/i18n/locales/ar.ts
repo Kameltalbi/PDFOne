@@ -207,7 +207,7 @@ export const ar: Messages = {
     toolEditDesc: 'نص وصور وتوقيع وتعليقات.',
     toolMergeDesc: 'اجمع عدة ملفات PDF بالترتيب المناسب.',
     toolSplitDesc: 'استخرج صفحات المستند أو افصلها.',
-    toolCompressDesc: 'خفّض الحجم دون التضحية بالجودة.',
+    toolCompressDesc: 'خفّض الحجم. النتيجة تعتمد على ملف PDF.',
     toolJpgDesc: 'حوّل كل صفحة إلى صورة.',
     toolProtectDesc: 'أمّن ملفاتك ومعلوماتك.',
     toolPdfToWordDesc: 'حوّل ملف PDF إلى مستند Word قابل للتحرير.',

@@ -4,10 +4,13 @@ import { formatFileSize, postForm } from '../lib/api';
 import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { usePageSeo } from '../lib/usePageSeo';
+import { compressPageGuides, guideHeading } from '../lib/seoPages';
 import { useI18n } from '../i18n';
+import type { UrlLocale } from '../i18n/localePath';
 
 function Compress() {
-  const { m, t } = useI18n();
+  const { m, t, locale } = useI18n();
+  const guides = compressPageGuides(locale as UrlLocale);
   usePageSeo(m.compress.seoTitle, m.compress.seoDescription);
   const faqJsonLd = useMemo(
     () => faqPageJsonLd(m.compress.faq, pageUrl('/compress')),
@@ -105,6 +108,8 @@ function Compress() {
           faqTitle: m.compress.faqTitle,
           faq: m.compress.faq
         }}
+        guides={guides}
+        guidesTitle={guideHeading(locale as UrlLocale)}
         onDragOver={() => pdf.setIsDragging(true)}
         onDragLeave={() => pdf.setIsDragging(false)}
         onDrop={pdf.onDropFiles}

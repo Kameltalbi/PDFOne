@@ -6,6 +6,7 @@ import { useJsonLd, websiteJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import { useUpgrade } from '../lib/upgrade';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
+import { catalogEntries } from '../lib/toolCatalog';
 import { useBilling } from '../lib/billing';
 import { trackFileUpload } from '../lib/analytics';
 import type { IncomingPdfState } from '../lib/incomingPdf';
@@ -98,6 +99,8 @@ function Home() {
   ] as const;
 
   const actions = shortcuts.filter((item) => item.path !== '/tools');
+
+  const catalog = catalogEntries(m);
 
   const tools = [
     { name: m.tools.merge, description: m.home.toolMergeDesc, icon: '⇄', path: '/merge', tone: 'orange' },
@@ -224,6 +227,25 @@ function Home() {
         <div className="pro-section-heading"><div><span>{m.home.popularLabel}</span><h2>{m.home.popularTitle}</h2></div><Link to="/tools">{m.home.seeAllTools} <b>→</b></Link></div>
         <div className="pro-tools-grid">{tools.map((tool) => <Link key={tool.path + tool.name} to={tool.path} className="pro-tool-card"><span className={`pro-tool-icon ${tool.tone}`}>{tool.icon}</span><div><h3>{tool.name}</h3><p>{tool.description}</p></div><b className="pro-tool-arrow">→</b></Link>)}</div>
         <AdBanner />
+      </section>
+
+      <section className="pro-catalog" aria-labelledby="home-all-tools">
+        <div className="pro-section-heading">
+          <div>
+            <span>{m.tools.catalogEyebrow}</span>
+            <h2 id="home-all-tools">{m.tools.catalogTitle}</h2>
+          </div>
+          <Link to="/tools">{m.home.seeAllTools} <b>→</b></Link>
+        </div>
+        <p className="pro-catalog-lead">{m.tools.catalogSubtitle}</p>
+        <ul className="pro-catalog-list">
+          {catalog.map((tool) => (
+            <li key={tool.id}>
+              <Link to={tool.path}>{tool.label}</Link>
+              <p>{tool.description}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="pro-free-value" aria-labelledby="home-free-value-title">

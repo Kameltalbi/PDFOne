@@ -207,7 +207,7 @@ export const it: Messages = {
     toolEditDesc: 'Testo, immagini, firma e annotazioni.',
     toolMergeDesc: 'Riunisci più PDF nell’ordine giusto.',
     toolSplitDesc: 'Estrai o separa le pagine di un documento.',
-    toolCompressDesc: 'Riduci il peso senza sacrificare la leggibilità.',
+    toolCompressDesc: 'Riduci il peso. Il risultato dipende dal PDF.',
     toolJpgDesc: 'Converti ogni pagina in un’immagine.',
     toolProtectDesc: 'Proteggi i file e le informazioni.',
     toolPdfToWordDesc: 'Trasforma un PDF in un file Word modificabile.',
