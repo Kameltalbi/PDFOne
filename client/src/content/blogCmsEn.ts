@@ -109,7 +109,12 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "→ Crop a PDF"
+        "parts": [
+          {
+            "text": "Crop PDF",
+            "to": "/crop"
+          }
+        ]
       },
       {
         "type": "p",
@@ -120,8 +125,37 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "text": "Once your pages are correctly oriented, you might want to handle a few other things before sharing the file:"
       },
       {
-        "type": "p",
-        "text": "reorder pages that are in the wrong sequence delete pages you no longer need compress the PDF to reduce its file size merge it with another PDF"
+        "type": "ul",
+        "items": [
+          [
+            {
+              "text": "Organize pages",
+              "to": "/reorder"
+            },
+            " if the sequence is wrong"
+          ],
+          [
+            {
+              "text": "Delete pages",
+              "to": "/delete-pages"
+            },
+            " you no longer need"
+          ],
+          [
+            {
+              "text": "Compress PDF",
+              "to": "/compress"
+            },
+            " if the file is larger than you need"
+          ],
+          [
+            {
+              "text": "Merge PDF",
+              "to": "/merge"
+            },
+            " to combine it with another PDF"
+          ]
+        ]
       },
       {
         "type": "p",
@@ -1233,7 +1267,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "Compresser un PDF",
+            "text": "Compress PDF",
             "to": "/compress"
           }
         ]
@@ -1242,7 +1276,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "Fusionner des PDF",
+            "text": "Merge PDF",
             "to": "/merge"
           }
         ]
@@ -1251,7 +1285,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "Séparer un PDF",
+            "text": "Split PDF",
             "to": "/split"
           }
         ]
@@ -1260,7 +1294,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "JPG vers PDF",
+            "text": "JPG to PDF",
             "to": "/jpg-to-pdf"
           }
         ]
@@ -1269,7 +1303,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "PDF vers Word",
+            "text": "PDF to Word",
             "to": "/pdf-to-word"
           }
         ]
@@ -1278,7 +1312,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "OCR PDF",
+            "text": "PDF OCR",
             "to": "/ocr"
           }
         ]
@@ -1287,7 +1321,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "type": "p",
         "parts": [
           {
-            "text": "Tarifs Pro",
+            "text": "Pricing",
             "to": "/pricing"
           }
         ]
@@ -1457,7 +1491,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "The fastest solution is an online compression tool. Upload your file, choose a compression level, and download a lighter version in seconds. A good compressor resamples images, removes unnecessary data and optimizes the file structure automatically. Size reductions of 50% to 90% are common for image-heavy files."
+        "text": "Upload the file and choose a level. High quality keeps the text selectable and does not turn pages into images. Medium and strong turn each page into an image: the text is no longer selectable or searchable as text, and the visual quality can drop. How much smaller the file gets depends on the document. An already optimized PDF does not necessarily get smaller."
       },
       {
         "type": "p",
@@ -1466,7 +1500,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             "text": "Tip:",
             "bold": true
           },
-          " choose a \"recommended\" or \"medium\" compression level first. Use \"extreme\" compression only if the file will be read on screen."
+          " start with high quality when the text must stay selectable. Medium and strong can shrink image-heavy files further, but they turn every page into an image."
         ]
       },
       {
@@ -1663,14 +1697,15 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
           "Ready to shrink your file? ",
           {
             "text": "Try our free PDF compressor",
+            "to": "/compress",
             "bold": true
           },
           " and get a lighter, easy-to-share PDF in seconds, with no software to install."
         ]
       }
     ],
-    "cta": "Try One2PDF",
-    "ctaTo": "/tools"
+    "cta": "Compress PDF",
+    "ctaTo": "/compress"
   },
   {
     "slug": "how-to-reduce-pdf-size-for-email",
@@ -1713,7 +1748,14 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       {
         "type": "ol",
         "items": [
-          "Open the [Compress PDF] tool.",
+          [
+            "Open the ",
+            {
+              "text": "Compress PDF",
+              "to": "/compress"
+            },
+            " tool."
+          ],
           "Upload your PDF.",
           "Let One2PDF process it.",
           "Download the compressed version.",
@@ -1775,7 +1817,24 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "With [Split PDF], you can extract, delete, or reorder pages in a few clicks. Sometimes removing unnecessary pages saves more space than compression alone."
+        "parts": [
+          "With ",
+          {
+            "text": "Split PDF",
+            "to": "/split"
+          },
+          ", you can extract the pages you need or separate each page. ",
+          {
+            "text": "Delete pages",
+            "to": "/delete-pages"
+          },
+          " removes pages you do not need, and ",
+          {
+            "text": "Organize pages",
+            "to": "/reorder"
+          },
+          " changes their order. Sometimes removing unnecessary pages saves more space than compression alone."
+        ]
       },
       {
         "type": "h3",
@@ -2009,11 +2068,18 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "For more tips on keeping your documents sharp, read our guide: How to Compress a PDF Without Losing Quality."
+        "parts": [
+          "For more on how the levels differ, read ",
+          {
+            "text": "How to Compress a PDF Without Losing Quality",
+            "to": "/blog/how-to-compress-pdf-without-losing-quality"
+          },
+          "."
+        ]
       }
     ],
-    "cta": "Try One2PDF",
-    "ctaTo": "/tools",
+    "cta": "Compress PDF",
+    "ctaTo": "/compress",
     "coverImage": "/api/blog/image/d15ccf8b54b6844afda45169.webp"
   },
   {
@@ -2101,7 +2167,14 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       {
         "type": "ol",
         "items": [
-          "Open the [Compress PDF] tool.",
+          [
+            "Open the ",
+            {
+              "text": "Compress PDF",
+              "to": "/compress"
+            },
+            " tool."
+          ],
           "Upload your PDF.",
           "Start the compression and wait a few seconds.",
           "Download the smaller file.",
@@ -2147,7 +2220,12 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             "text": "Scanned documents.",
             "bold": true
           },
-          " Every scanned page is basically a picture, which is why these files get so big. Compression helps by lowering excessive resolution, re-encoding images more efficiently, and dropping useless image data. If you'd also like to search or copy the text, run the file through [OCR PDF] as well."
+          " Every scanned page is basically a picture, which is why these files get so big. Medium and strong compression turn pages into images, so the text is no longer selectable. If you also want to search or copy the text, run the file through ",
+          {
+            "text": "PDF OCR",
+            "to": "/ocr"
+          },
+          " after keeping a version where the text still matters."
         ]
       },
       {
@@ -2212,7 +2290,14 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "Resize images before inserting them into Word, PowerPoint, Google Docs, or your layout software, and the exported PDF will be much lighter right away. If you're building a PDF from photos, [JPG to PDF] lets you combine them into a single file."
+        "parts": [
+          "Resize images before inserting them into Word, PowerPoint, Google Docs, or your layout software, and the exported PDF will be much lighter right away. If you're building a PDF from photos, ",
+          {
+            "text": "JPG to PDF",
+            "to": "/jpg-to-pdf"
+          },
+          " lets you combine them into a single file."
+        ]
       },
       {
         "type": "h3",
@@ -2224,7 +2309,24 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "If you only need to share part of a long report, use [Split PDF] to extract the relevant pages, or remove and reorder pages as needed."
+        "parts": [
+          "If you only need to share part of a long report, use ",
+          {
+            "text": "Split PDF",
+            "to": "/split"
+          },
+          " to extract the relevant pages. ",
+          {
+            "text": "Delete pages",
+            "to": "/delete-pages"
+          },
+          " and ",
+          {
+            "text": "Organize pages",
+            "to": "/reorder"
+          },
+          " handle removal and order."
+        ]
       },
       {
         "type": "h3",
@@ -2236,7 +2338,14 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "If email is your main goal, check out our guide: How to Reduce PDF Size for Email."
+        "parts": [
+          "If email is your main goal, read ",
+          {
+            "text": "How to Reduce PDF Size for Email",
+            "to": "/blog/how-to-reduce-pdf-size-for-email"
+          },
+          "."
+        ]
       },
       {
         "type": "h3",
@@ -2244,7 +2353,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "In a regular PDF, the text is stored as actual text, not as an image, so it usually stays perfectly sharp after compression."
+        "text": "High quality keeps that text selectable. Medium and strong turn each page into an image, so the text is no longer selectable or searchable as text, and the picture can look softer."
       },
       {
         "type": "p",
@@ -2256,11 +2365,11 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "There isn't one setting that fits every file, but here's a practical rule of thumb. Use maximum quality for anything going to print or design work. Pick balanced compression for everyday sharing and professional documents. Go stronger only when file size matters more than image detail."
+        "text": "There isn't one setting that fits every file. High quality keeps selectable text. Medium and strong turn pages into images and can reduce visual quality. Use them when a smaller file matters more than keeping the text selectable."
       },
       {
         "type": "p",
-        "text": "For most people, balanced compression is the best compromise."
+        "text": "Start with high quality, then try medium or strong only if the file still needs to be smaller and a rasterized page is acceptable."
       },
       {
         "type": "h3",
@@ -2273,7 +2382,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             "text": "Can I compress a PDF without changing the layout?",
             "bold": true
           },
-          "Yes. Compression reduces file size while keeping your pages, structure, and overall look intact."
+          "High quality keeps the page content selectable and does not flatten pages into images. Medium and strong replace each page with an image, so the layout is only a picture of the original and the text can no longer be selected."
         ]
       },
       {
@@ -2323,7 +2432,12 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             "text": "How do I compress a PDF online?",
             "bold": true
           },
-          "Upload your file to the One2PDF [Compress PDF] tool, let it process, and download the lighter version."
+          "Upload your file to the One2PDF ",
+          {
+            "text": "Compress PDF",
+            "to": "/compress"
+          },
+          " tool, choose a level, and download the result. Check the size: a smaller file is not guaranteed."
         ]
       },
       {
@@ -2339,8 +2453,8 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
         "text": "Try One2PDF Compress PDF to shrink your file online and make it easier to upload, store, and share."
       }
     ],
-    "cta": "Compress PDF Now",
-    "ctaTo": "/tools",
+    "cta": "Compress PDF",
+    "ctaTo": "/compress",
     "coverImage": "/api/blog/image/93da8be28feccd860c3d18cf.webp"
   }
 ];

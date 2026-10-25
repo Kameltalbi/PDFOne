@@ -685,7 +685,7 @@ export const en: Messages = {
   },
   rotatePdf: {
     title: 'Rotate PDF',
-    subtitle: 'Turn pages that are sideways or upside down, then download a corrected PDF.',
+    subtitle: 'Rotate the current page or every page in 90° steps, check the preview, then download.',
     tip: 'Use the buttons to turn the current page, or every page, by 90°.',
     clickToRotate: 'Select a page, then rotate it with the buttons.',
     rotateLeft: '90° left',
@@ -703,9 +703,9 @@ export const en: Messages = {
     features: [
       { icon: '↻', tone: 'green', title: 'Page by page', text: 'Rotate only the pages that need it, 90° at a time.' },
       { icon: '✓', tone: 'blue', title: 'Instant preview', text: 'See the new orientation before you download.' },
-      { icon: '★', tone: 'orange', title: 'Scans and photos', text: 'Fix sideways phone scans without reprinting.' },
+      { icon: '★', tone: 'orange', title: 'Quarter turns', text: 'Useful for a page at 90°, 180° or 270°. A slightly tilted scan is not straightened on its own.' },
       { icon: '◆', tone: 'gold', title: 'No installation', text: 'Everything happens in the browser.' },
-      { icon: '⏱', tone: 'purple', title: 'Immediate result', text: 'The corrected PDF is ready in a few seconds.' },
+      { icon: '⏱', tone: 'purple', title: 'After the preview', text: 'Download the PDF once the orientation looks right.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'Your document is deleted automatically after processing.' }
     ],
     ...seoEn.rotate
@@ -865,19 +865,19 @@ export const en: Messages = {
     reset: 'Compress another file',
     tip: 'Pick a level, then start compression. The original file on your computer is not changed.',
     features: [
-      { icon: '⇊', tone: 'orange', title: 'Smaller file', text: 'Reduce size to send, store or publish your PDF more easily.' },
-      { icon: '✓', tone: 'blue', title: 'Three levels', text: 'High keeps the text. Medium and strong save more space.' },
+      { icon: '⇊', tone: 'orange', title: 'Smaller file', text: 'Size may drop depending on the document. An already optimized PDF does not necessarily shrink.' },
+      { icon: '✓', tone: 'blue', title: 'Three levels', text: 'High keeps selectable text. Medium and strong turn pages into images.' },
       { icon: '★', tone: 'green', title: 'No installation', text: 'Import, choose a level, download. It all happens in the browser.' },
       { icon: '◆', tone: 'gold', title: 'Instant preview', text: 'See the document before processing starts.' },
-      { icon: '⏱', tone: 'purple', title: 'Fast result', text: 'Compression takes a few seconds.' },
+      { icon: '⏱', tone: 'purple', title: 'Before and after', text: 'Compare the new size. Nothing guarantees the file will fit under a send limit.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The processed PDF is deleted automatically after use.' }
     ],
     seoTitle: 'Compress PDF Online — Smaller Files | One2PDF',
-    seoDescription: 'Shrink a large PDF in seconds without losing readability. Compress PDF online for free, then download — start now on One2PDF.',
-    seoH2: 'How to compress a PDF online quickly and securely',
-    seoP1: 'Need to email a file that is too heavy, upload it to a form, or share it without ruining readability? One2PDF lets you compress a PDF online for free, with no software to install. Import the file, choose a compression level (high, medium, or strong), then start the job: in a few seconds you get a smaller PDF, ready to download.',
-    seoP2: 'Reducing the size of a large PDF does not have to be technical. The tool slims down images and optimizes the document while keeping a readable result on screen and in print. It is a practical way to shrink a PDF for Gmail, WhatsApp, or limited cloud storage.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Compress your PDF now, compare the size before and after, and come back to One2PDF whenever a document hits an upload limit.',
+    seoDescription: 'High quality keeps selectable text. Medium and strong turn pages into images. How much smaller the file gets depends on the PDF.',
+    seoH2: 'Compress a PDF: keep the text, or turn pages into images',
+    seoP1: 'One2PDF lets you compress a PDF online, with no software to install. Import the file and choose a level. High quality rewrites the document and keeps the text selectable. Medium and strong turn each page into an image: text in the result is no longer selectable or searchable as text, and the visual quality can drop.',
+    seoP2: 'The size reduction depends on the document. An already optimized PDF, or one made mostly of text, does not necessarily get smaller. Photos and scans usually leave more room, especially at medium or strong. Compare the size before you replace your original.',
+    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Compress your PDF, compare the size before and after, and keep the original if the result does not suit you.',
     howTitle: 'How to compress a PDF',
     howSteps: [
       'Upload the PDF that is too large',
@@ -888,11 +888,11 @@ export const en: Messages = {
     faq: [
       {
         question: 'How do I compress a PDF that is too large to email?',
-        answer: 'Gmail and Outlook often reject attachments over 25 MB. On One2PDF, import the PDF, choose a level (high, medium, or strong), then start compression. Download the lighter file: it stays readable and usually fits under the send limit, with no software to install.'
+        answer: 'Gmail and Outlook often reject attachments over 25 MB. Import the PDF and choose a level. High quality keeps the text selectable. Medium and strong turn pages into images: the file may get smaller, but the text is no longer selectable and the picture can look worse. Nothing guarantees the result will fit under the limit. It depends on the document.'
       },
       {
         question: 'Does compressing a PDF reduce document quality?',
-        answer: 'High keeps text and images as close to the original as possible. Medium and strong shrink images more, which can slightly soften photos or scans. Text stays readable. Use high for a CV or contract, and a stronger level if the file must pass a strict size cap.'
+        answer: 'High quality keeps selectable text and does not turn pages into images. Medium and strong produce one JPEG image per page: the text is no longer selectable or searchable as text, and the visual quality can drop. An already optimized PDF does not necessarily get smaller.'
       },
       {
         question: 'Does One2PDF keep my file after compression?',

@@ -3,9 +3,10 @@ import { describe, it } from 'node:test';
 
 import { getBlogPosts } from '../src/content/blog.ts';
 import { ENGLISH_CMS_SLUGS } from '../src/content/blogCmsEn.ts';
-import { localizedPath, stripLocalePrefix, switchLocalePath, urlLocaleFromPath } from '../src/i18n/localePath.ts';
+import { localizedPath, SEO_LOCALES, stripLocalePrefix, switchLocalePath, urlLocaleFromPath } from '../src/i18n/localePath.ts';
 import { hreflangForPath, switchBlogLocalePath } from '../src/lib/hreflang.ts';
 import { pageUrl } from '../src/lib/jsonLd.ts';
+import { INDEXABLE_TOOL_PATHS } from '../src/lib/relatedTools.ts';
 import { seoArticleHtml, indexableSeoPages } from '../src/lib/seoPages.ts';
 import { buildSitemap } from '../src/lib/sitemap.ts';
 
@@ -270,5 +271,85 @@ describe('sitemap', () => {
     assert.equal(switchBlogLocalePath('/es/blog/comprimir-pdf-correo', 'fr'), '/fr/blog/reduire-taille-pdf-email');
     assert.equal(switchBlogLocalePath('/blog/reduire-taille-pdf-email', 'de'), '/de/blog/pdf-fuer-e-mail-verkleinern');
     assert.equal(switchBlogLocalePath('/rotate', 'fr'), null);
+  });
+});
+
+const HUB_PATHS = new Set(['/', '/tools', '/pricing', '/privacy', '/about', '/contact', '/blog']);
+
+describe('prerendered home and catalog link every indexable tool', () => {
+  it('matches the indexable tool pages and skips aliases and translate', () => {
+    const fromPages = pages
+      .filter((item) => item.locale === 'en' && !item.robots?.includes('noindex'))
+      .map((item) => item.path)
+      .filter((path) => !HUB_PATHS.has(path) && !path.startsWith('/blog'));
+    assert.deepEqual([...INDEXABLE_TOOL_PATHS].sort(), [...fromPages].sort());
+    assert.equal(fromPages.includes('/translate'), false);
+    assert.equal(fromPages.some((path) => path.includes('png-to-pdf')), false);
+  });
+
+  for (const locale of SEO_LOCALES) {
+    for (const surface of ['/', '/tools'] as const) {
+      it(`${locale} ${surface} links each indexable tool in that language`, () => {
+        const html = seoArticleHtml(page(localizedPath(surface, locale)));
+        assert.doesNotMatch(html, /noindex/);
+        assert.doesNotMatch(html, /png-to-pdf|pdf-to-pptx|pptx-to-pdf/);
+        assert.doesNotMatch(html, /href="[^"]*\/translate"/);
+        for (const bare of INDEXABLE_TOOL_PATHS) {
+          const href = localizedPath(bare, locale);
+          const target = pages.find((item) => item.path === href);
+          assert.ok(target, `missing destination ${href}`);
+          assert.equal(target.locale, locale);
+          assert.equal(Boolean(target.robots?.includes('noindex')), false);
+          assert.equal(html.includes(`href="${href}"`), true, `${locale} ${surface} missing ${href}`);
+        }
+        if (locale === 'en') {
+          assert.doesNotMatch(html, /href="\/(?:fr|es|de|pt|it|tr|ar)\//);
+        } else {
+          assert.doesNotMatch(html, /href="\/(?:compress|merge|rotate|split|tools)"/);
+          assert.equal(html.includes(`href="/${locale}/rotate"`), true);
+        }
+      });
+    }
+  }
+
+  it('links compression and rotation to existing same-language guides', () => {
+    const email: Record<(typeof SEO_LOCALES)[number], string> = {
+      en: '/blog/reduire-taille-pdf-email',
+      fr: '/fr/blog/reduire-taille-pdf-email',
+      es: '/es/blog/comprimir-pdf-correo',
+      de: '/de/blog/pdf-fuer-e-mail-verkleinern',
+      pt: '/pt/blog/comprimir-pdf-email',
+      it: '/it/blog/comprimere-pdf-email',
+      tr: '/tr/blog/pdf-eposta-sikistir',
+      ar: '/ar/blog/daght-pdf-barid'
+    };
+    for (const locale of SEO_LOCALES) {
+      const href = email[locale];
+      const html = seoArticleHtml(page(localizedPath('/compress', locale)));
+      assert.equal(html.includes(`href="${href}"`), true, href);
+      const target = pages.find((item) => item.path === href);
+      assert.equal(target?.locale, locale);
+    }
+    const englishCompress = seoArticleHtml(page('/compress'));
+    assert.match(englishCompress, /href="\/blog\/why-is-my-pdf-file-so-large-causes-and-how-to-reduce-its-size"/);
+    assert.match(englishCompress, /href="\/blog\/how-to-reduce-pdf-size-for-email"/);
+    assert.match(englishCompress, /href="\/blog\/how-to-compress-pdf-without-losing-quality"/);
+    assert.doesNotMatch(seoArticleHtml(page('/fr/compress')), /how-to-compress-pdf-without-losing-quality/);
+    assert.match(seoArticleHtml(page('/rotate')), /href="\/blog\/how-to-rotate-a-pdf-permanently-online"/);
+    assert.doesNotMatch(seoArticleHtml(page('/fr/rotate')), /Related guides/);
+    assert.match(seoArticleHtml(page('/merge')), /href="\/compress"/);
+    assert.match(seoArticleHtml(page('/fr/merge')), /href="\/fr\/compress"/);
+    const rotated = seoArticleHtml(page('/blog/how-to-rotate-a-pdf-permanently-online'));
+    assert.match(rotated, /href="\/crop"/);
+    assert.match(rotated, /href="\/merge"/);
+    assert.match(rotated, /href="\/compress"/);
+    const onePage = seoArticleHtml(page('/blog/how-to-rotate-one-page-in-a-pdf-one2pdf'));
+    assert.match(onePage, />Compress PDF</);
+    assert.match(onePage, />Merge PDF</);
+    assert.doesNotMatch(onePage, /Compresser un PDF|Fusionner des PDF|Tarifs Pro/);
+    const shrink = seoArticleHtml(page('/blog/how-to-reduce-pdf-size-for-email'));
+    assert.match(shrink, /href="\/compress"/);
+    assert.match(shrink, /href="\/split"/);
+    assert.doesNotMatch(shrink, /\[Compress PDF\]|\[Split PDF\]/);
   });
 });

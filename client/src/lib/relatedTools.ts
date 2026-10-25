@@ -46,6 +46,46 @@ export const TOOL_PATH_ALIAS: Record<string, string> = {
   '/edit-pdf/result': '/edit-pdf'
 };
 
+/**
+ * Canonical tool URLs with an indexable page, in catalog order.
+ * Aliases (/png-to-pdf and the PowerPoint aliases) and /translate (noindex) stay out.
+ */
+export const INDEXABLE_TOOL_PATHS = [
+  '/edit-pdf',
+  '/fill-sign-pdf',
+  '/compress',
+  '/merge',
+  '/pdf-to-word',
+  '/word-to-pdf',
+  '/to-jpg',
+  '/jpg-to-pdf',
+  '/pdf-to-excel',
+  '/protect',
+  '/split',
+  '/rotate',
+  '/sign',
+  '/delete-pages',
+  '/reorder',
+  '/ocr',
+  '/summarize',
+  '/to-png',
+  '/unlock',
+  '/crop',
+  '/watermark',
+  '/page-numbers',
+  '/excel-to-pdf',
+  '/pdf-to-ppt',
+  '/ppt-to-pdf',
+  '/pdf-to-text',
+  '/html-to-pdf',
+  '/extract-pages',
+  '/extract-images',
+  '/flatten',
+  '/header-footer',
+  '/fill-form',
+  '/heic-to-pdf'
+] as const;
+
 export function toolLabel(path: string, m: Messages): string {
   const labels: Record<string, string> = {
     '/compress': m.tools.compress,
@@ -92,6 +132,14 @@ export function relatedToolLinks(barePath: string, locale: UrlLocale, m: Message
   const paths = RELATED_TOOLS[barePath];
   if (!paths?.length) return [];
   return [...paths, '/tools'].map((path) => ({
+    href: localizedPath(path, locale),
+    label: toolLabel(path, m)
+  }));
+}
+
+/** Visible tool links for indexable hub pages. Final URLs only, in the page language. */
+export function indexableToolLinks(locale: UrlLocale, m: Messages) {
+  return INDEXABLE_TOOL_PATHS.map((path) => ({
     href: localizedPath(path, locale),
     label: toolLabel(path, m)
   }));

@@ -1,4 +1,4 @@
-import { getBlogPosts, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
+import { COMPRESS_EMAIL_SLUG, getBlogPost, getBlogPosts, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
 import { ROTATE_GUIDES } from '../content/rotateGuides';
 import { getPrivacyPolicy } from '../content/privacyPolicy';
 import { dictionaries } from '../i18n/dictionaries';
@@ -6,7 +6,7 @@ import { localizedPath, SEO_LOCALES, stripLocalePrefix, type UrlLocale } from '.
 import { interpolate, type Messages, type PageSeoCopy } from '../i18n/types';
 import { hreflangForPath, type HreflangLink } from './hreflang';
 import { faqPageJsonLd, pageUrl, websiteJsonLd } from './jsonLd';
-import { relatedToolLinks } from './relatedTools';
+import { indexableToolLinks, relatedToolLinks, toolLabel } from './relatedTools';
 
 export type SeoPrerenderPage = {
   path: string;
@@ -168,12 +168,60 @@ function toolFeatures(m: Messages, bare: string) {
   return table[bare];
 }
 
+const COMPRESS_EMAIL_SLUGS = new Set([
+  COMPRESS_EMAIL_SLUG,
+  'comprimir-pdf-correo',
+  'pdf-fuer-e-mail-verkleinern',
+  'comprimir-pdf-email',
+  'comprimere-pdf-email',
+  'pdf-eposta-sikistir',
+  'daght-pdf-barid'
+]);
+
+const EN_COMPRESS_GUIDE_SLUGS = [
+  COMPRESS_EMAIL_SLUG,
+  'why-is-my-pdf-file-so-large-causes-and-how-to-reduce-its-size',
+  'how-to-reduce-pdf-size-for-email',
+  'how-to-compress-pdf-without-losing-quality'
+];
+
+function guideHeading(locale: UrlLocale) {
+  const titles: Record<UrlLocale, string> = {
+    en: 'Related guides',
+    fr: 'Guides associés',
+    es: 'Guías relacionadas',
+    de: 'Passende Anleitungen',
+    pt: 'Guias relacionados',
+    it: 'Guide correlate',
+    tr: 'İlgili rehberler',
+    ar: 'أدلة ذات صلة'
+  };
+  return titles[locale];
+}
+
+function compressGuideLinks(locale: UrlLocale) {
+  const slugs = locale === 'en'
+    ? EN_COMPRESS_GUIDE_SLUGS
+    : getBlogPosts(locale).filter((post) => COMPRESS_EMAIL_SLUGS.has(post.slug)).map((post) => post.slug);
+  return slugs.flatMap((slug) => {
+    const post = getBlogPost(locale, slug);
+    if (!post) return [];
+    return [{ href: localizedPath(`/blog/${post.slug}`, locale), label: post.title }];
+  });
+}
+
 function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoPrerenderPage {
   const bare = stripLocalePrefix(page.path);
   const path = localizedPath(bare, page.locale);
   const noindex = bare === '/translate' || Boolean(page.robots?.includes('noindex'));
   const features = page.features ?? toolFeatures(m, bare);
   const related = page.related ?? relatedToolLinks(bare, page.locale, m);
+  const guides = page.guides
+    ?? (bare === '/rotate' && page.locale === 'en'
+      ? ROTATE_GUIDES.map((guide) => ({ href: guide.href, label: guide.label }))
+      : bare === '/compress'
+        ? compressGuideLinks(page.locale)
+        : undefined);
   return {
     ...page,
     path,
@@ -197,11 +245,8 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
                     ? 'ما تتيحه هذه الأداة'
                     : 'What this tool does'
     } : {}),
-    ...(related.length ? { related, relatedTitle: m.common.relatedTools } : {}),
-    ...(bare === '/rotate' && page.locale === 'en' ? {
-      guides: ROTATE_GUIDES.map((guide) => ({ href: guide.href, label: guide.label })),
-      guidesTitle: 'Related guides'
-    } : {})
+    ...(related.length ? { related, relatedTitle: page.relatedTitle ?? m.common.relatedTools } : {}),
+    ...(guides?.length ? { guides, guidesTitle: page.guidesTitle ?? guideHeading(page.locale) } : {})
   };
 }
 
@@ -221,14 +266,19 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
       h1: homeH1(m),
       lead: m.home.subtitle,
       jsonLdId: 'one2pdf-website',
-      jsonLd: websiteJsonLd()
+      jsonLd: websiteJsonLd(),
+      related: [
+        ...indexableToolLinks(locale, m),
+        { href: localizedPath('/tools', locale), label: toolLabel('/tools', m) }
+      ]
     },
     {
       path: '/tools',
       title: `${m.tools.catalogTitle} | One2PDF`,
       description: m.tools.catalogSubtitle,
       h1: m.tools.catalogTitle,
-      lead: m.tools.catalogSubtitle
+      lead: m.tools.catalogSubtitle,
+      related: indexableToolLinks(locale, m)
     },
     {
       path: '/pricing',

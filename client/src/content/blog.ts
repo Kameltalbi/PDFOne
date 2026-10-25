@@ -74,7 +74,7 @@ const compressFr: BlogPost = {
           '.'
         ],
         'Glissez-déposez votre document directement dans la zone dédiée (ordinateur ou téléphone).',
-        'Laissez l’outil optimiser les images et la structure du fichier en quelques secondes. Choisissez un niveau plus fort si le poids reste au-dessus de 25 Mo.',
+        'Choisissez un niveau. La qualité élevée garde le texte sélectionnable. Moyenne et forte transforment les pages en images : le texte n’est plus sélectionnable, et rien ne garantit de passer sous 25 Mo.',
         'Téléchargez votre nouveau PDF, prêt à être envoyé par e-mail.'
       ]
     },
@@ -130,7 +130,7 @@ const compressEn: BlogPost = {
           '.'
         ],
         'Drag and drop your document into the drop zone (computer or phone).',
-        'Let the tool optimize images and file structure in a few seconds. Pick a stronger level if the file is still over 25 MB.',
+        'Choose a level. High quality keeps the text selectable. Medium and strong turn pages into images: the text is no longer selectable, and nothing guarantees the file will fall under 25 MB.',
         'Download the new PDF, ready to send by email.'
       ]
     },

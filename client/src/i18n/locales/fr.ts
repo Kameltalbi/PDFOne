@@ -685,7 +685,7 @@ export const fr: Messages = {
   },
   rotatePdf: {
     title: 'Tourner un PDF en ligne',
-    subtitle: 'Redressez les pages de travers ou à l’envers, puis téléchargez le PDF corrigé.',
+    subtitle: 'Tournez la page affichée ou toutes les pages par pas de 90°, vérifiez l’aperçu, puis téléchargez.',
     tip: 'Utilisez les boutons pour tourner la page affichée, ou toutes les pages, de 90°.',
     clickToRotate: 'Choisissez une page, puis tournez-la avec les boutons.',
     rotateLeft: '90° gauche',
@@ -703,9 +703,9 @@ export const fr: Messages = {
     features: [
       { icon: '↻', tone: 'green', title: 'Page par page', text: 'Ne tournez que les pages qui en ont besoin, de 90° en 90°.' },
       { icon: '✓', tone: 'blue', title: 'Aperçu instantané', text: 'Voyez la nouvelle orientation avant de télécharger.' },
-      { icon: '★', tone: 'orange', title: 'Scans et photos', text: 'Corrigez un scan de téléphone sans réimprimer.' },
+      { icon: '★', tone: 'orange', title: 'Quarts de tour', text: 'Utile pour une page à 90°, 180° ou 270°. Un scan légèrement penché ne se redresse pas tout seul.' },
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Tout se fait dans le navigateur.' },
-      { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'Le PDF corrigé est prêt en quelques secondes.' },
+      { icon: '⏱', tone: 'purple', title: 'Après l’aperçu', text: 'Téléchargez le PDF une fois l’orientation vérifiée.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Votre document est supprimé automatiquement après traitement.' }
     ],
     ...seoFr.rotate
@@ -865,19 +865,19 @@ export const fr: Messages = {
     reset: 'Compresser un autre fichier',
     tip: 'Choisissez le niveau, puis lancez la compression. Le fichier original n’est pas modifié sur votre ordinateur.',
     features: [
-      { icon: '⇊', tone: 'orange', title: 'Fichier plus léger', text: 'Réduisez le poids pour envoyer, stocker ou publier votre PDF plus facilement.' },
-      { icon: '✓', tone: 'blue', title: 'Trois niveaux', text: 'Haute garde le texte. Moyenne et forte gagnent plus de place.' },
+      { icon: '⇊', tone: 'orange', title: 'Fichier plus léger', text: 'Le poids peut baisser selon le document. Un PDF déjà optimisé ne rétrécit pas forcément.' },
+      { icon: '✓', tone: 'blue', title: 'Trois niveaux', text: 'Élevée garde le texte sélectionnable. Moyenne et forte transforment les pages en images.' },
       { icon: '★', tone: 'green', title: 'Sans installation', text: 'Importez, choisissez un niveau, téléchargez. Tout se fait dans le navigateur.' },
       { icon: '◆', tone: 'gold', title: 'Aperçu immédiat', text: 'Voyez le document avant de lancer le traitement.' },
-      { icon: '⏱', tone: 'purple', title: 'Résultat rapide', text: 'La compression prend quelques secondes.' },
+      { icon: '⏱', tone: 'purple', title: 'Avant et après', text: 'Comparez le poids obtenu. Rien ne garantit un passage sous une limite d’envoi.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF traité est supprimé automatiquement après usage.' }
     ],
     seoTitle: 'Compresser un PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Réduisez le poids de votre PDF en quelques secondes, sans perdre en lisibilité. Compressez gratuitement en ligne — démarrez sur One2PDF.',
-    seoH2: 'Comment compresser un PDF en ligne facilement et en toute sécurité',
-    seoP1: 'Vous devez envoyer un dossier trop lourd, le déposer sur un formulaire ou le partager sans dégrader la lisibilité ? One2PDF permet de compresser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, choisissez le niveau de compression (élevée, moyenne ou forte), puis lancez le traitement : en quelques secondes, vous obtenez un PDF plus léger, prêt à télécharger.',
-    seoP2: 'Réduire la taille d’un PDF trop volumineux n’a pas à être technique. L’outil allège les images et optimise le document tout en conservant un rendu lisible à l’écran comme à l’impression. C’est la méthode adaptée si vous cherchez comment diminuer le poids d’un PDF pour Gmail, WhatsApp ou un espace de stockage limité.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Compressez votre PDF maintenant, comparez le poids avant et après, et revenez sur One2PDF dès qu’un document dépasse une limite d’envoi.',
+    seoDescription: 'Qualité élevée : le texte reste sélectionnable. Moyenne et forte transforment les pages en images. Le gain de taille dépend du PDF.',
+    seoH2: 'Compresser un PDF : texte conservé ou pages en images',
+    seoP1: 'One2PDF permet de compresser un PDF en ligne, sans installer de logiciel. Importez le fichier et choisissez un niveau. La qualité élevée réécrit le document en conservant le texte sélectionnable. Les niveaux moyenne et forte transforment chaque page en image : le texte du résultat n’est plus sélectionnable ni recherchable comme du texte, et la qualité visuelle peut diminuer.',
+    seoP2: 'Le gain de taille dépend du document. Un PDF déjà optimisé, ou composé surtout de texte, ne devient pas nécessairement plus léger. Les photos et les scans laissent en général plus de marge, surtout en moyenne ou en forte. Comparez le poids avant de remplacer votre original.',
+    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Compressez votre PDF, comparez le poids avant et après, et gardez l’original si le résultat ne vous convient pas.',
     howTitle: 'Comment compresser un PDF',
     howSteps: [
       'Importez le PDF trop lourd',
@@ -888,11 +888,11 @@ export const fr: Messages = {
     faq: [
       {
         question: 'Comment compresser un PDF trop lourd pour l’envoyer par e-mail ?',
-        answer: 'Gmail et Outlook refusent souvent une pièce jointe au-delà de 25 Mo. Sur One2PDF, importez le PDF, choisissez un niveau (élevée, moyenne ou forte), puis lancez la compression. Téléchargez le fichier allégé : il reste lisible et passe en général sous la limite d’envoi, sans installer de logiciel.'
+        answer: 'Gmail et Outlook refusent souvent une pièce jointe au-delà de 25 Mo. Importez le PDF et choisissez un niveau. La qualité élevée garde le texte sélectionnable. Moyenne et forte transforment les pages en images : le fichier peut devenir plus léger, mais le texte n’est plus sélectionnable et le rendu peut baisser. Rien ne garantit de passer sous la limite : cela dépend du document.'
       },
       {
         question: 'La compression d’un PDF réduit-elle la qualité du document ?',
-        answer: 'Le niveau élevée conserve au maximum le texte et les images. Les niveaux moyenne et forte réduisent davantage le poids des images, ce qui peut légèrement adoucir photos ou scans. Le texte reste lisible. Choisissez élevée pour un CV ou un contrat, et plus fort si le fichier doit passer sous une limite stricte.'
+        answer: 'La qualité élevée conserve le texte sélectionnable et ne transforme pas les pages en images. Les niveaux moyenne et forte produisent une image JPEG par page : le texte n’est plus sélectionnable ni recherchable comme du texte, et la qualité visuelle peut diminuer. Un PDF déjà optimisé ne devient pas nécessairement plus léger.'
       },
       {
         question: 'One2PDF conserve-t-il mon fichier après la compression ?',
