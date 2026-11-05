@@ -545,17 +545,17 @@ export const fr: Messages = {
     features: [
       { icon: '⇄', tone: 'orange', title: 'Fusion claire et rapide', text: 'Réunissez vos PDF sans filigrane, avec un aperçu visuel et un ordre que vous choisissez.' },
       { icon: '✓', tone: 'blue', title: 'Fichiers traités en sécurité', text: 'Vos documents restent temporaires et sont supprimés automatiquement après traitement.' },
-      { icon: '★', tone: 'green', title: 'Sur tous vos appareils', text: 'Ordinateur, tablette ou mobile : fusionnez directement depuis le navigateur.' },
+      { icon: '★', tone: 'green', title: 'Sur tous vos appareils', text: 'Utilisez l’outil de fusion sur ordinateur, tablette ou mobile.' },
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Importez vos fichiers, réordonnez-les, puis téléchargez le document final.' },
       { icon: '⏱', tone: 'purple', title: 'Téléchargement', text: 'Le PDF fusionné se télécharge quand le traitement est terminé.' },
       { icon: '✧', tone: 'teal', title: 'Interface visuelle', text: 'Glissez-déposez vos PDF, voyez les miniatures et fusionnez d’un clic.' }
     ],
     seoTitle: 'Fusionner des PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Combinez plusieurs PDF en un seul document, dans l’ordre que vous choisissez. Fusionnez gratuitement en ligne — démarrez sur One2PDF.',
-    seoH2: 'Comment fusionner des PDF en ligne facilement et en toute sécurité',
-    seoP1: 'Vous devez réunir un contrat, des annexes et un scan dans un seul envoi ? One2PDF permet de fusionner des PDF en ligne gratuitement, sans installer de logiciel. Importez au moins deux fichiers, glissez les miniatures pour choisir l’ordre, puis téléchargez le document unique.',
+    seoDescription: 'Réunissez des PDF dans l’ordre choisi et ajoutez éventuellement des numéros de page. Téléchargez un seul PDF fusionné.',
+    seoH2: 'Réunir des PDF dans l’ordre souhaité',
+    seoP1: 'Réunissez au moins deux PDF dans un seul document. Importez les fichiers, placez leurs miniatures dans l’ordre voulu, ajoutez éventuellement des numéros de page, puis téléchargez le PDF fusionné.',
     seoP2: 'La fusion copie les pages dans un nouveau PDF, sans ajouter de filigrane. Une case permet d’ajouter des numéros « 1 / N ». Les signets, les champs de formulaire interactifs et une signature déjà présente ne sont pas garantis dans le fichier fusionné.',
-    seoP3: 'La sécurité reste au centre du parcours : les fichiers d’origine ne sont pas conservés, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Fusionnez vos PDF maintenant, vérifiez l’ordre des pages, et revenez sur One2PDF dès que plusieurs documents doivent n’en former plus qu’un.',
+    seoP3: 'La fusion est réalisée en ligne sur les serveurs One2PDF. Les fichiers d’origine sont supprimés à la fin du traitement. Le résultat fusionné est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
     howTitle: 'Comment fusionner des PDF',
     howSteps: [
       'Choisissez les fichiers PDF à réunir',
@@ -578,7 +578,7 @@ export const fr: Messages = {
       },
       {
         question: 'Les PDF d’origine sont-ils conservés ?',
-        answer: 'Non. Les originaux sont supprimés à la fin du traitement. Le fichier fusionné est effacé après téléchargement, ou automatiquement sous 15 minutes s’il n’est pas téléchargé.'
+        answer: 'Les originaux sont traités sur les serveurs One2PDF puis supprimés à la fin du traitement. Le fichier fusionné est supprimé après téléchargement ou, s’il n’est pas téléchargé, purgé automatiquement sous 15 minutes par défaut.'
       }
     ]
   },
@@ -612,17 +612,17 @@ export const fr: Messages = {
     features: [
       { icon: '✂', tone: 'blue', title: 'Extraire ou séparer', text: 'Gardez les pages choisies dans un fichier, ou exportez chaque page à part.' },
       { icon: '✓', tone: 'orange', title: 'Sélection visuelle', text: 'Voyez chaque page avant de diviser, puis cliquez pour l’inclure ou l’exclure.' },
-      { icon: '★', tone: 'green', title: 'Sans installation', text: 'Tout se fait dans le navigateur, avec un fichier temporaire.' },
+      { icon: '★', tone: 'green', title: 'Sans installation', text: 'Utilisez l’outil en ligne sans installer de logiciel de bureau.' },
       { icon: '◆', tone: 'gold', title: 'Plages en une fois', text: 'Saisissez 1-3, 5, 8 pour sélectionner plusieurs pages d’un coup.' },
-      { icon: '⏱', tone: 'purple', title: 'Résultat immédiat', text: 'La division prend quelques secondes, prêt à télécharger.' },
+      { icon: '⏱', tone: 'purple', title: 'Résultat téléchargeable', text: 'Téléchargez le PDF extrait ou le ZIP lorsque le traitement est terminé.' },
       { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Votre document est supprimé automatiquement après le téléchargement.' }
     ],
     seoTitle: 'Diviser un PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Extrayez des pages ou séparez un PDF en fichiers distincts, en quelques secondes. Divisez gratuitement en ligne — démarrez sur One2PDF.',
-    seoH2: 'Comment diviser un PDF en ligne facilement et en toute sécurité',
-    seoP1: 'Vous n’avez besoin que de quelques pages d’un dossier, d’un contrat ou d’un scan trop long ? One2PDF permet de diviser un PDF en ligne gratuitement, sans installer de logiciel. Importez le fichier, sélectionnez les pages à conserver — au clic ou via une plage du type 1-3, 5, 8 — puis lancez le traitement.',
+    seoDescription: 'Extrayez des pages dans un PDF ou exportez chaque page choisie comme PDF distinct dans une archive ZIP.',
+    seoH2: 'Extraire des pages ou séparer un PDF en plusieurs fichiers',
+    seoP1: 'Choisissez les pages utiles d’un PDF en les cliquant ou en saisissant une plage telle que 1-3, 5, 8. Utilisez Extraire pour créer un PDF avec les pages sélectionnées, ou Séparer pour créer un PDF par page sélectionnée dans une archive ZIP.',
     seoP2: 'Deux modes couvrent les usages courants. Extraire rassemble les pages choisies dans un seul PDF plus court. Séparer exporte chaque page dans un fichier distinct, regroupé dans un ZIP. C’est la méthode adaptée si vous cherchez comment extraire des pages d’un PDF, découper un document trop volumineux ou envoyer seulement un chapitre.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Divisez votre PDF maintenant, récupérez uniquement ce dont vous avez besoin, et revenez sur One2PDF dès qu’un document doit être allégé ou partagé à la carte.',
+    seoP3: 'La division est réalisée en ligne sur les serveurs One2PDF. Le PDF envoyé est supprimé à la fin du traitement. Le résultat est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
     howTitle: 'Comment diviser un PDF',
     howSteps: [
       'Importez le PDF',
@@ -641,7 +641,7 @@ export const fr: Messages = {
       },
       {
         question: 'One2PDF conserve-t-il l’original après la division ?',
-        answer: 'Non. L’original est supprimé à la fin du traitement. Le résultat est effacé après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.'
+        answer: 'L’original est traité sur les serveurs One2PDF puis supprimé à la fin du traitement. Le résultat est supprimé après téléchargement ou, s’il n’est pas téléchargé, purgé automatiquement sous 15 minutes par défaut.'
       }
     ]
   },
@@ -871,17 +871,17 @@ export const fr: Messages = {
     features: [
       { icon: '⇊', tone: 'orange', title: 'Fichier plus léger', text: 'Le poids peut baisser selon le document. Un PDF déjà optimisé ne rétrécit pas forcément.' },
       { icon: '✓', tone: 'blue', title: 'Trois niveaux', text: 'Élevée garde le texte sélectionnable. Moyenne et forte transforment les pages en images.' },
-      { icon: '★', tone: 'green', title: 'Sans installation', text: 'Importez, choisissez un niveau, téléchargez. Tout se fait dans le navigateur.' },
+      { icon: '★', tone: 'green', title: 'Sans installation', text: 'Importez, choisissez un niveau, puis téléchargez le résultat.' },
       { icon: '◆', tone: 'gold', title: 'Aperçu immédiat', text: 'Voyez le document avant de lancer le traitement.' },
       { icon: '⏱', tone: 'purple', title: 'Avant et après', text: 'Comparez le poids obtenu. Rien ne garantit un passage sous une limite d’envoi.' },
       { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF traité est supprimé automatiquement après usage.' }
     ],
-    seoTitle: 'Compresser un PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Qualité élevée : le texte reste sélectionnable. Moyenne et forte transforment les pages en images. Le gain de taille dépend du PDF.',
-    seoH2: 'Compresser un PDF : texte conservé ou pages en images',
-    seoP1: 'One2PDF permet de compresser un PDF en ligne, sans installer de logiciel. Importez le fichier et choisissez un niveau. La qualité élevée réécrit le document en conservant le texte sélectionnable. Les niveaux moyenne et forte transforment chaque page en image : le texte du résultat n’est plus sélectionnable ni recherchable comme du texte, et la qualité visuelle peut diminuer.',
-    seoP2: 'Le gain de taille dépend du document. Un PDF déjà optimisé, ou composé surtout de texte, ne devient pas nécessairement plus léger. Les photos et les scans laissent en général plus de marge, surtout en moyenne ou en forte. Comparez le poids avant de remplacer votre original.',
-    seoP3: 'La sécurité reste au centre du parcours : le fichier d’origine n’est pas conservé, le résultat se télécharge, puis est supprimé. Aucune inscription n’est exigée pour un usage ponctuel. Compressez votre PDF, comparez le poids avant et après, et gardez l’original si le résultat ne vous convient pas.',
+    seoTitle: 'Compresser un PDF en ligne — choisir le niveau | One2PDF',
+    seoDescription: 'Réduisez la taille d’un PDF en ligne. Le niveau élevé conserve le texte sélectionnable ; les niveaux moyen et fort transforment les pages en images.',
+    seoH2: 'Choisir un niveau de compression adapté à votre PDF',
+    seoP1: 'Importez un PDF et choisissez le niveau de compression selon l’usage prévu. Le niveau élevé réécrit le document en conservant le texte sélectionnable. Les niveaux moyen et fort convertissent chaque page en image : le texte du résultat n’est alors plus sélectionnable ni recherchable comme du texte, et le rendu visuel peut changer.',
+    seoP2: 'Le gain de taille dépend du contenu. Un PDF déjà optimisé ou composé surtout de texte peut peu diminuer. Les scans et les documents contenant beaucoup d’images offrent souvent davantage de marge, surtout avec les niveaux moyen ou fort. Comparez le poids et le rendu avant d’utiliser le fichier obtenu à la place de l’original.',
+    seoP3: 'La compression est réalisée en ligne sur les serveurs One2PDF. Le fichier envoyé est supprimé à la fin du traitement. Le résultat reste temporairement disponible au téléchargement et les fichiers non téléchargés sont purgés automatiquement selon la durée de conservation configurée.',
     howTitle: 'Comment compresser un PDF',
     howSteps: [
       'Importez le PDF trop lourd',
@@ -900,7 +900,7 @@ export const fr: Messages = {
       },
       {
         question: 'One2PDF conserve-t-il mon fichier après la compression ?',
-        answer: 'Non. Le PDF est traité le temps de l’opération. L’original est ensuite supprimé ; le résultat se télécharge une fois, puis est effacé. Les fichiers non téléchargés sont purgés automatiquement sous 15 minutes. Aucune inscription n’est exigée pour un usage ponctuel.'
+        answer: 'Le PDF est traité sur les serveurs One2PDF pendant l’opération. L’original est supprimé à la fin du traitement. Le résultat est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.'
       }
     ]
   },

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { detectLocale, isRtl } from './detect';
+import { detectLocale, isRtl, type PublicLocale } from './detect';
 import { dictionaries } from './dictionaries';
 import { routeLocale } from './localePath';
 import { setRuntimeLocale } from './runtime';
@@ -12,37 +12,38 @@ type I18nContextValue = {
   locale: Locale;
   m: Messages;
   t: (template: string, vars?: Record<string, string | number>) => string;
-  preferLocale: (locale: 'en' | 'fr' | 'es' | 'de' | 'pt' | 'it' | 'tr' | 'ar') => void;
+  preferLocale: (locale: PublicLocale) => void;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function readEnglishChoice() {
+function readLocaleChoice(): PublicLocale | null {
   try {
-    return localStorage.getItem(LOCALE_CHOICE_KEY) === 'en';
+    const choice = localStorage.getItem(LOCALE_CHOICE_KEY);
+    return choice === 'en' || choice === 'fr' ? choice : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const [englishChoice, setEnglishChoice] = useState(readEnglishChoice);
+  const [localeChoice, setLocaleChoice] = useState<PublicLocale | null>(readLocaleChoice);
   const browserLocale = useMemo(() => detectLocale(), []);
   const forced = routeLocale(pathname);
-  // Prefixed URLs force that language. Unprefixed URLs stay on browser detection unless the visitor explicitly chose English.
-  const locale: Locale = forced ?? (englishChoice ? 'en' : browserLocale);
+  // Prefixed legacy URLs preserve their language. Unprefixed URLs use an explicit
+  // EN/FR choice first, then browser detection (French or English only).
+  const locale: Locale = forced ?? localeChoice ?? browserLocale;
   const m = dictionaries[locale];
   setRuntimeLocale(locale);
 
-  const preferLocale = useCallback((next: 'en' | 'fr' | 'es' | 'de' | 'pt' | 'it' | 'tr' | 'ar') => {
+  const preferLocale = useCallback((next: PublicLocale) => {
     try {
-      if (next === 'en') localStorage.setItem(LOCALE_CHOICE_KEY, 'en');
-      else localStorage.removeItem(LOCALE_CHOICE_KEY);
+      localStorage.setItem(LOCALE_CHOICE_KEY, next);
     } catch {
       /* storage unavailable */
     }
-    setEnglishChoice(next === 'en');
+    setLocaleChoice(next);
   }, []);
 
   useEffect(() => {

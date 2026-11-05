@@ -102,10 +102,10 @@ describe('indexable EN/FR pages', () => {
     const compress = page('/compress');
     const frenchCompress = page('/fr/compress');
     assert.equal(compress.locale, 'en');
-    assert.equal(compress.title, 'Compress PDF Online — Smaller Files | One2PDF');
+    assert.equal(compress.title, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
     assert.equal(compress.h1, 'Compress PDF');
     assert.equal(frenchCompress.locale, 'fr');
-    assert.equal(frenchCompress.title, 'Compresser un PDF en ligne gratuitement | One2PDF');
+    assert.equal(frenchCompress.title, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
     assert.equal(frenchCompress.h1, 'Compresser un PDF en ligne');
 
     const rotate = page('/rotate');

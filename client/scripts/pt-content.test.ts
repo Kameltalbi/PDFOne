@@ -79,8 +79,8 @@ describe('Portuguese content with SEO activation', () => {
     assert.equal(dictionaries.pt.tools.wordToPdf, 'Word para PDF');
     assert.equal(dictionaries.pt.tools.jpgToPdf, 'JPG para PDF');
     assert.equal(dictionaries.pt.tools.pdfToJpg, 'PDF para JPG');
-    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Smaller Files | One2PDF');
-    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne gratuitement | One2PDF');
+    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
+    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
     assert.equal(dictionaries.es.compress.seoTitle, 'Comprimir PDF en línea gratis | One2PDF');
     assert.equal(dictionaries.de.compress.seoTitle, 'PDF komprimieren | One2PDF');
     assert.equal(dictionaries.de.compress.title, 'PDF komprimieren');

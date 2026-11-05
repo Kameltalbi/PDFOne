@@ -70,8 +70,8 @@ describe('Arabic content with SEO activation', () => {
       const result = coverage(pattern);
       assert.equal(result.done, result.total, `${name} ${result.done}/${result.total} ${result.missing.slice(0, 8).join(', ')}`);
     }
-    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Smaller Files | One2PDF');
-    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne gratuitement | One2PDF');
+    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
+    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
     assert.equal(dictionaries.es.compress.seoTitle, 'Comprimir PDF en línea gratis | One2PDF');
     assert.equal(dictionaries.de.compress.seoTitle, 'PDF komprimieren | One2PDF');
     assert.equal(dictionaries.pt.compress.seoTitle, 'Comprimir PDF online | One2PDF');

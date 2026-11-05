@@ -8,15 +8,9 @@ import type { Locale } from '../i18n/types';
 /**
  * Public languages in the header. Append a locale here when its pages go live.
  */
-const PUBLIC_LANGUAGES: { locale: 'en' | 'fr' | 'es' | 'de' | 'pt' | 'it' | 'tr' | 'ar'; code: string; flag: string; label: string }[] = [
+const PUBLIC_LANGUAGES: { locale: 'en' | 'fr'; code: string; flag: string; label: string }[] = [
   { locale: 'en', code: 'EN', flag: '🇬🇧', label: 'English' },
-  { locale: 'fr', code: 'FR', flag: '🇫🇷', label: 'Français' },
-  { locale: 'es', code: 'ES', flag: '🇪🇸', label: 'Español' },
-  { locale: 'de', code: 'DE', flag: '🇩🇪', label: 'Deutsch' },
-  { locale: 'pt', code: 'PT', flag: '🇵🇹', label: 'Português' },
-  { locale: 'it', code: 'IT', flag: '🇮🇹', label: 'Italiano' },
-  { locale: 'tr', code: 'TR', flag: '🇹🇷', label: 'Türkçe' },
-  { locale: 'ar', code: 'AR', flag: '🇸🇦', label: 'العربية' }
+  { locale: 'fr', code: 'FR', flag: '🇫🇷', label: 'Français' }
 ];
 
 const MENU_LABEL: Partial<Record<Locale, string>> = {
@@ -36,7 +30,8 @@ export function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
-  const current = PUBLIC_LANGUAGES.find((choice) => choice.locale === locale) ?? PUBLIC_LANGUAGES[0];
+  const publicLocale = locale === 'fr' ? 'fr' : 'en';
+  const current = PUBLIC_LANGUAGES.find((choice) => choice.locale === publicLocale) ?? PUBLIC_LANGUAGES[0];
 
   useEffect(() => {
     setOpen(false);
@@ -78,7 +73,7 @@ export function LanguageSwitcher() {
       {open && (
         <ul id={menuId} className="lang-switch-menu" role="listbox" aria-label={MENU_LABEL[locale] ?? 'Language'}>
           {PUBLIC_LANGUAGES.map((choice) => {
-            const active = locale === choice.locale;
+            const active = publicLocale === choice.locale;
             return (
               <li key={choice.locale} role="presentation">
                 <Link

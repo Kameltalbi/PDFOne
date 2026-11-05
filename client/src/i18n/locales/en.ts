@@ -545,17 +545,17 @@ export const en: Messages = {
     features: [
       { icon: '⇄', tone: 'orange', title: 'Clear, fast merging', text: 'Combine PDFs with no watermark, a visual preview and the order you choose.' },
       { icon: '✓', tone: 'blue', title: 'Files processed securely', text: 'Your documents stay temporary and are deleted automatically after processing.' },
-      { icon: '★', tone: 'green', title: 'On every device', text: 'Computer, tablet or phone: merge directly in your browser.' },
+      { icon: '★', tone: 'green', title: 'On every device', text: 'Use the merge tool from a computer, tablet, or phone.' },
       { icon: '◆', tone: 'gold', title: 'No installation', text: 'Import your files, reorder them, then download the final document.' },
       { icon: '⏱', tone: 'purple', title: 'Download', text: 'The merged PDF is ready to download when processing finishes.' },
       { icon: '✧', tone: 'teal', title: 'Visual interface', text: 'Drag and drop your PDFs, see thumbnails and merge in one click.' }
     ],
     seoTitle: 'Merge PDF Files Online — One File | One2PDF',
-    seoDescription: 'Combine several PDFs into one document, in the order you choose. Merge PDF files online for free, then download — start now on One2PDF.',
-    seoH2: 'How to merge PDFs online quickly and securely',
-    seoP1: 'Need to send a contract, attachments, and a scan as a single file? One2PDF lets you merge PDF files online for free, with no software to install. Import at least two files, drag the thumbnails to set the order, then download the single document.',
+    seoDescription: 'Combine PDF files in the order you choose and optionally add page numbers. Download one merged PDF.',
+    seoH2: 'Merge PDFs in the order you choose',
+    seoP1: 'Combine at least two PDF files into one document. Upload the files, arrange their thumbnails in the required order, optionally add page numbers, then download the merged PDF.',
     seoP2: 'Merge copies the pages into a new PDF and does not add a watermark. A checkbox can add “1 / N” page numbers. Bookmarks, interactive form fields, and an existing signature are not guaranteed in the merged file.',
-    seoP3: 'Security stays at the center of the flow: the originals are not kept, the result is available for download, then deleted. No account is required for occasional use. Merge your PDFs now, check the page order before you share, and come back to One2PDF whenever several documents should become one.',
+    seoP3: 'Merging is performed online on One2PDF servers. Uploaded originals are deleted when processing ends. The merged result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
     howTitle: 'How to merge PDF files',
     howSteps: [
       'Choose the PDF files you want to combine',
@@ -578,7 +578,7 @@ export const en: Messages = {
       },
       {
         question: 'Are the original PDFs stored?',
-        answer: 'No. Originals are deleted when processing ends. The merged file is deleted after download, or automatically within 15 minutes if you do not download it.'
+        answer: 'The originals are processed on One2PDF servers and deleted when processing ends. The merged file is removed after download or, if it is not downloaded, automatically purged within 15 minutes by default.'
       }
     ]
   },
@@ -612,17 +612,17 @@ export const en: Messages = {
     features: [
       { icon: '✂', tone: 'blue', title: 'Extract or separate', text: 'Keep chosen pages in one file, or export each page on its own.' },
       { icon: '✓', tone: 'orange', title: 'Visual selection', text: 'See every page before you split, then click to include or exclude it.' },
-      { icon: '★', tone: 'green', title: 'No installation', text: 'Works in the browser, with a file that stays temporary.' },
+      { icon: '★', tone: 'green', title: 'No installation', text: 'Use the tool online without installing desktop software.' },
       { icon: '◆', tone: 'gold', title: 'Ranges in one go', text: 'Type 1-3, 5, 8 to select several pages at once.' },
-      { icon: '⏱', tone: 'purple', title: 'Immediate result', text: 'The split takes a few seconds and is ready to download.' },
+      { icon: '⏱', tone: 'purple', title: 'Downloadable result', text: 'Download the extracted PDF or the ZIP once processing finishes.' },
       { icon: '✧', tone: 'teal', title: 'Safe processing', text: 'Your document is deleted automatically after the download.' }
     ],
     seoTitle: 'Split PDF into Multiple Files | One2PDF',
-    seoDescription: 'Extract pages or split a PDF into separate files in seconds. Split a PDF online for free, then download — start now on One2PDF.',
-    seoH2: 'How to split a PDF online quickly and securely',
-    seoP1: 'Need only a few pages from a pack, a contract, or a scan that runs too long? One2PDF lets you split a PDF online for free, with no software to install. Import the file, select the pages to keep — by click or with a range such as 1-3, 5, 8 — then start the job.',
+    seoDescription: 'Extract selected pages into one PDF or export each selected page as a separate PDF in a ZIP file.',
+    seoH2: 'Extract selected pages or separate a PDF into files',
+    seoP1: 'Choose the pages you need from a PDF by clicking them or entering a range such as 1-3, 5, 8. Use Extract to create one PDF containing the selected pages, or Separate to create one PDF per selected page in a ZIP file.',
     seoP2: 'Two modes cover everyday needs. Extract gathers the chosen pages into one shorter PDF. Separate exports each page as its own file, packed in a ZIP. It is a practical way to extract pages from a PDF, cut a bulky document, or send only one chapter.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Split your PDF now, keep only what you need, and come back to One2PDF whenever a document must be trimmed or shared in parts.',
+    seoP3: 'Splitting is performed online on One2PDF servers. The uploaded PDF is deleted when processing ends. The result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
     howTitle: 'How to split a PDF',
     howSteps: [
       'Upload the PDF',
@@ -641,7 +641,7 @@ export const en: Messages = {
       },
       {
         question: 'Does One2PDF keep the original after a split?',
-        answer: 'No. The original is deleted at the end of the job. The result is deleted after download, or within 15 minutes if you do not download it.'
+        answer: 'The original is processed on One2PDF servers and deleted when processing ends. The result is removed after download or, if it is not downloaded, automatically purged within 15 minutes by default.'
       }
     ]
   },
@@ -871,17 +871,17 @@ export const en: Messages = {
     features: [
       { icon: '⇊', tone: 'orange', title: 'Smaller file', text: 'Size may drop depending on the document. An already optimized PDF does not necessarily shrink.' },
       { icon: '✓', tone: 'blue', title: 'Three levels', text: 'High keeps selectable text. Medium and strong turn pages into images.' },
-      { icon: '★', tone: 'green', title: 'No installation', text: 'Import, choose a level, download. It all happens in the browser.' },
+      { icon: '★', tone: 'green', title: 'No installation', text: 'Upload, choose a level, then download the result.' },
       { icon: '◆', tone: 'gold', title: 'Instant preview', text: 'See the document before processing starts.' },
       { icon: '⏱', tone: 'purple', title: 'Before and after', text: 'Compare the new size. Nothing guarantees the file will fit under a send limit.' },
       { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The processed PDF is deleted automatically after use.' }
     ],
-    seoTitle: 'Compress PDF Online — Smaller Files | One2PDF',
-    seoDescription: 'High quality keeps selectable text. Medium and strong turn pages into images. How much smaller the file gets depends on the PDF.',
-    seoH2: 'Compress a PDF: keep the text, or turn pages into images',
-    seoP1: 'One2PDF lets you compress a PDF online, with no software to install. Import the file and choose a level. High quality rewrites the document and keeps the text selectable. Medium and strong turn each page into an image: text in the result is no longer selectable or searchable as text, and the visual quality can drop.',
-    seoP2: 'The size reduction depends on the document. An already optimized PDF, or one made mostly of text, does not necessarily get smaller. Photos and scans usually leave more room, especially at medium or strong. Compare the size before you replace your original.',
-    seoP3: 'Security stays at the center of the flow: the original is not kept, the result is available for download, then deleted. No account is required for occasional use. Compress your PDF, compare the size before and after, and keep the original if the result does not suit you.',
+    seoTitle: 'Compress PDF Online — Choose Your Compression Level | One2PDF',
+    seoDescription: 'Reduce a PDF’s file size online. High keeps selectable text; medium and strong turn pages into images.',
+    seoH2: 'Choose the right compression level for your PDF',
+    seoP1: 'Upload a PDF and choose a compression level for the way you plan to use it. High rewrites the document while keeping text selectable. Medium and strong convert each page to an image: text in the result is no longer selectable or searchable as text, and the visual result can change.',
+    seoP2: 'How much a file shrinks depends on its content. A PDF that is already optimized or mostly text may shrink very little. Scans and image-heavy documents often leave more room, especially at medium or strong. Check both the file size and the result before replacing your original.',
+    seoP3: 'Compression is performed online on One2PDF servers. The uploaded file is deleted when processing ends. The result is made available temporarily for download; files that are not downloaded are automatically purged according to the configured retention period.',
     howTitle: 'How to compress a PDF',
     howSteps: [
       'Upload the PDF that is too large',
@@ -900,7 +900,7 @@ export const en: Messages = {
       },
       {
         question: 'Does One2PDF keep my file after compression?',
-        answer: 'No. The PDF is processed for the duration of the job. The original is then deleted; the result can be downloaded once, then erased. Files that are not downloaded are purged automatically within 15 minutes. No account is required for occasional use.'
+        answer: 'The PDF is processed on One2PDF servers for the duration of the job. The original is deleted when processing ends. The result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.'
       }
     ]
   },

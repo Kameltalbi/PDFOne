@@ -1,11 +1,21 @@
-import { LOCALES, type Locale } from './types';
+import type { Locale } from './types';
 
-export function detectLocale(): Locale {
+export type PublicLocale = 'en' | 'fr';
+
+/**
+ * The public interface is intentionally bilingual. Legacy locales remain
+ * available when their URL explicitly requests them, but browser detection
+ * never selects them for an unprefixed URL.
+ */
+export function publicLocaleFromTags(tags: readonly string[]): PublicLocale {
+  return tags.some((tag) => tag.toLowerCase().split('-')[0] === 'fr') ? 'fr' : 'en';
+}
+
+export function detectLocale(): PublicLocale {
   if (typeof window !== 'undefined') {
     const fromQuery = new URLSearchParams(window.location.search).get('lang');
-    if (fromQuery && LOCALES.includes(fromQuery as Locale)) {
-      return fromQuery as Locale;
-    }
+    if (fromQuery === 'fr') return 'fr';
+    if (fromQuery === 'en') return 'en';
   }
 
   if (typeof navigator === 'undefined') return 'en';
@@ -15,12 +25,7 @@ export function detectLocale(): Locale {
     navigator.language
   ].filter(Boolean);
 
-  for (const tag of candidates) {
-    const base = tag.toLowerCase().split('-')[0] as Locale;
-    if (LOCALES.includes(base)) return base;
-  }
-
-  return 'en';
+  return publicLocaleFromTags(candidates);
 }
 
 export function isRtl(locale: Locale): boolean {
