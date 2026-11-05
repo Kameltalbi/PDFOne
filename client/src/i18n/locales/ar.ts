@@ -64,6 +64,7 @@ export const ar: Messages = {
     pwaTitle: 'تثبيت One2PDF',
     pwaText: 'افتح أدوات PDF كتطبيق، دون المرور بالمتصفح.',
     pwaInstall: 'تثبيت',
+    pwaAndroidFallback: 'في Chrome، اضغط على ⋮ ثم « تثبيت التطبيق » أو « الإضافة إلى الشاشة الرئيسية ».',
     pwaIosText: 'اضغط على مشاركة ثم « إضافة إلى الشاشة الرئيسية ».',
     pwaDismiss: 'لاحقًا',
     notFoundTitle: 'الصفحة غير موجودة | One2PDF',

@@ -59,6 +59,7 @@ export type Messages = {
     pwaTitle: string;
     pwaText: string;
     pwaInstall: string;
+    pwaAndroidFallback: string;
     pwaIosText: string;
     pwaDismiss: string;
     notFoundTitle: string;

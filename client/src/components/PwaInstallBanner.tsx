@@ -30,6 +30,7 @@ function PwaInstallBanner() {
   const { m } = useI18n();
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
+  const [showAndroidHelp, setShowAndroidHelp] = useState(false);
   const ios = isIosDevice();
 
   useEffect(() => {
@@ -61,7 +62,10 @@ function PwaInstallBanner() {
   };
 
   const install = async () => {
-    if (!deferred) return;
+    if (!deferred) {
+      setShowAndroidHelp(true);
+      return;
+    }
     await deferred.prompt();
     const choice = await deferred.userChoice;
     setDeferred(null);
@@ -73,9 +77,9 @@ function PwaInstallBanner() {
       <img src="/icon-192x192.png?v=20260911" alt="" width={40} height={40} />
       <div className="pwa-banner-copy">
         <strong>{m.common.pwaTitle}</strong>
-        <span>{ios ? m.common.pwaIosText : m.common.pwaText}</span>
+        <span>{ios ? m.common.pwaIosText : showAndroidHelp ? m.common.pwaAndroidFallback : m.common.pwaText}</span>
       </div>
-      {deferred && !ios && (
+      {!ios && (
         <button type="button" className="pwa-banner-install" onClick={() => { void install(); }}>
           {m.common.pwaInstall}
         </button>

@@ -64,6 +64,7 @@ export const tr: Messages = {
     pwaTitle: 'One2PDF’yi yükle',
     pwaText: 'PDF araçlarınızı tarayıcıya girmeden bir uygulama gibi açın.',
     pwaInstall: 'Yükle',
+    pwaAndroidFallback: 'Chrome’da ⋮ simgesine, ardından « Uygulamayı yükle » veya « Ana ekrana ekle » seçeneğine dokunun.',
     pwaIosText: 'Paylaş’a, ardından « Ana Ekrana Ekle »ye dokunun.',
     pwaDismiss: 'Şimdi değil',
     notFoundTitle: 'Sayfa bulunamadı | One2PDF',

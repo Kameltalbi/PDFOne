@@ -43,6 +43,7 @@ export const en: Messages = {
     pwaTitle: 'Install One2PDF',
     pwaText: 'Open your PDF tools like an app, without going through the browser.',
     pwaInstall: 'Install',
+    pwaAndroidFallback: 'In Chrome, tap ⋮, then “Install app” or “Add to Home screen”.',
     pwaIosText: 'Tap Share, then “Add to Home Screen”.',
     pwaDismiss: 'Not now',
     notFoundTitle: 'Page not found | One2PDF',
