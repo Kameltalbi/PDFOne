@@ -9,7 +9,6 @@ import App from './App.tsx'
 import './rtl.css'
 
 installMapPolyfill()
-registerPwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -20,3 +19,7 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
+
+// Registering a service worker is non-critical to the first paint. Deferring
+// it until after React owns the root avoids competing with the initial render.
+registerPwa()

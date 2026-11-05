@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { detectLocale, isRtl, type PublicLocale } from './detect';
 import { dictionaries } from './dictionaries';
@@ -46,9 +46,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setLocaleChoice(next);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = isRtl(locale) ? 'rtl' : 'ltr';
+    delete document.documentElement.dataset.appShell;
     if (document.documentElement.dataset.pageSeo === '1') return;
     document.title = m.htmlTitle;
   }, [locale, m.htmlTitle]);
