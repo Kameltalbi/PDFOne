@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useI18n } from '../i18n';
+import { clearPwaInstallPrompt, subscribeToPwaInstallPrompt, type BeforeInstallPromptEvent } from '../lib/pwaInstallPrompt';
 import './PwaInstallBanner.css';
 
 const DISMISS_KEY = 'one2pdf-pwa-dismissed';
-
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-};
 
 function isStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches
@@ -33,15 +29,10 @@ function PwaInstallBanner() {
   const [showAndroidHelp, setShowAndroidHelp] = useState(false);
   const ios = isIosDevice();
 
+  useEffect(() => subscribeToPwaInstallPrompt(setDeferred), []);
+
   useEffect(() => {
     if (isStandalone() || localStorage.getItem(DISMISS_KEY) === '1') return undefined;
-
-    const onPrompt = (event: Event) => {
-      event.preventDefault();
-      setDeferred(event as BeforeInstallPromptEvent);
-      setVisible(true);
-    };
-    window.addEventListener('beforeinstallprompt', onPrompt);
 
     const timer = window.setTimeout(() => {
       if (isStandalone() || localStorage.getItem(DISMISS_KEY) === '1') return;
@@ -49,7 +40,6 @@ function PwaInstallBanner() {
     }, 1800);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', onPrompt);
       window.clearTimeout(timer);
     };
   }, [ios]);
@@ -68,7 +58,7 @@ function PwaInstallBanner() {
     }
     await deferred.prompt();
     const choice = await deferred.userChoice;
-    setDeferred(null);
+    clearPwaInstallPrompt();
     if (choice.outcome === 'accepted') dismiss();
   };
 
