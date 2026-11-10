@@ -1,8 +1,9 @@
-import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
+import { Link as RouterLink, Navigate as RouterNavigate, useLocation, useParams } from 'react-router-dom';
 import { Link, Navigate } from '../components/LocaleLink';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { getBlogPost, type BlogBlock, type BlogPost, type InlinePart } from '../content/blog';
 import { ENGLISH_CMS_SLUGS } from '../content/blogCmsEn';
+import { permanentRedirect } from '../lib/redirects';
 import { useI18n } from '../i18n';
 import { dictionaries } from '../i18n/dictionaries';
 import { localizedPath, urlLocaleFromPath } from '../i18n/localePath';
@@ -71,6 +72,7 @@ function BlogPostPage() {
   const [ready, setReady] = useState(!slug || Boolean(builtin));
   const post = builtin || remote;
   const englishOnlyElsewhere = Boolean(slug && ENGLISH_CMS_SLUGS.has(slug) && urlLocale !== 'en');
+  const redirected = slug ? permanentRedirect(pathname.split(/[?#]/)[0] ?? pathname) : null;
 
   useEffect(() => {
     if (!slug || builtin || englishOnlyElsewhere) {
@@ -111,6 +113,8 @@ function BlogPostPage() {
     author: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' },
     publisher: { '@type': 'Organization', name: 'One2PDF', legalName: '9545-8907 QUEBEC INC.' }
   } : null);
+
+  if (redirected) return <RouterNavigate to={redirected} replace />;
 
   if (englishOnlyElsewhere) {
     return <Navigate to="/blog" replace />;

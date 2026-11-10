@@ -63,7 +63,7 @@ const compressFr: BlogPost = {
     { type: 'h3', text: 'Le cumul de pages, de graphiques et de polices' },
     { type: 'p', text: 'Un rapport de 40 pages, des tableaux Excel collés, des captures d’écran et plusieurs polices embarquées alourdissent la structure interne. Fusionner plusieurs fichiers sans les alléger d’abord aggrave le problème : vous additionnez les images pleine résolution.' },
     { type: 'h2', text: 'La solution la plus rapide, sans installer de logiciel' },
-    { type: 'p', text: 'Inutile de télécharger un logiciel payant pour un envoi ponctuel. Un outil en ligne de compression de PDF suffit dans la grande majorité des cas : il réduit le poids des images et optimise le fichier, tout en gardant un rendu lisible à l’écran.' },
+    { type: 'p', text: 'Inutile de télécharger un logiciel payant pour un envoi ponctuel. Sur One2PDF, le niveau élevé garde le texte sélectionnable et réduit souvent peu le fichier. Les niveaux moyen et fort transforment chaque page en image : le fichier peut devenir plus léger, mais le texte n’est plus sélectionnable.' },
     { type: 'h3', text: 'Comment compresser un PDF trop lourd sur One2PDF' },
     {
       type: 'ol',
@@ -98,62 +98,6 @@ const compressFr: BlogPost = {
     { type: 'p', text: 'Ne laissez plus un plafond de 25 Mo bloquer un CV, un dossier client ou une pièce administrative. Dès qu’un formulaire ou une boîte mail refuse la pièce jointe, un passage par la compression vous fait gagner le temps d’un second envoi — et évite WeTransfer « parce que ça ne passe pas ».' }
   ],
   cta: 'Compresser un PDF gratuitement',
-  ctaTo: '/compress'
-};
-
-const compressEn: BlogPost = {
-  slug: COMPRESS_EMAIL_SLUG,
-  publishedIso: '2026-08-28',
-  publishedLabel: '28 August 2026',
-  seoTitle: 'PDF Too Large for Email? Compress It | One2PDF',
-  seoDescription: 'Gmail or Outlook blocking a 25 MB PDF? Compress it online in seconds, with no software to install. A practical guide on One2PDF.',
-  keywords: 'compress PDF, PDF too large, Gmail 25 MB',
-  title: 'How to reduce a PDF that’s too large to send by email',
-  excerpt: 'Gmail, Outlook or a form rejected your attachment? Here’s why PDFs get so heavy, and how to shrink one in seconds with no software to install.',
-  body: [
-    { type: 'p', text: 'You finished a pack, a CV or a portfolio — then the cutoff hits: “The file exceeds the maximum size (25 MB)”. Gmail, Outlook and many government forms stop the send. You can usually shrink a PDF in a few seconds without reprinting it and without wrecking readability.' },
-    { type: 'h2', text: 'Why do some PDFs get so heavy?' },
-    { type: 'p', text: 'A PDF is not “just text”. Behind each page sit images, fonts and sometimes scan layers. The less those assets are optimized, the faster the file size climbs — even on a short document.' },
-    { type: 'h3', text: 'High-resolution images' },
-    { type: 'p', text: 'ID scans, phone photos of receipts or uncompressed pictures add the most weight. 300 dpi is useful for print and often excessive for email. This is the number-one reason a PDF is too large for Gmail.' },
-    { type: 'h3', text: 'Pages, charts and embedded fonts adding up' },
-    { type: 'p', text: 'A 40-page report, pasted Excel tables, screenshots and several embedded fonts bloat the file structure. Merging several PDFs without shrinking them first makes it worse: you stack full-resolution images.' },
-    { type: 'h2', text: 'The fastest fix — no software to install' },
-    { type: 'p', text: 'You do not need a paid desktop app for a one-off send. An online PDF compressor is enough in most cases: it slims images and optimizes the file while keeping a readable result on screen.' },
-    { type: 'h3', text: 'How to compress a large PDF on One2PDF' },
-    {
-      type: 'ol',
-      items: [
-        [
-          'Open the ',
-          { text: 'One2PDF PDF compression tool', to: '/compress' },
-          '.'
-        ],
-        'Drag and drop your document into the drop zone (computer or phone).',
-        'Choose a level. High quality keeps the text selectable. Medium and strong turn pages into images: the text is no longer selectable, and nothing guarantees the file will fall under 25 MB.',
-        'Download the new PDF, ready to send by email.'
-      ]
-    },
-    { type: 'h2', text: 'Extra tips if the file is still too big' },
-    { type: 'h3', text: 'Compress before you merge' },
-    {
-      type: 'p',
-      parts: [
-        'If you must combine a contract, annexes and a scan, shrink each PDF first, then merge. Compressed files combine more cleanly than a stack of full-resolution originals. ',
-        { text: 'Merge PDFs', to: '/merge' }
-      ]
-    },
-    { type: 'h3', text: 'Start from heavy images' },
-    {
-      type: 'p',
-      parts: [
-        'An 8 MB screenshot PNG or JPEG does not need to land in the PDF as-is. Turning images into PDF first, or compressing the PDF after assembly, often gives a much lower starting weight for email. ',
-        { text: 'JPG to PDF', to: '/jpg-to-pdf' }
-      ]
-    },
-    { type: 'p', text: 'Do not let a 25 MB cap block a CV, a client pack or an official upload. As soon as a form or mailbox rejects the attachment, a quick compression pass saves a second send — and avoids a file-share link “because it will not go through”.' }
-  ],
-  cta: 'Compress a PDF for free',
   ctaTo: '/compress'
 };
 
@@ -295,7 +239,7 @@ function postsFor(locale: Locale): BlogPost[] {
   if (locale === 'it') return ITALIAN_BLOG_DRAFTS;
   if (locale === 'tr') return TURKISH_BLOG_DRAFTS;
   if (locale === 'ar') return ARABIC_BLOG_DRAFTS;
-  return [privacyEn, compressEn, ...ENGLISH_CMS_POSTS];
+  return [privacyEn, ...ENGLISH_CMS_POSTS];
 }
 
 export function getBlogPosts(locale: Locale): BlogPost[] {

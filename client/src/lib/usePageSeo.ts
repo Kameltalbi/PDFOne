@@ -4,9 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { stripLocalePrefix, urlLocaleFromPath } from '../i18n/localePath';
 import type { PageSeoCopy } from '../i18n/types';
 import { hreflangForPath } from './hreflang';
-import { pageUrl, SITE_ORIGIN } from './jsonLd';
-
-const OG_IMAGE = `${SITE_ORIGIN}/one2pdf-logo.png`;
+import { DEFAULT_OG_IMAGE, pageUrl } from './jsonLd';
+import { isNoindexPath } from './seoPolicy';
 
 const OG_LOCALES: Record<string, string> = {
   en: 'en_US',
@@ -64,18 +63,20 @@ export function usePageSeo(title: string | null | undefined, description: string
 
     const prevDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') ?? '';
     const prevRobots = document.querySelector('meta[name="robots"]')?.getAttribute('content') ?? '';
+    const robots = isNoindexPath(stripLocalePrefix(pathname)) ? 'noindex, follow' : 'index, follow';
     setNamedMeta('name', 'description', description);
-    setNamedMeta('name', 'robots', 'index, follow');
+    setNamedMeta('name', 'robots', robots);
     setNamedMeta('property', 'og:title', title);
     setNamedMeta('property', 'og:description', description);
     setNamedMeta('property', 'og:type', 'website');
     setNamedMeta('property', 'og:url', url);
-    setNamedMeta('property', 'og:image', OG_IMAGE);
+    setNamedMeta('property', 'og:image', DEFAULT_OG_IMAGE);
     setNamedMeta('property', 'og:locale', ogLocale);
     setNamedMeta('property', 'og:site_name', 'One2PDF');
-    setNamedMeta('name', 'twitter:card', 'summary');
+    setNamedMeta('name', 'twitter:card', 'summary_large_image');
     setNamedMeta('name', 'twitter:title', title);
     setNamedMeta('name', 'twitter:description', description);
+    setNamedMeta('name', 'twitter:image', DEFAULT_OG_IMAGE);
 
     let canonical = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
     const previousCanonical = canonical?.getAttribute('href') ?? '';

@@ -6,11 +6,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { SEO_LOCALES, type UrlLocale } from '../src/i18n/localePath';
-import { pageUrl, SITE_ORIGIN } from '../src/lib/jsonLd';
+import { DEFAULT_OG_IMAGE, pageUrl } from '../src/lib/jsonLd';
+import { nginxRedirectConf, permanentRedirect } from '../src/lib/redirects';
 import { buildSitemap } from '../src/lib/sitemap';
 import { escapeHtmlAttr, indexableSeoPages, seoArticleHtml, type SeoPrerenderPage } from '../src/lib/seoPages';
 
-const OG_IMAGE = `${SITE_ORIGIN}/one2pdf-logo.png`;
+const OG_IMAGE = DEFAULT_OG_IMAGE;
 const outDir = fileURLToPath(new URL('../dist', import.meta.url));
 
 function replaceTitle(html: string, title: string) {
@@ -63,10 +64,12 @@ function applyPage(shell: string, page: SeoPrerenderPage) {
   html = upsertHreflang(html, page.alternates);
   html = html.replace(HTML_OPEN, htmlOpen(page.locale));
   html = upsertMeta(html, 'property', 'og:site_name', 'One2PDF');
-  html = upsertMeta(html, 'name', 'twitter:card', 'summary');
+  html = upsertMeta(html, 'name', 'twitter:card', 'summary_large_image');
   html = upsertMeta(html, 'name', 'twitter:title', page.title);
   html = upsertMeta(html, 'name', 'twitter:description', page.description);
+  html = upsertMeta(html, 'name', 'twitter:image', OG_IMAGE);
   if (page.jsonLd && page.jsonLdId) html = upsertJsonLd(html, page.jsonLdId, page.jsonLd);
+  for (const script of page.scripts ?? []) html = upsertJsonLd(html, script.id, script.data);
   html = upsertMeta(html, 'name', 'robots', page.robots ?? 'index, follow');
   if (!html.includes('<div id="root"></div>')) {
     throw new Error('SEO prerender: built index.html is missing <div id="root"></div>');
@@ -91,7 +94,7 @@ const SPA_ROBOTS: Record<string, string> = {
   '/internal/ops': 'noindex, nofollow, noarchive'
 };
 
-const ALIAS_PATHS = ['/png-to-pdf', '/pdf-to-pptx', '/pptx-to-pdf'];
+const ALIAS_PATHS = ['/pdf-to-pptx', '/pptx-to-pdf'];
 
 function applyNotFound(html: string) {
   let page = replaceTitle(html, 'Page not found | One2PDF');
@@ -123,6 +126,17 @@ for (const alias of ALIAS_PATHS) {
     throw new Error(`SEO prerender must not emit alias route ${alias}`);
   }
 }
+for (const page of pages) {
+  if (permanentRedirect(page.path)) {
+    throw new Error(`SEO prerender must not emit redirected URL ${page.path}`);
+  }
+}
+if (pages.some((page) => page.path === '/fr/png-to-pdf' || page.path === '/fr/onenote-to-pdf' || page.path === '/blog/reduire-taille-pdf-email')) {
+  throw new Error('SEO prerender emitted a URL that should be English-only or redirected');
+}
+const redirectFile = fileURLToPath(new URL('../../deploy/nginx/one2pdf-redirects.conf', import.meta.url));
+mkdirSync(dirname(redirectFile), { recursive: true });
+writeFileSync(redirectFile, nginxRedirectConf());
 
 const HTML_OPEN = /<html lang="[^"]*"(?: dir="[^"]*")?>/;
 
@@ -269,6 +283,12 @@ async function verifyPrerender(root: string, built: SeoPrerenderPage[]) {
   }
   const server = createServer(async (req, res) => {
     const url = new URL(req.url || '/', 'http://127.0.0.1');
+    const target = permanentRedirect(url.pathname);
+    if (target) {
+      res.writeHead(301, { location: target });
+      res.end();
+      return;
+    }
     let rel = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     if (rel.endsWith('/')) rel += 'index.html';
     else if (!rel.split('/').pop()?.includes('.')) rel += '/index.html';

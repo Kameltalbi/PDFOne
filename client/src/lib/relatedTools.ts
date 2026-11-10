@@ -1,9 +1,10 @@
 import { localizedPath, type UrlLocale } from '../i18n/localePath';
 import type { Messages } from '../i18n/types';
+import { isEnglishOnlyPath } from './seoPolicy';
 
 export const RELATED_TOOLS: Record<string, string[]> = {
-  '/compress': ['/merge', '/split', '/pdf-to-word', '/protect'],
-  '/merge': ['/split', '/compress', '/pdf-to-word', '/page-numbers'],
+  '/compress': ['/merge', '/split', '/pdf-to-word', '/protect', '/onenote-to-pdf'],
+  '/merge': ['/split', '/compress', '/pdf-to-word', '/page-numbers', '/onenote-to-pdf'],
   '/split': ['/merge', '/extract-pages', '/compress'],
   '/pdf-to-word': ['/word-to-pdf', '/compress', '/merge', '/pdf-to-excel'],
   '/word-to-pdf': ['/pdf-to-word', '/compress', '/merge'],
@@ -12,9 +13,10 @@ export const RELATED_TOOLS: Record<string, string[]> = {
   '/pdf-to-ppt': ['/ppt-to-pdf', '/pdf-to-word', '/compress'],
   '/ppt-to-pdf': ['/pdf-to-ppt', '/word-to-pdf', '/compress'],
   '/to-jpg': ['/jpg-to-pdf', '/compress', '/to-png'],
-  '/jpg-to-pdf': ['/to-jpg', '/merge', '/compress'],
+  '/jpg-to-pdf': ['/png-to-pdf', '/images-to-pdf', '/to-jpg', '/compress'],
+  '/png-to-pdf': ['/images-to-pdf', '/jpg-to-pdf', '/merge', '/compress'],
+  '/images-to-pdf': ['/png-to-pdf', '/jpg-to-pdf', '/merge', '/compress', '/onenote-to-pdf'],
   '/to-png': ['/to-jpg', '/jpg-to-pdf', '/compress'],
-  '/png-to-pdf': ['/jpg-to-pdf', '/merge', '/compress'],
   '/protect': ['/unlock', '/compress', '/watermark'],
   '/unlock': ['/protect', '/compress', '/ocr'],
   '/edit-pdf': ['/fill-sign-pdf', '/sign', '/watermark'],
@@ -36,13 +38,13 @@ export const RELATED_TOOLS: Record<string, string[]> = {
   '/header-footer': ['/page-numbers', '/watermark', '/compress'],
   '/fill-form': ['/fill-sign-pdf', '/flatten', '/sign'],
   '/fill-sign-pdf': ['/fill-form', '/sign', '/edit-pdf'],
-  '/heic-to-pdf': ['/jpg-to-pdf', '/compress', '/merge']
+  '/heic-to-pdf': ['/images-to-pdf', '/compress', '/merge'],
+  '/onenote-to-pdf': ['/merge', '/compress', '/images-to-pdf', '/pdf-to-word']
 };
 
 export const TOOL_PATH_ALIAS: Record<string, string> = {
   '/pdf-to-pptx': '/pdf-to-ppt',
   '/pptx-to-pdf': '/ppt-to-pdf',
-  '/png-to-pdf': '/jpg-to-pdf',
   '/edit-pdf/result': '/edit-pdf'
 };
 
@@ -85,6 +87,8 @@ export function toolLabel(path: string, m: Messages): string {
     '/fill-form': m.tools.fillForm,
     '/fill-sign-pdf': m.tools.fillSign,
     '/heic-to-pdf': m.tools.heicToPdf,
+    '/onenote-to-pdf': 'OneNote to PDF',
+    '/images-to-pdf': m.tools.imagesToPdf,
     '/tools': m.nav.allTools
   };
   return labels[path] ?? path;
@@ -93,7 +97,7 @@ export function toolLabel(path: string, m: Messages): string {
 export function relatedToolLinks(barePath: string, locale: UrlLocale, m: Messages) {
   const paths = RELATED_TOOLS[barePath];
   if (!paths?.length) return [];
-  return [...paths, '/tools'].map((path) => ({
+  return [...paths, '/tools'].filter((path) => locale === 'en' || !isEnglishOnlyPath(path)).map((path) => ({
     href: localizedPath(path, locale),
     label: toolLabel(path, m)
   }));

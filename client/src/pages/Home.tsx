@@ -1,5 +1,8 @@
 import { useId, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link, useLocaleNavigate } from '../components/LocaleLink';
+import { HOME_BEYOND, HOME_PROOF } from '../content/brandPages';
+import { urlLocaleFromPath } from '../i18n/localePath';
 import { AdBanner } from '../components/AdBanner';
 import { useI18n } from '../i18n';
 import { useJsonLd, websiteJsonLd } from '../lib/jsonLd';
@@ -54,7 +57,8 @@ const shortcutGlyphs = {
 } as const;
 
 function Home() {
-  const { m, t } = useI18n();
+  const { m, t, locale } = useI18n();
+  const urlLocale = urlLocaleFromPath(useLocation().pathname);
   usePageSeo(m.home.seoTitle, m.home.seoDescription);
   useJsonLd('one2pdf-website', websiteJsonLd());
   const navigate = useLocaleNavigate();
@@ -100,7 +104,7 @@ function Home() {
 
   const actions = shortcuts.filter((item) => item.path !== '/tools');
 
-  const catalog = catalogEntries(m);
+  const catalog = catalogEntries(m, locale === urlLocale ? urlLocale : locale);
 
   const tools = [
     { name: m.tools.merge, description: m.home.toolMergeDesc, icon: '⇄', path: '/merge', tone: 'orange' },
@@ -129,6 +133,10 @@ function Home() {
             </span>
             <span className="pro-hero-title-accent">{m.home.titleAccent}</span>
           </h1>
+
+          {locale === 'en' && (
+            <p className="pro-hero-proof">{HOME_PROOF.join(' · ')}</p>
+          )}
 
           <p className="pro-hero-lede">{m.home.subtitle}</p>
 
@@ -228,6 +236,23 @@ function Home() {
         <div className="pro-tools-grid">{tools.map((tool) => <Link key={tool.path + tool.name} to={tool.path} className="pro-tool-card"><span className={`pro-tool-icon ${tool.tone}`}>{tool.icon}</span><div><h3>{tool.name}</h3><p>{tool.description}</p></div><b className="pro-tool-arrow">→</b></Link>)}</div>
         <AdBanner />
       </section>
+
+      {locale === 'en' && (
+        <section className="pro-beyond" aria-labelledby="home-beyond-title">
+          <div className="pro-section-heading">
+            <div>
+              <span>{HOME_BEYOND.label}</span>
+              <h2 id="home-beyond-title">{HOME_BEYOND.title}</h2>
+            </div>
+          </div>
+          <p className="pro-catalog-lead">{HOME_BEYOND.text}</p>
+          <ul className="pro-beyond-list">
+            {HOME_BEYOND.links.map((item) => (
+              <li key={item.href}><Link to={item.href}>{item.label}</Link></li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="pro-catalog" aria-labelledby="home-all-tools">
         <div className="pro-section-heading">

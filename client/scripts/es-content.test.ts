@@ -50,9 +50,9 @@ describe('Spanish content without SEO activation', () => {
     const frenchCompress = pages.find((page) => page.path === '/fr/compress');
     const rotate = pages.find((page) => page.path === '/rotate');
     const frenchRotate = pages.find((page) => page.path === '/fr/rotate');
-    assert.equal(compress?.title, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
+    assert.equal(compress?.title, 'Compress a PDF online | One2PDF');
     assert.equal(compress?.h1, 'Compress PDF');
-    assert.equal(frenchCompress?.title, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
+    assert.equal(frenchCompress?.title, 'Compresser un PDF en ligne | One2PDF');
     assert.equal(frenchCompress?.h1, 'Compresser un PDF en ligne');
     assert.equal(rotate?.title, 'Rotate PDF Pages Online Free | One2PDF');
     assert.equal(rotate?.h1, 'Rotate PDF');

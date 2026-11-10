@@ -51,6 +51,8 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import InternalOps from './pages/InternalOps';
 import NotFound from './pages/NotFound';
+import { AlternativesPage, ComparisonRoute, OneNoteToPdfPage } from './pages/BrandPages';
+import { liveJpgVariants } from './lib/toolVariants';
 import { trackPageView, trackPricingView, trackToolOpen } from './lib/analytics';
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
@@ -107,7 +109,14 @@ function localeRoutes(prefix: '' | '/fr' | '/es' | '/de' | '/pt' | '/it' | '/tr'
     <Route key={p('/login')} path={p('/login')} element={<LoginPage />} />,
     <Route key={p('/signup')} path={p('/signup')} element={<SignupPage />} />,
     <Route key={p('/account')} path={p('/account')} element={<AccountPage />} />,
-    <Route key={p('/png-to-pdf')} path={p('/png-to-pdf')} element={<RedirectTo to="/jpg-to-pdf" />} />,
+    ...(prefix === '' ? liveJpgVariants().map((variant) => (
+      <Route key={variant.path} path={variant.path} element={<JpgToPdf />} />
+    )) : []),
+    ...(prefix === '' ? [
+      <Route key="/onenote-to-pdf" path="/onenote-to-pdf" element={<OneNoteToPdfPage />} />,
+      <Route key="/one2pdf-vs-online2pdf" path="/one2pdf-vs-online2pdf" element={<ComparisonRoute id="online2pdf" />} />,
+      <Route key="/alternatives" path="/alternatives" element={<AlternativesPage />} />
+    ] : []),
     <Route key={p('/tools')} path={p('/tools')} element={<Tools />} />,
     <Route key={p('/edit-pdf')} path={p('/edit-pdf')} element={<EditPdf />} />,
     <Route key={p('/edit-pdf/result')} path={p('/edit-pdf/result')} element={<EditResult />} />,

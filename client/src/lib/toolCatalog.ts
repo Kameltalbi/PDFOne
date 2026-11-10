@@ -1,5 +1,6 @@
 import { localizedPath, type UrlLocale } from '../i18n/localePath';
 import type { Messages } from '../i18n/types';
+import { isEnglishOnlyPath } from './seoPolicy';
 
 type CatalogTool = {
   id: string;
@@ -15,7 +16,7 @@ type CatalogTool = {
 
 /**
  * Single catalog for the React tools page, the home list, and the prerender.
- * Paths are final URLs. /png-to-pdf stays an alias route and is not linked here.
+ * Paths are final URLs. English-only pages are omitted from other languages.
  */
 export const TOOL_CATALOG: CatalogTool[] = [
   { id: 'edit', path: '/edit-pdf', icon: '📝', color: '#f59e0b', keywords: 'edit text draw éditer', label: (m) => m.tools.edit, description: (m) => m.edit.subtitle },
@@ -36,7 +37,7 @@ export const TOOL_CATALOG: CatalogTool[] = [
   { id: 'ocr', path: '/ocr', icon: 'OCR', color: '#374151', keywords: 'ocr scan texte tesseract', label: (m) => m.tools.ocr, description: (m) => m.ocrPdf.subtitle },
   { id: 'summarize', path: '/summarize', icon: '☷', color: '#54b92f', keywords: 'résumer summary resume', label: (m) => m.tools.summarize, description: (m) => m.summarizePdf.subtitle },
   { id: 'translate', path: '/translate', icon: 'A文', color: '#ef5b45', keywords: 'traduire translate traduction', indexable: false, label: (m) => m.tools.translate, description: (m) => m.translatePdf.subtitle },
-  { id: 'pngToPdf', path: '/jpg-to-pdf', icon: 'PNG', color: '#27b51c', keywords: 'png image', label: (m) => m.tools.pngToPdf, description: (m) => m.jpgToPdf.subtitle },
+  { id: 'pngToPdf', path: '/png-to-pdf', icon: 'PNG', color: '#27b51c', keywords: 'png image', label: (m) => m.tools.pngToPdf, description: (m) => m.jpgToPdf.subtitle },
   { id: 'pdfToPng', path: '/to-png', icon: '⇩', color: '#27b51c', keywords: 'png image', label: (m) => m.tools.pdfToPng, description: (m) => m.toPng.subtitle },
   { id: 'unlock', path: '/unlock', icon: '🔓', color: '#333333', keywords: 'password mot de passe déverrouiller', label: (m) => m.tools.unlock, description: (m) => m.unlockPdf.subtitle },
   { id: 'crop', path: '/crop', icon: '⌗', color: '#333333', keywords: 'rogner recadrer crop marges', label: (m) => m.tools.crop, description: (m) => m.cropPdf.subtitle },
@@ -46,7 +47,8 @@ export const TOOL_CATALOG: CatalogTool[] = [
   { id: 'pdfToPpt', path: '/pdf-to-ppt', icon: 'P', color: '#f05b43', keywords: 'powerpoint pptx office', label: (m) => m.tools.pdfToPpt, description: (m) => m.convert.pdfToPptDesc },
   { id: 'pptToPdf', path: '/ppt-to-pdf', icon: 'P', color: '#f05b43', keywords: 'powerpoint pptx office', label: (m) => m.tools.pptToPdf, description: (m) => m.convert.pptToPdfDesc },
   { id: 'pdfToText', path: '/pdf-to-text', icon: 'TXT', color: '#2684ff', keywords: 'texte txt extract', label: (m) => m.tools.pdfToText, description: (m) => m.toText.subtitle },
-  { id: 'imagesToPdf', path: '/jpg-to-pdf', icon: 'IMG', color: '#ef5b45', keywords: 'images photos', label: (m) => m.tools.imagesToPdf, description: (m) => m.jpgToPdf.subtitle },
+  { id: 'imagesToPdf', path: '/images-to-pdf', icon: 'IMG', color: '#ef5b45', keywords: 'images photos', label: (m) => m.tools.imagesToPdf, description: (m) => m.jpgToPdf.subtitle },
+  { id: 'oneNoteToPdf', path: '/onenote-to-pdf', icon: 'N', color: '#7c3aed', keywords: 'onenote one onepkg', label: () => 'OneNote to PDF', description: () => 'Export a OneNote notebook to PDF, then merge or compress the file.' },
   { id: 'htmlToPdf', path: '/html-to-pdf', icon: '</>', color: '#7c5cff', keywords: 'html web page', label: (m) => m.tools.htmlToPdf, description: (m) => m.htmlPdf.subtitle },
   { id: 'extractPages', path: '/extract-pages', icon: '▤', color: '#0f766e', keywords: 'extract pages extraire pages', label: (m) => m.tools.extractPages, description: (m) => m.extractPages.subtitle },
   { id: 'extractImages', path: '/extract-images', icon: '🖼', color: '#7c3aed', keywords: 'extract images extraire images', label: (m) => m.tools.extractImages, description: (m) => m.extractImages.subtitle },
@@ -60,8 +62,8 @@ export const INDEXABLE_TOOL_PATHS = [...new Set(
   TOOL_CATALOG.filter((tool) => tool.indexable !== false).map((tool) => tool.path)
 )];
 
-export function catalogEntries(m: Messages) {
-  return TOOL_CATALOG.map((tool) => ({
+export function catalogEntries(m: Messages, locale: UrlLocale = 'en') {
+  return TOOL_CATALOG.filter((tool) => locale === 'en' || !isEnglishOnlyPath(tool.path)).map((tool) => ({
     id: tool.id,
     path: tool.path,
     icon: tool.icon,
@@ -73,7 +75,7 @@ export function catalogEntries(m: Messages) {
 }
 
 export function catalogLinks(locale: UrlLocale, m: Messages) {
-  return catalogEntries(m).map((tool) => ({
+  return catalogEntries(m, locale).map((tool) => ({
     href: localizedPath(tool.path, locale),
     label: tool.label,
     description: tool.description

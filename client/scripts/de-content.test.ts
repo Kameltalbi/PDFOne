@@ -80,8 +80,8 @@ describe('German content without SEO activation', () => {
     assert.equal(dictionaries.de.tools.pdfToJpg, 'PDF in JPG');
     assert.notEqual(dictionaries.de.compress.seoTitle, dictionaries.en.compress.seoTitle);
     assert.notEqual(dictionaries.es.compress.seoTitle, dictionaries.de.compress.seoTitle);
-    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
-    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
+    assert.equal(dictionaries.en.compress.seoTitle, 'Compress a PDF online | One2PDF');
+    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne | One2PDF');
     assert.equal(dictionaries.es.compress.seoTitle, 'Comprimir PDF en línea gratis | One2PDF');
   });
 

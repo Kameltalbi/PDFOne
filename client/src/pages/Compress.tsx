@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from '../components/PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { usePageSeo } from '../lib/usePageSeo';
 import { compressPageGuides, guideHeading } from '../lib/seoPages';
@@ -10,13 +11,14 @@ import type { UrlLocale } from '../i18n/localePath';
 
 function Compress() {
   const { m, t, locale } = useI18n();
+  const { pathname } = useLocation();
   const guides = compressPageGuides(locale as UrlLocale);
   usePageSeo(m.compress.seoTitle, m.compress.seoDescription);
   const faqJsonLd = useMemo(
-    () => faqPageJsonLd(m.compress.faq, pageUrl('/compress')),
-    [m.compress.faq]
+    () => faqPageJsonLd(m.compress.faq, pageUrl(pathname)),
+    [m.compress.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-compress', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const pdf = useSinglePdf({ allPages: false });
   const [quality, setQuality] = useState<'low' | 'medium' | 'high'>('medium');
   const [isProcessing, setIsProcessing] = useState(false);

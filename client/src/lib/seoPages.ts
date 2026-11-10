@@ -5,7 +5,9 @@ import { dictionaries } from '../i18n/dictionaries';
 import { localizedPath, SEO_LOCALES, stripLocalePrefix, type UrlLocale } from '../i18n/localePath';
 import { interpolate, type Messages, type PageSeoCopy } from '../i18n/types';
 import { hreflangForPath, type HreflangLink } from './hreflang';
-import { faqPageJsonLd, pageUrl, websiteJsonLd } from './jsonLd';
+import { ALTERNATIVES_PAGE, alternativesArticleHtml, COMPARISONS, comparisonArticleHtml, homeExtraHtml, ONE_NOTE_PAGE, oneNoteArticleHtml } from '../content/brandPages';
+import { appScriptId, faqPageJsonLd, faqScriptId, howToJsonLd, pageUrl, webApplicationJsonLd, websiteJsonLd } from './jsonLd';
+import { liveJpgVariants } from './toolVariants';
 import { relatedToolLinks, toolLabel } from './relatedTools';
 import { catalogLinks } from './toolCatalog';
 
@@ -19,6 +21,7 @@ export type SeoPrerenderPage = {
   copy?: PageSeoCopy;
   jsonLdId?: string;
   jsonLd?: object;
+  scripts?: { id: string; data: object }[];
   robots?: string;
   articleHtml?: string;
   alternates: HreflangLink[];
@@ -59,7 +62,8 @@ function toolNamed(
     h1,
     lead,
     copy,
-    ...(jsonLdId ? faqLd(`${jsonLdId}-${locale}`, copy, localized) : {})
+    ...(jsonLdId ? faqLd(faqScriptId(path), copy, localized) : {}),
+    scripts: [{ id: appScriptId(path), data: webApplicationJsonLd(h1, pageUrl(localized)) }]
   };
 }
 
@@ -114,7 +118,7 @@ function blogPage(post: BlogPost, locale: UrlLocale): SeoDraft {
     title: post.seoTitle,
     description: post.seoDescription,
     h1: post.title,
-    jsonLdId: `blog-${locale}-${post.slug}`,
+    jsonLdId: `blog-${post.slug}`,
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
@@ -155,6 +159,12 @@ function toolFeatures(m: Messages, bare: string) {
     '/delete-pages': m.deletePages.features,
     '/reorder': m.reorderPages.features,
     '/pdf-to-text': m.toText.features,
+    '/pdf-to-word': m.convert.features,
+    '/word-to-pdf': m.convert.features,
+    '/pdf-to-excel': m.convert.features,
+    '/excel-to-pdf': m.convert.features,
+    '/pdf-to-ppt': m.convert.features,
+    '/ppt-to-pdf': m.convert.features,
     '/html-to-pdf': m.htmlPdf.features,
     '/summarize': m.summarizePdf.features,
     '/translate': m.translatePdf.features,
@@ -180,9 +190,8 @@ const COMPRESS_EMAIL_SLUGS = new Set([
 ]);
 
 const EN_COMPRESS_GUIDE_SLUGS = [
-  COMPRESS_EMAIL_SLUG,
-  'why-is-my-pdf-file-so-large-causes-and-how-to-reduce-its-size',
   'how-to-reduce-pdf-size-for-email',
+  'why-is-my-pdf-file-so-large-causes-and-how-to-reduce-its-size',
   'how-to-compress-pdf-without-losing-quality'
 ];
 
@@ -254,6 +263,59 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
   };
 }
 
+export function contactDocumentTitle(locale: UrlLocale, heading: string) {
+  if (locale === 'fr' && heading === 'Contact') return 'Nous contacter | One2PDF';
+  if (locale === 'pt' && heading === 'Contacto') return 'Contacto com a One2PDF';
+  return `${heading} | One2PDF`;
+}
+
+function englishOnlyDrafts(m: Messages): SeoDraft[] {
+  const variants = liveJpgVariants().map((variant) => (
+    toolNamed('en', variant.path, variant.h1, variant.lead, variant.copy, appScriptId(variant.path))
+  ));
+  const note = ONE_NOTE_PAGE;
+  const noteLd = faqPageJsonLd(note.faq, pageUrl(note.path));
+  const comparison = COMPARISONS.filter((page) => page.live);
+  const alternatives = ALTERNATIVES_PAGE;
+  return [
+    ...variants,
+    {
+      path: note.path,
+      title: note.title,
+      description: note.description,
+      h1: note.h1,
+      articleHtml: oneNoteArticleHtml(),
+      jsonLdId: faqScriptId(note.path),
+      jsonLd: noteLd,
+      scripts: [{
+        id: 'one2pdf-howto-onenote-to-pdf',
+        data: howToJsonLd(note.h1, note.description, note.howSteps)
+      }],
+      related: relatedToolLinks(note.path, 'en', m)
+    },
+    ...comparison.map((page) => ({
+      path: page.path,
+      title: page.title,
+      description: page.description,
+      h1: page.h1,
+      robots: 'noindex, follow',
+      articleHtml: comparisonArticleHtml(page),
+      jsonLdId: faqScriptId(page.path),
+      jsonLd: faqPageJsonLd(page.faq, pageUrl(page.path))
+    })),
+    {
+      path: alternatives.path,
+      title: alternatives.title,
+      description: alternatives.description,
+      h1: alternatives.h1,
+      robots: 'noindex, follow',
+      articleHtml: alternativesArticleHtml(),
+      jsonLdId: faqScriptId(alternatives.path),
+      jsonLd: faqPageJsonLd(alternatives.faq, pageUrl(alternatives.path))
+    }
+  ];
+}
+
 function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
   const m = dictionaries[locale];
   const privacy = getPrivacyPolicy(locale);
@@ -268,7 +330,6 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
       title: m.home.seoTitle,
       description: m.home.seoDescription,
       h1: homeH1(m),
-      lead: m.home.subtitle,
       jsonLdId: 'one2pdf-website',
       jsonLd: websiteJsonLd(),
       related: [
@@ -276,7 +337,10 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
         { href: localizedPath('/tools', locale), label: toolLabel('/tools', m) }
       ],
       relatedTitle: m.tools.catalogTitle,
-      articleHtml: `<p>${escapeHtml(m.home.privacyText)}</p><p>${escapeHtml(m.home.privacyAutoDelete)}</p>`
+      lead: locale === 'en' ? undefined : m.home.subtitle,
+      articleHtml: locale === 'en'
+        ? `${homeExtraHtml(m.home.subtitle)}<p>${escapeHtml(m.home.privacyText)}</p><p>${escapeHtml(m.home.privacyAutoDelete)}</p>`
+        : `<p>${escapeHtml(m.home.privacyText)}</p><p>${escapeHtml(m.home.privacyAutoDelete)}</p>`
     },
     {
       path: '/tools',
@@ -310,7 +374,7 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
     },
     {
       path: '/contact',
-      title: `${m.legal.contactTitle} | One2PDF`,
+      title: contactDocumentTitle(locale, m.legal.contactTitle),
       description: m.legal.contactIntro,
       h1: m.legal.contactTitle,
       lead: m.legal.contactIntro
@@ -359,7 +423,8 @@ function pagesFor(locale: UrlLocale): SeoPrerenderPage[] {
     toolNamed(locale, '/header-footer', m.headerFooter.title, m.headerFooter.subtitle, m.headerFooter),
     toolNamed(locale, '/fill-form', m.fillForm.title, m.fillForm.subtitle, m.fillForm),
     toolNamed(locale, '/fill-sign-pdf', m.fillSign.title, m.fillSign.subtitle, m.fillSign),
-    toolNamed(locale, '/heic-to-pdf', m.heicToPdf.title, m.heicToPdf.subtitle, m.heicToPdf)
+    toolNamed(locale, '/heic-to-pdf', m.heicToPdf.title, m.heicToPdf.subtitle, m.heicToPdf),
+    ...(locale === 'en' ? englishOnlyDrafts(m) : [])
   ];
 
   return drafts
@@ -374,6 +439,12 @@ export function indexableSeoPages(): SeoPrerenderPage[] {
 export function seoArticleHtml(page: SeoPrerenderPage): string {
   const parts = [`<h1>${escapeHtml(page.h1)}</h1>`];
   if (page.lead) parts.push(`<p>${escapeHtml(page.lead)}</p>`);
+  if (page.features?.length) {
+    for (const feature of page.features) {
+      parts.push(`<h3>${escapeHtml(feature.title)}</h3>`);
+      parts.push(`<p>${escapeHtml(feature.text)}</p>`);
+    }
+  }
   const copy = page.copy;
   if (copy?.howSteps?.length) {
     if (copy.howTitle) parts.push(`<h2>${escapeHtml(copy.howTitle)}</h2>`);
@@ -385,10 +456,6 @@ export function seoArticleHtml(page: SeoPrerenderPage): string {
     parts.push(`<p>${escapeHtml(copy.seoP2)}</p>`);
     parts.push(`<p>${escapeHtml(copy.seoP3)}</p>`);
   }
-  if (page.features?.length) {
-    if (page.featuresTitle) parts.push(`<h2>${escapeHtml(page.featuresTitle)}</h2>`);
-    parts.push(`<ul>${page.features.map((feature) => `<li><strong>${escapeHtml(feature.title)}</strong> — ${escapeHtml(feature.text)}</li>`).join('')}</ul>`);
-  }
   if (copy?.faq?.length) {
     if (copy.faqTitle) parts.push(`<h2>${escapeHtml(copy.faqTitle)}</h2>`);
     for (const item of copy.faq) {
@@ -396,13 +463,13 @@ export function seoArticleHtml(page: SeoPrerenderPage): string {
       parts.push(`<p>${escapeHtml(item.answer)}</p>`);
     }
   }
-  if (page.related?.length) {
-    if (page.relatedTitle) parts.push(`<h2>${escapeHtml(page.relatedTitle)}</h2>`);
-    parts.push(`<ul>${page.related.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>${link.description ? ` — ${escapeHtml(link.description)}` : ''}</li>`).join('')}</ul>`);
-  }
   if (page.guides?.length) {
     if (page.guidesTitle) parts.push(`<h2>${escapeHtml(page.guidesTitle)}</h2>`);
     parts.push(`<ul>${page.guides.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('')}</ul>`);
+  }
+  if (page.related?.length) {
+    if (page.relatedTitle) parts.push(`<h2>${escapeHtml(page.relatedTitle)}</h2>`);
+    parts.push(`<ul>${page.related.map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>${link.description ? ` — ${escapeHtml(link.description)}` : ''}</li>`).join('')}</ul>`);
   }
   if (page.articleHtml) parts.push(page.articleHtml);
   return `<article id="seo-prerender">${parts.join('\n')}</article>`;

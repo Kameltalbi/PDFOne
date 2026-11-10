@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace } from './PdfStudio';
 import { formatFileSize, postForm } from '../lib/api';
 import { useOfficeFile } from '../lib/useOfficeFile';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
@@ -98,7 +98,7 @@ function OfficeConvert({ job }: { job: OfficeJob }) {
     () => (pageSeo?.faq?.length ? faqPageJsonLd(pageSeo.faq, pageUrl(pathname)) : null),
     [pageSeo?.faq, pathname]
   );
-  useJsonLd(`one2pdf-faq-${pathname}`, faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
 
   const downloadLabel = spec.download === 'word'
     ? m.convert.downloadWord

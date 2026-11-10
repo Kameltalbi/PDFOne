@@ -1,3 +1,4 @@
+import { isEnglishOnlyPath } from '../lib/seoPolicy';
 import type { Locale } from './types';
 
 /**
@@ -46,6 +47,8 @@ export function localizedPath(to: string, locale: Locale): string {
   const path = cut === -1 ? to : to.slice(0, cut);
   if (!path.startsWith('/')) return to;
   const bare = stripLocalePrefix(path);
+  // Pages that are not translated stay on the English URL. No empty /fr copy.
+  if (isEnglishOnlyPath(bare)) return `${bare}${suffix}`;
   // The full privacy policy is English or French only. Other locales stay on the English canonical.
   if ((locale === 'es' || locale === 'de' || locale === 'pt' || locale === 'it' || locale === 'tr' || locale === 'ar') && bare === '/privacy') return `${bare}${suffix}`;
   if (!isUrlLocalePrefix(locale)) return `${bare}${suffix}`;

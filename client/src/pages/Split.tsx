@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { parsePageRanges } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function Split() {
   const { m, t } = useI18n();
+  const { pathname } = useLocation();
   usePageSeo(m.split.seoTitle, m.split.seoDescription);
   const faqJsonLd = useMemo(
-    () => (m.split.faq?.length ? faqPageJsonLd(m.split.faq, pageUrl('/split')) : null),
-    [m.split.faq]
+    () => (m.split.faq?.length ? faqPageJsonLd(m.split.faq, pageUrl(pathname)) : null),
+    [m.split.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-split', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const pdf = useSinglePdf();
   const [selected, setSelected] = useState<number[]>([]);
   const [range, setRange] = useState('');

@@ -544,42 +544,38 @@ export const fr: Messages = {
     merging: 'Fusion en cours…',
     mergeCount: 'Fusionner {count} fichier(s)',
     features: [
-      { icon: '⇄', tone: 'orange', title: 'Fusion claire et rapide', text: 'Réunissez vos PDF sans filigrane, avec un aperçu visuel et un ordre que vous choisissez.' },
+      { icon: '⇄', tone: 'orange', title: 'Un seul fichier, votre ordre', text: 'Réunissez vos PDF sans filigrane, avec un aperçu visuel et un ordre que vous choisissez.' },
       { icon: '✓', tone: 'blue', title: 'Fichiers traités en sécurité', text: 'Vos documents restent temporaires et sont supprimés automatiquement après traitement.' },
       { icon: '★', tone: 'green', title: 'Sur tous vos appareils', text: 'Utilisez l’outil de fusion sur ordinateur, tablette ou mobile.' },
       { icon: '◆', tone: 'gold', title: 'Sans installation', text: 'Importez vos fichiers, réordonnez-les, puis téléchargez le document final.' },
       { icon: '⏱', tone: 'purple', title: 'Téléchargement', text: 'Le PDF fusionné se télécharge quand le traitement est terminé.' },
       { icon: '✧', tone: 'teal', title: 'Interface visuelle', text: 'Glissez-déposez vos PDF, voyez les miniatures et fusionnez d’un clic.' }
     ],
-    seoTitle: 'Fusionner des PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Réunissez des PDF dans l’ordre choisi et ajoutez éventuellement des numéros de page. Téléchargez un seul PDF fusionné.',
-    seoH2: 'Réunir des PDF dans l’ordre souhaité',
-    seoP1: 'Réunissez au moins deux PDF dans un seul document. Importez les fichiers, placez leurs miniatures dans l’ordre voulu, ajoutez éventuellement des numéros de page, puis téléchargez le PDF fusionné.',
-    seoP2: 'La fusion copie les pages dans un nouveau PDF, sans ajouter de filigrane. Une case permet d’ajouter des numéros « 1 / N ». Les signets, les champs de formulaire interactifs et une signature déjà présente ne sont pas garantis dans le fichier fusionné.',
-    seoP3: 'La fusion est réalisée en ligne sur les serveurs One2PDF. Les fichiers d’origine sont supprimés à la fin du traitement. Le résultat fusionné est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
+    seoTitle: 'Fusionner des PDF en un seul fichier | One2PDF',
+    seoDescription: 'Réunissez au moins deux PDF dans l’ordre choisi. Ajoutez des numéros « 1 / N » si vous en avez besoin, puis téléchargez un seul fichier.',
+    seoH2: 'Mettre plusieurs PDF dans un seul document',
+    seoP1: 'Utilisez Fusionner quand un contrat, un scan et une annexe doivent partir ensemble. Importez au moins deux PDF, rangez les miniatures, puis téléchargez le document combiné. Seuls les fichiers PDF sont acceptés.',
+    seoP2: 'L’outil copie chaque page dans un nouveau PDF et n’ajoute pas de filigrane. Cochez la case pour imprimer « 1 / N » en bas de chaque page. Les signets, les champs de formulaire interactifs et une signature déjà présente ne sont pas garantis.',
+    seoP3: 'Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et acceptent jusqu’à 100 Mo par fichier, dans la limite technique configurée. Une fusion compte pour un document. Les originaux sont supprimés à la fin du traitement. Le résultat est retiré après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.',
     howTitle: 'Comment fusionner des PDF',
     howSteps: [
-      'Choisissez les fichiers PDF à réunir',
-      'Glissez les miniatures pour choisir l’ordre, et cochez les numéros de page si vous les voulez',
-      'Téléchargez le PDF fusionné'
+      'Ajoutez au moins deux fichiers PDF',
+      'Placez les miniatures dans l’ordre, et cochez les numéros de page si vous les voulez',
+      'Téléchargez le PDF unique'
     ],
-    faqTitle: 'Questions fréquentes sur la fusion de PDF',
+    faqTitle: 'Questions sur la fusion de PDF',
     faq: [
       {
         question: 'Combien de PDF puis-je fusionner ?',
-        answer: 'Ajoutez au moins deux PDF et réordonnez-les avec les miniatures. Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro : pas de limite quotidienne de traitements, et 100 Mo par fichier.'
+        answer: 'Au moins deux. Vous pouvez en ajouter jusqu’au nombre configuré sur le serveur, 20 par défaut. Réordonnez-les en glissant les miniatures, ou en cliquant l’une puis l’autre.'
       },
       {
-        question: 'Les signets, formulaires et signatures sont-ils conservés ?',
-        answer: 'Les pages sont copiées dans un nouveau PDF. Les numéros « 1 / N » ne sont ajoutés que si vous cochez la case. Les signets, les champs interactifs et une signature déjà présente ne sont pas garantis.'
+        question: 'Les signets, formulaires et signatures restent-ils ?',
+        answer: 'Les pages sont copiées dans un nouveau PDF. Les numéros « 1 / N » n’apparaissent que si la case est cochée. Les signets, les champs interactifs et une signature déjà présente ne sont pas garantis.'
       },
       {
-        question: 'Faut-il un compte pour fusionner des PDF ?',
-        answer: 'Non. L’usage gratuit ne demande ni nom ni e-mail. Vous choisissez l’outil, importez les fichiers, puis téléchargez le résultat.'
-      },
-      {
-        question: 'Les PDF d’origine sont-ils conservés ?',
-        answer: 'Les originaux sont traités sur les serveurs One2PDF puis supprimés à la fin du traitement. Le fichier fusionné est supprimé après téléchargement ou, s’il n’est pas téléchargé, purgé automatiquement sous 15 minutes par défaut.'
+        question: 'Faut-il un compte ?',
+        answer: 'Non. L’usage gratuit ne demande ni nom ni e-mail. Le plan gratuit s’arrête à 5 documents par jour et 20 Mo par fichier.'
       }
     ]
   },
@@ -616,33 +612,33 @@ export const fr: Messages = {
       { icon: '★', tone: 'green', title: 'Sans installation', text: 'Utilisez l’outil en ligne sans installer de logiciel de bureau.' },
       { icon: '◆', tone: 'gold', title: 'Plages en une fois', text: 'Saisissez 1-3, 5, 8 pour sélectionner plusieurs pages d’un coup.' },
       { icon: '⏱', tone: 'purple', title: 'Résultat téléchargeable', text: 'Téléchargez le PDF extrait ou le ZIP lorsque le traitement est terminé.' },
-      { icon: '✧', tone: 'teal', title: 'Traitement sûr', text: 'Votre document est supprimé automatiquement après le téléchargement.' }
+      { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original est supprimé à la fin du traitement. Le résultat est purgé sous 15 minutes s’il n’est pas téléchargé.' }
     ],
-    seoTitle: 'Diviser un PDF en ligne gratuitement | One2PDF',
-    seoDescription: 'Extrayez des pages dans un PDF ou exportez chaque page choisie comme PDF distinct dans une archive ZIP.',
-    seoH2: 'Extraire des pages ou séparer un PDF en plusieurs fichiers',
-    seoP1: 'Choisissez les pages utiles d’un PDF en les cliquant ou en saisissant une plage telle que 1-3, 5, 8. Utilisez Extraire pour créer un PDF avec les pages sélectionnées, ou Séparer pour créer un PDF par page sélectionnée dans une archive ZIP.',
-    seoP2: 'Deux modes couvrent les usages courants. Extraire rassemble les pages choisies dans un seul PDF plus court. Séparer exporte chaque page dans un fichier distinct, regroupé dans un ZIP. C’est la méthode adaptée si vous cherchez comment extraire des pages d’un PDF, découper un document trop volumineux ou envoyer seulement un chapitre.',
-    seoP3: 'La division est réalisée en ligne sur les serveurs One2PDF. Le PDF envoyé est supprimé à la fin du traitement. Le résultat est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
+    seoTitle: 'Diviser un PDF ou extraire des pages | One2PDF',
+    seoDescription: 'Choisissez des pages dans un PDF. Extrayez-les dans un seul fichier, ou enregistrez chaque page choisie comme PDF distinct dans un ZIP.',
+    seoH2: 'Garder les pages utiles',
+    seoP1: 'Utilisez Diviser pour envoyer un chapitre, retirer une couverture d’une copie, ou séparer un long fichier page par page. Importez un PDF, cliquez les pages ou saisissez une plage telle que 1-3, 5, 8, puis choisissez Extraire ou Séparer.',
+    seoP2: 'Extraire produit un PDF qui ne contient que les pages sélectionnées, dans l’ordre de la sélection. Séparer produit un PDF par page sélectionnée et les regroupe dans un ZIP. L’outil n’accepte que des PDF.',
+    seoP3: 'Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et acceptent jusqu’à 100 Mo par fichier, dans la limite technique configurée. Le PDF envoyé est supprimé à la fin du traitement. Le résultat est retiré après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.',
     howTitle: 'Comment diviser un PDF',
     howSteps: [
-      'Importez le PDF',
-      'Sélectionnez les pages à extraire ou à séparer',
-      'Téléchargez le résultat'
+      'Importez un PDF',
+      'Sélectionnez les pages, puis choisissez Extraire ou Séparer',
+      'Téléchargez le PDF plus court ou le ZIP'
     ],
-    faqTitle: 'Questions fréquentes sur la division de PDF',
+    faqTitle: 'Questions sur la division d’un PDF',
     faq: [
       {
-        question: 'Puis-je diviser un PDF en plusieurs fichiers ?',
-        answer: 'Oui. Séparer exporte chaque page dans son propre PDF, regroupés dans un ZIP. C’est le mode pour découper un PDF en plusieurs fichiers. Pour conserver quelques pages dans un seul document, utilisez Extraire des pages.'
+        question: 'Quelle est la différence entre Extraire et Séparer ?',
+        answer: 'Extraire renvoie un PDF avec les pages choisies. Séparer renvoie un ZIP qui contient un PDF pour chaque page choisie.'
       },
       {
-        question: 'Diviser un PDF est-il gratuit ?',
-        answer: 'Oui, sans créer de compte. Le plan gratuit est limité à 5 documents par jour et 20 Mo par fichier. Traduction et résumé utilisent des crédits IA mensuels. L’OCR est sur les offres payantes.'
+        question: 'Puis-je saisir une plage de pages ?',
+        answer: 'Oui. Une plage comme 1-3, 5, 8 sélectionne ces pages. Vous pouvez aussi cliquer les miniatures, ou utiliser Tout et Aucun.'
       },
       {
-        question: 'One2PDF conserve-t-il l’original après la division ?',
-        answer: 'L’original est traité sur les serveurs One2PDF puis supprimé à la fin du traitement. Le résultat est supprimé après téléchargement ou, s’il n’est pas téléchargé, purgé automatiquement sous 15 minutes par défaut.'
+        question: 'Quelle est la limite de taille ?',
+        answer: 'Le plan gratuit permet 20 Mo par fichier et 5 documents par jour, sans compte. Pass et Pro permettent jusqu’à 100 Mo par fichier, sans plafond quotidien.'
       }
     ]
   },
@@ -875,33 +871,33 @@ export const fr: Messages = {
       { icon: '★', tone: 'green', title: 'Sans installation', text: 'Importez, choisissez un niveau, puis téléchargez le résultat.' },
       { icon: '◆', tone: 'gold', title: 'Aperçu immédiat', text: 'Voyez le document avant de lancer le traitement.' },
       { icon: '⏱', tone: 'purple', title: 'Avant et après', text: 'Comparez le poids obtenu. Rien ne garantit un passage sous une limite d’envoi.' },
-      { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'Le PDF traité est supprimé automatiquement après usage.' }
+      { icon: '✧', tone: 'teal', title: 'Fichiers temporaires', text: 'L’original est supprimé à la fin du traitement. Le résultat est purgé sous 15 minutes s’il n’est pas téléchargé.' }
     ],
-    seoTitle: 'Compresser un PDF en ligne — choisir le niveau | One2PDF',
-    seoDescription: 'Réduisez la taille d’un PDF en ligne. Le niveau élevé conserve le texte sélectionnable ; les niveaux moyen et fort transforment les pages en images.',
-    seoH2: 'Choisir un niveau de compression adapté à votre PDF',
-    seoP1: 'Importez un PDF et choisissez le niveau de compression selon l’usage prévu. Le niveau élevé réécrit le document en conservant le texte sélectionnable. Les niveaux moyen et fort convertissent chaque page en image : le texte du résultat n’est alors plus sélectionnable ni recherchable comme du texte, et le rendu visuel peut changer.',
-    seoP2: 'Le gain de taille dépend du contenu. Un PDF déjà optimisé ou composé surtout de texte peut peu diminuer. Les scans et les documents contenant beaucoup d’images offrent souvent davantage de marge, surtout avec les niveaux moyen ou fort. Comparez le poids et le rendu avant d’utiliser le fichier obtenu à la place de l’original.',
-    seoP3: 'La compression est réalisée en ligne sur les serveurs One2PDF. Le fichier envoyé est supprimé à la fin du traitement. Le résultat reste temporairement disponible au téléchargement et les fichiers non téléchargés sont purgés automatiquement selon la durée de conservation configurée.',
+    seoTitle: 'Compresser un PDF en ligne | One2PDF',
+    seoDescription: 'Allégez un PDF pour un e-mail ou un envoi. Le niveau élevé garde le texte sélectionnable. Moyen et fort transforment chaque page en JPEG.',
+    seoH2: 'Réduire un PDF, puis vérifier ce qui a changé',
+    seoP1: 'Utilisez Compresser quand un fichier est trop lourd à joindre ou à déposer. One2PDF accepte un PDF et trois niveaux. Élevé réécrit le document et laisse le texte sélectionnable ; le fichier diminue souvent peu. Moyen et fort remplacent chaque page par un JPEG. Moyen conserve plus de détail que fort.',
+    seoP2: 'Après une compression moyenne ou forte, le texte n’est plus sélectionnable ni recherchable, et les photos peuvent paraître plus douces. Un PDF déjà léger, ou composé surtout de texte, peut à peine changer, quel que soit le niveau. Comparez le poids annoncé avec le résultat avant de remplacer l’original. Rien ne garantit un fichier sous une limite de messagerie, par exemple 25 Mo.',
+    seoP3: 'Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et acceptent jusqu’à 100 Mo par fichier, dans la limite technique configurée. L’original est supprimé à la fin du traitement. Le résultat est retiré après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.',
     howTitle: 'Comment compresser un PDF',
     howSteps: [
-      'Importez le PDF trop lourd',
-      'Choisissez un niveau de compression',
-      'Téléchargez le fichier allégé'
+      'Importez un PDF',
+      'Choisissez Élevé pour garder le texte sélectionnable, ou Moyen ou Fort si un fichier plus léger en images suffit',
+      'Téléchargez le résultat et comparez-le à l’original'
     ],
-    faqTitle: 'Questions fréquentes sur la compression de PDF',
+    faqTitle: 'Questions sur la compression de PDF',
     faq: [
       {
-        question: 'Comment compresser un PDF trop lourd pour l’envoyer par e-mail ?',
-        answer: 'Gmail et Outlook refusent souvent une pièce jointe au-delà de 25 Mo. Importez le PDF et choisissez un niveau. La qualité élevée garde le texte sélectionnable. Moyenne et forte transforment les pages en images : le fichier peut devenir plus léger, mais le texte n’est plus sélectionnable et le rendu peut baisser. Rien ne garantit de passer sous la limite : cela dépend du document.'
+        question: 'Quel niveau choisir pour un e-mail ?',
+        answer: 'Commencez par Élevé si le destinataire doit copier le texte. Si le fichier reste trop lourd, essayez Moyen, puis Fort. Ces deux niveaux transforment les pages en images : le texte ne peut plus être sélectionné. Un résultat sous 25 Mo n’est pas garanti.'
       },
       {
-        question: 'La compression d’un PDF réduit-elle la qualité du document ?',
-        answer: 'La qualité élevée conserve le texte sélectionnable et ne transforme pas les pages en images. Les niveaux moyenne et forte produisent une image JPEG par page : le texte n’est plus sélectionnable ni recherchable comme du texte, et la qualité visuelle peut diminuer. Un PDF déjà optimisé ne devient pas nécessairement plus léger.'
+        question: 'La compression réduit-elle toujours la qualité ?',
+        answer: 'Élevé ne transforme pas les pages en images, et le texte reste sélectionnable. Moyen et fort le font : chaque page devient un JPEG, et les détails fins peuvent se dégrader. Un PDF déjà optimisé peut ne pas devenir plus léger.'
       },
       {
-        question: 'One2PDF conserve-t-il mon fichier après la compression ?',
-        answer: 'Le PDF est traité sur les serveurs One2PDF pendant l’opération. L’original est supprimé à la fin du traitement. Le résultat est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.'
+        question: 'Quelles sont les limites ?',
+        answer: 'L’usage gratuit ne demande pas de compte : 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et permettent jusqu’à 100 Mo par fichier. Un fichier non téléchargé est purgé sous 15 minutes.'
       }
     ]
   },

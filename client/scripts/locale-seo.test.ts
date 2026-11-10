@@ -5,8 +5,9 @@ import { getBlogPosts } from '../src/content/blog.ts';
 import { ENGLISH_CMS_SLUGS } from '../src/content/blogCmsEn.ts';
 import { localizedPath, SEO_LOCALES, stripLocalePrefix, switchLocalePath, urlLocaleFromPath } from '../src/i18n/localePath.ts';
 import { hreflangForPath, switchBlogLocalePath } from '../src/lib/hreflang.ts';
-import { pageUrl } from '../src/lib/jsonLd.ts';
+import { faqScriptId, pageUrl } from '../src/lib/jsonLd.ts';
 import { INDEXABLE_TOOL_PATHS } from '../src/lib/relatedTools.ts';
+import { isEnglishOnlyPath } from '../src/lib/seoPolicy.ts';
 import { seoArticleHtml, indexableSeoPages } from '../src/lib/seoPages.ts';
 import { buildSitemap } from '../src/lib/sitemap.ts';
 
@@ -102,10 +103,10 @@ describe('indexable EN/FR pages', () => {
     const compress = page('/compress');
     const frenchCompress = page('/fr/compress');
     assert.equal(compress.locale, 'en');
-    assert.equal(compress.title, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
+    assert.equal(compress.title, 'Compress a PDF online | One2PDF');
     assert.equal(compress.h1, 'Compress PDF');
     assert.equal(frenchCompress.locale, 'fr');
-    assert.equal(frenchCompress.title, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
+    assert.equal(frenchCompress.title, 'Compresser un PDF en ligne | One2PDF');
     assert.equal(frenchCompress.h1, 'Compresser un PDF en ligne');
 
     const rotate = page('/rotate');
@@ -145,12 +146,12 @@ describe('indexable EN/FR pages', () => {
   });
 
   it('adds French blog URLs only when a French article exists', () => {
-    const slug = '/blog/reduire-taille-pdf-email';
-    const english = page(slug);
-    const french = page(`/fr${slug}`);
+    const english = page('/blog/how-to-reduce-pdf-size-for-email');
+    const french = page('/fr/blog/reduire-taille-pdf-email');
+    assert.equal(pages.some((item) => item.path === '/blog/reduire-taille-pdf-email'), false);
     assert.equal(english.alternates.some((alt) => alt.hreflang === 'fr'), true);
     assert.equal(french.alternates.some((alt) => alt.hreflang === 'en'), true);
-    assert.equal(hreflangForPath(slug).some((alt) => alt.href.endsWith(`/fr${slug}`)), true);
+    assert.equal(french.alternates.find((alt) => alt.hreflang === 'en')?.href, 'https://one2pdf.com/blog/how-to-reduce-pdf-size-for-email');
   });
 });
 
@@ -198,13 +199,20 @@ describe('sitemap', () => {
     assert.doesNotMatch(xml, /\/ar\/translate/);
     assert.doesNotMatch(xml, /\/en\/compress/);
     assert.doesNotMatch(xml, /\/translate</);
-    assert.doesNotMatch(xml, /png-to-pdf/);
+    assert.match(xml, /<loc>https:\/\/one2pdf.com\/png-to-pdf<\/loc>/);
+    assert.match(xml, /<loc>https:\/\/one2pdf.com\/images-to-pdf<\/loc>/);
+    assert.match(xml, /<loc>https:\/\/one2pdf.com\/onenote-to-pdf<\/loc>/);
+    assert.doesNotMatch(xml, /\/fr\/png-to-pdf/);
+    assert.doesNotMatch(xml, /\/fr\/onenote-to-pdf/);
+    assert.doesNotMatch(xml, /one2pdf-vs-online2pdf/);
+    assert.doesNotMatch(xml, /\/alternatives</);
+    assert.doesNotMatch(xml, /<loc>https:\/\/one2pdf.com\/blog\/reduire-taille-pdf-email<\/loc>/);
     assert.doesNotMatch(xml, /\/login</);
   });
 
   it('adds the seven English CMS articles and no translated copies', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-    assert.equal(locs.length, 337);
+    assert.equal(locs.length, 339);
     for (const slug of ENGLISH_CMS_SLUGS) {
       const url = `https://one2pdf.com/blog/${slug}`;
       assert.equal(locs.filter((loc) => loc === url).length, 1);
@@ -212,7 +220,11 @@ describe('sitemap', () => {
         assert.equal(locs.some((loc) => loc === `https://one2pdf.com/${prefix}/blog/${slug}`), false);
       }
       const article = page(`/blog/${slug}`);
-      assert.equal(article.alternates.some((alt) => alt.hreflang === 'fr'), false);
+      const sharesFrenchGuide = slug === 'how-to-reduce-pdf-size-for-email';
+      assert.equal(article.alternates.some((alt) => alt.hreflang === 'fr'), sharesFrenchGuide);
+      if (sharesFrenchGuide) {
+        assert.equal(article.alternates.find((alt) => alt.hreflang === 'fr')?.href, 'https://one2pdf.com/fr/blog/reduire-taille-pdf-email');
+      }
       assert.equal(article.alternates.find((alt) => alt.hreflang === 'en')?.href, url);
       assert.equal(article.robots ?? 'index, follow', 'index, follow');
       const html = seoArticleHtml(article);
@@ -225,7 +237,7 @@ describe('sitemap', () => {
       assert.match(blog, new RegExp(`href="/blog/${slug}"`));
     }
     assert.match(blog, /href="\/blog\/confidentialite-pdf-en-ligne"/);
-    assert.match(blog, /href="\/blog\/reduire-taille-pdf-email"/);
+    assert.doesNotMatch(blog, /href="\/blog\/reduire-taille-pdf-email"/);
     const rotate = seoArticleHtml(page('/rotate'));
     assert.match(rotate, /<h1>Rotate PDF<\/h1>/);
     assert.match(rotate, /<h2>Related guides<\/h2>/);
@@ -284,7 +296,9 @@ describe('prerendered home and catalog link every indexable tool', () => {
       .filter((path) => !HUB_PATHS.has(path) && !path.startsWith('/blog'));
     assert.deepEqual([...INDEXABLE_TOOL_PATHS].sort(), [...fromPages].sort());
     assert.equal(fromPages.includes('/translate'), false);
-    assert.equal(fromPages.some((path) => path.includes('png-to-pdf')), false);
+    assert.equal(fromPages.includes('/png-to-pdf'), true);
+    assert.equal(fromPages.includes('/images-to-pdf'), true);
+    assert.equal(fromPages.includes('/onenote-to-pdf'), true);
   });
 
   for (const locale of SEO_LOCALES) {
@@ -292,12 +306,13 @@ describe('prerendered home and catalog link every indexable tool', () => {
       it(`${locale} ${surface} links each indexable tool in that language`, () => {
         const html = seoArticleHtml(page(localizedPath(surface, locale)));
         assert.doesNotMatch(html, /noindex/);
-        assert.doesNotMatch(html, /png-to-pdf|pdf-to-pptx|pptx-to-pdf/);
+        assert.doesNotMatch(html, /pdf-to-pptx|pptx-to-pdf/);
+        if (locale !== 'en') assert.doesNotMatch(html, /png-to-pdf|images-to-pdf|onenote-to-pdf/);
         const translateHref = localizedPath('/translate', locale);
         assert.equal(html.includes(`href="${translateHref}"`), true);
         const translatePage = pages.find((item) => item.path === translateHref);
         assert.equal(translatePage?.robots?.includes('noindex'), true);
-        for (const bare of INDEXABLE_TOOL_PATHS) {
+        for (const bare of INDEXABLE_TOOL_PATHS.filter((path) => locale === 'en' || !isEnglishOnlyPath(path))) {
           const href = localizedPath(bare, locale);
           const target = pages.find((item) => item.path === href);
           assert.ok(target, `missing destination ${href}`);
@@ -317,7 +332,7 @@ describe('prerendered home and catalog link every indexable tool', () => {
 
   it('links compression and rotation to existing same-language guides', () => {
     const email: Record<(typeof SEO_LOCALES)[number], string> = {
-      en: '/blog/reduire-taille-pdf-email',
+      en: '/blog/how-to-reduce-pdf-size-for-email',
       fr: '/fr/blog/reduire-taille-pdf-email',
       es: '/es/blog/comprimir-pdf-correo',
       de: '/de/blog/pdf-fuer-e-mail-verkleinern',
@@ -351,14 +366,14 @@ describe('prerendered home and catalog link every indexable tool', () => {
     assert.match(seoArticleHtml(page('/fr/tools')), /Réduisez le poids\. Le résultat dépend du PDF et du niveau choisi\./);
     const compress = seoArticleHtml(page('/compress'));
     const compressFr = seoArticleHtml(page('/fr/compress'));
-    assert.match(compress, /keeps the text selectable/);
+    assert.match(compress, /leaves the text selectable/);
     assert.match(compress, /no longer selectable/);
     assert.doesNotMatch(compress, /few seconds|usually fits|sans aucune perte/i);
     assert.match(compressFr, /sélectionnable/);
     assert.match(compressFr, /Guides associés/);
     const merge = seoArticleHtml(page('/merge'));
     const mergeFr = seoArticleHtml(page('/fr/merge'));
-    assert.match(merge, /drag the thumbnails/i);
+    assert.match(merge, /thumbnails/i);
     assert.match(merge, /not guaranteed/);
     assert.doesNotMatch(merge, /few seconds|unlocks batch/i);
     assert.match(mergeFr, /miniatures/);
@@ -383,5 +398,39 @@ describe('prerendered home and catalog link every indexable tool', () => {
     assert.match(shrink, /href="\/compress"/);
     assert.match(shrink, /href="\/split"/);
     assert.doesNotMatch(shrink, /\[Compress PDF\]|\[Split PDF\]/);
+  });
+
+  it('emits one FAQ script id shared by English and French tool pages', () => {
+    const tools = ['/compress', '/merge', '/split', '/pdf-to-word', '/word-to-pdf'];
+    const sitemap = buildSitemap(pages);
+    for (const bare of tools) {
+      for (const locale of ['en', 'fr'] as const) {
+        const item = page(localizedPath(bare, locale));
+        assert.equal(item.robots ?? 'index, follow', 'index, follow');
+        assert.equal(item.jsonLdId, faqScriptId(bare));
+        assert.equal(item.jsonLdId, faqScriptId(item.path));
+        assert.doesNotMatch(item.jsonLdId ?? '', /-(en|fr)$/);
+        const data = item.jsonLd as { '@type': string; url: string; mainEntity: { name: string }[] };
+        assert.equal(data['@type'], 'FAQPage');
+        assert.equal(data.url, pageUrl(item.path));
+        assert.deepEqual(data.mainEntity.map((entry) => entry.name), item.copy?.faq?.map((entry) => entry.question));
+        const html = seoArticleHtml(item);
+        assert.equal(html.includes(`<h1>${item.h1}</h1>`), true);
+        assert.equal(html.includes(`<h2>${item.copy?.seoH2}</h2>`), true);
+        for (const question of item.copy?.faq ?? []) assert.equal(html.includes(question.question), true);
+        assert.equal(sitemap.includes(`<loc>${pageUrl(item.path)}</loc>`), true);
+        assert.equal(html.includes(`href="${localizedPath('/tools', locale)}"`), true);
+        assert.equal(item.alternates.some((alt) => alt.hreflang === 'es'), true);
+      }
+      const home = seoArticleHtml(page('/'));
+      const homeFr = seoArticleHtml(page('/fr'));
+      const toolsEn = seoArticleHtml(page('/tools'));
+      const toolsFr = seoArticleHtml(page('/fr/tools'));
+      assert.equal(home.includes(`href="${bare}"`), true);
+      assert.equal(homeFr.includes(`href="/fr${bare}"`), true);
+      assert.equal(toolsEn.includes(`href="${bare}"`), true);
+      assert.equal(toolsFr.includes(`href="/fr${bare}"`), true);
+      assert.equal(sitemap.includes(`<loc>https://one2pdf.com/es${bare}</loc>`), true);
+    }
   });
 });

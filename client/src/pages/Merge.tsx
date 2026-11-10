@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from '../components/LocaleLink';
 import { postForm } from '../lib/api';
 import { useBilling } from '../lib/billing';
@@ -6,7 +7,7 @@ import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { inspectPdfFile } from '../lib/pdfPreview';
 import { useUpgrade } from '../lib/upgrade';
 import { useI18n } from '../i18n';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { usePageSeo } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
 import { StudioProcessing, StudioResult } from '../components/PdfStudio';
@@ -52,12 +53,13 @@ function FeatureGlyph({ index }: { index: number }) {
 
 function Merge() {
   const { m, t, locale } = useI18n();
+  const { pathname } = useLocation();
   usePageSeo(m.merge.seoTitle, m.merge.seoDescription);
   const faqJsonLd = useMemo(
-    () => (m.merge.faq?.length ? faqPageJsonLd(m.merge.faq, pageUrl('/merge')) : null),
-    [m.merge.faq]
+    () => (m.merge.faq?.length ? faqPageJsonLd(m.merge.faq, pageUrl(pathname)) : null),
+    [m.merge.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-merge', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const { status } = useBilling();
   const { allowFiles } = useUpgrade();
   const maxBytes = maxFileBytes(status.paid);

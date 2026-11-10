@@ -6,7 +6,7 @@ import { postForm } from '../lib/api';
 import { rotateImageDataUrl } from '../lib/pdfPreview';
 import { useSinglePdf } from '../lib/useSinglePdf';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useI18n } from '../i18n';
 import { urlLocaleFromPath } from '../i18n/localePath';
 
@@ -20,10 +20,10 @@ function Rotate() {
   const rotateGuides = urlLocaleFromPath(pathname) === 'en' ? [...ROTATE_GUIDES] : undefined;
   usePageSeo(m.rotatePdf.seoTitle, m.rotatePdf.seoDescription);
   const faqJsonLd = useMemo(
-    () => (m.rotatePdf.faq?.length ? faqPageJsonLd(m.rotatePdf.faq, pageUrl('/rotate')) : null),
-    [m.rotatePdf.faq]
+    () => (m.rotatePdf.faq?.length ? faqPageJsonLd(m.rotatePdf.faq, pageUrl(pathname)) : null),
+    [m.rotatePdf.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-rotate', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const pdf = useSinglePdf();
   const [angles, setAngles] = useState<number[]>([]);
   const [active, setActive] = useState(0);

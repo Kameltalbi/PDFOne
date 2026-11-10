@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from '../components/LocaleLink';
 import {
   StudioDocumentCanvas,
@@ -21,7 +22,7 @@ import {
 } from '../lib/analytics';
 import { useI18n } from '../i18n';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 
 export type SummaryMode = 'quick' | 'detailed' | 'key_points';
 export type SummaryLanguage = 'same' | 'en' | 'fr' | 'es' | 'de' | 'it' | 'pt' | 'ar';
@@ -38,16 +39,17 @@ const MODES: SummaryMode[] = ['quick', 'detailed', 'key_points'];
 
 export default function Summarize() {
   const { m, t } = useI18n();
+  const { pathname } = useLocation();
   const copy = m.summarizePdf;
   const pdf = useSinglePdf({ allPages: false });
   const { status, refresh } = useBilling();
   const { openPremiumUpgrade } = useUpgrade();
   usePageSeo(copy.seoTitle, copy.seoDescription);
   const faqJsonLd = useMemo(
-    () => (copy.faq?.length ? faqPageJsonLd(copy.faq, pageUrl('/summarize')) : null),
-    [copy.faq]
+    () => (copy.faq?.length ? faqPageJsonLd(copy.faq, pageUrl(pathname)) : null),
+    [copy.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-summarize', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
 
   const [mode, setMode] = useState<SummaryMode>('detailed');
   const [language, setLanguage] = useState<SummaryLanguage>('same');

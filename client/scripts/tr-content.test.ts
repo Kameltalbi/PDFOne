@@ -80,8 +80,8 @@ describe('Turkish content with SEO activation', () => {
     assert.equal(dictionaries.tr.tools.wordToPdf, 'Word’den PDF’ye');
     assert.equal(dictionaries.tr.tools.jpgToPdf, 'JPG’den PDF’ye');
     assert.equal(dictionaries.tr.tools.pdfToJpg, 'PDF’den JPG’ye');
-    assert.equal(dictionaries.en.compress.seoTitle, 'Compress PDF Online — Choose Your Compression Level | One2PDF');
-    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne — choisir le niveau | One2PDF');
+    assert.equal(dictionaries.en.compress.seoTitle, 'Compress a PDF online | One2PDF');
+    assert.equal(dictionaries.fr.compress.seoTitle, 'Compresser un PDF en ligne | One2PDF');
     assert.equal(dictionaries.es.compress.seoTitle, 'Comprimir PDF en línea gratis | One2PDF');
     assert.equal(dictionaries.de.compress.seoTitle, 'PDF komprimieren | One2PDF');
     assert.equal(dictionaries.pt.compress.seoTitle, 'Comprimir PDF online | One2PDF');

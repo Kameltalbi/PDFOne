@@ -1,6 +1,7 @@
 import { COMPRESS_EMAIL_SLUG, getBlogPost, PRIVACY_PDF_SLUG } from '../content/blog';
 import { localizedPath, SEO_LOCALES, stripLocalePrefix, urlLocaleFromPath, type UrlLocale } from '../i18n/localePath';
 import { pageUrl } from './jsonLd';
+import { isEnglishOnlyPath } from './seoPolicy';
 
 export type HreflangLink = { hreflang: string; href: string };
 
@@ -8,7 +9,7 @@ const PUBLIC_LOCALES: UrlLocale[] = [...SEO_LOCALES];
 
 /** Same article, different slugs. A locale is listed only when that slug really exists. */
 const BLOG_EQUIVALENTS: Array<Partial<Record<UrlLocale, string>>> = [
-  { en: COMPRESS_EMAIL_SLUG, fr: COMPRESS_EMAIL_SLUG, es: 'comprimir-pdf-correo', de: 'pdf-fuer-e-mail-verkleinern', pt: 'comprimir-pdf-email', it: 'comprimere-pdf-email', tr: 'pdf-eposta-sikistir', ar: 'daght-pdf-barid' },
+  { en: 'how-to-reduce-pdf-size-for-email', fr: COMPRESS_EMAIL_SLUG, es: 'comprimir-pdf-correo', de: 'pdf-fuer-e-mail-verkleinern', pt: 'comprimir-pdf-email', it: 'comprimere-pdf-email', tr: 'pdf-eposta-sikistir', ar: 'daght-pdf-barid' },
   { en: PRIVACY_PDF_SLUG, fr: PRIVACY_PDF_SLUG, es: 'privacidad-pdf-en-linea', de: 'datenschutz-pdf-online', pt: 'privacidade-pdf-online', it: 'privacy-pdf-online', tr: 'gizlilik-pdf-online', ar: 'khususiyat-pdf' }
 ];
 
@@ -65,6 +66,14 @@ export function hreflangForPath(pathname: string): HreflangLink[] {
       links.push({ hreflang: 'x-default', href: pageUrl(localizedPath(`/blog/${english?.slug ?? ''}`, 'en')) });
     }
     return links;
+  }
+
+  if (isEnglishOnlyPath(bare)) {
+    const href = pageUrl(localizedPath(bare, 'en'));
+    return [
+      { hreflang: 'en', href },
+      { hreflang: 'x-default', href }
+    ];
   }
 
   const locales = localesForBare(bare);

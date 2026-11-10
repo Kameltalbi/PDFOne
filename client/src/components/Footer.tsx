@@ -35,6 +35,7 @@ function Footer() {
             <Link to="/about">{m.common.about}</Link>
             <Link to="/pricing">{m.common.pricing}</Link>
             <Link to="/blog">{m.common.blog}</Link>
+            <Link to="/alternatives">Alternatives</Link>
             <Link to="/contact">{m.common.contact}</Link>
           </nav>
 

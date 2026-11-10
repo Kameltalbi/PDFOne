@@ -1,19 +1,26 @@
 import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StudioLanding, StudioProcessing, StudioResult, StudioSidebarFrame, StudioWorkspace, StudioZoom } from '../components/PdfStudio';
 import { postForm } from '../lib/api';
 import { useImageFiles } from '../lib/useImageFiles';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { jpgVariantForPath } from '../lib/toolVariants';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { useI18n } from '../i18n';
 
 function JpgToPdf() {
   const { m, t } = useI18n();
-  usePageSeo(m.jpgToPdf.seoTitle, m.jpgToPdf.seoDescription);
+  const { pathname } = useLocation();
+  const variant = jpgVariantForPath(pathname);
+  const copy = variant?.copy ?? m.jpgToPdf;
+  const heading = variant?.h1 ?? m.jpgToPdf.title;
+  const lead = variant?.lead ?? m.jpgToPdf.subtitle;
+  usePageSeo(copy.seoTitle, copy.seoDescription);
   const faqJsonLd = useMemo(
-    () => (m.jpgToPdf.faq?.length ? faqPageJsonLd(m.jpgToPdf.faq, pageUrl('/jpg-to-pdf')) : null),
-    [m.jpgToPdf.faq]
+    () => (copy.faq?.length ? faqPageJsonLd(copy.faq, pageUrl(pathname)) : null),
+    [copy.faq, pathname]
   );
-  useJsonLd('one2pdf-faq-jpg-to-pdf', faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const images = useImageFiles();
   const addPickerId = `${images.pickerId}-add`;
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -73,14 +80,14 @@ function JpgToPdf() {
   if (images.items.length === 0) {
     return (
       <StudioLanding
-        title={m.jpgToPdf.title}
-        subtitle={m.jpgToPdf.subtitle}
+        title={heading}
+        subtitle={lead}
         pickerId={images.pickerId}
         isDragging={images.isDragging}
         isLoading={false}
         error={images.error}
         features={m.jpgToPdf.features}
-        seo={landingSeoFrom(m.jpgToPdf)}
+        seo={landingSeoFrom(copy)}
         multiple
         accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
         onDragOver={() => images.setIsDragging(true)}

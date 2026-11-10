@@ -1641,7 +1641,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       },
       {
         "type": "p",
-        "text": "It depends on the level. Light and medium compression are usually invisible to the eye on screen. Strong compression lowers image resolution, which can make photos blurry when printed or zoomed in. Text and vector graphics stay sharp in all cases."
+        "text": "On One2PDF it depends on the level. High rewrites the PDF and keeps text selectable; the file may shrink only a little. Medium and strong replace each page with a JPEG, so text is no longer selectable and fine detail can look softer."
       },
       {
         "type": "h3",
@@ -1757,7 +1757,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             " tool."
           ],
           "Upload your PDF.",
-          "Let One2PDF process it.",
+          "Choose High to keep selectable text, or Medium or Strong when a smaller image-based file is enough. Medium and strong are not guaranteed to fit under 25 MB.",
           "Download the compressed version.",
           "Check the new file size.",
           "Attach it to your email."
@@ -1766,6 +1766,46 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       {
         "type": "p",
         "text": "That's far easier than going back into the original document and resizing every image by hand."
+      },
+      {
+        "type": "h3",
+        "text": "Compress before you merge"
+      },
+      {
+        "type": "p",
+        "parts": [
+          "If you must combine a contract, annexes and a scan, shrink each PDF first, then merge. Compressed files combine more cleanly than a stack of full-resolution originals. ",
+          {
+            "text": "Merge PDFs",
+            "to": "/merge"
+          },
+          "."
+        ]
+      },
+      {
+        "type": "h3",
+        "text": "Start from heavy images"
+      },
+      {
+        "type": "p",
+        "parts": [
+          "An 8 MB screenshot PNG or JPEG does not need to land in the PDF as-is. Turning images into PDF first, or compressing the PDF after assembly, often gives a much lower starting weight for email. Use ",
+          {
+            "text": "PNG to PDF",
+            "to": "/png-to-pdf"
+          },
+          " for screenshots, ",
+          {
+            "text": "Images to PDF",
+            "to": "/images-to-pdf"
+          },
+          " when the files are mixed, or ",
+          {
+            "text": "JPG to PDF",
+            "to": "/jpg-to-pdf"
+          },
+          " when the source is JPEG."
+        ]
       },
       {
         "type": "h3",
@@ -2176,7 +2216,7 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
             " tool."
           ],
           "Upload your PDF.",
-          "Start the compression and wait a few seconds.",
+          "Choose High if the text must stay selectable. Medium and strong turn each page into a JPEG, so the text can no longer be selected.",
           "Download the smaller file.",
           "Compare it with the original before you delete anything."
         ]

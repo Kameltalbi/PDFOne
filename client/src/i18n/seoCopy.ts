@@ -2,68 +2,60 @@ import type { PageSeoCopy } from './types';
 
 export const seoFr = {
   wordToPdf: {
-    seoTitle: 'Convertir Word en PDF en ligne | One2PDF',
-    seoDescription: 'Convertissez un fichier DOC, DOCX, ODT ou RTF en PDF en ligne. Vérifiez la mise en page avant de partager le résultat.',
-    seoH2: 'Créer un PDF à partir d’un document Word',
-    seoP1: 'Convertissez un document DOC, DOCX, ODT ou RTF en PDF pour le partager ou l’archiver dans un format unique. Importez le fichier, lancez la conversion, puis téléchargez le PDF obtenu.',
-    seoP2: 'La conversion est utile pour préparer un CV, un contrat ou un rapport à transmettre. Les mises en page, polices, images et éléments complexes peuvent se comporter différemment selon le document source : vérifiez le PDF final avant de l’envoyer ou de l’imprimer.',
-    seoP3: 'La conversion est effectuée en ligne sur les serveurs One2PDF. Le fichier envoyé est supprimé à la fin du traitement. Le résultat est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
+    seoTitle: 'Convertir Word en PDF | One2PDF',
+    seoDescription: 'Transformez un fichier DOC, DOCX, ODT ou RTF en PDF. Vérifiez polices, tableaux et sauts de page avant de l’envoyer.',
+    seoH2: 'Obtenir un PDF à partir d’un document Word',
+    seoP1: 'Utilisez Word vers PDF pour envoyer un CV, un contrat ou un rapport dans un format que le destinataire ouvre sans Word. Importez un fichier .doc, .docx, .odt ou .rtf, lancez la conversion, puis téléchargez le PDF. Un fichier à la fois.',
+    seoP2: 'La mise en page dépend du document source. Les polices, tableaux, images, en-têtes et sauts de page peuvent se déplacer. Ouvrez le PDF avant de l’envoyer ou de l’imprimer. Microsoft Word n’a pas besoin d’être installé sur votre ordinateur.',
+    seoP3: 'Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et acceptent jusqu’à 100 Mo par fichier, dans la limite technique configurée. L’original est supprimé à la fin du traitement. Le PDF est retiré après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.',
     howTitle: 'Comment convertir un Word en PDF',
     howSteps: [
-      'Importez votre fichier Word (.doc, .docx, .odt ou .rtf)',
+      'Importez un fichier .doc, .docx, .odt ou .rtf',
       'Lancez la conversion',
-      'Téléchargez le PDF'
+      'Téléchargez le PDF et vérifiez la mise en page'
     ],
-    faqTitle: 'Questions fréquentes sur Word vers PDF',
+    faqTitle: 'Questions sur Word vers PDF',
     faq: [
       {
         question: 'Faut-il installer Microsoft Word ?',
-        answer: 'Non. One2PDF accepte les fichiers .doc, .docx, .odt et .rtf. Vous n’avez pas besoin d’installer Word sur votre ordinateur pour utiliser cette conversion en ligne.'
+        answer: 'Non. La conversion accepte .doc, .docx, .odt et .rtf directement dans le navigateur.'
       },
       {
-        question: 'La conversion Word vers PDF est-elle gratuite ?',
-        answer: 'Oui. Le plan gratuit permet jusqu’à 5 documents par jour et des fichiers jusqu’à 20 Mo. Les abonnements n’ont pas de limite quotidienne et acceptent des fichiers jusqu’à 100 Mo, sous réserve de la limite technique configurée.'
+        question: 'Le PDF sera-t-il identique au Word ?',
+        answer: 'Pas forcément. Contrôlez les polices, les tableaux, les images, les en-têtes et les sauts de page avant de partager le fichier.'
       },
       {
-        question: 'One2PDF conserve-t-il mon fichier Word ?',
-        answer: 'Le document est traité sur les serveurs One2PDF. L’original est supprimé à la fin du traitement. Le PDF est supprimé après téléchargement ; s’il n’est pas téléchargé, il est purgé automatiquement sous 15 minutes par défaut.'
-      },
-      {
-        question: 'La mise en page sera-t-elle identique ?',
-        answer: 'Le résultat dépend du document source. Vérifiez notamment les polices, les tableaux, les en-têtes, les images et les sauts de page avant de partager ou d’imprimer le PDF.'
+        question: 'Quelles sont les limites ?',
+        answer: 'Sans compte : 5 documents par jour et 20 Mo par fichier. Pass et Pro : pas de plafond quotidien, jusqu’à 100 Mo par fichier. Un fichier non téléchargé est purgé sous 15 minutes.'
       }
     ]
   },
   pdfToWord: {
-    seoTitle: 'Convertir un PDF en Word en ligne | One2PDF',
-    seoDescription: 'Créez un document DOCX depuis un PDF en ligne. Vérifiez le résultat, surtout pour les tableaux, les mises en page complexes et les scans.',
-    seoH2: 'Convertir un PDF en document Word modifiable',
-    seoP1: 'Convertissez un PDF en document Word lorsque vous devez reprendre son contenu, corriger du texte ou réutiliser certaines parties du fichier. Importez le PDF, lancez la conversion, puis ouvrez le document DOCX obtenu dans votre logiciel de traitement de texte.',
-    seoP2: 'Le résultat dépend de la structure du PDF. Les documents principalement textuels sont généralement plus faciles à reprendre que les colonnes, tableaux complexes, formulaires ou mises en page très graphiques. Un PDF constitué uniquement d’images peut nécessiter l’OCR avant de pouvoir exploiter son texte.',
-    seoP3: 'La conversion est effectuée en ligne sur les serveurs One2PDF. Le PDF envoyé est supprimé à la fin du traitement. Le document Word est temporaire : il est supprimé après téléchargement et les fichiers non téléchargés sont purgés automatiquement sous 15 minutes par défaut.',
+    seoTitle: 'Convertir un PDF en Word (DOCX) | One2PDF',
+    seoDescription: 'Créez un fichier DOCX à partir d’un PDF. Relisez le texte, les tableaux et les scans avant de réutiliser le document.',
+    seoH2: 'Reprendre le contenu d’un PDF dans Word',
+    seoP1: 'Utilisez PDF vers Word quand il faut corriger un paragraphe, réutiliser un passage ou reprendre un contrat. Importez un PDF, lancez la conversion, puis ouvrez le DOCX dans un traitement de texte. Un fichier à la fois.',
+    seoP2: 'Un PDF surtout textuel se reprend plus facilement que des colonnes, des tableaux complexes, un formulaire ou une mise en page très graphique. Un scan qui n’est qu’une image ne fournit pas de texte éditable. L’OCR est un outil séparé : il ne fait pas partie de cette conversion.',
+    seoP3: 'Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro n’ont pas de plafond quotidien et acceptent jusqu’à 100 Mo par fichier, dans la limite technique configurée. Le PDF envoyé est supprimé à la fin du traitement. Le DOCX est retiré après téléchargement, ou sous 15 minutes s’il n’est pas téléchargé.',
     howTitle: 'Comment convertir un PDF en Word',
     howSteps: [
-      'Importez le PDF à modifier',
+      'Importez un PDF',
       'Lancez la conversion',
-      'Téléchargez le fichier Word et ouvrez-le'
+      'Téléchargez le DOCX et vérifiez le texte avant de le modifier'
     ],
-    faqTitle: 'Questions fréquentes sur PDF vers Word',
+    faqTitle: 'Questions sur PDF vers Word',
     faq: [
       {
-        question: 'Le fichier Word sera-t-il éditable ?',
-        answer: 'Le document DOCX obtenu peut être ouvert et modifié. La qualité de la reprise dépend toutefois de la structure du PDF ; vérifiez le texte, les tableaux et la mise en page avant de le réutiliser.'
+        question: 'Le fichier Word est-il modifiable ?',
+        answer: 'Oui, le résultat est un DOCX que vous pouvez ouvrir et modifier. La reprise du texte et des tableaux dépend de la structure du PDF : relisez-le avant de le réutiliser.'
       },
       {
-        question: 'Faut-il un compte pour convertir un PDF en Word ?',
-        answer: 'Non. Vous pouvez utiliser la conversion gratuite sans créer de compte, dans la limite de 5 documents par jour et de 20 Mo par fichier. Les abonnements proposent jusqu’à 100 Mo par fichier et aucune limite quotidienne.'
+        question: 'Un PDF scanné devient-il du texte ?',
+        answer: 'Non, si le scan ne contient qu’une image. Cette conversion ne fait pas d’OCR. Pour un texte recherchable, passez d’abord par l’outil OCR, puis vérifiez le document obtenu.'
       },
       {
-        question: 'Les fichiers sont-ils conservés après la conversion ?',
-        answer: 'Le PDF est traité sur les serveurs One2PDF puis supprimé à la fin du traitement. Le document Word est supprimé après téléchargement ou, s’il n’est pas téléchargé, purgé automatiquement sous 15 minutes par défaut.'
-      },
-      {
-        question: 'Puis-je convertir un PDF scanné en Word ?',
-        answer: 'Un scan qui ne contient qu’une image ne fournit pas directement de texte exploitable. Utilisez d’abord l’outil OCR PDF pour créer un document consultable, puis vérifiez attentivement le résultat de la conversion.'
+        question: 'Faut-il un compte ?',
+        answer: 'Non. Le plan gratuit permet 5 documents par jour et 20 Mo par fichier. Pass et Pro permettent jusqu’à 100 Mo par fichier, sans plafond quotidien.'
       }
     ]
   },
@@ -440,68 +432,60 @@ export const seoFr = {
 
 export const seoEn = {
   wordToPdf: {
-    seoTitle: 'Convert Word to PDF Online | One2PDF',
-    seoDescription: 'Convert a DOC, DOCX, ODT, or RTF file to PDF online. Check the layout before sharing the result.',
-    seoH2: 'Create a PDF from a Word document',
-    seoP1: 'Convert a DOC, DOCX, ODT, or RTF document to PDF when you need one format for sharing or archiving. Upload the file, start the conversion, then download the resulting PDF.',
-    seoP2: 'This can help prepare a CV, contract, or report for sending. Layout, fonts, images, and complex elements can behave differently depending on the source document, so review the final PDF before sending or printing it.',
-    seoP3: 'Conversion is performed online on One2PDF servers. The uploaded file is deleted when processing ends. The result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
+    seoTitle: 'Convert Word to PDF | One2PDF',
+    seoDescription: 'Turn a DOC, DOCX, ODT, or RTF file into a PDF. Check fonts, tables, and page breaks before you send it.',
+    seoH2: 'Get a PDF from a Word document',
+    seoP1: 'Use Word to PDF when a CV, contract, or report should open without Word. Upload a .doc, .docx, .odt, or .rtf file, start the conversion, then download the PDF. One file at a time.',
+    seoP2: 'Layout depends on the source. Fonts, tables, images, headers, and page breaks can shift. Open the PDF before you send or print it. Microsoft Word does not need to be installed on your computer.',
+    seoP3: 'The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and accept up to 100 MB per file, within the configured technical limit. The original is deleted when processing ends. The PDF is removed after download, or within 15 minutes if you do not download it.',
     howTitle: 'How to convert Word to PDF',
     howSteps: [
-      'Upload your Word file (.doc, .docx, .odt or .rtf)',
+      'Upload a .doc, .docx, .odt, or .rtf file',
       'Start the conversion',
-      'Download the PDF'
+      'Download the PDF and check the layout'
     ],
-    faqTitle: 'Frequently asked questions about Word to PDF',
+    faqTitle: 'Questions about Word to PDF',
     faq: [
       {
         question: 'Do I need Microsoft Word installed?',
-        answer: 'No. One2PDF accepts .doc, .docx, .odt, and .rtf files. You do not need to install Word on your computer to use this online conversion.'
+        answer: 'No. The conversion accepts .doc, .docx, .odt, and .rtf files in the browser.'
       },
       {
-        question: 'Is converting Word to PDF free?',
-        answer: 'Yes. The free plan allows up to 5 documents per day and files up to 20 MB. Subscriptions have no daily limit and accept files up to 100 MB, subject to the configured technical limit.'
+        question: 'Will the PDF match the Word file?',
+        answer: 'Not always. Check fonts, tables, images, headers, and page breaks before you share the file.'
       },
       {
-        question: 'Does One2PDF keep my Word file?',
-        answer: 'The document is processed on One2PDF servers. The original is deleted when processing ends. The PDF is removed after download; if it is not downloaded, it is automatically purged within 15 minutes by default.'
-      },
-      {
-        question: 'Will the layout be identical?',
-        answer: 'The result depends on the source document. Check fonts, tables, headers, images, and page breaks before sharing or printing the PDF.'
+        question: 'What are the limits?',
+        answer: 'Without an account: 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and allow up to 100 MB per file. A file that is not downloaded is purged within 15 minutes.'
       }
     ]
   },
   pdfToWord: {
-    seoTitle: 'Convert PDF to Word Online | One2PDF',
-    seoDescription: 'Create a DOCX document from a PDF online. Review the result, especially for tables, complex layouts, and scans.',
-    seoH2: 'Convert a PDF into an editable Word document',
-    seoP1: 'Convert a PDF to a Word document when you need to reuse its content, revise text, or work with parts of the file. Upload the PDF, start the conversion, then open the resulting DOCX in your word processor.',
-    seoP2: 'The result depends on the PDF structure. Mostly text-based documents are generally easier to reuse than columns, complex tables, forms, or highly graphic layouts. A PDF made only of images may need OCR before its text can be used.',
-    seoP3: 'Conversion is performed online on One2PDF servers. The uploaded PDF is deleted when processing ends. The Word document is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
+    seoTitle: 'Convert a PDF to Word (DOCX) | One2PDF',
+    seoDescription: 'Create a DOCX file from a PDF. Review the text, tables, and scans before you reuse the document.',
+    seoH2: 'Edit PDF content in Word',
+    seoP1: 'Use PDF to Word when you need to correct a paragraph, reuse a passage, or revise a contract. Upload one PDF, start the conversion, then open the DOCX in a word processor.',
+    seoP2: 'A mostly text PDF is easier to recover than columns, complex tables, a form, or a highly graphic layout. A scan that is only an image does not become editable text. OCR is a separate tool and is not part of this conversion.',
+    seoP3: 'The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and accept up to 100 MB per file, within the configured technical limit. The uploaded PDF is deleted when processing ends. The DOCX is removed after download, or within 15 minutes if you do not download it.',
     howTitle: 'How to convert a PDF to Word',
     howSteps: [
-      'Upload the PDF you want to edit',
+      'Upload one PDF',
       'Start the conversion',
-      'Download the Word file and open it'
+      'Download the DOCX and check the text before you edit it'
     ],
-    faqTitle: 'Frequently asked questions about PDF to Word',
+    faqTitle: 'Questions about PDF to Word',
     faq: [
       {
-        question: 'Will the Word file be editable?',
-        answer: 'The resulting DOCX can be opened and edited. How well content is recovered depends on the PDF structure, so check text, tables, and layout before reusing it.'
+        question: 'Can I edit the Word file?',
+        answer: 'Yes. The result is a DOCX you can open and edit. How well text and tables come across depends on the PDF, so read it before you reuse it.'
       },
       {
-        question: 'Do I need an account to convert PDF to Word?',
-        answer: 'No. You can use the free conversion without creating an account, up to 5 documents per day and 20 MB per file. Subscriptions allow files up to 100 MB and have no daily limit.'
+        question: 'Will a scanned PDF become text?',
+        answer: 'No, if the scan is only an image. This conversion does not run OCR. For searchable text, use the OCR tool first, then review the document it produces.'
       },
       {
-        question: 'Are my files stored after conversion?',
-        answer: 'The PDF is processed on One2PDF servers and deleted when processing ends. The Word result is removed after download or, if it is not downloaded, automatically purged within 15 minutes by default.'
-      },
-      {
-        question: 'Can I convert a scanned PDF to Word?',
-        answer: 'A scan containing only an image does not directly provide usable text. Use the OCR PDF tool first to create a searchable document, then carefully review the conversion result.'
+        question: 'Do I need an account?',
+        answer: 'No. The free plan allows 5 documents a day and 20 MB per file. Pass and Pro allow up to 100 MB per file and have no daily cap.'
       }
     ]
   },

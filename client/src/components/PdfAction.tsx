@@ -11,7 +11,7 @@ import { featureRequiresPro, type PremiumFeature } from '../lib/monetization';
 import { trackUpgradeClick } from '../lib/analytics';
 import type { FeatureCopy, PageSeoCopy } from '../i18n/types';
 import { useI18n } from '../i18n';
-import { faqPageJsonLd, pageUrl, useJsonLd } from '../lib/jsonLd';
+import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 
 type Copy = {
@@ -75,7 +75,7 @@ export function PdfAction({
     () => (pageSeo?.faq?.length ? faqPageJsonLd(pageSeo.faq, pageUrl(pathname)) : null),
     [pageSeo?.faq, pathname]
   );
-  useJsonLd(`one2pdf-faq-${pathname}`, faqJsonLd);
+  useJsonLd(faqScriptId(pathname), faqJsonLd);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [resultName, setResultName] = useState(downloadName);

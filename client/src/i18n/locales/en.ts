@@ -544,42 +544,38 @@ export const en: Messages = {
     merging: 'Merging…',
     mergeCount: 'Merge {count} file(s)',
     features: [
-      { icon: '⇄', tone: 'orange', title: 'Clear, fast merging', text: 'Combine PDFs with no watermark, a visual preview and the order you choose.' },
+      { icon: '⇄', tone: 'orange', title: 'One file, your order', text: 'Combine PDFs with no watermark, a visual preview and the order you choose.' },
       { icon: '✓', tone: 'blue', title: 'Files processed securely', text: 'Your documents stay temporary and are deleted automatically after processing.' },
       { icon: '★', tone: 'green', title: 'On every device', text: 'Use the merge tool from a computer, tablet, or phone.' },
       { icon: '◆', tone: 'gold', title: 'No installation', text: 'Import your files, reorder them, then download the final document.' },
       { icon: '⏱', tone: 'purple', title: 'Download', text: 'The merged PDF is ready to download when processing finishes.' },
       { icon: '✧', tone: 'teal', title: 'Visual interface', text: 'Drag and drop your PDFs, see thumbnails and merge in one click.' }
     ],
-    seoTitle: 'Merge PDF Files Online — One File | One2PDF',
-    seoDescription: 'Combine PDF files in the order you choose and optionally add page numbers. Download one merged PDF.',
-    seoH2: 'Merge PDFs in the order you choose',
-    seoP1: 'Combine at least two PDF files into one document. Upload the files, arrange their thumbnails in the required order, optionally add page numbers, then download the merged PDF.',
-    seoP2: 'Merge copies the pages into a new PDF and does not add a watermark. A checkbox can add “1 / N” page numbers. Bookmarks, interactive form fields, and an existing signature are not guaranteed in the merged file.',
-    seoP3: 'Merging is performed online on One2PDF servers. Uploaded originals are deleted when processing ends. The merged result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
+    seoTitle: 'Merge PDF files into one | One2PDF',
+    seoDescription: 'Combine two or more PDFs in the order you choose. Add “1 / N” page numbers if you need them, then download one file.',
+    seoH2: 'Put several PDFs into a single document',
+    seoP1: 'Use Merge PDF when a contract, a scan and an appendix should travel as one file. Upload at least two PDFs, arrange the thumbnails, then download the combined document. Only PDF files are accepted.',
+    seoP2: 'The tool copies each page into a new PDF and does not add a watermark. Tick the checkbox to print “1 / N” at the bottom of every page. Bookmarks, interactive form fields and an existing signature are not guaranteed in the result.',
+    seoP3: 'The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and accept up to 100 MB per file, within the configured technical limit. A merge counts as one document. Originals are deleted when processing ends. The result is removed after download, or within 15 minutes if you do not download it.',
     howTitle: 'How to merge PDF files',
     howSteps: [
-      'Choose the PDF files you want to combine',
-      'Drag the thumbnails into order, and tick page numbers if you want them',
-      'Download the merged PDF'
+      'Add at least two PDF files',
+      'Put the thumbnails in order, and tick page numbers if you want them',
+      'Download the single merged PDF'
     ],
-    faqTitle: 'Frequently asked questions about merging PDFs',
+    faqTitle: 'Questions about merging PDFs',
     faq: [
       {
-        question: 'How many PDFs can I merge at once?',
-        answer: 'Add at least two PDFs and reorder them with the thumbnails. The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily processing cap, and the file limit is 100 MB.'
+        question: 'How many PDFs can I merge?',
+        answer: 'At least two. You can add files up to the upload count configured on the server, 20 by default. Reorder them by dragging the thumbnails or by clicking one, then another.'
       },
       {
-        question: 'Are bookmarks, forms, and signatures kept?',
-        answer: 'Pages are copied into a new PDF. “1 / N” numbers are added only if you tick the checkbox. Bookmarks, interactive fields, and an existing signature are not guaranteed.'
+        question: 'Will bookmarks, forms and signatures survive?',
+        answer: 'Pages are copied into a new PDF. “1 / N” numbers appear only if you tick the checkbox. Bookmarks, interactive fields and an existing signature are not guaranteed.'
       },
       {
-        question: 'Do I need an account to merge PDFs?',
-        answer: 'No. Free use does not require a name or an email. You pick the tool, upload the files, then download the result.'
-      },
-      {
-        question: 'Are the original PDFs stored?',
-        answer: 'The originals are processed on One2PDF servers and deleted when processing ends. The merged file is removed after download or, if it is not downloaded, automatically purged within 15 minutes by default.'
+        question: 'Do I need an account?',
+        answer: 'No. Free use does not ask for a name or an email. The free plan stops at 5 documents a day and 20 MB per file.'
       }
     ]
   },
@@ -616,33 +612,33 @@ export const en: Messages = {
       { icon: '★', tone: 'green', title: 'No installation', text: 'Use the tool online without installing desktop software.' },
       { icon: '◆', tone: 'gold', title: 'Ranges in one go', text: 'Type 1-3, 5, 8 to select several pages at once.' },
       { icon: '⏱', tone: 'purple', title: 'Downloadable result', text: 'Download the extracted PDF or the ZIP once processing finishes.' },
-      { icon: '✧', tone: 'teal', title: 'Safe processing', text: 'Your document is deleted automatically after the download.' }
+      { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The original is deleted when processing ends. The result is purged within 15 minutes if you do not download it.' }
     ],
-    seoTitle: 'Split PDF into Multiple Files | One2PDF',
-    seoDescription: 'Extract selected pages into one PDF or export each selected page as a separate PDF in a ZIP file.',
-    seoH2: 'Extract selected pages or separate a PDF into files',
-    seoP1: 'Choose the pages you need from a PDF by clicking them or entering a range such as 1-3, 5, 8. Use Extract to create one PDF containing the selected pages, or Separate to create one PDF per selected page in a ZIP file.',
-    seoP2: 'Two modes cover everyday needs. Extract gathers the chosen pages into one shorter PDF. Separate exports each page as its own file, packed in a ZIP. It is a practical way to extract pages from a PDF, cut a bulky document, or send only one chapter.',
-    seoP3: 'Splitting is performed online on One2PDF servers. The uploaded PDF is deleted when processing ends. The result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.',
+    seoTitle: 'Split a PDF or extract pages | One2PDF',
+    seoDescription: 'Select pages from one PDF. Extract them into a single file, or save each selected page as its own PDF in a ZIP.',
+    seoH2: 'Keep the pages you need, leave the rest',
+    seoP1: 'Use Split PDF to send one chapter, drop a cover page from a copy, or break a long file into separate pages. Upload one PDF, click the pages or type a range such as 1-3, 5, 8, then choose Extract or Separate.',
+    seoP2: 'Extract builds one PDF that contains only the selected pages, in the order you selected them. Separate builds one PDF per selected page and packs those files in a ZIP. The tool accepts PDF files only.',
+    seoP3: 'The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and accept up to 100 MB per file, within the configured technical limit. The uploaded PDF is deleted when processing ends. The result is removed after download, or within 15 minutes if you do not download it.',
     howTitle: 'How to split a PDF',
     howSteps: [
-      'Upload the PDF',
-      'Select the pages to extract or separate',
-      'Download the result'
+      'Upload one PDF',
+      'Select the pages, then choose Extract or Separate',
+      'Download the shorter PDF or the ZIP'
     ],
-    faqTitle: 'Frequently asked questions about splitting PDFs',
+    faqTitle: 'Questions about splitting a PDF',
     faq: [
       {
-        question: 'Can I split a PDF into several files?',
-        answer: 'Yes. Separate exports each page as its own PDF, packed in a ZIP. That is how you split a PDF into multiple files. To keep a few pages in one document, use Extract pages.'
+        question: 'What is the difference between Extract and Separate?',
+        answer: 'Extract returns one PDF with the pages you selected. Separate returns a ZIP that holds one PDF for each selected page.'
       },
       {
-        question: 'Is splitting a PDF free?',
-        answer: 'Yes, without creating an account. The free plan is limited to 5 documents per day and 20 MB per file. Translate and summarize use monthly AI credits. OCR is on paid plans.'
+        question: 'Can I type a page range?',
+        answer: 'Yes. A range such as 1-3, 5, 8 selects those pages. You can also click thumbnails, or use All and None.'
       },
       {
-        question: 'Does One2PDF keep the original after a split?',
-        answer: 'The original is processed on One2PDF servers and deleted when processing ends. The result is removed after download or, if it is not downloaded, automatically purged within 15 minutes by default.'
+        question: 'Is there a file-size limit?',
+        answer: 'The free plan allows 20 MB per file and 5 documents a day, without an account. Pass and Pro allow up to 100 MB per file and have no daily cap.'
       }
     ]
   },
@@ -875,33 +871,33 @@ export const en: Messages = {
       { icon: '★', tone: 'green', title: 'No installation', text: 'Upload, choose a level, then download the result.' },
       { icon: '◆', tone: 'gold', title: 'Instant preview', text: 'See the document before processing starts.' },
       { icon: '⏱', tone: 'purple', title: 'Before and after', text: 'Compare the new size. Nothing guarantees the file will fit under a send limit.' },
-      { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The processed PDF is deleted automatically after use.' }
+      { icon: '✧', tone: 'teal', title: 'Temporary files', text: 'The original is deleted when processing ends. The result is purged within 15 minutes if you do not download it.' }
     ],
-    seoTitle: 'Compress PDF Online — Choose Your Compression Level | One2PDF',
-    seoDescription: 'Reduce a PDF’s file size online. High keeps selectable text; medium and strong turn pages into images.',
-    seoH2: 'Choose the right compression level for your PDF',
-    seoP1: 'Upload a PDF and choose a compression level for the way you plan to use it. High rewrites the document while keeping text selectable. Medium and strong convert each page to an image: text in the result is no longer selectable or searchable as text, and the visual result can change.',
-    seoP2: 'How much a file shrinks depends on its content. A PDF that is already optimized or mostly text may shrink very little. Scans and image-heavy documents often leave more room, especially at medium or strong. Check both the file size and the result before replacing your original.',
-    seoP3: 'Compression is performed online on One2PDF servers. The uploaded file is deleted when processing ends. The result is made available temporarily for download; files that are not downloaded are automatically purged according to the configured retention period.',
+    seoTitle: 'Compress a PDF online | One2PDF',
+    seoDescription: 'Make a PDF smaller for email or upload. High keeps selectable text. Medium and strong turn each page into a JPEG.',
+    seoH2: 'Shrink a PDF, then check what changed',
+    seoP1: 'Use Compress PDF when a file is too large to attach or upload. One2PDF accepts one PDF and three levels. High rewrites the document and leaves the text selectable; the file often shrinks only a little. Medium and strong replace every page with a JPEG. Medium keeps more detail than strong.',
+    seoP2: 'After medium or strong compression, text is no longer selectable or searchable, and photos can look softer. A PDF that is already small, or mostly text, may barely change at any level. Compare the reported size with the result before you replace the original. Nothing guarantees a file under a mailbox limit such as 25 MB.',
+    seoP3: 'The free plan allows 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and accept up to 100 MB per file, within the configured technical limit. The original is deleted when processing ends. The result is removed after download, or within 15 minutes if you do not download it.',
     howTitle: 'How to compress a PDF',
     howSteps: [
-      'Upload the PDF that is too large',
-      'Choose a compression level',
-      'Download the smaller file'
+      'Upload one PDF',
+      'Choose High to keep selectable text, or Medium or Strong when a smaller image-based file is enough',
+      'Download the result and compare it with the original'
     ],
-    faqTitle: 'Frequently asked questions about PDF compression',
+    faqTitle: 'Questions about PDF compression',
     faq: [
       {
-        question: 'How do I compress a PDF that is too large to email?',
-        answer: 'Gmail and Outlook often reject attachments over 25 MB. Import the PDF and choose a level. High quality keeps the text selectable. Medium and strong turn pages into images: the file may get smaller, but the text is no longer selectable and the picture can look worse. Nothing guarantees the result will fit under the limit. It depends on the document.'
+        question: 'Which level should I use for email?',
+        answer: 'Start with High if the recipient must copy the text. If the file is still too large, try Medium, then Strong. Those two levels turn pages into images, so the text cannot be selected. A result under 25 MB is not guaranteed.'
       },
       {
-        question: 'Does compressing a PDF reduce document quality?',
-        answer: 'High quality keeps selectable text and does not turn pages into images. Medium and strong produce one JPEG image per page: the text is no longer selectable or searchable as text, and the visual quality can drop. An already optimized PDF does not necessarily get smaller.'
+        question: 'Does compression always reduce quality?',
+        answer: 'High does not turn pages into images, and the text stays selectable. Medium and strong do: each page becomes a JPEG, and fine detail can look worse. An already optimized PDF may not get smaller.'
       },
       {
-        question: 'Does One2PDF keep my file after compression?',
-        answer: 'The PDF is processed on One2PDF servers for the duration of the job. The original is deleted when processing ends. The result is temporary: it is removed after download, and files that are not downloaded are automatically purged within 15 minutes by default.'
+        question: 'What are the limits?',
+        answer: 'Free use needs no account: 5 documents a day and 20 MB per file. Pass and Pro have no daily cap and allow up to 100 MB per file. Files that are not downloaded are purged within 15 minutes.'
       }
     ]
   },

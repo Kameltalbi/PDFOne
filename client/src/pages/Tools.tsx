@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from '../components/LocaleLink';
+import { urlLocaleFromPath } from '../i18n/localePath';
 import { useI18n } from '../i18n';
 import { usePageSeo } from '../lib/usePageSeo';
 import { catalogEntries } from '../lib/toolCatalog';
@@ -7,10 +9,12 @@ import './Tools.css';
 
 function Tools() {
   const { m, locale } = useI18n();
+  const urlLocale = urlLocaleFromPath(useLocation().pathname);
+  const catalogLocale = locale === urlLocale ? urlLocale : locale;
   usePageSeo(`${m.tools.catalogTitle} | One2PDF`, m.tools.catalogSubtitle);
   const [query, setQuery] = useState('');
 
-  const allTools = useMemo(() => catalogEntries(m), [m]);
+  const allTools = useMemo(() => catalogEntries(m, catalogLocale), [m, catalogLocale]);
 
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);
   const tools = useMemo(

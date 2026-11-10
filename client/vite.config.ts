@@ -2,8 +2,24 @@ import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { permanentRedirect } from './seo-redirects.mjs'
 
 const clientRoot = fileURLToPath(new URL('.', import.meta.url))
+
+function redirectPlugin(): Plugin {
+  const handler = (req: { url?: string }, res: { statusCode: number; setHeader: (name: string, value: string) => void; end: () => void }, next: () => void) => {
+    const target = permanentRedirect((req.url ?? '/').split('?')[0] ?? '/');
+    if (!target) return next();
+    res.statusCode = 301;
+    res.setHeader('Location', target);
+    res.end();
+  };
+  return {
+    name: 'seo-redirects',
+    configureServer(server) { server.middlewares.use(handler); },
+    configurePreviewServer(server) { server.middlewares.use(handler); }
+  };
+}
 
 function searchConsolePlugin(token: string): Plugin {
   return {
@@ -22,6 +38,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      redirectPlugin(),
       searchConsolePlugin(verification),
       react(),
       VitePWA({
