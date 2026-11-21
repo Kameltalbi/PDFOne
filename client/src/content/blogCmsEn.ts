@@ -2732,7 +2732,8 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
       }
     ],
     "cta": "Compress PDF to 1MB",
-    "ctaTo": "/compress-pdf-to-1mb"
+    "ctaTo": "/compress-pdf-to-1mb",
+    "coverImage": "/images/blog/how-to-compress-pdf-to-size-caps.webp"
   }
 ];
 
