@@ -164,6 +164,12 @@
   font-weight: 700;
 }
 
+.blog-article a.blog-cta,
+.blog-article a.blog-cta:visited,
+.blog-article a.blog-cta:hover {
+  color: #fff;
+}
+
 .blog-article u {
   text-underline-offset: 2px;
 }
@@ -174,13 +180,11 @@
   padding: 0.85rem 1.2rem;
   border-radius: 8px;
   background: #ed5e44;
-  color: white;
   font-weight: 800;
   letter-spacing: 0.03em;
 }
 
 .blog-cta:hover {
-  color: white;
   filter: brightness(1.05);
 }
 
