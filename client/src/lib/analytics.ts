@@ -1,6 +1,6 @@
 import { stripLocalePrefix } from '../i18n/localePath';
 
-export const GA_MEASUREMENT_ID = 'G-J905E602MX';
+export const GA_MEASUREMENT_ID = 'G-YY8GVH11J4';
 
 /** The destination is configured once in index.html; page views are sent by AppShell. */
 
