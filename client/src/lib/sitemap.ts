@@ -15,6 +15,7 @@ const LASTMOD: Record<string, string> = {
   '/about': '2026-09-02',
   '/contact': '2026-09-01',
   '/blog': '2026-09-02',
+  '/blog/how-to-compress-pdf-to-100kb-200kb-500kb-or-1mb': '2026-11-21',
   '/blog/confidentialite-pdf-en-ligne': '2026-09-02',
   '/blog/reduire-taille-pdf-email': '2026-08-28',
   '/compress': '2026-08-28',

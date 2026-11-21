@@ -192,7 +192,8 @@ const COMPRESS_EMAIL_SLUGS = new Set([
 const EN_COMPRESS_GUIDE_SLUGS = [
   'how-to-reduce-pdf-size-for-email',
   'why-is-my-pdf-file-so-large-causes-and-how-to-reduce-its-size',
-  'how-to-compress-pdf-without-losing-quality'
+  'how-to-compress-pdf-without-losing-quality',
+  'how-to-compress-pdf-to-100kb-200kb-500kb-or-1mb'
 ];
 
 export function guideHeading(locale: UrlLocale) {

@@ -219,7 +219,7 @@ describe('sitemap', () => {
 
   it('adds the seven English CMS articles and no translated copies', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-    assert.equal(locs.length, 345);
+    assert.equal(locs.length, 346);
     for (const slug of ENGLISH_CMS_SLUGS) {
       const url = `https://one2pdf.com/blog/${slug}`;
       assert.equal(locs.filter((loc) => loc === url).length, 1);

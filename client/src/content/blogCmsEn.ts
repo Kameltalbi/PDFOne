@@ -2496,6 +2496,243 @@ export const ENGLISH_CMS_POSTS: BlogPost[] = [
     "cta": "Compress PDF",
     "ctaTo": "/compress",
     "coverImage": "/api/blog/image/93da8be28feccd860c3d18cf.webp"
+  },
+  {
+    "slug": "how-to-compress-pdf-to-100kb-200kb-500kb-or-1mb",
+    "publishedIso": "2026-11-21T18:30:00.000Z",
+    "publishedLabel": "21 November 2026",
+    "seoTitle": "How to Compress PDF to 100KB, 200KB, 500KB or 1MB | One2PDF",
+    "seoDescription": "A form or portal named a size cap. Here is how to compress a PDF toward 100 KB, 200 KB, 500 KB or 1 MB, and how to check the file before you upload it.",
+    "keywords": "compress pdf to 100kb, compress pdf to 200kb, compress pdf to 500kb, compress pdf to 1mb",
+    "title": "How to Compress PDF to 100KB, 200KB, 500KB or 1MB",
+    "excerpt": "Portals and forms often refuse a PDF above a named size. Match the cap, compress the file, and read the new size before you submit it.",
+    "body": [
+      {
+        "type": "p",
+        "text": "A form, a school portal or a job site rarely says “make this PDF smaller.” It names a number: 100 KB, 200 KB, 500 KB or 1 MB. The file opens on your computer and fails on theirs. This guide is for that moment."
+      },
+      {
+        "type": "p",
+        "text": "One2PDF does not lock the output at an exact byte count. It offers three levels. You download the result, read the size, and upload it only if it is under the cap the form printed."
+      },
+      {
+        "type": "h2",
+        "text": "Pick the page that matches the cap"
+      },
+      {
+        "type": "p",
+        "text": "Each limit is a different job. A 100 KB identity upload is not a 1 MB insurance form, and neither one is an email attachment. Start on the page written for the number on the screen."
+      },
+      {
+        "type": "ul",
+        "items": [
+          [
+            { "text": "Compress PDF to 100KB", "to": "/compress-pdf-to-100kb" },
+            " — a short form, a visa upload or an ID scan that stops at 100 KB."
+          ],
+          [
+            { "text": "Compress PDF to 200KB", "to": "/compress-pdf-to-200kb" },
+            " — an application, a certificate or a school portal around 200 KB."
+          ],
+          [
+            { "text": "Compress PDF to 500KB", "to": "/compress-pdf-to-500kb" },
+            " — a CV, a diploma or a job-board upload that rejects files over 500 KB."
+          ],
+          [
+            { "text": "Compress PDF to 1MB", "to": "/compress-pdf-to-1mb" },
+            " — tax, permit and insurance portals that print “maximum file size: 1 MB.”"
+          ]
+        ]
+      },
+      {
+        "type": "p",
+        "parts": [
+          "If the mail app refused the message, and nobody named 100 KB or 1 MB, use ",
+          { "text": "Compress PDF for Email", "to": "/compress-pdf-for-email" },
+          " instead. Mailboxes usually allow about 10 MB to 25 MB for the whole message."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "What the three levels actually do"
+      },
+      {
+        "type": "p",
+        "text": "High rewrites the PDF and leaves the text selectable. The file often shrinks only a little. Use it first when the document is mostly text and the cap is 500 KB or 1 MB."
+      },
+      {
+        "type": "p",
+        "text": "Medium and Strong replace every page with a JPEG. The text is no longer selectable or searchable. Medium keeps more detail than Strong. Strong is the level that can approach a very small cap, and only on a short scan."
+      },
+      {
+        "type": "p",
+        "text": "A PDF that is already small, or already optimized, may barely change at any level. Compare the reported size with the original before you replace it."
+      },
+      {
+        "type": "h2",
+        "text": "How to compress a PDF toward 100 KB"
+      },
+      {
+        "type": "p",
+        "text": "100 KB is a tight cap. It fits a one-page or two-page scan with a lot of white space. A color packet of many pages usually stays above 100 KB even at Strong."
+      },
+      {
+        "type": "ol",
+        "items": [
+          [
+            "Open ",
+            { "text": "Compress PDF to 100KB", "to": "/compress-pdf-to-100kb" },
+            " and upload the file the form rejected."
+          ],
+          "Choose Strong for a short scan. Choose Medium if you need the page to stay clearer and you can accept a miss.",
+          "Download the PDF and read its size. Submit it only if it is under 100 KB."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "If it is still over the line, keep the page the form actually asks for and drop the rest. Crop wide margins, then compress that shorter file. High will not get a photo-PDF under 100 KB."
+      },
+      {
+        "type": "h2",
+        "text": "How to compress a PDF toward 200 KB"
+      },
+      {
+        "type": "p",
+        "text": "200 KB shows up on application forms and some school portals: a certificate, a one-page letter, or a photo of a signed form. A multi-page color packet is still a poor fit."
+      },
+      {
+        "type": "ol",
+        "items": [
+          [
+            "Open ",
+            { "text": "Compress PDF to 200KB", "to": "/compress-pdf-to-200kb" },
+            "."
+          ],
+          "Try Medium first if the page is a scan.",
+          "If the download is still over 200 KB, run Strong and check the size again."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Keep High only when the portal must read selectable text and the file is already close to 200 KB. A photograph saved as a PDF rarely clears that cap on High."
+      },
+      {
+        "type": "h2",
+        "text": "How to compress a PDF toward 500 KB"
+      },
+      {
+        "type": "p",
+        "text": "500 KB, which is the same as 0.5 MB, is a common line on job boards and university forms. A CV exported from a word processor may already be under it. A scanned diploma usually is not."
+      },
+      {
+        "type": "ol",
+        "items": [
+          [
+            "Open ",
+            { "text": "Compress PDF to 500KB", "to": "/compress-pdf-to-500kb" },
+            "."
+          ],
+          "Choose High when the file is mostly text, so a recruiter can still copy a sentence.",
+          "Switch to Medium for a scan. Use Strong only if Medium is still over 500 KB."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "A long portfolio will not fit in 500 KB. Send the page they asked for, not the whole binder."
+      },
+      {
+        "type": "h2",
+        "text": "How to compress a PDF toward 1 MB"
+      },
+      {
+        "type": "p",
+        "text": "“Maximum file size: 1 MB” is the line on tax portals, insurance claims, permit applications and client upload boxes. You have more room here than at 100 KB, so start gentler."
+      },
+      {
+        "type": "ol",
+        "items": [
+          [
+            "Open ",
+            { "text": "Compress PDF to 1MB", "to": "/compress-pdf-to-1mb" },
+            "."
+          ],
+          "Use High when the file is mostly text and only slightly over 1 MB.",
+          "If it is a scan or a PDF full of photos, use Medium, then Strong, and upload only a file that shows under 1 MB."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "1 MB is not an email limit. A mailbox that allows 10 MB or 25 MB does not need this page. A form that prints 1 MB does."
+      },
+      {
+        "type": "h2",
+        "text": "If the file is still too large"
+      },
+      {
+        "type": "p",
+        "text": "Compression cannot invent a smaller document than the pictures allow. When Medium and Strong both miss the cap, change the file before you compress it again."
+      },
+      {
+        "type": "ul",
+        "items": [
+          [
+            "Remove pages you do not need with ",
+            { "text": "Delete pages", "to": "/delete-pages" },
+            ", or keep one section with ",
+            { "text": "Split PDF", "to": "/split" },
+            "."
+          ],
+          "Crop wide empty margins so the scan starts smaller.",
+          "Go back to the original. Compressing an already compressed copy makes the text softer without a reliable size drop.",
+          [
+            "For a 2 MB tender or intranet limit, use ",
+            { "text": "Compress PDF to 2MB", "to": "/compress-pdf-to-2mb" },
+            " instead of forcing the file down to 1 MB."
+          ]
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Questions about these size caps"
+      },
+      {
+        "type": "p",
+        "parts": [
+          { "text": "Can One2PDF hit 100 KB, 200 KB, 500 KB or 1 MB exactly?", "bold": true },
+          " No. The tool reduces the file. It does not stop at a chosen number of bytes. The download size is the check."
+        ]
+      },
+      {
+        "type": "p",
+        "parts": [
+          { "text": "Which level should I try first?", "bold": true },
+          " High, if the reader must copy the text and the cap is 500 KB or 1 MB. Medium or Strong, if the cap is 100 KB or 200 KB and the PDF is a scan."
+        ]
+      },
+      {
+        "type": "p",
+        "parts": [
+          { "text": "Will the text stay selectable?", "bold": true },
+          " On High, yes. On Medium and Strong, no. Those levels turn each page into an image."
+        ]
+      },
+      {
+        "type": "p",
+        "parts": [
+          { "text": "Is 500 KB the same as 0.5 MB?", "bold": true },
+          " Yes. Portals phrase the same ceiling either way."
+        ]
+      },
+      {
+        "type": "p",
+        "parts": [
+          { "text": "Do I need an account?", "bold": true },
+          " No. Free use allows 5 documents a day and 20 MB per file. The original is deleted when processing ends. The result is removed after download, or within about 15 minutes."
+        ]
+      }
+    ],
+    "cta": "Compress PDF to 1MB",
+    "ctaTo": "/compress-pdf-to-1mb"
   }
 ];
 
