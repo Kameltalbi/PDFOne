@@ -1,6 +1,7 @@
 import { localizedPath, type UrlLocale } from '../i18n/localePath';
 import type { Messages } from '../i18n/types';
 import { isEnglishOnlyPath } from './seoPolicy';
+import { liveCompressVariants } from './toolVariants';
 
 type CatalogTool = {
   id: string;
@@ -55,8 +56,29 @@ export const TOOL_CATALOG: CatalogTool[] = [
   { id: 'flatten', path: '/flatten', icon: '▣', color: '#334155', keywords: 'flatten aplatir formulaire', label: (m) => m.tools.flatten, description: (m) => m.flattenPdf.subtitle },
   { id: 'headerFooter', path: '/header-footer', icon: 'HF', color: '#0369a1', keywords: 'header footer en-tête pied', label: (m) => m.tools.headerFooter, description: (m) => m.headerFooter.subtitle },
   { id: 'fillForm', path: '/fill-form', icon: '☑', color: '#15803d', keywords: 'form formulaire fill cerfa', label: (m) => m.tools.fillForm, description: (m) => m.fillForm.subtitle },
-  { id: 'heicToPdf', path: '/heic-to-pdf', icon: 'HEIC', color: '#c2410c', keywords: 'heic heif iphone photo', label: (m) => m.tools.heicToPdf, description: (m) => m.heicToPdf.subtitle }
+  { id: 'heicToPdf', path: '/heic-to-pdf', icon: 'HEIC', color: '#c2410c', keywords: 'heic heif iphone photo', label: (m) => m.tools.heicToPdf, description: (m) => m.heicToPdf.subtitle },
+  ...liveCompressVariants().map((variant): CatalogTool => ({
+    id: variant.path.slice(1),
+    path: variant.path,
+    icon: '⇊',
+    color: '#f05b43',
+    keywords: compressTargetKeywords(variant.path),
+    label: () => variant.h1,
+    description: () => variant.lead
+  }))
 ];
+
+function compressTargetKeywords(path: string) {
+  const keywords: Record<string, string> = {
+    '/compress-pdf-to-100kb': '100kb 100 kb form portal id scan',
+    '/compress-pdf-to-200kb': '200kb 200 kb application school',
+    '/compress-pdf-to-500kb': '500kb 500 kb job cv university',
+    '/compress-pdf-to-1mb': '1mb 1 mb portal compress pdf to 1mb',
+    '/compress-pdf-to-2mb': '2mb 2 mb tender attachment',
+    '/compress-pdf-for-email': 'email attachment reduce pdf size for email'
+  };
+  return keywords[path] ?? 'compress pdf';
+}
 
 export const INDEXABLE_TOOL_PATHS = [...new Set(
   TOOL_CATALOG.filter((tool) => tool.indexable !== false).map((tool) => tool.path)

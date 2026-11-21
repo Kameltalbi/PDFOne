@@ -131,7 +131,7 @@ for (const page of pages) {
     throw new Error(`SEO prerender must not emit redirected URL ${page.path}`);
   }
 }
-if (pages.some((page) => page.path === '/fr/png-to-pdf' || page.path === '/fr/onenote-to-pdf' || page.path === '/blog/reduire-taille-pdf-email')) {
+if (pages.some((page) => page.path === '/fr/png-to-pdf' || page.path === '/fr/onenote-to-pdf' || page.path === '/fr/compress-pdf-to-100kb' || page.path === '/fr/compress-pdf-for-email' || page.path === '/blog/reduire-taille-pdf-email')) {
   throw new Error('SEO prerender emitted a URL that should be English-only or redirected');
 }
 const redirectFile = fileURLToPath(new URL('../../deploy/nginx/one2pdf-redirects.conf', import.meta.url));

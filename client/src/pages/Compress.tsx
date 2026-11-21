@@ -4,7 +4,8 @@ import { StudioDocumentCanvas, StudioLanding, StudioProcessing, StudioResult, St
 import { formatFileSize, postForm } from '../lib/api';
 import { faqPageJsonLd, faqScriptId, pageUrl, useJsonLd } from '../lib/jsonLd';
 import { useSinglePdf } from '../lib/useSinglePdf';
-import { usePageSeo } from '../lib/usePageSeo';
+import { compressVariantForPath } from '../lib/toolVariants';
+import { landingSeoFrom, usePageSeo } from '../lib/usePageSeo';
 import { compressPageGuides, guideHeading } from '../lib/seoPages';
 import { useI18n } from '../i18n';
 import type { UrlLocale } from '../i18n/localePath';
@@ -12,11 +13,15 @@ import type { UrlLocale } from '../i18n/localePath';
 function Compress() {
   const { m, t, locale } = useI18n();
   const { pathname } = useLocation();
+  const variant = compressVariantForPath(pathname);
+  const copy = variant?.copy ?? m.compress;
+  const heading = variant?.h1 ?? m.compress.title;
+  const lead = variant?.lead ?? m.compress.subtitle;
   const guides = compressPageGuides(locale as UrlLocale);
-  usePageSeo(m.compress.seoTitle, m.compress.seoDescription);
+  usePageSeo(copy.seoTitle, copy.seoDescription);
   const faqJsonLd = useMemo(
-    () => faqPageJsonLd(m.compress.faq, pageUrl(pathname)),
-    [m.compress.faq, pathname]
+    () => (copy.faq?.length ? faqPageJsonLd(copy.faq, pageUrl(pathname)) : null),
+    [copy.faq, pathname]
   );
   useJsonLd(faqScriptId(pathname), faqJsonLd);
   const pdf = useSinglePdf({ allPages: false });
@@ -95,21 +100,14 @@ function Compress() {
   if (!pdf.file) {
     return (
       <StudioLanding
-        title={m.compress.title}
-        subtitle={m.compress.subtitle}
+        title={heading}
+        subtitle={lead}
         pickerId={pdf.pickerId}
         isDragging={pdf.isDragging}
         isLoading={pdf.isLoading}
         error={pdf.error}
         features={m.compress.features}
-        seo={{
-          h2: m.compress.seoH2,
-          paragraphs: [m.compress.seoP1, m.compress.seoP2, m.compress.seoP3],
-          howTitle: m.compress.howTitle,
-          howSteps: m.compress.howSteps,
-          faqTitle: m.compress.faqTitle,
-          faq: m.compress.faq
-        }}
+        seo={landingSeoFrom(copy)}
         guides={guides}
         guidesTitle={guideHeading(locale as UrlLocale)}
         onDragOver={() => pdf.setIsDragging(true)}

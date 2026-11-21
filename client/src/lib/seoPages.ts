@@ -7,7 +7,7 @@ import { interpolate, type Messages, type PageSeoCopy } from '../i18n/types';
 import { hreflangForPath, type HreflangLink } from './hreflang';
 import { ALTERNATIVES_PAGE, alternativesArticleHtml, COMPARISONS, comparisonArticleHtml, homeExtraHtml, ONE_NOTE_PAGE, oneNoteArticleHtml } from '../content/brandPages';
 import { appScriptId, faqPageJsonLd, faqScriptId, howToJsonLd, pageUrl, webApplicationJsonLd, websiteJsonLd } from './jsonLd';
-import { liveJpgVariants } from './toolVariants';
+import { liveCompressVariants, liveJpgVariants } from './toolVariants';
 import { relatedToolLinks, toolLabel } from './relatedTools';
 import { catalogLinks } from './toolCatalog';
 
@@ -229,7 +229,7 @@ function finalize(page: Omit<SeoPrerenderPage, 'alternates'>, m: Messages): SeoP
   const guides = page.guides
     ?? (bare === '/rotate' && page.locale === 'en'
       ? ROTATE_GUIDES.map((guide) => ({ href: guide.href, label: guide.label }))
-      : bare === '/compress'
+      : bare === '/compress' || liveCompressVariants().some((variant) => variant.path === bare)
         ? compressPageGuides(page.locale)
         : undefined);
   return {
@@ -270,7 +270,7 @@ export function contactDocumentTitle(locale: UrlLocale, heading: string) {
 }
 
 function englishOnlyDrafts(m: Messages): SeoDraft[] {
-  const variants = liveJpgVariants().map((variant) => (
+  const variants = [...liveJpgVariants(), ...liveCompressVariants()].map((variant) => (
     toolNamed('en', variant.path, variant.h1, variant.lead, variant.copy, appScriptId(variant.path))
   ));
   const note = ONE_NOTE_PAGE;

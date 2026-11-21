@@ -52,7 +52,7 @@ import BlogPost from './pages/BlogPost';
 import InternalOps from './pages/InternalOps';
 import NotFound from './pages/NotFound';
 import { AlternativesPage, ComparisonRoute, OneNoteToPdfPage } from './pages/BrandPages';
-import { liveJpgVariants } from './lib/toolVariants';
+import { liveCompressVariants, liveJpgVariants } from './lib/toolVariants';
 import { trackPageView, trackPricingView, trackToolOpen } from './lib/analytics';
 import { BillingProvider } from './lib/billing';
 import { UpgradeProvider } from './lib/upgrade';
@@ -111,6 +111,9 @@ function localeRoutes(prefix: '' | '/fr' | '/es' | '/de' | '/pt' | '/it' | '/tr'
     <Route key={p('/account')} path={p('/account')} element={<AccountPage />} />,
     ...(prefix === '' ? liveJpgVariants().map((variant) => (
       <Route key={variant.path} path={variant.path} element={<JpgToPdf />} />
+    )) : []),
+    ...(prefix === '' ? liveCompressVariants().map((variant) => (
+      <Route key={variant.path} path={variant.path} element={<Compress />} />
     )) : []),
     ...(prefix === '' ? [
       <Route key="/onenote-to-pdf" path="/onenote-to-pdf" element={<OneNoteToPdfPage />} />,

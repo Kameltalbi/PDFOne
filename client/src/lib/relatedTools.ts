@@ -1,9 +1,12 @@
 import { localizedPath, type UrlLocale } from '../i18n/localePath';
 import type { Messages } from '../i18n/types';
 import { isEnglishOnlyPath } from './seoPolicy';
+import { liveCompressVariants } from './toolVariants';
+
+const COMPRESS_TARGET_PATHS = liveCompressVariants().map((variant) => variant.path);
 
 export const RELATED_TOOLS: Record<string, string[]> = {
-  '/compress': ['/merge', '/split', '/pdf-to-word', '/protect', '/onenote-to-pdf'],
+  '/compress': ['/merge', '/split', '/pdf-to-word', '/protect', '/onenote-to-pdf', ...COMPRESS_TARGET_PATHS],
   '/merge': ['/split', '/compress', '/pdf-to-word', '/page-numbers', '/onenote-to-pdf'],
   '/split': ['/merge', '/extract-pages', '/compress'],
   '/pdf-to-word': ['/word-to-pdf', '/compress', '/merge', '/pdf-to-excel'],
@@ -42,6 +45,10 @@ export const RELATED_TOOLS: Record<string, string[]> = {
   '/onenote-to-pdf': ['/merge', '/compress', '/images-to-pdf', '/pdf-to-word']
 };
 
+for (const path of COMPRESS_TARGET_PATHS) {
+  RELATED_TOOLS[path] = ['/compress', ...COMPRESS_TARGET_PATHS.filter((item) => item !== path)];
+}
+
 export const TOOL_PATH_ALIAS: Record<string, string> = {
   '/pdf-to-pptx': '/pdf-to-ppt',
   '/pptx-to-pdf': '/ppt-to-pdf',
@@ -51,6 +58,8 @@ export const TOOL_PATH_ALIAS: Record<string, string> = {
 export { INDEXABLE_TOOL_PATHS } from './toolCatalog';
 
 export function toolLabel(path: string, m: Messages): string {
+  const variant = liveCompressVariants().find((item) => item.path === path);
+  if (variant) return variant.h1;
   const labels: Record<string, string> = {
     '/compress': m.tools.compress,
     '/merge': m.tools.merge,

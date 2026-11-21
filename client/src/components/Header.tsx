@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { Messages } from '../i18n/types';
 import { stripLocalePrefix } from '../i18n/localePath';
+import { liveCompressVariants } from '../lib/toolVariants';
 import { remainingLabel } from '../lib/account';
 import { useBilling, type BillingState, type PaidPlan } from '../lib/billing';
 import { AppLauncher } from './AppLauncher';
@@ -177,7 +178,8 @@ function Header() {
   const toolsMid = Math.ceil(pdfTools.length / 2);
   const toolsActive = pdfTools.some((item) => pathIsActive(location.pathname, item.path));
   const convertActive = [...fromPdf, ...toPdf].some((item) => pathIsActive(location.pathname, item.path));
-  const compressActive = pathIsActive(location.pathname, '/compress');
+  const compressActive = pathIsActive(location.pathname, '/compress')
+    || liveCompressVariants().some((variant) => pathIsActive(location.pathname, variant.path));
   const editActive = pathIsActive(location.pathname, '/edit-pdf');
   const signActive = pathIsActive(location.pathname, '/fill-sign-pdf') || pathIsActive(location.pathname, '/sign');
 
