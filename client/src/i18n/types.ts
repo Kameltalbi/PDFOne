@@ -310,6 +310,15 @@ export type Messages = {
     dropAria: string;
     chooseActionTitle: string;
     chooseActionChange: string;
+    unsupportedType: string;
+    mixedTypes: string;
+    perkFast: string;
+    perkFastText: string;
+    perkSecure: string;
+    perkSecureText: string;
+    perkPrivate: string;
+    perkPrivateText: string;
+    dropHintPaid: string;
     shortcutSign: string;
     shortcutPdfToWord: string;
     shortcutAll: string;

@@ -198,7 +198,7 @@ function Header() {
       {!status.paid && typeof status.remainingToday === 'number' && typeof status.dailyLimit === 'number' && (
         <span className="header-quota">{t(m.common.jobsLeft, { remaining: status.remainingToday, limit: status.dailyLimit })}</span>
       )}
-      <Link to="/login" className="header-button login" onClick={closeMenu}>{m.common.login}</Link>
+      <Link to="/login" className="header-button login" onClick={closeMenu}>{m.pricing.myAccount}</Link>
     </>
   );
 
@@ -337,6 +337,14 @@ function Header() {
             {m.home.shortcutSign}
           </NavLink>
 
+          <NavLink
+            to="/blog"
+            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            onClick={closeMenu}
+          >
+            {m.common.blog}
+          </NavLink>
+
           <div className="nav-mobile-actions">
             {accountActions}
           </div>
@@ -380,7 +388,7 @@ function Header() {
             ) : (
               <Link to="/login" className="header-button login">
                 <AccountIcon />
-                <span>{m.common.login}</span>
+                <span>{m.pricing.myAccount}</span>
               </Link>
             )}
           </div>

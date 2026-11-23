@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link, useLocaleNavigate } from '../components/LocaleLink';
 import { HOME_BEYOND, HOME_PROOF } from '../content/brandPages';
@@ -11,50 +11,154 @@ import { useUpgrade } from '../lib/upgrade';
 import { maxFileBytes, maxFileLabel } from '../lib/limits';
 import { catalogEntries } from '../lib/toolCatalog';
 import { useBilling } from '../lib/billing';
+import { formatFileSize } from '../lib/api';
 import { trackFileUpload } from '../lib/analytics';
 import type { IncomingPdfState } from '../lib/incomingPdf';
 import './Home.css';
 
-const shortcutGlyphs = {
-  merge: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M4 5.5h5.5M4 10h5.5M4 14.5h5.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M12.2 6.2 16 10l-3.8 3.8M16 10H11" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+type HomeFileKind = 'pdf' | 'word' | 'image';
+type ActionGlyph = 'compress' | 'merge' | 'split' | 'edit' | 'sign' | 'word' | 'doc' | 'image';
+
+const ACCEPT = [
+  'application/pdf,.pdf',
+  '.doc,.docx,.odt,.rtf',
+  'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,application/rtf,text/rtf',
+  'image/jpeg,image/png,.jpg,.jpeg,.png'
+].join(',');
+
+const WORD_EXT = /\.(doc|docx|odt|rtf)$/i;
+const IMAGE_EXT = /\.(jpe?g|png)$/i;
+
+function homeFileKind(file: File): HomeFileKind | null {
+  const name = file.name.toLowerCase();
+  const type = file.type.toLowerCase();
+  if (type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+  if (
+    type === 'application/msword'
+    || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    || type === 'application/vnd.oasis.opendocument.text'
+    || type === 'application/rtf'
+    || type === 'text/rtf'
+    || WORD_EXT.test(name)
+  ) return 'word';
+  if (type === 'image/jpeg' || type === 'image/jpg' || type === 'image/pjpeg' || type === 'image/png' || IMAGE_EXT.test(name)) return 'image';
+  return null;
+}
+
+function ActionIcon({ glyph }: { glyph: ActionGlyph }) {
+  if (glyph === 'compress') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 12h6.5M4 12l3.2-3.2M4 12l3.2 3.2M20 12h-6.5M20 12l-3.2-3.2M20 12l-3.2 3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (glyph === 'merge') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="7" width="9" height="11" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <rect x="11" y="5" width="9" height="11" rx="2" fill="currentColor" fillOpacity=".12" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+  if (glyph === 'split') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="7.2" cy="7.2" r="2.1" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="7.2" cy="16.8" r="2.1" stroke="currentColor" strokeWidth="1.7" />
+        <path d="m9 8.6 9.2 7.2M9 15.4 18.2 8.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (glyph === 'edit') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 20h4.2L19.2 9a1.8 1.8 0 0 0 0-2.5L17.5 4.8a1.8 1.8 0 0 0-2.5 0L4 15.8V20Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        <path d="m13.6 6.2 4.2 4.2" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+  if (glyph === 'sign') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 16.5c2-2.2 3.2-2.6 5-.9 2 1.9 2.6-2.2 4.8-.2 1.6 1.4 2.6 1.6 6.2-.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M14 5.5 18 9.5 10.5 17l-3.2.7.7-3.2L14 5.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (glyph === 'image') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="9" cy="10" r="1.4" fill="currentColor" />
+        <path d="m7 16 3.2-3.2a1 1 0 0 1 1.4 0L17 18" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7 4.5h7.2L19 9.2V19a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 6 19V6A1.5 1.5 0 0 1 7.5 4.5H7Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M14 4.8V9h4.2M8.2 13.2h7.6M8.2 16.4h5.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
-  ),
-  compress: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M6 3.8h8v3.2H6zM6 13h8v3.2H6z" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M10 8.2v3.6M8 10.2l2 1.8 2-1.8M8 9.8l2-1.8 2 1.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  );
+}
+
+function HeroArt() {
+  return (
+    <svg className="pro-hero-svg" viewBox="0 0 640 500" fill="none" aria-hidden="true">
+      <ellipse cx="372" cy="268" rx="236" ry="176" fill="#E7EEFF" />
+      <ellipse cx="448" cy="214" rx="148" ry="128" fill="#F4E9FF" />
+      <path d="M132 392h392c10 0 14 8 11 16l-10 18c-1.4 2.6-4 4.2-7 4.2H142c-3 0-5.6-1.6-7-4.2l-10-18c-3-8 1-16 7-16Z" fill="#D7DEEA" />
+      <path d="M176 392h304c8 0 10 4 8 8H168c-2-4 0-8 8-8Z" fill="#F4F7FB" />
+      <rect x="176" y="132" width="300" height="204" rx="18" fill="#1B2437" />
+      <rect x="190" y="146" width="272" height="176" rx="8" fill="#F8FAFC" />
+      <g className="pro-float" transform="translate(248 86) rotate(-7)">
+        <rect width="176" height="220" rx="12" fill="#fff" stroke="#E6EAF2" />
+        <rect x="48" y="20" width="80" height="30" rx="5" fill="#EF3438" />
+        <text x="88" y="41" textAnchor="middle" fill="#fff" fontSize="15" fontWeight="800" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">PDF</text>
+        <rect x="22" y="68" width="132" height="8" rx="4" fill="#E7EDF5" />
+        <rect x="22" y="86" width="108" height="8" rx="4" fill="#E7EDF5" />
+        <rect x="22" y="104" width="120" height="8" rx="4" fill="#E7EDF5" />
+        <rect x="22" y="130" width="132" height="40" rx="7" fill="#F3F6FB" />
+        <rect x="22" y="184" width="84" height="8" rx="4" fill="#E7EDF5" />
+      </g>
+      <g className="pro-float" transform="translate(78 168)">
+        <rect width="62" height="62" rx="16" fill="#fff" />
+        <rect x="9" y="9" width="44" height="44" rx="12" fill="#FFE4E8" />
+        <path d="M20 31h8M20 31l3.2-3.2M20 31l3.2 3.2M42 31h-8M42 31l-3.2-3.2M42 31l-3.2 3.2" stroke="#EF3438" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+      <g className="pro-float" transform="translate(108 292)">
+        <rect width="58" height="58" rx="16" fill="#fff" />
+        <rect x="8" y="8" width="42" height="42" rx="12" fill="#FFE8EA" />
+        <rect x="16" y="20" width="16" height="18" rx="3" stroke="#EF3438" strokeWidth="1.7" />
+        <rect x="26" y="16" width="16" height="18" rx="3" fill="#fff" stroke="#EF3438" strokeWidth="1.7" />
+      </g>
+      <g className="pro-float" transform="translate(286 42)">
+        <rect width="58" height="58" rx="16" fill="#fff" />
+        <rect x="8" y="8" width="42" height="42" rx="12" fill="#E7F0FF" />
+        <text x="29" y="37" textAnchor="middle" fill="#1769FF" fontSize="20" fontWeight="800" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">W</text>
+      </g>
+      <g className="pro-float" transform="translate(468 78)">
+        <rect width="58" height="58" rx="16" fill="#fff" />
+        <rect x="8" y="8" width="42" height="42" rx="12" fill="#FFF1E4" />
+        <circle cx="22" cy="22" r="3" stroke="#F59E0B" strokeWidth="1.7" />
+        <circle cx="22" cy="36" r="3" stroke="#F59E0B" strokeWidth="1.7" />
+        <circle cx="36" cy="29" r="3" stroke="#F59E0B" strokeWidth="1.7" />
+        <path d="M24.4 24.2 33.4 28M24.4 33.8 33.4 30" stroke="#F59E0B" strokeWidth="1.7" strokeLinecap="round" />
+      </g>
+      <g className="pro-float" transform="translate(520 188)">
+        <rect width="58" height="58" rx="16" fill="#fff" />
+        <rect x="8" y="8" width="42" height="42" rx="12" fill="#FFF6D8" />
+        <path d="M20 38 34 18l4 4L24 42h-4v-4Z" stroke="#E0A106" strokeWidth="1.7" strokeLinejoin="round" />
+      </g>
+      <g className="pro-float" transform="translate(498 292)">
+        <rect width="58" height="58" rx="16" fill="#fff" />
+        <rect x="8" y="8" width="42" height="42" rx="12" fill="#E7F0FF" />
+        <path d="M16 34c4-5 7-6 11-2 3 3 5-3 9-1" stroke="#1769FF" strokeWidth="1.8" strokeLinecap="round" />
+      </g>
     </svg>
-  ),
-  edit: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M4.2 15.8 5 12.2 13.4 3.8a1.6 1.6 0 0 1 2.3 0l.5.5a1.6 1.6 0 0 1 0 2.3L8 14.8z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M12.4 5.1l2.5 2.5" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  ),
-  sign: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M3.5 15.2c1.6-1.8 2.6-2.3 4.1-1.2 1.8 1.3 2.4-1.6 4.2-.4 1.4.9 2.3 1.4 4.7.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M13.2 4.2 16 7l-7.4 7.4-3 .6.6-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-    </svg>
-  ),
-  word: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <rect x="3.2" y="3.2" width="13.6" height="13.6" rx="3" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M6.4 7.2 8.1 12.8 10 8.6l1.9 4.2 1.7-5.6" stroke="currentColor" strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  grid: (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <rect x="3.2" y="3.2" width="5.4" height="5.4" rx="1.2" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="11.4" y="3.2" width="5.4" height="5.4" rx="1.2" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="3.2" y="11.4" width="5.4" height="5.4" rx="1.2" stroke="currentColor" strokeWidth="1.6" />
-      <rect x="11.4" y="11.4" width="5.4" height="5.4" rx="1.2" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  )
-} as const;
+  );
+}
 
 function Home() {
   const { m, t, locale } = useI18n();
@@ -63,177 +167,236 @@ function Home() {
   useJsonLd('one2pdf-website', websiteJsonLd());
   const navigate = useLocaleNavigate();
   const { status } = useBilling();
-  const { allowFile } = useUpgrade();
-  const pickerId = useId();
-  const [file, setFile] = useState<File | null>(null);
+  const { allowFiles } = useUpgrade();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [kind, setKind] = useState<HomeFileKind | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const maxBytes = maxFileBytes(status.paid);
   const sizeLabel = maxFileLabel(status.paid);
+  const catalog = catalogEntries(m, locale === urlLocale ? urlLocale : locale);
 
-  const acceptPdf = (incoming: File | undefined) => {
-    if (!incoming) return;
-    if (incoming.type !== 'application/pdf' && !incoming.name.toLowerCase().endsWith('.pdf')) {
-      setError(m.common.pdfOnly);
+  const acceptIncoming = (list: FileList | File[]) => {
+    const incoming = Array.from(list);
+    if (incoming.length === 0) return;
+    const tagged = incoming.map((file) => ({ file, kind: homeFileKind(file) }));
+    if (tagged.some((item) => !item.kind)) {
+      setError(m.home.unsupportedType);
       return;
     }
-    if (!allowFile(incoming)) return;
-    if (incoming.size > maxBytes) {
-      setError(t(m.common.fileTooLarge, { name: incoming.name, size: sizeLabel }));
+    const nextKind = tagged[0].kind as HomeFileKind;
+    if (tagged.some((item) => item.kind !== nextKind)) {
+      setError(m.home.mixedTypes);
       return;
     }
+    const accepted = allowFiles(tagged.map((item) => item.file));
+    if (accepted.length === 0) return;
+    const withinLimit = accepted.filter((file) => file.size <= maxBytes);
+    const oversized = accepted.find((file) => file.size > maxBytes);
+    if (withinLimit.length === 0) {
+      if (oversized) setError(t(m.common.fileTooLarge, { name: oversized.name, size: sizeLabel }));
+      return;
+    }
+    const cap = nextKind === 'image' ? 20 : nextKind === 'pdf' ? 10 : 1;
+    const kept = withinLimit.slice(0, cap);
+    if (oversized) setError(t(m.common.fileTooLarge, { name: oversized.name, size: sizeLabel }));
+    else if (withinLimit.length > cap) setError(t(m.common.maxFiles, { count: cap }));
+    else setError(null);
+    setKind(nextKind);
+    setFiles(kept);
+    trackFileUpload(kept[0]);
+  };
+
+  const openPicker = () => inputRef.current?.click();
+
+  const clearFiles = () => {
+    setFiles([]);
+    setKind(null);
     setError(null);
-    setFile(incoming);
-    trackFileUpload(incoming);
+  };
+
+  const removeFile = (index: number) => {
+    const next = files.filter((_, itemIndex) => itemIndex !== index);
+    setFiles(next);
+    if (next.length === 0) setKind(null);
   };
 
   const goWithFile = (path: string) => {
-    if (!file) return;
-    navigate(path, { state: { incomingPdf: file } satisfies IncomingPdfState });
+    if (!kind || files.length === 0) return;
+    const payload = path === '/merge' || path === '/jpg-to-pdf' ? files : [files[0]];
+    navigate(path, {
+      state: {
+        incomingPdf: payload[0],
+        ...(payload.length > 1 ? { incomingFiles: payload } : {})
+      } satisfies IncomingPdfState
+    });
   };
 
-  const shortcuts = [
-    { label: m.tools.merge, path: '/merge', tone: 'blue', glyph: 'merge' },
-    { label: m.tools.compress, path: '/compress', tone: 'red', glyph: 'compress' },
-    { label: m.tools.edit, path: '/edit-pdf', tone: 'purple', glyph: 'edit' },
-    { label: m.home.shortcutSign, path: '/fill-sign-pdf', tone: 'green', glyph: 'sign' },
-    { label: m.home.shortcutPdfToWord, path: '/pdf-to-word', tone: 'navy', glyph: 'word' },
-    { label: m.home.shortcutAll, path: '/tools', tone: 'slate', glyph: 'grid' }
-  ] as const;
+  const actions: { label: string; path: string; glyph: ActionGlyph }[] = kind === 'word'
+    ? [{ label: m.tools.wordToPdf, path: '/word-to-pdf', glyph: 'doc' }]
+    : kind === 'image'
+      ? [{ label: m.tools.jpgToPdf, path: '/jpg-to-pdf', glyph: 'image' }]
+      : [
+        { label: m.tools.compress, path: '/compress', glyph: 'compress' },
+        { label: m.tools.edit, path: '/edit-pdf', glyph: 'edit' },
+        { label: m.tools.split, path: '/split', glyph: 'split' },
+        { label: m.tools.merge, path: '/merge', glyph: 'merge' },
+        { label: m.home.shortcutSign, path: '/fill-sign-pdf', glyph: 'sign' },
+        { label: m.tools.pdfToWord, path: '/pdf-to-word', glyph: 'word' }
+      ];
 
-  const actions = shortcuts.filter((item) => item.path !== '/tools');
-
-  const catalog = catalogEntries(m, locale === urlLocale ? urlLocale : locale);
-
-  const tools = [
-    { name: m.tools.merge, description: m.home.toolMergeDesc, icon: '⇄', path: '/merge', tone: 'orange' },
-    { name: m.tools.compress, description: m.home.toolCompressDesc, icon: '⇊', path: '/compress', tone: 'blue' },
-    { name: m.tools.pdfToWord, description: m.home.toolPdfToWordDesc, icon: 'W', path: '/pdf-to-word', tone: 'blue' },
-    { name: m.tools.wordToPdf, description: m.home.toolWordToPdfDesc, icon: 'W', path: '/word-to-pdf', tone: 'orange' },
-    { name: m.tools.jpgToPdf, description: m.home.toolJpgToPdfDesc, icon: 'JPG', path: '/jpg-to-pdf', tone: 'green' },
-    { name: m.tools.split, description: m.home.toolSplitDesc, icon: '✂', path: '/split', tone: 'red' }
+  const tools: { name: string; description: string; path: string; glyph: ActionGlyph; tone: string }[] = [
+    { name: m.tools.compress, description: m.home.toolCompressDesc, path: '/compress', glyph: 'compress', tone: 'red' },
+    { name: m.tools.merge, description: m.home.toolMergeDesc, path: '/merge', glyph: 'merge', tone: 'violet' },
+    { name: m.tools.split, description: m.home.toolSplitDesc, path: '/split', glyph: 'split', tone: 'orange' },
+    { name: m.tools.pdfToWord, description: m.home.toolPdfToWordDesc, path: '/pdf-to-word', glyph: 'word', tone: 'blue' },
+    { name: m.tools.wordToPdf, description: m.home.toolWordToPdfDesc, path: '/word-to-pdf', glyph: 'doc', tone: 'blue' },
+    { name: m.tools.edit, description: m.home.toolEditDesc, path: '/edit-pdf', glyph: 'edit', tone: 'green' }
   ];
+
+  const perks = [
+    { title: m.home.perkFast, text: m.home.perkFastText, tone: 'fast', icon: 'bolt' },
+    { title: m.home.perkSecure, text: m.home.perkSecureText, tone: 'secure', icon: 'shield' },
+    { title: m.home.perkPrivate, text: m.home.perkPrivateText, tone: 'private', icon: 'trash' }
+  ] as const;
 
   return <div className="pro-home">
     <main>
       <section className="pro-hero">
-        <div className="pro-hero-glow one" /><div className="pro-hero-glow two" />
         <div className="pro-hero-inner">
-          <h1>
-            <span className="pro-hero-title-main">
-              {m.home.title.split('{free}').map((part, index, parts) => (
-                <span key={`title-${index}`}>
-                  {part}
-                  {index < parts.length - 1 && (
-                    <span className="pro-hero-title-free">{m.home.titleFree}</span>
-                  )}
-                </span>
+          <div className="pro-hero-copy">
+            <h1>
+              <span className="pro-hero-title-main">{m.home.title}</span>
+              <span className="pro-hero-title-accent">{m.home.titleAccent}</span>
+            </h1>
+            <p className="pro-hero-lede">{m.home.subtitle}</p>
+            <ul className="pro-perks">
+              {perks.map((perk) => (
+                <li key={perk.tone}>
+                  <span className={`pro-perk-icon ${perk.tone}`} aria-hidden="true">
+                    {perk.icon === 'bolt' && (
+                      <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" fill="currentColor" /></svg>
+                    )}
+                    {perk.icon === 'shield' && (
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v6.2c0 4.2 2.8 7 7 8.3 4.2-1.3 7-4.1 7-8.3V6l-7-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><path d="m8.8 12.1 2.2 2.2 4.3-4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    )}
+                    {perk.icon === 'trash' && (
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M8 7l.7 12.1A1.5 1.5 0 0 0 10.2 20.5h3.6a1.5 1.5 0 0 0 1.5-1.4L16 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    )}
+                  </span>
+                  <span>
+                    <strong>{perk.title}</strong>
+                    <span>{perk.text}</span>
+                  </span>
+                </li>
               ))}
-            </span>
-            <span className="pro-hero-title-accent">{m.home.titleAccent}</span>
-          </h1>
-
-          {locale === 'en' && (
-            <p className="pro-hero-proof">{HOME_PROOF.join(' · ')}</p>
-          )}
-
-          <p className="pro-hero-lede">{m.home.subtitle}</p>
-
-          <nav className="pro-hero-shortcuts" aria-label={m.common.tools}>
-            {shortcuts.map((item) => (
-              <Link key={item.path} to={item.path} className={`tone-${item.tone}`}>
-                <span className="pro-hero-shortcut-icon">{shortcutGlyphs[item.glyph]}</span>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="pro-trust-row">
-            <span>✓ {m.home.trustInstall}</span>
-            <span>✓ {m.home.trustSize}</span>
-            <span>✓ {m.home.trustDelete}</span>
+            </ul>
           </div>
-
-          <div className="pro-hero-upload">
-            {file ? (
-              <div className="pro-hero-chooser" role="region" aria-label={m.home.chooseActionTitle}>
-                <div className="pro-hero-chooser-file">
-                  <strong title={file.name}>{file.name}</strong>
-                  <button type="button" onClick={() => { setFile(null); setError(null); }}>{m.home.chooseActionChange}</button>
-                </div>
-                <p className="pro-hero-chooser-title">{m.home.chooseActionTitle}</p>
-                <div className="pro-hero-chooser-grid">
-                  {actions.map((action) => (
-                    <button key={action.path} type="button" onClick={() => goWithFile(action.path)}>
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <label
-                htmlFor={pickerId}
-                className={`pro-drop ${isDragging ? 'over' : ''}`}
-                aria-label={m.home.dropAria}
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    document.getElementById(pickerId)?.click();
-                  }
-                }}
-                onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }}
-                onDragLeave={(event) => {
-                  if (!event.currentTarget.contains(event.relatedTarget as Node)) setIsDragging(false);
-                }}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  setIsDragging(false);
-                  acceptPdf(event.dataTransfer.files[0]);
-                }}
-              >
-                <span className="pro-drop-icon" aria-hidden="true">
-                  <svg viewBox="0 0 64 74" fill="none">
-                    <path d="M10 4h28l16 16v42a8 8 0 0 1-8 8H10a8 8 0 0 1-8-8V12a8 8 0 0 1 8-8Z" fill="#fecdd3" />
-                    <path d="M38 4v12a4 4 0 0 0 4 4h16" fill="#fda4af" />
-                    <path d="M2 30h50v16H2z" fill="#e11d48" />
-                    <text x="27" y="42" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="800" fontFamily="system-ui,sans-serif">PDF</text>
-                    <circle cx="48" cy="60" r="12.5" fill="#fff" />
-                    <circle cx="48" cy="60" r="10.5" fill="#e11d48" />
-                    <path d="M48 55.4v8.4M44.6 58.8 48 55.4l3.4 3.4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                <span className="pro-drop-title">{m.home.dropTitle}</span>
-                <span className="pro-drop-choose">{m.home.dropChoose}</span>
-                <span className="pro-drop-cta">
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M10 14.5V5.5M6.5 8.5 10 5l3.5 3.5M4 16.2h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  {m.home.dropCta}
-                </span>
-                <span className="pro-drop-hint">{m.home.dropHint}</span>
-              </label>
-            )}
-            <input
-              id={pickerId}
-              type="file"
-              accept="application/pdf,.pdf"
-              className="pro-drop-input"
-              tabIndex={-1}
-              onChange={(event) => {
-                acceptPdf(event.target.files?.[0]);
-                event.target.value = '';
-              }}
-            />
-            {error && <p className="pro-drop-error" role="alert">{error}</p>}
+          <div className="pro-hero-art">
+            <HeroArt />
           </div>
         </div>
       </section>
 
-      <section className="pro-tools-section" id="popular-tools">
-        <div className="pro-section-heading"><div><span>{m.home.popularLabel}</span><h2>{m.home.popularTitle}</h2></div><Link to="/tools">{m.home.seeAllTools} <b>→</b></Link></div>
-        <div className="pro-tools-grid">{tools.map((tool) => <Link key={tool.path + tool.name} to={tool.path} className="pro-tool-card"><span className={`pro-tool-icon ${tool.tone}`}>{tool.icon}</span><div><h3>{tool.name}</h3><p>{tool.description}</p></div><b className="pro-tool-arrow">→</b></Link>)}</div>
+      <section className="pro-import">
+        {files.length > 0 && kind ? (
+          <div className="pro-chooser" role="region" aria-label={m.home.chooseActionTitle}>
+            <div className="pro-file-list">
+              {files.map((file, index) => (
+                <div className="pro-file-row" key={`${file.name}-${file.size}-${file.lastModified}`}>
+                  <span className={`pro-file-mark ${kind}`} aria-hidden="true">{kind === 'pdf' ? 'PDF' : kind === 'word' ? 'W' : 'IMG'}</span>
+                  <span className="pro-file-copy">
+                    <strong title={file.name}>{file.name}</strong>
+                    <span>{formatFileSize(file.size)}</span>
+                  </span>
+                  <button type="button" onClick={() => removeFile(index)} aria-label={t(m.merge.remove, { name: file.name })}>×</button>
+                </div>
+              ))}
+            </div>
+            <button type="button" className="pro-file-change" onClick={() => { clearFiles(); openPicker(); }}>{m.home.chooseActionChange}</button>
+            <h2 className="pro-chooser-title" id="home-action-title">{m.home.chooseActionTitle}</h2>
+            <div className="pro-chooser-grid" role="group" aria-labelledby="home-action-title">
+              {actions.map((action) => (
+                <button key={action.path} type="button" onClick={() => goWithFile(action.path)}>
+                  <span className={`pro-action-icon ${action.glyph}`} aria-hidden="true"><ActionIcon glyph={action.glyph} /></span>
+                  {action.label}
+                </button>
+              ))}
+            </div>
+            <p className="pro-drop-meta">{status.paid ? t(m.home.dropHintPaid, { size: sizeLabel }) : t(m.home.dropHint, { size: sizeLabel })}</p>
+          </div>
+        ) : (
+          <div
+            className={`pro-drop${isDragging ? ' over' : ''}`}
+            role="button"
+            tabIndex={0}
+            aria-label={m.home.dropAria}
+            onClick={openPicker}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openPicker();
+              }
+            }}
+            onDragOver={(event) => { event.preventDefault(); setIsDragging(true); }}
+            onDragLeave={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget as Node)) setIsDragging(false);
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              setIsDragging(false);
+              acceptIncoming(event.dataTransfer.files);
+            }}
+          >
+            <span className="pro-drop-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none">
+                <path d="M14 8.5h13.2L34 15.2V36a3.5 3.5 0 0 1-3.5 3.5h-16A3.5 3.5 0 0 1 11 36V12a3.5 3.5 0 0 1 3.5-3.5H14Z" stroke="#8AA0C2" strokeWidth="1.8" />
+                <path d="M27 8.8V15h6.2" stroke="#8AA0C2" strokeWidth="1.8" strokeLinejoin="round" />
+                <circle cx="33" cy="33" r="9" fill="#1769FF" />
+                <path d="M33 29.2v7.2M30.2 32.2 33 29.2l2.8 3" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            <span className="pro-drop-title" id="home-import-title">{m.home.dropTitle}</span>
+            <span className="pro-drop-choose">{m.home.dropChoose}</span>
+            <span className="pro-drop-cta">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M10 13.5V4.8M6.6 8.1 10 4.6l3.4 3.5M4.2 15.4h11.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {m.home.dropCta}
+            </span>
+            <p className="pro-drop-meta">{status.paid ? t(m.home.dropHintPaid, { size: sizeLabel }) : t(m.home.dropHint, { size: sizeLabel })}</p>
+          </div>
+        )}
+        <input
+          ref={inputRef}
+          type="file"
+          accept={ACCEPT}
+          multiple
+          className="pro-drop-input"
+          tabIndex={-1}
+          onChange={(event) => {
+            if (event.target.files) acceptIncoming(event.target.files);
+            event.target.value = '';
+          }}
+        />
+        {error && <p className="pro-drop-error" role="alert">{error}</p>}
+      </section>
+
+      <section className="pro-tools-section" id="popular-tools" aria-labelledby="home-popular-title">
+        <h2 className="pro-popular-title" id="home-popular-title">{m.home.popularTitle}</h2>
+        <div className="pro-tools-grid">
+          {tools.map((tool) => (
+            <Link key={tool.path} to={tool.path} className="pro-tool-card">
+              <span className={`pro-tool-icon ${tool.tone}`} aria-hidden="true"><ActionIcon glyph={tool.glyph} /></span>
+              <span className="pro-tool-copy"><h3>{tool.name}</h3><p>{tool.description}</p></span>
+              <span className="pro-tool-arrow" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M7 4.5 12.5 10 7 15.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </Link>
+          ))}
+        </div>
         <AdBanner />
       </section>
 
@@ -245,6 +408,7 @@ function Home() {
               <h2 id="home-beyond-title">{HOME_BEYOND.title}</h2>
             </div>
           </div>
+          <p className="pro-catalog-lead">{HOME_PROOF.join(' · ')}</p>
           <p className="pro-catalog-lead">{HOME_BEYOND.text}</p>
           <ul className="pro-beyond-list">
             {HOME_BEYOND.links.map((item) => (

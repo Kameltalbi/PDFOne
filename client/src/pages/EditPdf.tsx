@@ -527,7 +527,7 @@ function EditPdf() {
   }, [pdf, pdf?.numPages]);
 
   const openPdf = async (selectedFile: File) => {
-    if (selectedFile.type !== 'application/pdf') {
+    if (selectedFile.type !== 'application/pdf' && !selectedFile.name.toLowerCase().endsWith('.pdf')) {
       setError(m.edit.needPdf);
       return;
     }

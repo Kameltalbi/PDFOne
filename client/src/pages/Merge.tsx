@@ -12,7 +12,7 @@ import { usePageSeo } from '../lib/usePageSeo';
 import { RelatedTools } from '../components/RelatedTools';
 import { StudioProcessing, StudioResult } from '../components/PdfStudio';
 import { trackFileUpload } from '../lib/analytics';
-import { useIncomingPdf } from '../lib/incomingPdf';
+import { useIncomingFiles } from '../lib/incomingPdf';
 import './Merge.css';
 
 type MergeItem = {
@@ -119,7 +119,7 @@ function Merge() {
     }
   }, [allowFiles, m, maxBytes, sizeLabel, t]);
 
-  useIncomingPdf((file) => { void addFiles([file]); });
+  useIncomingFiles((incoming) => { void addFiles(incoming); });
 
   const moveItem = (from: number, to: number) => {
     setItems((current) => {

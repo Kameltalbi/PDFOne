@@ -4,6 +4,7 @@ import { useBilling } from './billing';
 import { maxFileBytes, maxFileLabel } from './limits';
 import { useUpgrade } from './upgrade';
 import { trackFileUpload } from './analytics';
+import { useIncomingFiles } from './incomingPdf';
 
 export type ImageItem = {
   id: string;
@@ -52,6 +53,10 @@ export function useImageFiles() {
     if (prepared.length > 0) trackFileUpload(prepared[0].file);
     setItems((current) => [...current, ...prepared].slice(0, 20));
   }, [allowFiles, m, maxBytes, sizeLabel, t]);
+
+  useIncomingFiles((incoming) => {
+    loadFiles(incoming);
+  });
 
   const onDropFiles = (event: React.DragEvent) => {
     event.preventDefault();

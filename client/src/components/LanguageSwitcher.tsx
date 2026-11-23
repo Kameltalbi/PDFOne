@@ -64,7 +64,10 @@ export function LanguageSwitcher() {
         aria-label={`${MENU_LABEL[locale] ?? 'Language'}, ${current.label}`}
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="lang-switch-flag" aria-hidden="true">{current.flag}</span>
+        <svg className="lang-switch-globe" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M3.75 12h16.5M12 3.75c2.2 2.45 3.35 5.15 3.35 8.25s-1.15 5.8-3.35 8.25c-2.2-2.45-3.35-5.15-3.35-8.25s1.15-5.8 3.35-8.25Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
+        </svg>
         <span className="lang-switch-current">{current.code}</span>
         <svg className="lang-switch-chevron" viewBox="0 0 12 8" width="10" height="7" aria-hidden="true">
           <path d="M1.5 1.75 6 6.25 10.5 1.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
