@@ -24,6 +24,7 @@ export type StoredBlogPost = {
   status: BlogStatus;
   publishedIso: string;
   coverImage?: string;
+  coverAlt?: string;
   internalLinks?: string[];
   locales: Partial<Record<BlogLocale, BlogLocaleCopy>>;
   updatedAt: string;
@@ -42,6 +43,7 @@ export type PublicBlogPost = {
   cta: string;
   ctaTo: string;
   coverImage?: string;
+  coverAlt?: string;
 };
 
 const MAX_POSTS = 80;
@@ -105,6 +107,10 @@ function normalizePublishAt(value: unknown, fallback: string): string {
   const date = new Date(raw);
   if (!Number.isNaN(date.getTime())) return date.toISOString();
   return fallback;
+}
+
+function sanitizeAlt(value: unknown): string {
+  return clip(value, 180).replace(/[<>]/g, '');
 }
 
 function sanitizeCover(value: unknown): string {
@@ -193,7 +199,8 @@ export function toPublicPost(post: StoredBlogPost, locale: string): PublicBlogPo
     body,
     cta: copy.cta || (lang === 'fr' ? 'Essayer One2PDF' : 'Try One2PDF'),
     ctaTo: isValidPath(copy.ctaTo) ? copy.ctaTo : '/tools',
-    coverImage: post.coverImage || ''
+    coverImage: post.coverImage || '',
+    ...(post.coverAlt ? { coverAlt: post.coverAlt } : {})
   };
 }
 
@@ -206,10 +213,10 @@ function sanitizeCopy(raw: Partial<BlogLocaleCopy> | undefined): BlogLocaleCopy 
   return {
     title,
     excerpt: clip(raw.excerpt, 400),
-    seoTitle: clip(raw.seoTitle, 70) || title.slice(0, 70),
-    seoDescription: clip(raw.seoDescription, 170) || clip(raw.excerpt, 170),
+    seoTitle: clip(raw.seoTitle, 200) || title.slice(0, 70),
+    seoDescription: clip(raw.seoDescription, 500) || clip(raw.excerpt, 170),
     keywords: clip(raw.keywords, 160),
-    cta: clip(raw.cta, 80),
+    cta: clip(raw.cta, 120),
     ctaTo: isValidPath(ctaTo) ? ctaTo : '/tools',
     bodyMarkdown
   };
@@ -246,14 +253,16 @@ export async function upsertPost(input: {
   status?: string;
   publishedIso?: string;
   coverImage?: string;
+  coverAlt?: string;
   internalLinks?: string[];
+  previousSlug?: string;
   locales?: Partial<Record<BlogLocale, Partial<BlogLocaleCopy>>>;
 }): Promise<StoredBlogPost> {
   return withLock(async () => {
     const posts = await publishDuePosts(await readAll());
     const title = clip(input.locales?.fr?.title, 140) || clip(input.locales?.en?.title, 140);
     const requestedSlug = String(input.slug || '').trim();
-    const slug = isValidSlug(requestedSlug) ? requestedSlug : slugify(requestedSlug || title);
+    let slug = isValidSlug(requestedSlug) ? requestedSlug : slugify(requestedSlug || title);
     if (!isValidSlug(slug)) throw new Error('INVALID_SLUG');
 
     const locales: StoredBlogPost['locales'] = {};
@@ -263,7 +272,12 @@ export async function upsertPost(input: {
     }
     if (Object.keys(locales).length === 0) throw new Error('EMPTY_BODY');
 
-    const existing = posts.find((post) => post.slug === slug);
+    const previousSlug = String(input.previousSlug || '').trim();
+    let existing = posts.find((post) => post.slug === slug);
+    if (!existing && previousSlug && previousSlug !== slug && isValidSlug(previousSlug)) {
+      existing = posts.find((post) => post.slug === previousSlug);
+    }
+    if (existing?.status === 'published' && slug !== existing.slug) slug = existing.slug;
     if (!existing && posts.length >= MAX_POSTS) throw new Error('TOO_MANY');
 
     const publishedIso = normalizePublishAt(
@@ -272,6 +286,7 @@ export async function upsertPost(input: {
     );
     const status = normalizeStatus(input.status, publishedIso);
     const coverImage = sanitizeCover(input.coverImage ?? existing?.coverImage);
+    const coverAlt = sanitizeAlt(input.coverAlt ?? existing?.coverAlt);
     const internalLinks = sanitizeLinks(input.internalLinks ?? existing?.internalLinks);
     const next: StoredBlogPost = {
       slug,
@@ -280,9 +295,12 @@ export async function upsertPost(input: {
       locales,
       updatedAt: new Date().toISOString(),
       ...(coverImage ? { coverImage } : {}),
+      ...(coverAlt ? { coverAlt } : {}),
       ...(internalLinks.length ? { internalLinks } : {})
     };
-    const without = posts.filter((post) => post.slug !== slug);
+    const drop = new Set<string>([slug]);
+    if (existing && existing.slug !== slug) drop.add(existing.slug);
+    const without = posts.filter((post) => !drop.has(post.slug));
     without.push(next);
     await writeAll(without);
     return next;

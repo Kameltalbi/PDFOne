@@ -43,6 +43,7 @@ export type BlogPost = {
   cta: string;
   ctaTo: string;
   coverImage?: string;
+  coverAlt?: string;
 };
 
 const compressFr: BlogPost = {

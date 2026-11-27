@@ -140,7 +140,7 @@ function BlogPostPage() {
         <p className="legal-eyebrow">{dictionaries[urlLocale].common.blog}</p>
         <h1>{post.title}</h1>
         <time dateTime={post.publishedIso}>{t(page.publishedOn, { date: post.publishedLabel })}</time>
-        {post.coverImage ? <img className="blog-cover" src={post.coverImage} alt="" /> : null}
+        {post.coverImage ? <img className="blog-cover" src={post.coverImage} alt={post.coverAlt || ''} /> : null}
         {post.body.map(renderBlock)}
         <Link className="blog-cta" to={post.ctaTo}>{post.cta}</Link>
       </article>

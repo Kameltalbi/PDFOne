@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent } from 'react';
+import { useEffect, useRef, type ClipboardEvent, type MouseEvent } from 'react';
 import { looksLikeHtml } from './opsRichText';
 
 const COLORS = ['#111827', '#6b7280', '#ed5e44', '#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed'];
@@ -117,6 +117,12 @@ function serializeNode(node: Node): string {
     if (['14', '16', '18', '22', '28'].includes(size)) out = `<span data-size="${size}">${out}</span>`;
     return out;
   }
+  if (tag === 'h1') {
+    const align = readAlign(el);
+    const attr = align ? ` data-align="${align}"` : '';
+    return `<h2${attr}>${inner}</h2>`;
+  }
+  if (tag === 'center') return inner;
   if (tag === 'h2' || tag === 'h3' || tag === 'p' || tag === 'ul' || tag === 'ol' || tag === 'li') {
     const align = tag === 'li' ? '' : readAlign(el);
     const attr = align ? ` data-align="${align}"` : '';
@@ -129,6 +135,46 @@ function serializeNode(node: Node): string {
     return align ? `<p data-align="${align}"><br></p>` : '';
   }
   return inner;
+}
+
+function cleanPastedHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script, style, meta, link, title').forEach((node) => node.remove());
+  Array.from(doc.querySelectorAll('center')).forEach((node) => {
+    const replacement = doc.createElement('div');
+    replacement.innerHTML = node.innerHTML;
+    node.replaceWith(replacement);
+  });
+  doc.body.querySelectorAll<HTMLElement>('*').forEach((el) => {
+    el.removeAttribute('align');
+    el.removeAttribute('data-align');
+    el.removeAttribute('class');
+    const style = el.getAttribute('style');
+    if (!style) return;
+    const kept = style
+      .split(';')
+      .map((part) => part.trim())
+      .filter((part) => part && !/^text-align\s*:/i.test(part))
+      .join('; ');
+    if (kept) el.setAttribute('style', kept);
+    else el.removeAttribute('style');
+  });
+  return doc.body.innerHTML.trim();
+}
+
+function plainToHtml(text: string): string {
+  return text
+    .replace(/\r\n/g, '\n')
+    .split(/\n{2,}/)
+    .map((chunk) => `<p>${escapeHtml(chunk).replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+function paintAlign(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>('[data-align]').forEach((el) => {
+    const align = el.getAttribute('data-align');
+    if (align === 'left' || align === 'center' || align === 'right') el.style.textAlign = align;
+  });
 }
 
 function serializeEditor(root: HTMLElement): string {
@@ -153,6 +199,7 @@ export default function OpsRichTextEditor({
     if (value === last.current) return;
     const html = markdownToHtml(value);
     ref.current.innerHTML = html;
+    paintAlign(ref.current);
     last.current = looksLikeHtml(value) ? value : html;
   }, [value]);
 
@@ -197,6 +244,17 @@ export default function OpsRichTextEditor({
     run('createLink', href);
   };
 
+  const onPaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    const html = event.clipboardData.getData('text/html');
+    const text = event.clipboardData.getData('text/plain');
+    if (!html && !text) return;
+    event.preventDefault();
+    ref.current?.focus();
+    const markup = html ? cleanPastedHtml(html) : plainToHtml(text);
+    document.execCommand('insertHTML', false, markup || '<p><br></p>');
+    emit();
+  };
+
   return (
     <div className="ops-editor">
       <div className="ops-editor-bar" role="toolbar" aria-label="Mise en forme">
@@ -212,32 +270,37 @@ export default function OpsRichTextEditor({
         <button type="button" className="ops-align ops-align-center" onMouseDown={keepSelection} onClick={() => run('justifyCenter')} title="Centrer" aria-label="Centrer"><span /><span /><span /></button>
         <button type="button" className="ops-align ops-align-right" onMouseDown={keepSelection} onClick={() => run('justifyRight')} title="Aligner à droite" aria-label="Aligner à droite"><span /><span /><span /></button>
         <span className="ops-editor-sep" />
-        <button type="button" onMouseDown={keepSelection} onClick={() => run('insertUnorderedList')} title="Liste">•</button>
+        <button type="button" onMouseDown={keepSelection} onClick={() => run('insertUnorderedList')} title="Liste à puces">•</button>
         <button type="button" onMouseDown={keepSelection} onClick={() => run('insertOrderedList')} title="Liste numérotée">1.</button>
-        <button type="button" onMouseDown={keepSelection} onClick={applyLink} title="Lien">Lien</button>
+        <button type="button" onMouseDown={keepSelection} onClick={applyLink} title="Insérer un lien" aria-label="Insérer un lien">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1.1l2.8-2.8a5 5 0 0 0-7.1-7.1L11 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M14 11a5 5 0 0 0-7.1-.1L4.1 13.8a5 5 0 0 0 7.1 7.1L13 19" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+        </button>
+        <span className="ops-editor-sep" />
+        <button type="button" onMouseDown={keepSelection} onClick={() => run('undo')} title="Annuler">↶</button>
+        <button type="button" onMouseDown={keepSelection} onClick={() => run('redo')} title="Rétablir">↷</button>
         <span className="ops-editor-sep" />
         <select
-          aria-label="Taille"
+          aria-label="Taille du texte"
           defaultValue="16"
           onChange={(event) => applySize(event.target.value)}
         >
           {SIZES.map((item) => (
-            <option key={item.value} value={item.value}>{item.label} px</option>
+            <option key={item.value} value={item.value}>{item.label}</option>
           ))}
         </select>
-        <span className="ops-editor-colors">
+        <select
+          aria-label="Couleur du texte"
+          defaultValue=""
+          onChange={(event) => {
+            if (event.target.value) applyColor(event.target.value);
+            event.target.value = '';
+          }}
+        >
+          <option value="">A</option>
           {COLORS.map((color) => (
-            <button
-              key={color}
-              type="button"
-              className="ops-editor-swatch"
-              style={{ background: color }}
-              title={color}
-              onMouseDown={keepSelection}
-              onClick={() => applyColor(color)}
-            />
+            <option key={color} value={color}>{color}</option>
           ))}
-        </span>
+        </select>
       </div>
       <div
         ref={ref}
@@ -245,9 +308,11 @@ export default function OpsRichTextEditor({
         contentEditable
         role="textbox"
         aria-label="Contenu"
+        style={{ textAlign: 'left' }}
         data-placeholder={placeholder || 'Écrivez l’article…'}
         onInput={emit}
         onBlur={emit}
+        onPaste={onPaste}
       />
     </div>
   );
